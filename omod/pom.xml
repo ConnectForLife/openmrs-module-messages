@@ -39,6 +39,17 @@
 
 	<build>
 		<finalName>${project.parent.artifactId}-${project.parent.version}</finalName>
+
+		<plugins>
+			<plugin>
+				<groupId>org.openmrs.maven.plugins</groupId>
+				<artifactId>maven-openmrs-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+			</plugin>
+		</plugins>
 	</build>
 
 </project>
