@@ -18,6 +18,16 @@
 	<!-- /Base Module Properties -->
 	
 	<require_version>${openmrsPlatformVersion}</require_version>
-	
+
+	<privilege>
+		<name>Messages schedule privilege</name>
+		<description>Allows user to define scheduled messages at the patient level</description>
+	</privilege>
+
+	<privilege>
+		<name>Messages manage privilege</name>
+		<description>Allows user to manage of messages template at the global level</description>
+	</privilege>
+
 </module>
 
