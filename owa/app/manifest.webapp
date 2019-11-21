@@ -1,0 +1,19 @@
+{
+  "version": "0.1.0",
+  "name": "messages",
+  "description": "OWA project for Messages Module",
+  "launch_path": "index.html",
+  "icons": {
+    "48": "/img/omrs-button.png"
+  },
+  "developer": {
+    "name": "user",
+    "url": "https://bitbucket.org/soldevelo/omrs-messages"
+  },
+  "default_locale": "en",
+    "activities": {
+      "openmrs": {
+        "href": "*"
+      }
+    }
+}

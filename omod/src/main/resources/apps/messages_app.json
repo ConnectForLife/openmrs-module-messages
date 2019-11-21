@@ -1,0 +1,19 @@
+[
+  {
+    "id": "messagesapp.basicMessages",
+    "label": "Messages module",
+    "description": "Messages management page",
+    "extensions": [
+      {
+        "id": "messagesapp.basicMessages.homepageLink",
+        "extensionPointId": "systemAdministration.apps",
+        "type": "link",
+        "order": 10,
+        "label": "messages.title",
+        "url": "owa/messages/index.html",
+        "icon": "icon-comment",
+        "requiredPrivilege": "Messages schedule privilege"
+      }
+    ]
+  }
+]
