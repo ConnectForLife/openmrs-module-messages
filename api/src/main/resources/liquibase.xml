@@ -5,4 +5,465 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
  
+    <changeSet id="messages-1" author="Dawid Ruchniewicz">
+        <preConditions onFail="MARK_RAN">
+            <not><tableExists tableName="messages_scheduled_service_group"/></not>
+        </preConditions>
+        <comment>Created the messages_scheduled_service_group table</comment>
+        <createTable tableName="messages_scheduled_service_group">
+            <column name="messages_scheduled_service_group_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="msg_send_time" type="datetime"/>
+            <column name="patient_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="varchar(255)"/>
+            <column name="uuid" type="char(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="creator" type="int"/>
+            <column name="changed_by" type="int"/>
+            <column name="date_changed" type="datetime"/>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_voided" type="datetime"/>
+            <column name="void_reason" type="varchar(255)"/>
+            <column name="voided" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voided_by" type="int"/>
+        </createTable>
+        <addForeignKeyConstraint constraintName="messages_scheduled_service_group_creator_fk"
+                                 baseTableName="messages_scheduled_service_group" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_scheduled_service_group_changed_by_fk"
+                                 baseTableName="messages_scheduled_service_group" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_scheduled_service_group_voided_by_fk"
+                                 baseTableName="messages_scheduled_service_group" baseColumnNames="voided_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_scheduled_service_group_patient_fk"
+                                 baseTableName="messages_scheduled_service_group" baseColumnNames="patient_id"
+                                 referencedTableName="patient" referencedColumnNames="patient_id"/>
+    </changeSet>
+
+    <changeSet id="messages-2" author="Dawid Ruchniewicz">
+        <preConditions onFail="MARK_RAN">
+            <not><tableExists tableName="messages_template"/></not>
+        </preConditions>
+        <comment>Created the messages_template table</comment>
+        <createTable tableName="messages_template">
+            <column name="messages_template_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="service_query" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="service_query_type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="uuid" type="char(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="creator" type="int"/>
+            <column name="changed_by" type="int"/>
+            <column name="date_changed" type="datetime"/>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_voided" type="datetime"/>
+            <column name="void_reason" type="varchar(255)"/>
+            <column name="voided" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voided_by" type="int"/>
+        </createTable>
+        <addForeignKeyConstraint constraintName="messages_template_creator_fk"
+                                 baseTableName="messages_template" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_template_changed_by_fk"
+                                 baseTableName="messages_template" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_template_voided_by_fk"
+                                 baseTableName="messages_template" baseColumnNames="voided_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        </changeSet>
+
+    <changeSet id="messages-3" author="Dawid Ruchniewicz">
+        <preConditions onFail="MARK_RAN">
+            <not><tableExists tableName="messages_template_field"/></not>
+        </preConditions>
+        <comment>Created the messages_template_field table</comment>
+        <createTable tableName="messages_template_field">
+            <column name="messages_template_field_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mandatory" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="default_value" type="TEXT"/>
+            <column name="template_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value_concept" type="int"/>
+            <column name="uuid" type="char(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="creator" type="int"/>
+            <column name="changed_by" type="int"/>
+            <column name="date_changed" type="datetime"/>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_voided" type="datetime"/>
+            <column name="void_reason" type="varchar(255)"/>
+            <column name="voided" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voided_by" type="int"/>
+        </createTable>
+        <addForeignKeyConstraint constraintName="messages_template_field_creator_fk"
+                                 baseTableName="messages_template_field" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_template_field_changed_by_fk"
+                                 baseTableName="messages_template_field" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_template_field_voided_by_fk"
+                                 baseTableName="messages_template_field" baseColumnNames="voided_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_template_field_template_fk"
+                                 baseTableName="messages_template_field" baseColumnNames="template_id"
+                                 referencedTableName="messages_template" referencedColumnNames="messages_template_id"/>
+        <addForeignKeyConstraint constraintName="messages_template_field_value_concept_fk"
+                                 baseTableName="messages_template_field" baseColumnNames="value_concept"
+                                 referencedTableName="concept" referencedColumnNames="concept_id"/>
+    </changeSet>
+
+    <changeSet id="messages-4" author="Dawid Ruchniewicz">
+        <preConditions onFail="MARK_RAN">
+            <not><tableExists tableName="messages_template_field_value"/></not>
+        </preConditions>
+        <comment>Created the messages_template_field_value table</comment>
+        <createTable tableName="messages_template_field_value">
+            <column name="messages_template_field_value_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="value" type="varchar(255)"/>
+            <column name="template_field_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="patient_template_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="uuid" type="char(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="creator" type="int"/>
+            <column name="changed_by" type="int"/>
+            <column name="date_changed" type="datetime"/>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_voided" type="datetime"/>
+            <column name="void_reason" type="varchar(255)"/>
+            <column name="voided" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voided_by" type="int"/>
+        </createTable>
+        <addForeignKeyConstraint constraintName="messages_template_field_value_creator_fk"
+                                 baseTableName="messages_template_field_value" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_template_field_value_changed_by_fk"
+                                 baseTableName="messages_template_field_value" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_template_field_value_voided_by_fk"
+                                 baseTableName="messages_template_field_value" baseColumnNames="voided_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_template_field_value_template_field_fk"
+                                 baseTableName="messages_template_field_value" baseColumnNames="template_field_id"
+                                 referencedTableName="messages_template_field"
+                                 referencedColumnNames="messages_template_field_id"/>
+        </changeSet>
+
+    <changeSet id="messages-5" author="Dawid Ruchniewicz">
+        <preConditions onFail="MARK_RAN">
+            <not><tableExists tableName="messages_patient_template"/></not>
+        </preConditions>
+        <comment>Created the messages_patient_template table</comment>
+        <createTable tableName="messages_patient_template">
+            <column name="messages_patient_template_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="actor_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="actor_type" type="int"/>
+            <column name="service_query" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="service_query_type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="patient_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="template_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="uuid" type="char(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="creator" type="int"/>
+            <column name="changed_by" type="int"/>
+            <column name="date_changed" type="datetime"/>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_voided" type="datetime"/>
+            <column name="void_reason" type="varchar(255)"/>
+            <column name="voided" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voided_by" type="int"/>
+        </createTable>
+        <addForeignKeyConstraint constraintName="messages_patient_template_creator_fk"
+                                 baseTableName="messages_patient_template" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_patient_template_changed_by_fk"
+                                 baseTableName="messages_patient_template" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_patient_template_voided_by_fk"
+                                 baseTableName="messages_patient_template" baseColumnNames="voided_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_patient_template_actor_fk"
+                                 baseTableName="messages_patient_template" baseColumnNames="actor_id"
+                                 referencedTableName="person" referencedColumnNames="person_id"/>
+        <addForeignKeyConstraint constraintName="messages_patient_template_actor_type_fk"
+                                 baseTableName="messages_patient_template" baseColumnNames="actor_type"
+                                 referencedTableName="relationship" referencedColumnNames="relationship_id"/>
+        <addForeignKeyConstraint constraintName="messages_patient_template_patient_fk"
+                                 baseTableName="messages_patient_template" baseColumnNames="patient_id"
+                                 referencedTableName="patient" referencedColumnNames="patient_id"/>
+        <addForeignKeyConstraint constraintName="messages_patient_template_template_fk"
+                                 baseTableName="messages_patient_template" baseColumnNames="template_id"
+                                 referencedTableName="messages_template_field_value"
+                                 referencedColumnNames="messages_template_field_value_id"/>
+    </changeSet>
+
+    <changeSet id="messages-6" author="Dawid Ruchniewicz">
+        <preConditions>
+            <not><tableExists tableName="messages_scheduled_service"/></not>
+        </preConditions>
+        <comment>Created the messages_scheduled_service table</comment>
+        <createTable tableName="messages_scheduled_service">
+            <column name="messages_scheduled_service_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="group_id" type="int"/>
+            <column name="service" type="int"/>
+            <column name="patient_template_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="channel_type" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="varchar(255)"/>
+            <column name="last_service_execution_id" type="int"/>
+            <column name="uuid" type="char(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="creator" type="int"/>
+            <column name="changed_by" type="int"/>
+            <column name="date_changed" type="datetime"/>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_voided" type="datetime"/>
+            <column name="void_reason" type="varchar(255)"/>
+            <column name="voided" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voided_by" type="int"/>
+        </createTable>
+        <addForeignKeyConstraint constraintName="messages_scheduled_service_creator_fk"
+                                 baseTableName="messages_scheduled_service" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_scheduled_service_changed_by_fk"
+                                 baseTableName="messages_scheduled_service" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_scheduled_service_voided_by_fk"
+                                 baseTableName="messages_scheduled_service" baseColumnNames="voided_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_scheduled_service_group_fk"
+                                 baseTableName="messages_scheduled_service" baseColumnNames="group_id"
+                                 referencedTableName="messages_scheduled_service_group"
+                                 referencedColumnNames="messages_scheduled_service_group_id"/>
+        <addForeignKeyConstraint constraintName="messages_scheduled_service_service_fk"
+                                 baseTableName="messages_scheduled_service" baseColumnNames="service"
+                                 referencedTableName="concept" referencedColumnNames="concept_id"/>
+        <addForeignKeyConstraint constraintName="messages_scheduled_service_patient_template_fk"
+                                 baseTableName="messages_scheduled_service" baseColumnNames="patient_template_id"
+                                 referencedTableName="messages_patient_template"
+                                 referencedColumnNames="messages_patient_template_id"/>
+        <addForeignKeyConstraint constraintName="messages_scheduled_service_channel_type_fk"
+                                 baseTableName="messages_scheduled_service" baseColumnNames="channel_type"
+                                 referencedTableName="concept" referencedColumnNames="concept_id"/>
+    </changeSet>
+
+    <changeSet id="messages-7" author="Dawid Ruchniewicz">
+        <preConditions>
+            <not><tableExists tableName="messages_actor_response"/></not>
+        </preConditions>
+        <comment>Created the messages_actor_response table</comment>
+        <createTable tableName="messages_actor_response">
+            <column name="messages_actor_response_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="scheduled_service_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="question" type="int"/>
+            <column name="response" type="int"/>
+            <column name="text_response" type="TEXT"/>
+            <column name="answered_time" type="datetime"/>
+            <column name="uuid" type="char(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="creator" type="int"/>
+            <column name="changed_by" type="int"/>
+            <column name="date_changed" type="datetime"/>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_voided" type="datetime"/>
+            <column name="void_reason" type="varchar(255)"/>
+            <column name="voided" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voided_by" type="int"/>
+        </createTable>
+        <addForeignKeyConstraint constraintName="messages_actor_response_creator_fk"
+                                 baseTableName="messages_actor_response" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_actor_response_changed_by_fk"
+                                 baseTableName="messages_actor_response" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_actor_response_voided_by_fk"
+                                 baseTableName="messages_actor_response" baseColumnNames="voided_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_actor_response_scheduled_service_fk"
+                                 baseTableName="messages_actor_response" baseColumnNames="scheduled_service_id"
+                                 referencedTableName="messages_scheduled_service"
+                                 referencedColumnNames="messages_scheduled_service_id"/>
+        <addForeignKeyConstraint constraintName="messages_actor_response_question_fk"
+                                 baseTableName="messages_actor_response" baseColumnNames="question"
+                                 referencedTableName="concept" referencedColumnNames="concept_id"/>
+        <addForeignKeyConstraint constraintName="messages_actor_response_response_fk"
+                                 baseTableName="messages_actor_response" baseColumnNames="response"
+                                 referencedTableName="concept" referencedColumnNames="concept_id"/>
+    </changeSet>
+
+    <changeSet id="messages-8" author="Dawid Ruchniewicz">
+        <preConditions>
+            <not><tableExists tableName="messages_delivery_attempt"/></not>
+        </preConditions>
+        <comment>Created the messages_delivery_attempt table</comment>
+        <createTable tableName="messages_delivery_attempt">
+            <column name="messages_delivery_attempt_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="scheduled_service_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="timestamp" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="new_status" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="attempt_number" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="service_execution_id" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="uuid" type="char(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="creator" type="int"/>
+            <column name="changed_by" type="int"/>
+            <column name="date_changed" type="datetime"/>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_voided" type="datetime"/>
+            <column name="void_reason" type="varchar(255)"/>
+            <column name="voided" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voided_by" type="int"/>
+        </createTable>
+        <addForeignKeyConstraint constraintName="messages_delivery_attempt_creator_fk"
+                                 baseTableName="messages_delivery_attempt" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_delivery_attempt_changed_by_fk"
+                                 baseTableName="messages_delivery_attempt" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_delivery_attempt_voided_by_fk"
+                                 baseTableName="messages_delivery_attempt" baseColumnNames="voided_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_delivery_attempt_service_fk"
+                                 baseTableName="messages_delivery_attempt" baseColumnNames="scheduled_service_id"
+                                 referencedTableName="concept" referencedColumnNames="concept_id"/>
+    </changeSet>
+
+    <changeSet id="messages-9" author="Dawid Ruchniewicz">
+        <preConditions>
+            <not><tableExists tableName="messages_schedule_service_parameter"/></not>
+        </preConditions>
+        <comment>Created the messages_schedule_service_parameter table</comment>
+        <createTable tableName="messages_schedule_service_parameter">
+            <column name="messages_schedule_service_parameter_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="scheduled_message" type="int"/>
+            <column name="parameter_type" type="varchar(255)"/>
+            <column name="parameter_value" type="TEXT"/>
+            <column name="uuid" type="char(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="creator" type="int"/>
+            <column name="changed_by" type="int"/>
+            <column name="date_changed" type="datetime"/>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_voided" type="datetime"/>
+            <column name="void_reason" type="varchar(255)"/>
+            <column name="voided" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voided_by" type="int"/>
+        </createTable>
+        <addForeignKeyConstraint constraintName="messages_schedule_service_parameter_creator_fk"
+                                 baseTableName="messages_schedule_service_parameter" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_schedule_service_parameter_changed_by_fk"
+                                 baseTableName="messages_schedule_service_parameter" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_schedule_service_parameter_voided_by_fk"
+                                 baseTableName="messages_schedule_service_parameter" baseColumnNames="voided_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_schedule_service_parameter_scheduled_message_fk"
+                                 baseTableName="messages_schedule_service_parameter" baseColumnNames="scheduled_message"
+                                 referencedTableName="messages_scheduled_service"
+                                 referencedColumnNames="messages_scheduled_service_id"/>
+    </changeSet>
+
 </databaseChangeLog>
