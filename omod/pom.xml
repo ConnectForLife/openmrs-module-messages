@@ -73,7 +73,7 @@
 									<artifactId>${project.parent.artifactId}-owa</artifactId>
 									<version>${project.parent.version}</version>
 									<type>zip</type>
-									<destFileName>sms.owa</destFileName>
+									<destFileName>messages.owa</destFileName>
 								</artifactItem>
 							</artifactItems>
 							<outputDirectory>${project.build.directory}/classes/web/module/owas</outputDirectory>
