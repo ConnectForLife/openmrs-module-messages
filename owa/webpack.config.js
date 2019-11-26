@@ -43,7 +43,7 @@ var getConfig = function () {
 	} catch (err) {
 		// create file with defaults if not found
 		config = {
-			'LOCAL_OWA_FOLDER': '/home/user/cfl/cfl-openmrs/cfl/web/owa/',
+			'LOCAL_OWA_FOLDER': '/home/user/.cfl-dev/owa/',
 			'APP_ENTRY_POINT': 'http://localhost:8080/openmrs/owa/messages/index.html'
 		};
 
