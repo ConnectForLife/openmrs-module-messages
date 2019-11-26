@@ -465,5 +465,10 @@
                                  referencedTableName="messages_scheduled_service"
                                  referencedColumnNames="messages_scheduled_service_id"/>
     </changeSet>
+    <changeSet id="messages-10" author="Paweł Cieszko">
+        <addUniqueConstraint columnNames="actor_id, patient_id, template_id"
+                             constraintName="messages_patient_template_actor_id_patient_id_template_id_ux"
+                             tableName="messages_patient_template"/>
+    </changeSet>
 
 </databaseChangeLog>

@@ -2,7 +2,7 @@ package org.openmrs.module.messages.builder;
 
 import org.openmrs.module.messages.api.model.Template;
 
-public class TemplateBuilder extends AbstractBuilder<Template> {
+public final class TemplateBuilder extends AbstractBuilder<Template> {
 
     private Integer id;
     private String serviceQuery;

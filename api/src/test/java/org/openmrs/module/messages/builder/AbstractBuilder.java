@@ -2,7 +2,7 @@ package org.openmrs.module.messages.builder;
 
 public abstract class AbstractBuilder<T extends Object> {
 
-    protected static int instanceNumber = 0;
+    private static int instanceNumber;
 
     public abstract T build();
 

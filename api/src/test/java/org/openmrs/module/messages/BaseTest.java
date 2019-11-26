@@ -9,8 +9,8 @@ import java.io.IOException;
 /**
  * All unit tests must extend this
  * <p/>
- * The statement @PowerMockIgnore("org.jacoco.agent.rt.*") is a workaround to https://code.google.com/p/powermock/issues/detail?id=458
- * to allow Jacoco agent to run correclty with Power Mock.
+ * The statement @PowerMockIgnore("org.jacoco.agent.rt.*") is a workaround to
+ * https://code.google.com/p/powermock/issues/detail?id=458 to allow Jacoco agent to run correclty with Power Mock.
  *
  * @author bramak09
  */

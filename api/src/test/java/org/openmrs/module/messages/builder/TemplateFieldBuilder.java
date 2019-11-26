@@ -4,7 +4,7 @@ import org.openmrs.Concept;
 import org.openmrs.module.messages.api.model.Template;
 import org.openmrs.module.messages.api.model.TemplateField;
 
-public class TemplateFieldBuilder extends AbstractBuilder<TemplateField> {
+public final class TemplateFieldBuilder extends AbstractBuilder<TemplateField> {
 
     private Integer id;
     private String name;

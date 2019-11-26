@@ -6,7 +6,7 @@ import org.openmrs.Relationship;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.TemplateFieldValue;
 
-public class PatientTemplateBuilder extends AbstractBuilder<PatientTemplate> {
+public final class PatientTemplateBuilder extends AbstractBuilder<PatientTemplate> {
 
     private Integer id;
     private Person actor;

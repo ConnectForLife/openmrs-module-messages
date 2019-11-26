@@ -6,7 +6,7 @@ import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.TemplateField;
 import org.openmrs.module.messages.api.model.TemplateFieldValue;
 
-public class TemplateFieldValueBuilder extends AbstractBuilder<TemplateFieldValue> {
+public final class TemplateFieldValueBuilder extends AbstractBuilder<TemplateFieldValue> {
 
     private Integer id;
     private String value;
