@@ -37,6 +37,11 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+			<dependency>
+				<groupId>com.google.code.gson</groupId>
+				<artifactId>gson</artifactId>
+				<version>${gsonVersion}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -235,6 +240,7 @@
 		<openmrsPlatformVersion>2.0.1</openmrsPlatformVersion>
 		<javaCompilerSource>1.8</javaCompilerSource>
 		<javaCompilerTarget>1.8</javaCompilerTarget>
+		<gsonVersion>2.8.5</gsonVersion>
 		<pmdPluginVersion>3.12.0</pmdPluginVersion>
 		<checkStylePluginVersion>3.0.0</checkStylePluginVersion>
 		<findBugsPluginVersion>3.0.5</findBugsPluginVersion>

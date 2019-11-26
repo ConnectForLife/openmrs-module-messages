@@ -11,4 +11,11 @@
 	<packaging>jar</packaging>
 	<name>Messages API</name>
 	<description>API project for Messages</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+		</dependency>
+	</dependencies>
 </project>
