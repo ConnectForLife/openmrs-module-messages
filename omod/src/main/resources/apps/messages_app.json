@@ -5,14 +5,23 @@
     "description": "Messages management page",
     "extensions": [
       {
-        "id": "messagesapp.basicMessages.homepageLink",
+        "id": "messagesapp.basicMessages.administrationLink",
         "extensionPointId": "systemAdministration.apps",
         "type": "link",
         "order": 10,
         "label": "messages.title",
-        "url": "owa/messages/index.html",
+        "url": "owa/messages/index.html#/messages/manage",
         "icon": "icon-comment",
         "requiredPrivilege": "Messages schedule privilege"
+      },
+      {
+        "id": "messagesapp.basicMessages.homepageLink",
+        "extensionPointId": "org.openmrs.referenceapplication.homepageLink",
+        "type": "link",
+        "label": "messages.title",
+        "icon": "icon-comment",
+        "order": 1,
+        "url": "owa/messages/index.html#/messages"
       }
     ]
   }

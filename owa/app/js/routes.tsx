@@ -7,15 +7,18 @@
  * graphic logo is a trademark of OpenMRS Inc.
  */
 import React from 'react'
-import { Route } from 'react-router'
+import { Route, Switch } from 'react-router-dom';
 import App from './components/app'
+import AppManagement from './components/app-management';
 
 export default (store) => {
     // combine store and onEnter if you need to fire an action when going to a route. Example:
     //   onEnter={ (nextState) => {store.dispatch(loadPatientAction(nextState.params.patientUuid)} }
 
     return (
-        <Route path="/" component={App}>
-        </Route>
+        <Switch>
+            <Route path="/messages/manage" component={AppManagement} />
+            <Route path="/messages" component={App} />
+        </Switch>
     );
 }
