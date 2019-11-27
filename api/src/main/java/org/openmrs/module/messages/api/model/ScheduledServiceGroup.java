@@ -1,7 +1,5 @@
 package org.openmrs.module.messages.api.model;
 
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.openmrs.Patient;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
 
@@ -31,7 +29,6 @@ public class ScheduledServiceGroup extends AbstractBaseOpenmrsData {
     private Date msgSendTime;
     
     @OneToOne
-    @Cascade(CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "patient_id", nullable = false)
     private Patient patient;
     

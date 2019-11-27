@@ -1,7 +1,5 @@
 package org.openmrs.module.messages.api.model;
 
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.openmrs.Concept;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
 
@@ -28,7 +26,6 @@ public class ScheduledService extends AbstractBaseOpenmrsData {
     private Integer id;
     
     @ManyToOne
-    @Cascade(CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "group_id")
     private ScheduledServiceGroup group;
     
@@ -37,7 +34,6 @@ public class ScheduledService extends AbstractBaseOpenmrsData {
     private Concept service;
     
     @ManyToOne
-    @Cascade(CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "patient_template_id", nullable = false)
     private PatientTemplate patientTemplate;
     
@@ -50,7 +46,7 @@ public class ScheduledService extends AbstractBaseOpenmrsData {
     private ServiceStatus status;
     
     @Column(name = "last_service_execution_id")
-    private Integer lastServiceExecution;
+    private String lastServiceExecution;
     
     @Override
     public Integer getId() {
@@ -102,11 +98,11 @@ public class ScheduledService extends AbstractBaseOpenmrsData {
         this.status = status;
     }
     
-    public Integer getLastServiceExecution() {
+    public String getLastServiceExecution() {
         return lastServiceExecution;
     }
     
-    public void setLastServiceExecution(Integer lastServiceExecution) {
+    public void setLastServiceExecution(String lastServiceExecution) {
         this.lastServiceExecution = lastServiceExecution;
     }
 }

@@ -1,5 +1,6 @@
 package org.openmrs.module.messages.api.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,11 +25,11 @@ public class TemplateFieldValue extends AbstractBaseOpenmrsData {
     @Column(name = "value")
     private String value;
     
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "template_field_id", nullable = false)
     private TemplateField templateField;
     
-    @OneToMany(mappedBy = "templateFieldValue")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "templateFieldValue", orphanRemoval = true)
     private List<PatientTemplate> patientTemplates;
     
     @Override
@@ -60,7 +61,7 @@ public class TemplateFieldValue extends AbstractBaseOpenmrsData {
     public List<PatientTemplate> getPatientTemplates() {
         return patientTemplates;
     }
-
+    
     public void setPatientTemplates(List<PatientTemplate> patientTemplates) {
         this.patientTemplates = patientTemplates;
     }

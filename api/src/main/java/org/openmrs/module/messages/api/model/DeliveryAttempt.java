@@ -1,8 +1,8 @@
 package org.openmrs.module.messages.api.model;
 
-import org.openmrs.Concept;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -23,9 +23,9 @@ public class DeliveryAttempt extends AbstractBaseOpenmrsData {
     @Column(name = "messages_delivery_attempt_id")
     private Integer id;
     
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "scheduled_service_id", nullable = false)
-    private Concept scheduledService;
+    private ScheduledService scheduledService;
     
     @Column(name = "timestamp", nullable = false)
     private Date timestamp;
@@ -49,11 +49,11 @@ public class DeliveryAttempt extends AbstractBaseOpenmrsData {
         this.id = id;
     }
     
-    public Concept getScheduledService() {
+    public ScheduledService getScheduledService() {
         return scheduledService;
     }
     
-    public void setScheduledService(Concept scheduledService) {
+    public void setScheduledService(ScheduledService scheduledService) {
         this.scheduledService = scheduledService;
     }
     

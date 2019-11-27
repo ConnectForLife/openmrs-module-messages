@@ -2,6 +2,7 @@ package org.openmrs.module.messages.api.model;
 
 import org.openmrs.Concept;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -23,7 +24,7 @@ public class ActorResponse extends AbstractBaseOpenmrsData {
     @Column(name = "messages_actor_response_id")
     private Integer id;
     
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "scheduled_service_id", nullable = false)
     private ScheduledService scheduledService;
     

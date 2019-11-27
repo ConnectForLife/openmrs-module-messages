@@ -420,7 +420,8 @@
                                  referencedTableName="users" referencedColumnNames="user_id"/>
         <addForeignKeyConstraint constraintName="messages_delivery_attempt_service_fk"
                                  baseTableName="messages_delivery_attempt" baseColumnNames="scheduled_service_id"
-                                 referencedTableName="concept" referencedColumnNames="concept_id"/>
+                                 referencedTableName="messages_scheduled_service"
+                                 referencedColumnNames="messages_scheduled_service_id"/>
     </changeSet>
 
     <changeSet id="messages-9" author="Dawid Ruchniewicz">
@@ -465,10 +466,41 @@
                                  referencedTableName="messages_scheduled_service"
                                  referencedColumnNames="messages_scheduled_service_id"/>
     </changeSet>
+
     <changeSet id="messages-10" author="Paweł Cieszko">
         <addUniqueConstraint columnNames="actor_id, patient_id, template_id"
                              constraintName="messages_patient_template_actor_id_patient_id_template_id_ux"
                              tableName="messages_patient_template"/>
+    </changeSet>
+
+    <changeSet id="messages-11" author="Dawid Ruchniewcz">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="messages_template_field_value"/>
+            <columnExists tableName="messages_template_field_value" columnName="patient_template_id"/>
+        </preConditions>
+        <comment>Removed patient_template_id column</comment>
+        <dropColumn tableName="messages_template_field_value"
+                    columnName="patient_template_id"/>
+    </changeSet>
+
+    <changeSet id="messages-12" author="Dawid Ruchniewicz">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="messages_scheduled_service"/>
+            <columnExists tableName="messages_scheduled_service" columnName="last_service_execution_id"/>
+        </preConditions>
+        <comment>Removed lastServiceExecution column</comment>
+        <dropColumn tableName="messages_scheduled_service"
+                    columnName="last_service_execution_id"/>
+    </changeSet>
+
+    <changeSet id="messages-13" author="Dawid Ruchniewicz">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="messages_scheduled_service"/>
+        </preConditions>
+        <comment>Added lastServiceExecution column</comment>
+        <addColumn tableName="messages_scheduled_service">
+            <column name="last_service_execution_id" type="varchar(255)"/>
+        </addColumn>
     </changeSet>
 
 </databaseChangeLog>

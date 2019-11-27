@@ -25,14 +25,12 @@
 
     <context:component-scan base-package="org.openmrs.module.messages" />
 
-    <bean id="messages.messagingGroupService"
-          class="org.openmrs.module.messages.api.service.impl.MessagingGroupServiceImpl"/>
+    <bean id="messages.TemplateDao" class="org.openmrs.module.messages.api.dao.impl.TemplateDaoImpl"/>
 
-    <bean id="messages.messagingService" class="org.openmrs.module.messages.api.service.impl.MessagingServiceImpl"/>
+    <bean id="messages.PatientTemplateDao" class="org.openmrs.module.messages.api.dao.impl.PatientTemplateDaoImpl"/>
 
-    <bean id="messages.patientTemplateService"
-          class="org.openmrs.module.messages.api.service.impl.PatientTemplateServiceImpl"/>
+    <bean id="messages.MessagingGroupDao" class="org.openmrs.module.messages.api.dao.impl.MessagingGroupDaoImpl"/>
 
-    <bean id="messages.templateService" class="org.openmrs.module.messages.api.service.impl.TemplateServiceImpl"/>
+    <bean id="messages.MessagingDao" class="org.openmrs.module.messages.api.dao.impl.MessagingDaoImpl"/>
 
 </beans>

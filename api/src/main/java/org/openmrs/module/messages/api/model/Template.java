@@ -1,10 +1,13 @@
 package org.openmrs.module.messages.api.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.List;
 
 @Entity(name = "messages.Template")
 @Table(name = "messages_template")
@@ -22,6 +25,9 @@ public class Template extends AbstractBaseOpenmrsData {
     
     @Column(name = "service_query_type", nullable = false)
     private String serviceQueryType;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "template", orphanRemoval = true)
+    private List<TemplateField> templates;
     
     @Override
     public Integer getId() {
@@ -47,5 +53,13 @@ public class Template extends AbstractBaseOpenmrsData {
     
     public void setServiceQueryType(String serviceQueryType) {
         this.serviceQueryType = serviceQueryType;
+    }
+    
+    public List<TemplateField> getTemplates() {
+        return templates;
+    }
+    
+    public void setTemplates(List<TemplateField> templates) {
+        this.templates = templates;
     }
 }
