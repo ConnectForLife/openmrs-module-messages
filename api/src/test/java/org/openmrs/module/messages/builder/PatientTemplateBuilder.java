@@ -6,6 +6,7 @@ import org.openmrs.Relationship;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.TemplateFieldValue;
 
+@SuppressWarnings({ "PMD.ConstructorCallsOverridableMethod" })
 public final class PatientTemplateBuilder extends AbstractBuilder<PatientTemplate> {
 
     private Integer id;
