@@ -1,8 +1,7 @@
 package org.openmrs.module.messages.api.model;
 
-import org.openmrs.Concept;
-import org.openmrs.module.messages.api.model.types.ServiceStatus;
-
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -11,8 +10,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import org.openmrs.Concept;
+import org.openmrs.module.messages.api.model.types.ServiceStatus;
 
 @Entity(name = "messages.ScheduledService")
 @Table(name = "messages_scheduled_service")
@@ -44,6 +46,15 @@ public class ScheduledService extends AbstractBaseOpenmrsData {
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private ServiceStatus status;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "scheduledService", orphanRemoval = true)
+    private List<DeliveryAttempt> deliveryAttempts;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "scheduledMessage", orphanRemoval = true)
+    private List<ScheduledServiceParameter> scheduledServiceParameters;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "scheduledService", orphanRemoval = true)
+    private List<ActorResponse> actorResponses;
     
     @Column(name = "last_service_execution_id")
     private String lastServiceExecution;
@@ -104,5 +115,29 @@ public class ScheduledService extends AbstractBaseOpenmrsData {
     
     public void setLastServiceExecution(String lastServiceExecution) {
         this.lastServiceExecution = lastServiceExecution;
+    }
+    
+    public List<DeliveryAttempt> getDeliveryAttempts() {
+        return deliveryAttempts;
+    }
+    
+    public void setDeliveryAttempts(List<DeliveryAttempt> deliveryAttempts) {
+        this.deliveryAttempts = deliveryAttempts;
+    }
+    
+    public List<ScheduledServiceParameter> getScheduledServiceParameters() {
+        return scheduledServiceParameters;
+    }
+    
+    public void setScheduledServiceParameters(List<ScheduledServiceParameter> scheduledServiceParameters) {
+        this.scheduledServiceParameters = scheduledServiceParameters;
+    }
+    
+    public List<ActorResponse> getActorResponses() {
+        return actorResponses;
+    }
+    
+    public void setActorResponses(List<ActorResponse> actorResponses) {
+        this.actorResponses = actorResponses;
     }
 }

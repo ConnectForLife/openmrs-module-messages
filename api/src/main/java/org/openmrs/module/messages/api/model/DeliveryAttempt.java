@@ -1,16 +1,13 @@
 package org.openmrs.module.messages.api.model;
 
-import org.openmrs.module.messages.api.model.types.ServiceStatus;
-
-import javax.persistence.CascadeType;
+import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.util.Date;
+import org.openmrs.module.messages.api.model.types.ServiceStatus;
 
 @Entity(name = "messages.DeliveryAttempt")
 @Table(name = "messages_delivery_attempt")
@@ -23,7 +20,6 @@ public class DeliveryAttempt extends AbstractBaseOpenmrsData {
     @Column(name = "messages_delivery_attempt_id")
     private Integer id;
     
-    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "scheduled_service_id", nullable = false)
     private ScheduledService scheduledService;
     
