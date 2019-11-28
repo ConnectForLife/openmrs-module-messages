@@ -87,7 +87,7 @@
 						<minimumTokens>100</minimumTokens>
 						<printFailingErrors>true</printFailingErrors>
 						<analysisCache>true</analysisCache>
-						<includeTests>true</includeTests>
+						<includeTests>false</includeTests>
 						<failOnViolation>true</failOnViolation>
 					</configuration>
 					<executions>
