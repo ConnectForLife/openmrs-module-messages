@@ -22,6 +22,15 @@
         "icon": "icon-comment",
         "order": 1,
         "url": "owa/messages/index.html#/messages"
+      },
+      {
+        "id": "messagesapp.basicMessages.patientDashboardLink",
+        "extensionPointId": "patientDashboard.overallActions",
+        "type": "link",
+        "label": "messages.title",
+        "icon": "icon-comment",
+        "order": 1,
+        "url": "owa/messages/index.html#/messages"
       }
     ]
   }
