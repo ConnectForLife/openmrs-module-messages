@@ -6,6 +6,8 @@ public abstract class AbstractBuilder<T extends Object> {
 
     public abstract T build();
 
+    public abstract T buildAsNew();
+
     protected AbstractBuilder() {
         instanceNumber++;
     }

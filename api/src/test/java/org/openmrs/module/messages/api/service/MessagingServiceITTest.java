@@ -9,15 +9,20 @@
 
 package org.openmrs.module.messages.api.service;
 
+import org.hamcrest.Matchers;
+import org.hibernate.PropertyValueException;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.messages.api.dao.ActorResponseDao;
 import org.openmrs.module.messages.api.dao.MessagingDao;
 import org.openmrs.module.messages.api.model.ActorResponse;
+import org.openmrs.module.messages.api.model.DeliveryAttempt;
 import org.openmrs.module.messages.api.model.ScheduledService;
+import org.openmrs.module.messages.api.model.types.ServiceStatus;
 import org.openmrs.module.messages.builder.ActorResponseBuilder;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,21 +31,17 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
-// ToDo: Specify Exception
-@SuppressWarnings({ "PMD.SignatureDeclareThrowsException" })
-public class MessageComponentITTest extends BaseModuleContextSensitiveTest {
+public class MessagingServiceITTest extends BaseModuleContextSensitiveTest {
 
     private static final String XML_DATA_SET_PATH = "datasets/";
-
-    private static final String XML_CONCEPTS_DATA_SET = "ConceptDataSet.xml";
-
-    private static final String XML_MSG_DATA_SET = "MessageDataSet.xml";
 
     private static final String QUESTION_UUID = "16f1ce79-ef8a-47ca-bc40-fee648a835b4";
 
@@ -48,7 +49,6 @@ public class MessageComponentITTest extends BaseModuleContextSensitiveTest {
 
     private static final String SCHEDULE_UUID = "b3de6d76-3e31-41cf-955d-ad14b9db07ff";
 
-    // Java 1.6 Date usage
     private static final Date TIMESTAMP = new Date(2019, Calendar.NOVEMBER, 21);
 
     private Concept question;
@@ -58,25 +58,27 @@ public class MessageComponentITTest extends BaseModuleContextSensitiveTest {
     private ScheduledService scheduledService;
 
     @Autowired
-    @Qualifier("messages.msgComponent")
-    private MessageComponent msgComponent;
+    @Qualifier("messages.messagingService")
+    private MessagingService messagingService;
 
     @Autowired
     @Qualifier("messages.MessagingDao")
     private MessagingDao messagingDao;
 
+    @Autowired
+    @Qualifier("messages.ActorResponseDao")
+    private ActorResponseDao actorResponseDao;
+
     @Before
     public void setUp() throws Exception {
-        executeDataSet(XML_DATA_SET_PATH + XML_CONCEPTS_DATA_SET);
-        executeDataSet(XML_DATA_SET_PATH + XML_MSG_DATA_SET);
+        executeDataSet(XML_DATA_SET_PATH + "ConceptDataSet.xml");
+        executeDataSet(XML_DATA_SET_PATH + "MessageDataSet.xml");
         question = Context.getConceptService().getConceptByUuid(QUESTION_UUID);
         response = Context.getConceptService().getConceptByUuid(RESPONSE_UUID);
         scheduledService = messagingDao.getByUuid(SCHEDULE_UUID);
     }
 
     @Test
-    // ToDo: Remove @Ignore after implementing https://sd-cfl.atlassian.net/browse/CFLM-190
-    @Ignore
     public void shouldReturnRegisteredActorResponse() {
         ActorResponseBuilder builder = new ActorResponseBuilder();
         ActorResponse expected = builder.withScheduledService(scheduledService)
@@ -86,7 +88,7 @@ public class MessageComponentITTest extends BaseModuleContextSensitiveTest {
             .withAnsweredTime(TIMESTAMP)
             .build();
 
-        ActorResponse actual = msgComponent.registerResponse(scheduledService.getId(),
+        ActorResponse actual = messagingService.registerResponse(scheduledService.getId(),
             question.getId(),
             response.getId(),
             scheduledService.getPatientTemplate().getTemplateFieldValue().getValue(),
@@ -94,7 +96,7 @@ public class MessageComponentITTest extends BaseModuleContextSensitiveTest {
 
         assertThat(actual, not(nullValue()));
         assertThat(actual.getId(), not(nullValue()));
-        Assert.assertThat(messagingDao.getByUuid(actual.getUuid()), not(nullValue()));
+        Assert.assertThat(actorResponseDao.getByUuid(actual.getUuid()), not(nullValue()));
         assertThat(actual.getTextResponse(), is(expected.getTextResponse()));
         assertThat(actual.getAnsweredTime(), is(expected.getAnsweredTime()));
 
@@ -116,39 +118,56 @@ public class MessageComponentITTest extends BaseModuleContextSensitiveTest {
             is(expected.getScheduledService().getStatus()));
     }
 
-    @Test(expected = Exception.class)
-    // ToDo: Remove @Ignore after implementing https://sd-cfl.atlassian.net/browse/CFLM-190
-    // ToDo: Specify Exception
-    @Ignore
-    public void shouldThrowExceptionWhenScheduledServiceIsNotSaved() throws Exception {
-        ActorResponse actual = msgComponent.registerResponse(-1,
+    @Test(expected = PropertyValueException.class)
+    public void shouldThrowExceptionWhenScheduledServiceIsNotSaved() throws PropertyValueException {
+        ActorResponse actual = messagingService.registerResponse(-1,
             question.getId(),
             response.getId(),
             scheduledService.getPatientTemplate().getTemplateFieldValue().getValue(),
             TIMESTAMP);
     }
 
-    @Test(expected = Exception.class)
-    // ToDo: Remove @Ignore after implementing https://sd-cfl.atlassian.net/browse/CFLM-190
-    // ToDo: Specify Exception
-    @Ignore
-    public void shouldThrowExceptionWhenQuestionIsNotSaved() throws Exception {
-        ActorResponse actual = msgComponent.registerResponse(scheduledService.getId(),
-            -1,
-            response.getId(),
-            scheduledService.getPatientTemplate().getTemplateFieldValue().getValue(),
-            TIMESTAMP);
+    @Test
+    public void registerAttemptShouldAddFirstAttemptAndUpdateScheduledService() {
+        Assume.assumeThat(scheduledService.getDeliveryAttempts().size(), Matchers.is(0));
+
+        final ServiceStatus newStatus = ServiceStatus.DELIVERED;
+        final String serviceExecution = "321";
+        final Date timestamp = new Date();
+
+        ScheduledService actualScheduledService = messagingService
+            .registerAttempt(scheduledService.getId(), newStatus, timestamp, serviceExecution);
+        DeliveryAttempt actualAttempt = actualScheduledService.getDeliveryAttempts().get(0);
+
+        assertEquals(newStatus, actualScheduledService.getStatus());
+        assertEquals(serviceExecution, actualScheduledService.getLastServiceExecution());
+        assertEquals(1, actualScheduledService.getDeliveryAttempts().size());
+        assertEquals(scheduledService.getId(), actualAttempt.getScheduledService().getId());
+        assertEquals(newStatus, actualAttempt.getStatus());
+        assertEquals(timestamp, actualAttempt.getTimestamp());
+        assertEquals(serviceExecution, actualAttempt.getServiceExecution());
     }
 
-    @Test(expected = Exception.class)
-    // ToDo: Remove @Ignore after implementing https://sd-cfl.atlassian.net/browse/CFLM-190
-    // ToDo: Specify Exception
-    @Ignore
-    public void shouldThrowExceptionWhenResponseIsNotSaved() throws Exception {
-        ActorResponse actual = msgComponent.registerResponse(scheduledService.getId(),
-            question.getId(),
-            -1,
-            scheduledService.getPatientTemplate().getTemplateFieldValue().getValue(),
-            TIMESTAMP);
+    @Test
+    public void registerAttemptShouldAddNextAttemptAndUpdateScheduledService() {
+        scheduledService = messagingService.registerAttempt(scheduledService.getId(), ServiceStatus.PENDING,
+            new Date(), UUID.randomUUID().toString());
+        assertEquals(1, scheduledService.getDeliveryAttempts().size());
+
+        final ServiceStatus newStatus = ServiceStatus.DELIVERED;
+        final String serviceExecution = "321";
+        final Date timestamp = new Date();
+
+        ScheduledService actualScheduledService = messagingService
+            .registerAttempt(scheduledService.getId(), newStatus, timestamp, serviceExecution);
+        DeliveryAttempt actualAttempt = actualScheduledService.getDeliveryAttempts().get(1);
+
+        assertEquals(newStatus, actualScheduledService.getStatus());
+        assertEquals(serviceExecution, actualScheduledService.getLastServiceExecution());
+        assertEquals(2, actualScheduledService.getDeliveryAttempts().size());
+        assertEquals(scheduledService.getId(), actualAttempt.getScheduledService().getId());
+        assertEquals(newStatus, actualAttempt.getStatus());
+        assertEquals(timestamp, actualAttempt.getTimestamp());
+        assertEquals(serviceExecution, actualAttempt.getServiceExecution());
     }
 }

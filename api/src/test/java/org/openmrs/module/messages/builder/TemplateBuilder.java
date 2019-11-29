@@ -23,6 +23,11 @@ public final class TemplateBuilder extends AbstractBuilder<Template> {
         return template;
     }
 
+    @Override
+    public Template buildAsNew() {
+        return withId(null).build();
+    }
+
     public TemplateBuilder withId(Integer id) {
         this.id = id;
         return this;

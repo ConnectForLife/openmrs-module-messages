@@ -6,7 +6,6 @@ import org.openmrs.Relationship;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.TemplateFieldValue;
 
-@SuppressWarnings({ "PMD.ConstructorCallsOverridableMethod" })
 public final class PatientTemplateBuilder extends AbstractBuilder<PatientTemplate> {
 
     private Integer id;
@@ -39,6 +38,11 @@ public final class PatientTemplateBuilder extends AbstractBuilder<PatientTemplat
         template.setPatient(patient);
         template.setTemplateFieldValue(templateFieldValue);
         return template;
+    }
+
+    @Override
+    public PatientTemplate buildAsNew() {
+        return withId(null).build();
     }
 
     public PatientTemplateBuilder withId(Integer id) {

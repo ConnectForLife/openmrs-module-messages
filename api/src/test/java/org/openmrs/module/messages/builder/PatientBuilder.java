@@ -27,4 +27,14 @@ public final class PatientBuilder extends AbstractBuilder<Patient> {
 
         return patient;
     }
+
+    @Override
+    public Patient buildAsNew() {
+        return withId(null).build();
+    }
+
+    public PatientBuilder withId(Integer id) {
+        this.id = id;
+        return this;
+    }
 }

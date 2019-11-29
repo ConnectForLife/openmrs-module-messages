@@ -67,7 +67,6 @@ public class ActorServiceImplTest extends BaseModuleContextSensitiveTest {
     private ActorService actorService;
 
     @Before
-    @SuppressWarnings("PMD.SignatureDeclareThrowsException")
     public void setUp() throws Exception {
         executeDataSet(XML_ACTOR_TYPES_DATASET);
         Context.getAdministrationService().setGlobalProperty(ConfigConstants.ACTOR_TYPES_KEY, DEFAULT_CONFIGURATION);

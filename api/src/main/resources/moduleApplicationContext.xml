@@ -27,12 +27,19 @@
     <bean id="messages.MessagingGroupDao" class="org.openmrs.module.messages.api.dao.impl.MessagingGroupDaoImpl"/>
 
     <bean id="messages.MessagingDao" class="org.openmrs.module.messages.api.dao.impl.MessagingDaoImpl"/>
+    <bean id="messages.ActorResponseDao" class="org.openmrs.module.messages.api.dao.impl.ActorResponseDaoImpl"/>
 
     <bean id="messages.templateService" class="org.openmrs.module.messages.api.service.impl.TemplateServiceImpl"/>
 
     <bean id="messages.messagingService" class="org.openmrs.module.messages.api.service.impl.MessagingServiceImpl">
         <property name="dao">
             <ref local="messages.MessagingDao"/>
+        </property>
+        <property name="conceptService">
+            <ref bean="conceptServiceTarget"/>
+        </property>
+        <property name="actorResponseDao">
+            <ref local="messages.ActorResponseDao"/>
         </property>
     </bean>
 </beans>

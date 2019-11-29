@@ -156,4 +156,17 @@
             date_created="2019-11-20 00:00:00.0"
             voided="false"
             uuid="b3de6d76-3e31-41cf-955d-ad14b9db07ff"/>
+
+    <messages_scheduled_service
+            messages_scheduled_service_id="2"
+            group_id="1"
+            service="1"
+            patient_template_id="1"
+            channel_type="2"
+            status="DELIVERED"
+            last_service_execution_id="222222222222"
+            creator="1"
+            date_created="2019-11-25 00:00:00.0"
+            voided="false"
+            uuid="532f0b56-3ff9-427b-b4f3-b92796c7eea2"/>
 </dataset>

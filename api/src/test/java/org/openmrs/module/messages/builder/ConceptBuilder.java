@@ -16,7 +16,6 @@ import org.openmrs.api.ConceptNameType;
 import java.util.Collection;
 import java.util.HashSet;
 
-@SuppressWarnings({ "PMD.ConstructorCallsOverridableMethod" })
 public class ConceptBuilder extends AbstractBuilder<Concept> {
     // This builder does not cover every ConceptName attribute.
     // Please, extend if needed.
@@ -24,7 +23,7 @@ public class ConceptBuilder extends AbstractBuilder<Concept> {
     private Collection<ConceptName> names;
 
     public ConceptBuilder() {
-        this.id = 1;
+        this.id = getInstanceNumber();
         this.names = new HashSet<ConceptName>();
         ConceptName shortName = new ConceptNameBuilder()
             .withId(2)
@@ -43,6 +42,11 @@ public class ConceptBuilder extends AbstractBuilder<Concept> {
         result.setConceptId(id);
         result.setNames(names);
         return result;
+    }
+
+    @Override
+    public Concept buildAsNew() {
+        return withId(null).build();
     }
 
     public ConceptBuilder withId(Integer id) {

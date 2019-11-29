@@ -23,7 +23,7 @@ import org.openmrs.module.messages.builder.DeliveryAttemptBuilder;
 import org.openmrs.module.messages.builder.ScheduledServiceBuilder;
 
 @RunWith(MockitoJUnitRunner.class)
-public class MessageServiceTest extends BaseTest {
+public class MessagingServiceTest extends BaseTest {
 
     @Captor
     private ArgumentCaptor<ScheduledService> captor;

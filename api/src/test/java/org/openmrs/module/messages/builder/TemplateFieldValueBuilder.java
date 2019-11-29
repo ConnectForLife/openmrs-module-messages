@@ -32,6 +32,11 @@ public final class TemplateFieldValueBuilder extends AbstractBuilder<TemplateFie
         return templateFieldValue;
     }
 
+    @Override
+    public TemplateFieldValue buildAsNew() {
+        return withId(null).build();
+    }
+
     public TemplateFieldValueBuilder withId(Integer id) {
         this.id = id;
         return this;

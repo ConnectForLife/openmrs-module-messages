@@ -16,11 +16,10 @@ import org.openmrs.module.messages.api.model.ScheduledService;
 import java.util.Calendar;
 import java.util.Date;
 
-@SuppressWarnings({ "PMD.ConstructorCallsOverridableMethod" })
 public class ActorResponseBuilder extends AbstractBuilder<ActorResponse> {
 
-    private static final int YEAR = 2019;
-    private static final int DATE = 20;
+    private static final int DEFAULT_YEAR = 2019;
+    private static final int DEFAULT_DATE = 20;
 
     private Integer id;
     private ScheduledService scheduledService;
@@ -30,13 +29,12 @@ public class ActorResponseBuilder extends AbstractBuilder<ActorResponse> {
     private Date answeredTime;
 
     public ActorResponseBuilder() {
-        this.id = 1;
+        this.id = getInstanceNumber();
         this.scheduledService = new ScheduledServiceBuilder().build();
         this.question = new ConceptBuilder().build();
         this.response = new ConceptBuilder().build();
         this.textResponse = "AAAAAAAAAAAAAA";
-        // Java 1.6 Date usage
-        this.answeredTime = new Date(YEAR, Calendar.NOVEMBER, DATE);
+        this.answeredTime = new Date(DEFAULT_YEAR, Calendar.NOVEMBER, DEFAULT_DATE);
     }
 
     @Override
@@ -49,6 +47,11 @@ public class ActorResponseBuilder extends AbstractBuilder<ActorResponse> {
         actor.setTextResponse(textResponse);
         actor.setAnsweredTime(answeredTime);
         return actor;
+    }
+
+    @Override
+    public ActorResponse buildAsNew() {
+        return withId(null).build();
     }
 
     public ActorResponseBuilder withId(Integer id) {

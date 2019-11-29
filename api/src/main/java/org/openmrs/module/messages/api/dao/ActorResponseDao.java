@@ -7,18 +7,10 @@
  * graphic logo is a trademark of OpenMRS Inc.
  */
 
-package org.openmrs.module.messages.api.service;
+package org.openmrs.module.messages.api.dao;
 
-import org.openmrs.api.OpenmrsService;
+import org.openmrs.api.db.OpenmrsDataDAO;
 import org.openmrs.module.messages.api.model.ActorResponse;
 
-import java.util.Date;
-
-public interface MessageComponent extends OpenmrsService {
-
-    ActorResponse registerResponse(Integer scheduledId,
-                                   Integer questionId,
-                                   Integer response,
-                                   String textResponse,
-                                   Date timestamp);
+public interface ActorResponseDao extends OpenmrsDataDAO<ActorResponse> {
 }

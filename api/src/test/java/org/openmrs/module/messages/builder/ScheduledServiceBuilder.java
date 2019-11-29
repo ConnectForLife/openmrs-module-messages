@@ -10,12 +10,17 @@
 package org.openmrs.module.messages.builder;
 
 import org.openmrs.Concept;
+import org.openmrs.module.messages.api.model.ActorResponse;
+import org.openmrs.module.messages.api.model.DeliveryAttempt;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.ScheduledService;
 import org.openmrs.module.messages.api.model.ScheduledServiceGroup;
+import org.openmrs.module.messages.api.model.ScheduledServiceParameter;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
 
-@SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.ConstructorCallsOverridableMethod" })
+import java.util.ArrayList;
+import java.util.List;
+
 public class ScheduledServiceBuilder extends AbstractBuilder<ScheduledService> {
     // Please, consider creating ScheduledServiceGroup and PatientTemplate builders if needed.
     private Integer id;
@@ -25,19 +30,21 @@ public class ScheduledServiceBuilder extends AbstractBuilder<ScheduledService> {
     private Concept channelType;
     private ServiceStatus status;
     private String serviceExec;
-
-    public void setTemplate(PatientTemplate template) {
-        this.template = template;
-    }
+    private List<DeliveryAttempt> deliveryAttempts;
+    private List<ScheduledServiceParameter> scheduledServiceParameters;
+    private List<ActorResponse> actorResponses;
 
     public ScheduledServiceBuilder() {
-        this.id = 1;
+        this.id = getInstanceNumber();
         this.group = new ScheduledServiceGroup();
         this.service = new ConceptBuilder().build();
         this.template = new PatientTemplate();
         this.channelType = new ConceptBuilder().build();
         this.status = ServiceStatus.PENDING;
         this.serviceExec = "test";
+        this.deliveryAttempts = new ArrayList<>();
+        this.scheduledServiceParameters = new ArrayList<>();
+        this.actorResponses = new ArrayList<>();
     }
 
     @Override
@@ -48,7 +55,15 @@ public class ScheduledServiceBuilder extends AbstractBuilder<ScheduledService> {
         scheduled.setChannelType(channelType);
         scheduled.setStatus(status);
         scheduled.setLastServiceExecution(serviceExec);
+        scheduled.setDeliveryAttempts(deliveryAttempts);
+        scheduled.setScheduledServiceParameters(scheduledServiceParameters);
+        scheduled.setActorResponses(actorResponses);
         return scheduled;
+    }
+
+    @Override
+    public ScheduledService buildAsNew() {
+        return withId(null).build();
     }
 
     public ScheduledServiceBuilder withId(Integer id) {
@@ -83,6 +98,22 @@ public class ScheduledServiceBuilder extends AbstractBuilder<ScheduledService> {
 
     public ScheduledServiceBuilder withServiceExec(String serviceExec) {
         this.serviceExec = serviceExec;
+        return this;
+    }
+
+    public ScheduledServiceBuilder withDeliveryAttempts(List<DeliveryAttempt> deliveryAttempts) {
+        this.deliveryAttempts = deliveryAttempts;
+        return this;
+    }
+
+    public ScheduledServiceBuilder withScheduledServiceParameters(
+            List<ScheduledServiceParameter> scheduledServiceParameters) {
+        this.scheduledServiceParameters = scheduledServiceParameters;
+        return this;
+    }
+
+    public ScheduledServiceBuilder withActorResponses(List<ActorResponse> actorResponses) {
+        this.actorResponses = actorResponses;
         return this;
     }
 }

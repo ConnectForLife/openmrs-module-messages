@@ -10,6 +10,7 @@
 package org.openmrs.module.messages.builder;
 
 import java.util.Date;
+
 import org.openmrs.module.messages.api.model.DeliveryAttempt;
 import org.openmrs.module.messages.api.model.ScheduledService;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
@@ -44,6 +45,16 @@ public final class DeliveryAttemptBuilder extends AbstractBuilder<DeliveryAttemp
         deliveryAttempt.setServiceExecution(serviceExecution);
 
         return deliveryAttempt;
+    }
+
+    @Override
+    public DeliveryAttempt buildAsNew() {
+        return withId(null).build();
+    }
+
+    public DeliveryAttemptBuilder withId(Integer id) {
+        this.id = id;
+        return this;
     }
 
     public DeliveryAttemptBuilder withScheduledService(ScheduledService scheduledService) {

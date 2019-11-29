@@ -14,7 +14,6 @@ import org.openmrs.api.ConceptNameType;
 
 import java.util.Locale;
 
-@SuppressWarnings({ "PMD.ConstructorCallsOverridableMethod" })
 public class ConceptNameBuilder extends AbstractBuilder<ConceptName> {
     // This builder does not cover every ConceptName attribute.
     // Please, extend if needed.
@@ -25,7 +24,7 @@ public class ConceptNameBuilder extends AbstractBuilder<ConceptName> {
     private Boolean isLocalePreferred;
 
     public ConceptNameBuilder() {
-        this.id = 1;
+        this.id = getInstanceNumber();
         this.name = "History Of Present Illness";
         this.locale = Locale.ENGLISH;
         this.conceptNameType = ConceptNameType.FULLY_SPECIFIED;
@@ -41,6 +40,11 @@ public class ConceptNameBuilder extends AbstractBuilder<ConceptName> {
         result.setConceptNameType(conceptNameType);
         result.setLocalePreferred(isLocalePreferred);
         return result;
+    }
+
+    @Override
+    public ConceptName buildAsNew() {
+        return withId(null).build();
     }
 
     public ConceptNameBuilder withId(Integer id) {
