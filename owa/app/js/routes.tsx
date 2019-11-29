@@ -10,6 +10,7 @@ import React from 'react'
 import { Route, Switch } from 'react-router-dom';
 import App from './components/app'
 import AppManagement from './components/app-management';
+import PatientTemplate from './components/patient-template/routes';
 
 export default (store) => {
     // combine store and onEnter if you need to fire an action when going to a route. Example:
@@ -17,6 +18,7 @@ export default (store) => {
 
     return (
         <Switch>
+            <Route path="/messages/patient-template" component={PatientTemplate} />
             <Route path="/messages/manage" component={AppManagement} />
             <Route path="/messages" component={App} />
         </Switch>
