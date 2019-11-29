@@ -31,8 +31,8 @@
     <bean id="messages.MessagingDao" class="org.openmrs.module.messages.api.dao.impl.MessagingDaoImpl"/>
 
     <bean id="messages.templateService" class="org.openmrs.module.messages.api.service.impl.TemplateServiceImpl"/>
-    <bean id="messages.msgComponent" class="org.openmrs.module.messages.api.service.impl.MessageComponentImpl">
-        <property name="msgDao">
+    <bean id="messages.messagingService" class="org.openmrs.module.messages.api.service.impl.MessagingServiceImpl">
+        <property name="dao">
             <ref local="messages.MessagingDao"/>
         </property>
     </bean>

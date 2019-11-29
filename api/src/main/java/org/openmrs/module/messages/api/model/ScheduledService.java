@@ -1,5 +1,6 @@
 package org.openmrs.module.messages.api.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -48,13 +49,13 @@ public class ScheduledService extends AbstractBaseOpenmrsData {
     private ServiceStatus status;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "scheduledService", orphanRemoval = true)
-    private List<DeliveryAttempt> deliveryAttempts;
+    private List<DeliveryAttempt> deliveryAttempts = new ArrayList<>();
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "scheduledMessage", orphanRemoval = true)
-    private List<ScheduledServiceParameter> scheduledServiceParameters;
+    private List<ScheduledServiceParameter> scheduledServiceParameters = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "scheduledService", orphanRemoval = true)
-    private List<ActorResponse> actorResponses;
+    private List<ActorResponse> actorResponses = new ArrayList<>();
     
     @Column(name = "last_service_execution_id")
     private String lastServiceExecution;

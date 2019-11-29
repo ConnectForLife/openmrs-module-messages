@@ -30,7 +30,7 @@ public class DeliveryAttempt extends AbstractBaseOpenmrsData {
     private ServiceStatus status;
     
     @Column(name = "attempt_number", nullable = false)
-    private Integer attemptNumber;
+    private int attemptNumber;
     
     @Column(name = "service_execution_id", nullable = false)
     private String serviceExecution;
@@ -69,11 +69,11 @@ public class DeliveryAttempt extends AbstractBaseOpenmrsData {
         this.status = status;
     }
     
-    public Integer getAttemptNumber() {
+    public int getAttemptNumber() {
         return attemptNumber;
     }
     
-    public void setAttemptNumber(Integer attemptNumber) {
+    public void setAttemptNumber(int attemptNumber) {
         this.attemptNumber = attemptNumber;
     }
     
