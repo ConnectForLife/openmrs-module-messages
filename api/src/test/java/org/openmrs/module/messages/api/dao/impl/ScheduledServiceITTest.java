@@ -103,7 +103,7 @@ public class ScheduledServiceITTest extends BaseModuleContextSensitiveTest {
         templateFieldValue.setTemplateField(templateField);
         
         PatientTemplate patientTemplate = PatientTemplateHelper.createTestInstance();
-        patientTemplate.setTemplateFieldValue(templateFieldValue);
+        patientTemplate.setTemplate(savedTemplate);
         patientTemplateDao.saveOrUpdate(patientTemplate);
         PatientTemplate savedPatientTemplate = patientTemplateDao.getByUuid(patientTemplate.getUuid());
         

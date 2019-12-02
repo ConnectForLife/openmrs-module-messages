@@ -11,9 +11,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name = "messages.PatientTemplate")
 @Table(name = "messages_patient_template")
@@ -44,9 +47,12 @@ public class PatientTemplate extends AbstractBaseOpenmrsData {
     @JoinColumn(name = "patient_id", nullable = false)
     private Patient patient;
     
-    @ManyToOne(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "patientTemplate", orphanRemoval = true)
+    private List<TemplateFieldValue> templateFieldValues = new ArrayList<>();
+    
+    @ManyToOne
     @JoinColumn(name = "template_id", nullable = false)
-    private TemplateFieldValue templateFieldValue;
+    private Template template;
     
     @Override
     public Integer getId() {
@@ -90,12 +96,20 @@ public class PatientTemplate extends AbstractBaseOpenmrsData {
         this.patient = patient;
     }
     
-    public TemplateFieldValue getTemplateFieldValue() {
-        return templateFieldValue;
+    public Template getTemplate() {
+        return template;
     }
     
-    public void setTemplateFieldValue(TemplateFieldValue templateFieldValue) {
-        this.templateFieldValue = templateFieldValue;
+    public void setTemplate(Template template) {
+        this.template = template;
+    }
+    
+    public List<TemplateFieldValue> getTemplateFieldValues() {
+        return templateFieldValues;
+    }
+    
+    public void setTemplateFieldValues(List<TemplateFieldValue> templateFieldValues) {
+        this.templateFieldValues = templateFieldValues;
     }
     
     public String getServiceQueryType() {
@@ -105,7 +119,7 @@ public class PatientTemplate extends AbstractBaseOpenmrsData {
     public void setServiceQueryType(String serviceQueryType) {
         this.serviceQueryType = serviceQueryType;
     }
-
+    
     @Transient
     public Integer getServiceId() {
         return 0; // TODO

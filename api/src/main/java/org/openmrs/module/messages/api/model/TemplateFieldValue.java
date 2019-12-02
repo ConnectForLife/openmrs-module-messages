@@ -7,9 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.List;
 
 @Entity(name = "messages.TemplateFieldValue")
 @Table(name = "messages_template_field_value")
@@ -29,8 +27,9 @@ public class TemplateFieldValue extends AbstractBaseOpenmrsData {
     @JoinColumn(name = "template_field_id", nullable = false)
     private TemplateField templateField;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "templateFieldValue", orphanRemoval = true)
-    private List<PatientTemplate> patientTemplates;
+    @ManyToOne
+    @JoinColumn(name = "patient_template_id", nullable = false)
+    private PatientTemplate patientTemplate;
     
     @Override
     public Integer getId() {
@@ -58,12 +57,12 @@ public class TemplateFieldValue extends AbstractBaseOpenmrsData {
         this.templateField = templateField;
     }
     
-    public List<PatientTemplate> getPatientTemplates() {
-        return patientTemplates;
+    public PatientTemplate getPatientTemplate() {
+        return patientTemplate;
     }
     
-    public void setPatientTemplates(List<PatientTemplate> patientTemplates) {
-        this.patientTemplates = patientTemplates;
+    public void setPatientTemplate(PatientTemplate patientTemplate) {
+        this.patientTemplate = patientTemplate;
     }
 }
 

@@ -104,7 +104,7 @@ public class ExecutionEngineContextTest extends BaseModuleContextSensitiveTest {
 
         TemplateFieldValue templateFieldValue = new TemplateFieldValue();
         templateFieldValue.setTemplateField(templateField);
-        patientTemplate.setTemplateFieldValue(templateFieldValue);
+        patientTemplate.setTemplate(template);
 
         return patientTemplateService.saveOrUpdate(patientTemplate);
     }

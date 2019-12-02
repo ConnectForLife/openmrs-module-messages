@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity(name = "messages.Template")
@@ -27,7 +28,10 @@ public class Template extends AbstractBaseOpenmrsData {
     private String serviceQueryType;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "template", orphanRemoval = true)
-    private List<TemplateField> templates;
+    private List<TemplateField> templates = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "template")
+    private List<PatientTemplate> patientTemplates = new ArrayList<>();
     
     @Override
     public Integer getId() {
@@ -61,5 +65,13 @@ public class Template extends AbstractBaseOpenmrsData {
     
     public void setTemplates(List<TemplateField> templates) {
         this.templates = templates;
+    }
+    
+    public List<PatientTemplate> getPatientTemplates() {
+        return patientTemplates;
+    }
+
+    public void setPatientTemplates(List<PatientTemplate> patientTemplates) {
+        this.patientTemplates = patientTemplates;
     }
 }

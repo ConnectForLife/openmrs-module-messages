@@ -53,8 +53,8 @@ public class PatientTemplateITTest extends BaseModuleContextSensitiveTest {
                 is(patientTemplate.getServiceQueryType())));
         Assert.assertThat(savedPatientTemplate, hasProperty("patient",
                 is(patientTemplate.getPatient())));
-        Assert.assertThat(savedPatientTemplate, hasProperty("templateFieldValue",
-                is(patientTemplate.getTemplateFieldValue())));
+        Assert.assertThat(savedPatientTemplate, hasProperty("template",
+                is(patientTemplate.getTemplate())));
     }
     
     @Test
@@ -93,7 +93,8 @@ public class PatientTemplateITTest extends BaseModuleContextSensitiveTest {
         templateFieldValue.setTemplateField(templateField);
         
         patientTemplate = PatientTemplateHelper.createTestInstance();
-        patientTemplate.setTemplateFieldValue(templateFieldValue);
+        patientTemplate.setTemplate(savedTemplate);
+        
         patientTemplateDao.saveOrUpdate(patientTemplate);
     }
 }

@@ -114,15 +114,6 @@
             voided="false"
             uuid="5e776c48-3a0d-4585-b234-1673a71b91d6"/>
 
-    <messages_template_field_value
-            messages_template_field_value_id="1"
-            value="test value"
-            template_field_id="1"
-            creator="1"
-            date_created="2019-11-20 00:00:00.2"
-            voided="false"
-            uuid="0309e34d-f863-4f7b-9116-7d4e41b45671"/>
-
     <messages_patient_template
             messages_patient_template_id="1"
             actor_id="997"
@@ -135,6 +126,16 @@
             date_created="2019-11-20 00:00:00.1"
             voided="false"
             uuid="e8e2ea41-13ca-403a-b05d-9128d2b085cd"/>
+
+    <messages_template_field_value
+            messages_template_field_value_id="1"
+            value="test value"
+            patient_template_id="1"
+            template_field_id="1"
+            creator="1"
+            date_created="2019-11-20 00:00:00.2"
+            voided="false"
+            uuid="0309e34d-f863-4f7b-9116-7d4e41b45671"/>
 
     <messages_scheduled_service_group
             messages_scheduled_service_group_id="1"

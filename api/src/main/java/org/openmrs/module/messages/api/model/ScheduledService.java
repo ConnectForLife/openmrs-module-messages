@@ -60,7 +60,7 @@ public class ScheduledService extends AbstractBaseOpenmrsData {
 
     @Column(name = "last_service_execution_id")
     private String lastServiceExecution;
-
+    
     @Override
     public Integer getId() {
         return id;
@@ -114,7 +114,7 @@ public class ScheduledService extends AbstractBaseOpenmrsData {
     public String getLastServiceExecution() {
         return lastServiceExecution;
     }
-
+    
     public void setLastServiceExecution(String lastServiceExecution) {
         this.lastServiceExecution = lastServiceExecution;
     }
