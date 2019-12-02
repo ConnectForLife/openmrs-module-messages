@@ -10,7 +10,23 @@
             http://www.springframework.org/schema/context
             http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-    <context:component-scan base-package="org.openmrs.module.messages"/>
+
+    <bean name="messages.ServiceExecutor" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="target">
+            <bean class="org.openmrs.module.messages.api.execution.impl.ServiceExecutorImpl">
+                <constructor-arg ref="messages.ExecutionEngineManager"/>
+            </bean>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="preInterceptors">
+            <ref bean="serviceInterceptors"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
 
     <bean id="messages.configService" class="org.openmrs.module.messages.api.config.impl.ConfigServiceImpl"/>
 
@@ -29,7 +45,14 @@
     <bean id="messages.MessagingDao" class="org.openmrs.module.messages.api.dao.impl.MessagingDaoImpl"/>
     <bean id="messages.ActorResponseDao" class="org.openmrs.module.messages.api.dao.impl.ActorResponseDaoImpl"/>
 
-    <bean id="messages.templateService" class="org.openmrs.module.messages.api.service.impl.TemplateServiceImpl"/>
+    <bean id="messages.patientTemplateService"
+          class="org.openmrs.module.messages.api.service.impl.PatientTemplateServiceImpl">
+        <property name="dao" ref="messages.PatientTemplateDao"/>
+    </bean>
+
+    <bean id="messages.templateService" class="org.openmrs.module.messages.api.service.impl.TemplateServiceImpl">
+        <property name="dao" ref="messages.TemplateDao"/>
+    </bean>
 
     <bean id="messages.messagingService" class="org.openmrs.module.messages.api.service.impl.MessagingServiceImpl">
         <property name="dao">
@@ -41,5 +64,13 @@
         <property name="actorResponseDao">
             <ref local="messages.ActorResponseDao"/>
         </property>
+    </bean>
+
+    <bean name="messages.ExecutionEngineManager"
+          class="org.openmrs.module.messages.api.execution.impl.ExecutionEngineManager"/>
+
+    <bean name="messages.SqlExecutionEngine"
+          class="org.openmrs.module.messages.api.execution.impl.SqlExecutionEngine">
+        <constructor-arg ref="dbSessionFactory"/>
     </bean>
 </beans>

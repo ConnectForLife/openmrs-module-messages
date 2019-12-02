@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity(name = "messages.PatientTemplate")
 @Table(name = "messages_patient_template")
@@ -103,5 +104,10 @@ public class PatientTemplate extends AbstractBaseOpenmrsData {
     
     public void setServiceQueryType(String serviceQueryType) {
         this.serviceQueryType = serviceQueryType;
+    }
+
+    @Transient
+    public Integer getServiceId() {
+        return 0; // TODO
     }
 }
