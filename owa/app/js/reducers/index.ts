@@ -15,9 +15,6 @@ export interface IRootState {
   readonly openmrs: any;
 }
 
-const rootReducer = (history) => combineReducers({
-  router: connectRouter(history),
+export default combineReducers({
   openmrs
 });
-
-export default rootReducer;

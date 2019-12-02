@@ -11,14 +11,15 @@ import {
   createStore, applyMiddleware, compose,
 } from 'redux';
 import createSagaMiddleware from 'redux-saga';
-import promise from 'redux-promise-middleware';
+import promiseMiddleware from 'redux-promise-middleware';
 import thunkMiddleware from 'redux-thunk';
+// @ts-ignore
+import { createLogger } from 'redux-logger';
 import { createHashHistory } from 'history';
-import { routerMiddleware } from 'connected-react-router';
-import rootSaga from '../sagas';
-import loggerMiddleware from './logger-middleware';
-import DevTools from './devtools';
-import rootReducer from '../reducers';
+import { connectRouter, routerMiddleware } from 'connected-react-router';
+
+import reducers from '../reducers';
+import initSagas from '../sagas';
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -26,25 +27,29 @@ export const history = createHashHistory({
   basename: '/',
 });
 
-const defaultMiddlewares = [
+const middlewares = [
   routerMiddleware(history),
   thunkMiddleware,
-  promise,
+  promiseMiddleware(),
   sagaMiddleware
 ];
 
-const composedMiddlewares = () =>
-  process.env.NODE_ENV !== 'production'
-    ? compose(
-        applyMiddleware(...defaultMiddlewares, loggerMiddleware),
-        DevTools.instrument()
-      )
-    : compose(applyMiddleware(...defaultMiddlewares));
-
-const initialize = () => {
-  const store = createStore(rootReducer(history), composedMiddlewares());
-  sagaMiddleware.run(rootSaga)
-  return store;
+// tslint:disable-next-line
+// @ts-ignore
+if (process.env.NODE_ENV !== 'production') {
+  middlewares.push(createLogger({ collapsed: true }));
 }
 
-export default initialize;
+export default function () {
+  const store = createStore(
+    connectRouter(history)(reducers),
+    compose(
+      applyMiddleware(...middlewares),
+      // tslint:disable-next-line
+      // @ts-ignore
+      window.devToolsExtension && process.env.NODE_ENV !== 'production' ? window.devToolsExtension() : f => f,
+    ),
+  );
+  initSagas(sagaMiddleware);
+  return store;
+}

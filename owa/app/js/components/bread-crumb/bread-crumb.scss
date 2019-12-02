@@ -1,0 +1,60 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+
+ .breadcrumb {
+  clear: both;
+  font-size: 1em;
+  font-family: 'OpenSans';
+  display: block;
+  border-bottom: 1px solid white;
+  background: #f5f5f5;
+}
+
+.breadcrumb-item {
+  display: inline-block;
+  margin-left: 0.4em;
+  color: black;
+}
+
+.breadcrumb-last-item {
+  @extend .breadcrumb-item;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.breadcrumb-link-item {
+  @extend .breadcrumb-item;
+  text-decoration: underline;
+  text-decoration-color: black;
+}
+
+.breadcrumb-link-item:link {
+  color: black;
+  text-decoration: underline;
+  text-decoration-color: black;
+}
+
+.breadcrumb-link-item:visited {
+  color: black;
+  text-decoration: underline;
+  text-decoration-color: black;
+}
+
+.breadcrumb-link-item:hover {
+  color: #555;
+  text-decoration: underline;
+  text-decoration-color: black;
+}
+
+.breadcrumb-link-item:active {
+  color: black;
+  text-decoration: underline;
+  text-decoration-color: black;
+}

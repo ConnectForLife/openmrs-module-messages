@@ -1,8 +1,12 @@
 import { sagas as openmrs } from '@openmrs/react-components';
-import { all, fork } from "redux-saga/effects";
 
-export default function* () {
-  yield all([
-    fork(openmrs)
-  ]);
-}
+const sagas = {
+  openmrs
+};
+
+const initSagas = (sagaMiddleware) => {
+  // @ts-ignore
+  Object.values(sagas).forEach(sagaMiddleware.run.bind(sagaMiddleware));
+};
+
+export default initSagas;
