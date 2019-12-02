@@ -42,6 +42,12 @@
 				<artifactId>gson</artifactId>
 				<version>${gsonVersion}</version>
 			</dependency>
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>javax.servlet-api</artifactId>
+				<version>${javax.servlet.version}</version>
+				<scope>provided</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -247,5 +253,6 @@
 		<legacyVersion>1.5.0</legacyVersion>
 		<jacocoVersion>0.8.2</jacocoVersion>
 		<surefireVersion>2.17</surefireVersion>
+		<javax.servlet.version>3.0.1</javax.servlet.version>
 	</properties>
 </project>

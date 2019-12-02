@@ -38,7 +38,17 @@
 
     <bean id="messages.TemplateDao" class="org.openmrs.module.messages.api.dao.impl.TemplateDaoImpl"/>
 
-    <bean id="messages.PatientTemplateDao" class="org.openmrs.module.messages.api.dao.impl.PatientTemplateDaoImpl"/>
+    <bean id="messages.PatientTemplateDao" class="org.openmrs.module.messages.api.dao.impl.PatientTemplateDaoImpl">
+        <property name="dbSessionFactory">
+            <ref bean="dbSessionFactory"/>
+        </property>
+    </bean>
+
+    <bean id="messages.PatientTemplateService" class="org.openmrs.module.messages.api.service.impl.PatientTemplateServiceImpl">
+        <property name="patientTemplateDao">
+            <ref local="messages.PatientTemplateDao"/>
+        </property>
+    </bean>
 
     <bean id="messages.MessagingGroupDao" class="org.openmrs.module.messages.api.dao.impl.MessagingGroupDaoImpl"/>
 
@@ -72,5 +82,13 @@
     <bean name="messages.SqlExecutionEngine"
           class="org.openmrs.module.messages.api.execution.impl.SqlExecutionEngine">
         <constructor-arg ref="dbSessionFactory"/>
+    </bean>
+
+    <bean id="messages.UserMapper" class="org.openmrs.module.messages.api.mappers.UserMapper"/>
+
+    <bean id="messages.MessageDetailsMapper" class="org.openmrs.module.messages.api.mappers.MessageDetailsMapper">
+        <property name="userMapper">
+            <ref local="messages.UserMapper"/>
+        </property>
     </bean>
 </beans>
