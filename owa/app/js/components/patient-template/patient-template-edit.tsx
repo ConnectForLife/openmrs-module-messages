@@ -1,23 +1,19 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
-import _ from 'lodash';
+import { RouteQueryParams } from '../../shared/model/RouteQueryParams';
 
-interface IPatientTemplateEditProps extends RouteComponentProps<{ patientTemplateId: string }> {
-  patientId?: string
+interface IPatientTemplateEditProps extends RouteComponentProps<{ patientId: string }> {
+  isNew: boolean
 };
 
 interface IPatientTemplateEditState {
-  isNew: boolean;
 };
 
 export class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps, IPatientTemplateEditState> {
 
   constructor(props) {
     super(props);
-    this.state = {
-      isNew: !this.props.match.params || !this.props.match.params.patientTemplateId,
-    };
   }
 
   componentDidMount = () => {
@@ -29,25 +25,25 @@ export class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEdi
   }
 
   renderTemplateState = () => {
-    if (this.state.isNew) {
+    if (this.props.isNew) {
       return (
         <div>
           The patient template is new
-          for patient (patientId: {this.props.patientId})
+          for patient (patientId: {this.props.match.params.patientId})
         </div>
       );
     } else {
       return (
         <div>
           The patient template is not new
-          (id: {this.props.match.params.patientTemplateId})
+          (patientId: {this.props.match.params.patientId})
         </div>
       );
     }
   }
 
   render() {
-    const { isNew } = this.state;
+    const { isNew } = this.props;
     return (
       <div className="body-wrapper">
         <div className="panel-body">
