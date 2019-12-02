@@ -1,6 +1,6 @@
 package org.openmrs.module.messages.api.execution;
 
-import org.apache.commons.lang3.Range;
+import org.openmrs.module.messages.api.model.Range;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 
 import java.util.Date;

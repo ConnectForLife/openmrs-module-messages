@@ -1,6 +1,6 @@
 package org.openmrs.module.messages;
 
-import org.apache.commons.lang3.Range;
+import org.openmrs.module.messages.api.model.Range;
 import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Test;
 import org.openmrs.Patient;
@@ -51,7 +51,7 @@ public class ExecutionEngineContextTest extends BaseModuleContextSensitiveTest {
     @Test
     public void shouldSetupContext() throws ExecutionException {
         PatientTemplate patientTemplate = prepareData();
-        Range<Date> dateRange = Range.between(START_DATE, END_DATE);
+        Range<Date> dateRange = new Range<>(START_DATE, END_DATE);
 
         ServiceResultList serviceResultList = serviceExecutor.execute(patientTemplate, dateRange);
 

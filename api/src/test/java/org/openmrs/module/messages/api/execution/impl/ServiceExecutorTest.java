@@ -1,6 +1,6 @@
 package org.openmrs.module.messages.api.execution.impl;
 
-import org.apache.commons.lang3.Range;
+import org.openmrs.module.messages.api.model.Range;
 import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,7 +50,7 @@ public class ServiceExecutorTest {
     public void shouldExecuteService() throws ExecutionException {
         when(patientTemplate.getServiceQueryType()).thenReturn(ExecutionEngineManager.SQL_KEY);
         when(executionEngineManager.getEngine(ExecutionEngineManager.SQL_KEY)).thenReturn(executionEngine);
-        Range<Date> dateRange = Range.between(START_DATE, END_DATE);
+        Range<Date> dateRange = new Range<>(START_DATE, END_DATE);
 
         serviceExecutor.execute(patientTemplate, dateRange);
 

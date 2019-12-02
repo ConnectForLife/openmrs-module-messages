@@ -1,6 +1,6 @@
 package org.openmrs.module.messages.api.execution;
 
-import org.apache.commons.lang3.Range;
+import org.openmrs.module.messages.api.model.Range;
 import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,7 +52,7 @@ public class ServiceResultListTest {
         when(patient.getPatientId()).thenReturn(PATIENT_ID);
         when(actor.getPersonId()).thenReturn(ACTOR_ID);
         when(patientTemplate.getServiceId()).thenReturn(SERVICE_ID);
-        Range<Date> dateRange = Range.between(START_DATE, END_DATE);
+        Range<Date> dateRange = new Range<>(START_DATE, END_DATE);
 
         ServiceResultList resultList = ServiceResultList.createList(buildRows(), patientTemplate, dateRange);
 

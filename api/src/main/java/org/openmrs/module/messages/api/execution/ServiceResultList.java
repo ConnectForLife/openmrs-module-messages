@@ -1,6 +1,6 @@
 package org.openmrs.module.messages.api.execution;
 
-import org.apache.commons.lang3.Range;
+import org.openmrs.module.messages.api.model.Range;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 
 import java.io.Serializable;
@@ -32,8 +32,8 @@ public class ServiceResultList implements Serializable {
         resultList.setActorId(patientTemplate.getActor().getPersonId());
         resultList.setServiceId(patientTemplate.getServiceId());
 
-        resultList.setStartDate(dateRange.getMinimum());
-        resultList.setEndDate(dateRange.getMaximum());
+        resultList.setStartDate(dateRange.getStart());
+        resultList.setEndDate(dateRange.getEnd());
 
         return resultList;
     }

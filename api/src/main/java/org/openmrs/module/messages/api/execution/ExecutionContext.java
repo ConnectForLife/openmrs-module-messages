@@ -1,7 +1,7 @@
 package org.openmrs.module.messages.api.execution;
 
-import org.apache.commons.lang3.Range;
 import org.openmrs.module.messages.api.model.PatientTemplate;
+import org.openmrs.module.messages.api.model.Range;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -27,8 +27,8 @@ public class ExecutionContext {
         // TODO: after relation to template field value is fixed
         params = new HashMap<>();
 
-        params.put(START_DATE_PARAM, dateRange.getMinimum());
-        params.put(END_DATE_PARAM, dateRange.getMaximum());
+        params.put(START_DATE_PARAM, dateRange.getStart());
+        params.put(END_DATE_PARAM, dateRange.getEnd());
     }
 
     public Map<String, Object> getParams() {
