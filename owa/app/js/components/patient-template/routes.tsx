@@ -1,6 +1,6 @@
 import React from 'react'
 import { Route, Switch } from 'react-router-dom';
-import { PatientTemplateEdit } from './patient-template-edit';
+import PatientTemplateEdit from './patient-template-edit';
 
 const Routes = (props) => (
   <>
@@ -18,4 +18,3 @@ const Routes = (props) => (
 );
 
 export default Routes;
-

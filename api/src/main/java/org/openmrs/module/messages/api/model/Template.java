@@ -28,7 +28,7 @@ public class Template extends AbstractBaseOpenmrsData {
     private String serviceQueryType;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "template", orphanRemoval = true)
-    private List<TemplateField> templates = new ArrayList<>();
+    private List<TemplateField> templateFields = new ArrayList<>();
     
     @OneToMany(mappedBy = "template")
     private List<PatientTemplate> patientTemplates = new ArrayList<>();
@@ -59,12 +59,12 @@ public class Template extends AbstractBaseOpenmrsData {
         this.serviceQueryType = serviceQueryType;
     }
     
-    public List<TemplateField> getTemplates() {
-        return templates;
+    public List<TemplateField> getTemplateFields() {
+        return templateFields;
     }
     
-    public void setTemplates(List<TemplateField> templates) {
-        this.templates = templates;
+    public void setTemplateFields(List<TemplateField> templateFields) {
+        this.templateFields = templateFields;
     }
     
     public List<PatientTemplate> getPatientTemplates() {

@@ -1,27 +1,28 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
-import { RouteQueryParams } from '../../shared/model/RouteQueryParams';
+import { getTemplates, getPatientTemplates } from '../../reducers/patient-template.reducer'
+import { IRootState } from '../../reducers';
 
-interface IPatientTemplateEditProps extends RouteComponentProps<{ patientId: string }> {
+interface IPatientTemplateEditProps extends DispatchProps, StateProps, RouteComponentProps<{ patientId: string }> {
   isNew: boolean
 };
 
 interface IPatientTemplateEditState {
 };
 
-export class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps, IPatientTemplateEditState> {
+class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps, IPatientTemplateEditState> {
 
-  constructor(props) {
+  constructor(props: IPatientTemplateEditProps) {
     super(props);
   }
 
-  componentDidMount = () => {
-    //remove if not needed
+  componentDidMount() {
+    this.props.getTemplates();
+    this.props.getPatientTemplates(parseInt(this.props.match.params.patientId));
   }
 
-  componentWillUpdate = (nextProps: IPatientTemplateEditProps, nextState: IPatientTemplateEditState) => {
-    //remove if not needed
+  componentWillUpdate(nextProps: IPatientTemplateEditProps, nextState: IPatientTemplateEditState) {
   }
 
   renderTemplateState = () => {
@@ -55,16 +56,18 @@ export class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEdi
   }
 }
 
-// export const mapStateToProps = state => ({
-// });
+const mapStateToProps = ({ patientTemplate }: IRootState) => ({
+});
 
-// const mapDispatchToProps = ({
-// });
+const mapDispatchToProps = ({
+  getTemplates,
+  getPatientTemplates
+});
 
-// type StateProps = ReturnType<typeof mapStateToProps>;
-// type DispatchProps = typeof mapDispatchToProps;
+type StateProps = ReturnType<typeof mapStateToProps>;
+type DispatchProps = typeof mapDispatchToProps;
 
-// export default connect(
-//   mapStateToProps,
-//   mapDispatchToProps
-// )(PatientTemplateEdit);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PatientTemplateEdit);
