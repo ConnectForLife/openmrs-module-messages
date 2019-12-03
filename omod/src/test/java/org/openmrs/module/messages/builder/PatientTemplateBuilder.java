@@ -4,7 +4,7 @@ import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.Relationship;
 import org.openmrs.module.messages.api.model.PatientTemplate;
-import org.openmrs.module.messages.api.model.TemplateFieldValue;
+import org.openmrs.module.messages.api.model.Template;
 
 public final class PatientTemplateBuilder extends AbstractBuilder<PatientTemplate> {
 
@@ -14,7 +14,7 @@ public final class PatientTemplateBuilder extends AbstractBuilder<PatientTemplat
     private String serviceQuery;
     private String serviceQueryType;
     private Patient patient;
-    private TemplateFieldValue templateFieldValue;
+    private Template template;
 
     public PatientTemplateBuilder() {
         super();
@@ -24,20 +24,20 @@ public final class PatientTemplateBuilder extends AbstractBuilder<PatientTemplat
         serviceQuery = "SELECT * FROM SERVICE";
         serviceQueryType = "SQL";
         patient = new Patient(new Person(1)); //TODO:CFLM-248:Consider adding Patient/Person builder
-        templateFieldValue = new TemplateFieldValueBuilder().build();
+        template = new TemplateBuilder().build();
     }
 
     @Override
     public PatientTemplate build() {
-        PatientTemplate template = new PatientTemplate();
-        template.setId(id);
-        template.setActor(actor);
-        template.setActorType(actorType);
-        template.setServiceQuery(serviceQuery);
-        template.setServiceQueryType(serviceQueryType);
-        template.setPatient(patient);
-        template.setTemplateFieldValue(templateFieldValue);
-        return template;
+        PatientTemplate patientTemplate = new PatientTemplate();
+        patientTemplate.setId(id);
+        patientTemplate.setActor(actor);
+        patientTemplate.setActorType(actorType);
+        patientTemplate.setServiceQuery(serviceQuery);
+        patientTemplate.setServiceQueryType(serviceQueryType);
+        patientTemplate.setPatient(patient);
+        patientTemplate.setTemplate(template);
+        return patientTemplate;
     }
 
     @Override
@@ -75,8 +75,9 @@ public final class PatientTemplateBuilder extends AbstractBuilder<PatientTemplat
         return this;
     }
 
-    public PatientTemplateBuilder withTemplateFieldValue(TemplateFieldValue templateFieldValue) {
-        this.templateFieldValue = templateFieldValue;
+    public PatientTemplateBuilder withTemplate(Template template) {
+        this.template = template;
         return this;
     }
+
 }

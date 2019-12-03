@@ -44,12 +44,6 @@
         </property>
     </bean>
 
-    <bean id="messages.PatientTemplateService" class="org.openmrs.module.messages.api.service.impl.PatientTemplateServiceImpl">
-        <property name="patientTemplateDao">
-            <ref local="messages.PatientTemplateDao"/>
-        </property>
-    </bean>
-
     <bean id="messages.MessagingGroupDao" class="org.openmrs.module.messages.api.dao.impl.MessagingGroupDaoImpl"/>
 
     <bean id="messages.MessagingDao" class="org.openmrs.module.messages.api.dao.impl.MessagingDaoImpl"/>

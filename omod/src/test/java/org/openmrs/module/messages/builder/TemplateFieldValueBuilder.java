@@ -4,22 +4,19 @@ import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.TemplateField;
 import org.openmrs.module.messages.api.model.TemplateFieldValue;
 
-import java.util.Collections;
-import java.util.List;
-
 public final class TemplateFieldValueBuilder extends AbstractBuilder<TemplateFieldValue> {
 
     private Integer id;
     private String value;
     private TemplateField templateField;
-    private List<PatientTemplate> patientTemplates;
+    private PatientTemplate patientTemplate;
 
     public TemplateFieldValueBuilder() {
         super();
         id = getInstanceNumber();
         value = "test value";
         templateField = new TemplateFieldBuilder().build();
-        patientTemplates = Collections.emptyList();
+        patientTemplate = new PatientTemplateBuilder().build();
 
     }
 
@@ -29,7 +26,7 @@ public final class TemplateFieldValueBuilder extends AbstractBuilder<TemplateFie
         templateFieldValue.setId(id);
         templateFieldValue.setValue(value);
         templateFieldValue.setTemplateField(templateField);
-        templateFieldValue.setPatientTemplates(patientTemplates);
+        templateFieldValue.setPatientTemplate(patientTemplate);
         return templateFieldValue;
     }
 
@@ -53,8 +50,8 @@ public final class TemplateFieldValueBuilder extends AbstractBuilder<TemplateFie
         return this;
     }
 
-    public TemplateFieldValueBuilder withPatientTemplates(List<PatientTemplate> patientTemplates) {
-        this.patientTemplates = patientTemplates;
+    public TemplateFieldValueBuilder withPatientTemplate(PatientTemplate patientTemplate) {
+        this.patientTemplate = patientTemplate;
         return this;
     }
 }

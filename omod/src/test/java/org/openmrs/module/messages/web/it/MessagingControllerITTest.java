@@ -14,12 +14,8 @@ import org.openmrs.module.messages.api.dto.MessageDTO;
 import org.openmrs.module.messages.api.dto.MessageDetailsDTO;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.Template;
-import org.openmrs.module.messages.api.model.TemplateField;
-import org.openmrs.module.messages.api.model.TemplateFieldValue;
 import org.openmrs.module.messages.builder.PatientTemplateBuilder;
 import org.openmrs.module.messages.builder.TemplateBuilder;
-import org.openmrs.module.messages.builder.TemplateFieldBuilder;
-import org.openmrs.module.messages.builder.TemplateFieldValueBuilder;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -192,27 +188,15 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
                 .withPatient(patient)
                 .withServiceQuery(query)
                 .withServiceQueryType(queryType)
-                .withTemplateFieldValue(createTemplateFieldValue())
+                .withTemplate(createTemplate())
                 .buildAsNew());
     }
 
-    private TemplateFieldValue createTemplateFieldValue() {
+    private Template createTemplate() {
         Template template = new TemplateBuilder()
                 .withServiceQuery("Query")
                 .withServiceQueryType("Query type")
                 .buildAsNew();
-        templateDao.saveOrUpdate(template);
-
-        TemplateField templateField = new TemplateFieldBuilder()
-                .withMandatory(false)
-                .withName("tempField")
-                .withTemplate(template)
-                .withValueConcept(null)
-                .buildAsNew();
-
-        return new TemplateFieldValueBuilder()
-                .withValue("VAL")
-                .withTemplateField(templateField)
-                .buildAsNew();
+        return templateDao.saveOrUpdate(template);
     }
 }

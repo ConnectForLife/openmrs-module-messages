@@ -1,4 +1,4 @@
-package org.openmrs.module.messages.domain;
+package org.openmrs.module.messages.domain.criteria;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
@@ -6,9 +6,9 @@ import org.openmrs.Patient;
 
 import java.io.Serializable;
 
-public class PatientTemplateCriteria implements Serializable {
+public class PatientTemplateCriteria extends BaseCriteria implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -486120008842837370L;
 
     private Patient patient;
 
@@ -20,6 +20,7 @@ public class PatientTemplateCriteria implements Serializable {
         return patient.getPatientId();
     }
 
+    @Override
     public void loadHibernateCriteria(Criteria hibernateCriteria) {
         hibernateCriteria.add(Restrictions.eq("patient", patient));
     }

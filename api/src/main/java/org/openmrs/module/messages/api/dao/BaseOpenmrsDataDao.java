@@ -7,8 +7,12 @@ import org.openmrs.api.db.hibernate.DbSession;
 import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.api.db.hibernate.HibernateOpenmrsDataDAO;
 import org.openmrs.module.messages.domain.PagingInfo;
+import org.openmrs.module.messages.domain.criteria.BaseCriteria;
 
-public abstract class BaseOpenmrsDataDao<T extends BaseOpenmrsData> extends HibernateOpenmrsDataDAO<T> {
+import java.util.List;
+
+public abstract class BaseOpenmrsDataDao<T extends BaseOpenmrsData> extends HibernateOpenmrsDataDAO<T>
+        implements BaseOpenmrsCriteriaDao<T> {
 
     private DbSessionFactory sessionFactory;
 
@@ -20,7 +24,15 @@ public abstract class BaseOpenmrsDataDao<T extends BaseOpenmrsData> extends Hibe
         this.sessionFactory = sessionFactory;
     }
 
-    protected Criteria createCriteria() {
+    public List<T> findAllByCriteria(BaseCriteria criteria, PagingInfo paging) {
+        Criteria hibernateCriteria = createCriteria();
+        criteria.loadHibernateCriteria(hibernateCriteria);
+        loadPagingTotal(paging, hibernateCriteria);
+        createPagingCriteria(paging, hibernateCriteria);
+        return hibernateCriteria.list();
+    }
+
+    private Criteria createCriteria() {
         return getSession().createCriteria(this.mappedClass);
     }
 
@@ -29,7 +41,7 @@ public abstract class BaseOpenmrsDataDao<T extends BaseOpenmrsData> extends Hibe
      * @param pagingInfo The {@link PagingInfo} object to load with the record count.
      * @param criteria The {@link Criteria} to execute against the hibernate data source or {@code null} to create a new one.
      */
-    protected void loadPagingTotal(PagingInfo pagingInfo, Criteria criteria) {
+    private void loadPagingTotal(PagingInfo pagingInfo, Criteria criteria) {
         if (pagingInfo != null && pagingInfo.getPage() > 0 && pagingInfo.getPageSize() > 0
                 && pagingInfo.shouldLoadRecordCount()) {
             Long count = countRows(criteria);

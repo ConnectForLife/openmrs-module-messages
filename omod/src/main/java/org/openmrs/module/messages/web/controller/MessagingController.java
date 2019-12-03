@@ -6,7 +6,7 @@ import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.service.PatientTemplateService;
 import org.openmrs.module.messages.api.util.GridSettings;
 import org.openmrs.module.messages.domain.PagingInfo;
-import org.openmrs.module.messages.domain.PatientTemplateCriteria;
+import org.openmrs.module.messages.domain.criteria.PatientTemplateCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -22,7 +22,7 @@ import java.util.List;
 public class MessagingController {
 
     @Autowired
-    @Qualifier("messages.PatientTemplateService")
+    @Qualifier("messages.patientTemplateService")
     private PatientTemplateService patientTemplateService;
 
     @Autowired

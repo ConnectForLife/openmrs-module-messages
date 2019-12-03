@@ -2,27 +2,30 @@ package org.openmrs.module.messages.api.service.impl;
 
 import org.openmrs.BaseOpenmrsData;
 import org.openmrs.api.APIException;
-import org.openmrs.api.db.OpenmrsDataDAO;
 import org.openmrs.api.impl.BaseOpenmrsService;
-import org.openmrs.module.messages.api.service.OpenmrsDataService;
+import org.openmrs.module.messages.api.dao.BaseOpenmrsCriteriaDao;
+import org.openmrs.module.messages.api.service.BaseOpenmrsCriteriaDataService;
+import org.openmrs.module.messages.domain.PagingInfo;
+import org.openmrs.module.messages.domain.criteria.BaseCriteria;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.util.List;
 
 @Transactional
-public class BaseOpenmrsDataService<T extends BaseOpenmrsData> extends BaseOpenmrsService implements OpenmrsDataService<T> {
+public class BaseOpenmrsDataService<T extends BaseOpenmrsData> extends BaseOpenmrsService
+        implements BaseOpenmrsCriteriaDataService<T> {
 
-    private OpenmrsDataDAO<T> dao;
+    private BaseOpenmrsCriteriaDao<T> dao;
 
     public BaseOpenmrsDataService() {
     }
 
-    public BaseOpenmrsDataService(OpenmrsDataDAO<T> dao) {
+    public BaseOpenmrsDataService(BaseOpenmrsCriteriaDao<T> dao) {
         this.dao = dao;
     }
 
-    public void setDao(OpenmrsDataDAO<T> dao) {
+    public void setDao(BaseOpenmrsCriteriaDao<T> dao) {
         this.dao = dao;
     }
 
@@ -61,5 +64,9 @@ public class BaseOpenmrsDataService<T extends BaseOpenmrsData> extends BaseOpenm
     @Override
     public int getAllCount(boolean includeVoided) throws APIException {
         return dao.getAllCount(includeVoided);
+    }
+
+    public List<T> findAllByCriteria(BaseCriteria criteria, PagingInfo paging) {
+        return dao.findAllByCriteria(criteria, paging);
     }
 }

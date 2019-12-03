@@ -29,7 +29,7 @@ public class MessagingServiceTest extends BaseTest {
     private ArgumentCaptor<ScheduledService> captor;
 
     @Mock
-    private MessagingDao messagingDao;
+    private MessagingDao dao;
 
     @InjectMocks
     private MessagingServiceImpl messagingService;
@@ -44,11 +44,11 @@ public class MessagingServiceTest extends BaseTest {
         final String serviceExecution = "321";
         final Date timestamp = new Date();
 
-        when(messagingDao.getById(eq(scheduledService.getId()))).thenReturn(scheduledService);
+        when(dao.getById(eq(scheduledService.getId()))).thenReturn(scheduledService);
 
         messagingService.registerAttempt(scheduledService.getId(), newStatus, timestamp, serviceExecution);
 
-        verify(messagingDao).saveOrUpdate(captor.capture());
+        verify(dao).saveOrUpdate(captor.capture());
 
         ScheduledService actualScheduledService = captor.getValue();
         DeliveryAttempt actualAttempt = actualScheduledService.getDeliveryAttempts().get(0);
@@ -77,11 +77,11 @@ public class MessagingServiceTest extends BaseTest {
         final String serviceExecution = "321";
         final Date timestamp = new Date();
 
-        when(messagingDao.getById(eq(scheduledService.getId()))).thenReturn(scheduledService);
+        when(dao.getById(eq(scheduledService.getId()))).thenReturn(scheduledService);
 
         messagingService.registerAttempt(scheduledService.getId(), newStatus, timestamp, serviceExecution);
 
-        verify(messagingDao).saveOrUpdate(captor.capture());
+        verify(dao).saveOrUpdate(captor.capture());
         ScheduledService actualScheduledService = captor.getValue();
         DeliveryAttempt actualAttempt = actualScheduledService.getDeliveryAttempts().get(1);
 

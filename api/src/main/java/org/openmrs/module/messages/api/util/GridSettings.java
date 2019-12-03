@@ -2,7 +2,7 @@ package org.openmrs.module.messages.api.util;
 
 import org.openmrs.Patient;
 import org.openmrs.module.messages.domain.PagingInfo;
-import org.openmrs.module.messages.domain.PatientTemplateCriteria;
+import org.openmrs.module.messages.domain.criteria.PatientTemplateCriteria;
 
 /**
  * Models the audit log filter settings UI
