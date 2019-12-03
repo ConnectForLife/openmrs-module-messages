@@ -15,6 +15,6 @@ export interface IRootState {
   readonly openmrs: any;
 }
 
-export default combineReducers({
+export default combineReducers<IRootState>({
   openmrs
-});
+} as IRootState);
