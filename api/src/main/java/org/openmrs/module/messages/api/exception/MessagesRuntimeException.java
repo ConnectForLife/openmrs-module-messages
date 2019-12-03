@@ -9,4 +9,8 @@ public class MessagesRuntimeException extends RuntimeException {
     public MessagesRuntimeException(String message, APIException exception) {
         super(message, exception);
     }
+
+    public MessagesRuntimeException(Throwable throwable) {
+        super(throwable);
+    }
 }

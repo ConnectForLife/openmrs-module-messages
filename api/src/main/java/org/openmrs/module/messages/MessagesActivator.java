@@ -15,17 +15,25 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.BaseModuleActivator;
+import org.openmrs.module.DaemonToken;
+import org.openmrs.module.DaemonTokenAware;
 import org.openmrs.module.Module;
 import org.openmrs.module.ModuleFactory;
+import org.openmrs.module.messages.api.constants.MessagesConstants;
 import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
+import org.openmrs.module.messages.api.scheduler.job.JobRepeatInterval;
+import org.openmrs.module.messages.api.scheduler.job.MessageDeliveriesJobDefinition;
+import org.openmrs.module.messages.api.service.MessagesSchedulerService;
 import org.openmrs.module.messages.api.util.ConfigConstants;
 
 /**
  * This class contains the logic that is run every time this module is either started or shutdown
  */
-public class MessagesActivator extends BaseModuleActivator {
+public class MessagesActivator extends BaseModuleActivator implements DaemonTokenAware {
 
     private static final Log LOGGER = LogFactory.getLog(MessagesActivator.class);
+
+    private MessagesSchedulerService schedulerService;
 
     /**
      * @see #started()
@@ -35,8 +43,10 @@ public class MessagesActivator extends BaseModuleActivator {
         LOGGER.info("Started Messages");
         try {
             createGlobalSettingIfNotExists(ConfigConstants.ACTOR_TYPES_KEY, ConfigConstants.ACTOR_TYPES_KEY_DEFAULT_VALUE);
+            scheduleMessageDeliveries();
         } catch (APIException e) {
             safeShutdownModule();
+            LOGGER.error("Failed to setup the required modules");
             throw new MessagesRuntimeException("Failed to setup the required modules", e);
         }
     }
@@ -54,6 +64,23 @@ public class MessagesActivator extends BaseModuleActivator {
     @Override
     public void stopped() {
         LOGGER.info("Stopped Messages");
+    }
+
+    @Override
+    public void setDaemonToken(DaemonToken token) {
+        getSchedulerService().setDaemonToken(token);
+    }
+
+    private void scheduleMessageDeliveries() {
+        getSchedulerService().rescheduleOrCreateNewTask(new MessageDeliveriesJobDefinition(), JobRepeatInterval.DAILY);
+    }
+
+    private MessagesSchedulerService getSchedulerService() {
+        if (schedulerService == null) {
+            schedulerService = Context.getRegisteredComponent(
+                    MessagesConstants.SCHEDULER_SERVICE, MessagesSchedulerService.class);
+        }
+        return schedulerService;
     }
 
     private void createGlobalSettingIfNotExists(String key, String value) {
