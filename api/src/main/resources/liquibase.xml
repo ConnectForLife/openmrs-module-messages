@@ -524,6 +524,7 @@
                 <constraints nullable="false" />
             </column>
         </addColumn>
+        <dropForeignKeyConstraint constraintName="messages_template_field_value_concept_fk" baseTableName="messages_template_field"/>
         <dropColumn tableName="messages_template_field" columnName="value_concept"/>
     </changeSet>
 
