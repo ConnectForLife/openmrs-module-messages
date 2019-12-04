@@ -1,8 +1,7 @@
 package org.openmrs.module.messages.api.helper;
 
-import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.api.model.TemplateField;
-import org.openmrs.module.messages.api.util.TestConstants;
+import org.openmrs.module.messages.api.model.TemplateFieldType;
 
 public final class TemplateFieldHelper {
     
@@ -14,8 +13,8 @@ public final class TemplateFieldHelper {
         templateField.setName("example name");
         templateField.setMandatory(true);
         templateField.setDefaultValue("example default value");
-        templateField.setValueConcept(Context.getConceptService().getConcept(TestConstants.TEST_CONCEPT_ID));
-        
+        templateField.setTemplateFieldType(TemplateFieldType.SERVICE_TYPE);
+
         return templateField;
     }
     

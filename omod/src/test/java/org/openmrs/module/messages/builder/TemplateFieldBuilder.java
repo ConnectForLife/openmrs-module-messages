@@ -1,8 +1,8 @@
 package org.openmrs.module.messages.builder;
 
-import org.openmrs.Concept;
 import org.openmrs.module.messages.api.model.Template;
 import org.openmrs.module.messages.api.model.TemplateField;
+import org.openmrs.module.messages.api.model.TemplateFieldType;
 
 public final class TemplateFieldBuilder extends AbstractBuilder<TemplateField> {
 
@@ -11,7 +11,7 @@ public final class TemplateFieldBuilder extends AbstractBuilder<TemplateField> {
     private Boolean mandatory;
     private String defaultValue;
     private Template template;
-    private Concept valueConcept;
+    private TemplateFieldType templateFieldType;
 
     public TemplateFieldBuilder() {
         super();
@@ -20,7 +20,7 @@ public final class TemplateFieldBuilder extends AbstractBuilder<TemplateField> {
         mandatory = false;
         defaultValue = "default value";
         template = new TemplateBuilder().build();
-        valueConcept = new Concept(1); //TODO:CFLM-248:Consider adding concept builder
+        templateFieldType = TemplateFieldType.SERVICE_TYPE;
     }
 
     @Override
@@ -31,7 +31,7 @@ public final class TemplateFieldBuilder extends AbstractBuilder<TemplateField> {
         templateField.setMandatory(mandatory);
         templateField.setDefaultValue(defaultValue);
         templateField.setTemplate(template);
-        templateField.setValueConcept(valueConcept);
+        templateField.setTemplateFieldType(templateFieldType);
         return templateField;
     }
 
@@ -65,8 +65,8 @@ public final class TemplateFieldBuilder extends AbstractBuilder<TemplateField> {
         return this;
     }
 
-    public TemplateFieldBuilder withValueConcept(Concept valueConcept) {
-        this.valueConcept = valueConcept;
+    public TemplateFieldBuilder withTemplateFieldType(TemplateFieldType templateFieldType) {
+        this.templateFieldType = templateFieldType;
         return this;
     }
 }

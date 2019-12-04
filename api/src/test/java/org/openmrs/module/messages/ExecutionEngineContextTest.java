@@ -16,6 +16,7 @@ import org.openmrs.module.messages.api.execution.ServiceResultList;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.Template;
 import org.openmrs.module.messages.api.model.TemplateField;
+import org.openmrs.module.messages.api.model.TemplateFieldType;
 import org.openmrs.module.messages.api.model.TemplateFieldValue;
 import org.openmrs.module.messages.api.service.PatientTemplateService;
 import org.openmrs.module.messages.api.service.TemplateService;
@@ -101,6 +102,7 @@ public class ExecutionEngineContextTest extends BaseModuleContextSensitiveTest {
         templateField.setTemplate(template);
         templateField.setMandatory(false);
         templateField.setName("This relation is wrong");
+        templateField.setTemplateFieldType(TemplateFieldType.SERVICE_TYPE);
 
         TemplateFieldValue templateFieldValue = new TemplateFieldValue();
         templateFieldValue.setTemplateField(templateField);

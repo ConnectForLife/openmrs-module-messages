@@ -36,7 +36,11 @@
         </property>
     </bean>
 
-    <bean id="messages.TemplateDao" class="org.openmrs.module.messages.api.dao.impl.TemplateDaoImpl"/>
+    <bean id="messages.TemplateDao" class="org.openmrs.module.messages.api.dao.impl.TemplateDaoImpl">
+        <property name="dbSessionFactory">
+            <ref bean="dbSessionFactory"/>
+        </property>
+    </bean>
 
     <bean id="messages.PatientTemplateDao" class="org.openmrs.module.messages.api.dao.impl.PatientTemplateDaoImpl">
         <property name="dbSessionFactory">
@@ -55,7 +59,9 @@
     </bean>
 
     <bean id="messages.templateService" class="org.openmrs.module.messages.api.service.impl.TemplateServiceImpl">
-        <property name="dao" ref="messages.TemplateDao"/>
+        <property name="dao">
+            <ref local="messages.TemplateDao" />
+        </property>
     </bean>
 
     <bean id="messages.messagingService" class="org.openmrs.module.messages.api.service.impl.MessagingServiceImpl">
@@ -100,6 +106,14 @@
         </property>
         <property name="transactionAttributeSource">
             <ref bean="transactionAttributeSource" />
+        </property>
+    </bean>
+
+    <bean id="messages.templateFieldMapper" class="org.openmrs.module.messages.api.mappers.TemplateFieldMapper"/>
+
+    <bean id="messages.templateMapper" class="org.openmrs.module.messages.api.mappers.TemplateMapper">
+        <property name="templateFieldMapper">
+            <ref local="messages.templateFieldMapper" />
         </property>
     </bean>
 </beans>

@@ -216,6 +216,38 @@
 				</plugins>
 			</build>
 		</profile>
+		<profile>
+			<id>dev</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-checkstyle-plugin</artifactId>
+						<version>${checkStylePluginVersion}</version>
+						<configuration>
+							<configLocation>checkstyle.xml</configLocation>
+						</configuration>
+						<executions>
+							<execution>
+								<id>verify-checkstyle</id>
+								<phase>none</phase>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-pmd-plugin</artifactId>
+						<version>${pmdPluginVersion}</version>
+						<executions>
+							<execution>
+								<id>validate</id>
+								<phase>none</phase>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
 
 	<repositories>

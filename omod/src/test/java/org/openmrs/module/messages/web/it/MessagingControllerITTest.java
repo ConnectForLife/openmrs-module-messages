@@ -32,24 +32,22 @@ import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.openmrs.module.messages.Constant.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebAppConfiguration
 public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest {
 
-    private static final String PAGINATION_JSON = "{" +
-            "\"rows\": %s," +
-            "\"page\": %s," +
-            "\"patientId\": %s" +
-        "}";
-
     private static final String QUERY_1 = "query1";
     private static final String QUERY_TYPE_1 = "query_type1";
     private static final String QUERY_2 = "query2";
     private static final String QUERY_TYPE_2 = "query_type2";
     private static final int THREE_ROWS = 3;
+    private static final int FIRST_PAGE = 1;
+    private static final int SECOND_PAGE = 2;
+    private static final String ROWS_PARAM = "rows";
+    private static final String PAGE_PARAM = "page";
+    private static final String PATIENT_ID_PARAM = "patientId";
 
     private MockMvc mockMvc;
 
@@ -95,8 +93,9 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
         patientWithId.setId(patient1.getId());
 
         MvcResult result = mockMvc.perform(get("/messages/details")
-                .contentType(APPLICATION_JSON_UTF8)
-                .content(String.format(PAGINATION_JSON, THREE_ROWS, 1, patient1.getId())))
+                .param(ROWS_PARAM, String.valueOf(THREE_ROWS))
+                .param(PAGE_PARAM, String.valueOf(FIRST_PAGE))
+                .param(PATIENT_ID_PARAM, patient1.getId().toString()))
                 .andExpect(status().is(HttpStatus.OK.value())).andReturn();
 
         assertThat(result, is(notNullValue()));
@@ -145,8 +144,9 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
 
         // Fetch page 1
         MvcResult result = mockMvc.perform(get("/messages/details")
-                .contentType(APPLICATION_JSON_UTF8)
-                .content(String.format(PAGINATION_JSON, THREE_ROWS, 1, patient1.getId())))
+                .param(ROWS_PARAM, String.valueOf(THREE_ROWS))
+                .param(PAGE_PARAM, String.valueOf(FIRST_PAGE))
+                .param(PATIENT_ID_PARAM, patient1.getId().toString()))
                 .andExpect(status().is(HttpStatus.OK.value())).andReturn();
 
         assertThat(result, is(notNullValue()));
@@ -155,8 +155,9 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
 
         // Fetch page 2
         result = mockMvc.perform(get("/messages/details")
-                .contentType(APPLICATION_JSON_UTF8)
-                .content(String.format(PAGINATION_JSON, THREE_ROWS, 2, patient1.getId())))
+                .param(ROWS_PARAM, String.valueOf(THREE_ROWS))
+                .param(PAGE_PARAM, String.valueOf(SECOND_PAGE))
+                .param(PATIENT_ID_PARAM, patient1.getId().toString()))
                 .andExpect(status().is(HttpStatus.OK.value())).andReturn();
 
         assertThat(result, is(notNullValue()));

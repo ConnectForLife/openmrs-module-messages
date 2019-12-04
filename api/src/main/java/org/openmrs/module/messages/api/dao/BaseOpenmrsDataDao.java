@@ -26,7 +26,10 @@ public abstract class BaseOpenmrsDataDao<T extends BaseOpenmrsData> extends Hibe
 
     public List<T> findAllByCriteria(BaseCriteria criteria, PagingInfo paging) {
         Criteria hibernateCriteria = createCriteria();
-        criteria.loadHibernateCriteria(hibernateCriteria);
+        if (criteria != null) {
+            criteria.initHibernateCriteria(hibernateCriteria);
+            criteria.loadHibernateCriteria(hibernateCriteria);
+        }
         loadPagingTotal(paging, hibernateCriteria);
         createPagingCriteria(paging, hibernateCriteria);
         return hibernateCriteria.list();

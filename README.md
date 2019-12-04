@@ -95,6 +95,16 @@ You can build .omod file with skip tests:
 
 It creates *.omod file in omod/target directory.
 
+**Note:**
+Building the module takes some time because during module building are executed static code analysis tools and the UI is building using the npm tool. If you want to build the module faster (during the developing) then you can use one (or both) of following maven profiles:
+* no-npm - disable building the module UI (Note: the UI have to be at least one's time built before and the built zip file won't be deleted during maven 'clean' phase). Example of usage: `mvn clean install -P no-npm`
+* dev - disable executing of static code analysis tools. Example of usage: `mvn clean install -P dev`
+
+You can use both profiles in the same time. Example of usage:
+`mvn clean install -P dev,no-npm`
+
+Additionally if you want to skip executing the tests you can add `-DskipTests` parameter.
+
 2.Use the OpenMRS Administration > Manage Modules screen to upload and install the .omod file.
 
 If uploads are not allowed from the web (changable via a runtime property), you can drop the omod

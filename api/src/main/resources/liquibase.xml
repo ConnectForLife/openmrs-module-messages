@@ -514,4 +514,17 @@
                                  referencedColumnNames="messages_scheduled_service_id" />
     </changeSet>
 
+    <changeSet id="messages-15" author="Arkadiusz Lalo">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="messages_template_field"/>
+        </preConditions>
+        <comment>Added templateFieldType column</comment>
+        <addColumn tableName="messages_template_field">
+            <column name="template_field_type" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+        <dropColumn tableName="messages_template_field" columnName="value_concept"/>
+    </changeSet>
+
 </databaseChangeLog>

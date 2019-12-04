@@ -1,6 +1,8 @@
 package org.openmrs.module.messages.api.execution.impl;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.SQLQuery;
 import org.openmrs.api.APIException;
 import org.openmrs.api.db.hibernate.DbSessionFactory;
@@ -8,8 +10,6 @@ import org.openmrs.module.messages.api.execution.ExecutionContext;
 import org.openmrs.module.messages.api.execution.ExecutionEngine;
 import org.openmrs.module.messages.api.execution.ExecutionException;
 import org.openmrs.module.messages.api.execution.ServiceResultList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -21,7 +21,7 @@ import java.util.Map;
  */
 public class SqlExecutionEngine implements ExecutionEngine {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SqlExecutionEngine.class);
+    private static final Log LOG = LogFactory.getLog(SqlExecutionEngine.class);
 
     private DbSessionFactory dbSessionFactory;
 
@@ -59,10 +59,10 @@ public class SqlExecutionEngine implements ExecutionEngine {
             Object paramValue = paramEntry.getValue();
 
             if (ArrayUtils.contains(namedParameters, paramName)) {
-                LOG.debug("Replacing parameter: {}", paramName);
+                LOG.debug(String.format("Replacing parameter: %s", paramName));
                 sqlQuery.setParameter(paramName, paramValue);
             } else {
-                LOG.debug("Omitting not defined parameter: {}", paramName);
+                LOG.debug(String.format("Omitting not defined parameter: %s", paramName));
             }
         }
     }

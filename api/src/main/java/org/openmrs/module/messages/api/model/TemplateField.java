@@ -1,14 +1,13 @@
 package org.openmrs.module.messages.api.model;
 
-import org.openmrs.Concept;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity(name = "messages.TemplateField")
@@ -34,10 +33,10 @@ public class TemplateField extends AbstractBaseOpenmrsData {
     @ManyToOne
     @JoinColumn(name = "template_id", nullable = false)
     private Template template;
-    
-    @OneToOne
-    @JoinColumn(name = "value_concept")
-    private Concept valueConcept;
+
+    @Column(name = "template_field_type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private TemplateFieldType templateFieldType;
     
     @Override
     public Integer getId() {
@@ -80,12 +79,12 @@ public class TemplateField extends AbstractBaseOpenmrsData {
     public void setTemplate(Template template) {
         this.template = template;
     }
-    
-    public Concept getValueConcept() {
-        return valueConcept;
+
+    public TemplateFieldType getTemplateFieldType() {
+        return templateFieldType;
     }
-    
-    public void setValueConcept(Concept valueConcept) {
-        this.valueConcept = valueConcept;
+
+    public void setTemplateFieldType(TemplateFieldType templateFieldType) {
+        this.templateFieldType = templateFieldType;
     }
 }
