@@ -175,6 +175,11 @@ export const getPatientTemplates = (patientId: number) => async (dispatch) => {
   });
 };
 
+export const putPatientTemplates = (patientTemplates: Array<PatientTemplateUI>) => {
+  console.log(patientTemplates);
+  alert('Not yet implemented');
+};
+
 export const reset = () => ({
   type: ACTION_TYPES.RESET
 });

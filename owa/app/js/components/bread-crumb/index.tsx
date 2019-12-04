@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import UrlPattern from 'url-pattern';
 import './bread-crumb.scss';
 import { UnregisterCallback } from 'history';
+import * as Msg from '../../shared/utils/messages';
 
 const PATIENT_TEMPLATE_PATTERN = new UrlPattern('/messages/patient-template*');
 const NEW_PATIENT_TEMPLATE_PATTERN = new UrlPattern('/messages/patient-template/new*');
@@ -15,12 +16,6 @@ const MANAGE_PATTERN = new UrlPattern('/messages/manage*');
 const MODULE_ROUTE = '/';
 const OMRS_ROUTE = '../../';
 const PATIENT_TEMPLATE_ROUTE = '/messages/patient-template/';
-
-const GENERAL_MODULE_BREADCRUMB = 'Messages';
-const PATIENT_TEMPLATE_BREADCRUMB = 'Patient Template';
-const MANAGE_BREADCRUMB = 'Manage';
-const NEW_PATIENT_TEMPLATE_BREADCRUMB = 'New';
-const EDIT_PATIENT_TEMPLATE_BREADCRUMB = 'Edit';
 
 interface IBreadCrumbProps extends RouteComponentProps {
 };
@@ -66,7 +61,7 @@ class BreadCrumb extends React.PureComponent<IBreadCrumbProps, IBreadCrumbState>
     } else {
       return (
         <div className="breadcrumb">
-          {this.renderCrumbs([this.renderLastCrumb(GENERAL_MODULE_BREADCRUMB)])}
+          {this.renderCrumbs([this.renderLastCrumb(Msg.GENERAL_MODULE_BREADCRUMB)])}
         </div>
       );
     }
@@ -74,17 +69,17 @@ class BreadCrumb extends React.PureComponent<IBreadCrumbProps, IBreadCrumbState>
 
   buildPatientTemplateBreadCrumb = (path: string) => {
     const patientTemplateCrumbs = [
-      this.renderCrumb(MODULE_ROUTE, GENERAL_MODULE_BREADCRUMB)
+      this.renderCrumb(MODULE_ROUTE, Msg.GENERAL_MODULE_BREADCRUMB)
     ];
 
     if (NEW_PATIENT_TEMPLATE_PATTERN.match(path)) {
-      patientTemplateCrumbs.push(this.renderCrumb(PATIENT_TEMPLATE_ROUTE, PATIENT_TEMPLATE_BREADCRUMB));
-      patientTemplateCrumbs.push(this.renderLastCrumb(NEW_PATIENT_TEMPLATE_BREADCRUMB));
+      patientTemplateCrumbs.push(this.renderCrumb(PATIENT_TEMPLATE_ROUTE, Msg.PATIENT_TEMPLATE_BREADCRUMB));
+      patientTemplateCrumbs.push(this.renderLastCrumb(Msg.NEW_PATIENT_TEMPLATE_BREADCRUMB));
     } else if (EDIT_PATIENT_TEMPLATE_PATTERN.match(path)) {
-      patientTemplateCrumbs.push(this.renderCrumb(PATIENT_TEMPLATE_ROUTE, PATIENT_TEMPLATE_BREADCRUMB));
-      patientTemplateCrumbs.push(this.renderLastCrumb(EDIT_PATIENT_TEMPLATE_BREADCRUMB));
+      patientTemplateCrumbs.push(this.renderCrumb(PATIENT_TEMPLATE_ROUTE, Msg.PATIENT_TEMPLATE_BREADCRUMB));
+      patientTemplateCrumbs.push(this.renderLastCrumb(Msg.EDIT_PATIENT_TEMPLATE_BREADCRUMB));
     } else {
-      patientTemplateCrumbs.push(this.renderLastCrumb(PATIENT_TEMPLATE_BREADCRUMB));
+      patientTemplateCrumbs.push(this.renderLastCrumb(Msg.PATIENT_TEMPLATE_BREADCRUMB));
     }
 
     return (
@@ -96,10 +91,10 @@ class BreadCrumb extends React.PureComponent<IBreadCrumbProps, IBreadCrumbState>
 
   buildManageBreadCrumb = (path: string) => {
     const manageCrumbs = [
-      this.renderCrumb(MODULE_ROUTE, GENERAL_MODULE_BREADCRUMB)
+      this.renderCrumb(MODULE_ROUTE, Msg.GENERAL_MODULE_BREADCRUMB)
     ];
 
-    manageCrumbs.push(this.renderLastCrumb(MANAGE_BREADCRUMB));
+    manageCrumbs.push(this.renderLastCrumb(Msg.MANAGE_BREADCRUMB));
 
     return (
       <div className="breadcrumb">

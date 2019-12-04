@@ -1,8 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
-import { getTemplates, getPatientTemplates } from '../../reducers/patient-template.reducer'
+import { 
+  getTemplates,
+  getPatientTemplates,
+  putPatientTemplates
+} from '../../reducers/patient-template.reducer'
 import { IRootState } from '../../reducers';
+import { Button } from 'react-bootstrap';
+import * as Msg from '../../shared/utils/messages';
 
 interface IPatientTemplateEditProps extends DispatchProps, StateProps, RouteComponentProps<{ patientId: string }> {
   isNew: boolean
@@ -23,6 +29,11 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
   }
 
   componentWillUpdate(nextProps: IPatientTemplateEditProps, nextState: IPatientTemplateEditState) {
+  }
+
+  handleSave = () => {
+    //TODO: CFLM-304: Add validation .then .catch
+    this.props.putPatientTemplates(this.props.patientTemplates);
   }
 
   renderTemplateState = () => {
@@ -51,17 +62,24 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
           <h2>Patient Template Edit page</h2>
           {this.renderTemplateState()}
         </div>
+        <div className="panel-body">
+          <Button
+            className="btn btn-success btn-md pull-right"
+            onClick={this.handleSave}>
+            {Msg.SAVE_BUTTON_LABEL}
+          </Button>
+        </div>
       </div>
     );
   }
 }
 
-const mapStateToProps = ({ patientTemplate }: IRootState) => ({
-});
+export const mapStateToProps = ({ patientTemplate }: IRootState) => (patientTemplate);
 
 const mapDispatchToProps = ({
   getTemplates,
-  getPatientTemplates
+  getPatientTemplates,
+  putPatientTemplates
 });
 
 type StateProps = ReturnType<typeof mapStateToProps>;
