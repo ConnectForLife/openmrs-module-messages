@@ -11,6 +11,7 @@ public final class TemplateHelper {
         Template template = new Template();
         template.setServiceQuery("example service query");
         template.setServiceQueryType("example service query type");
+        template.setName("example name of service");
         
         return template;
     }

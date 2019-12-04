@@ -87,6 +87,7 @@ public class ExecutionEngineContextTest extends BaseModuleContextSensitiveTest {
         Template template = new Template();
         template.setServiceQuery("SELECT 0;");
         template.setServiceQueryType("SQL");
+        template.setName("Service name");
         template = templateService.saveOrUpdate(template);
 
         PatientTemplate patientTemplate = new PatientTemplate();

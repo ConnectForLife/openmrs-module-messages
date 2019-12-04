@@ -19,6 +19,8 @@ public class TemplateDTO {
 
     private List<TemplateFieldDTO> templateFields = new ArrayList<>();
 
+    private String name;
+
     private String uuid;
 
     public Integer getId() {
@@ -54,6 +56,15 @@ public class TemplateDTO {
 
     public TemplateDTO setTemplateFields(List<TemplateFieldDTO> templateFields) {
         this.templateFields = templateFields;
+        return this;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public TemplateDTO setName(String name) {
+        this.name = name;
         return this;
     }
 

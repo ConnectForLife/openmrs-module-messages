@@ -38,6 +38,7 @@ public class TemplateMapper {
                 .setServiceQuery(dao.getServiceQuery())
                 .setServiceQueryType(dao.getServiceQueryType())
                 .setTemplateFields(templateFields)
+                .setName(dao.getName())
                 .setUuid(dao.getUuid());
     }
 

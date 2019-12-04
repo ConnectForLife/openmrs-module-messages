@@ -197,6 +197,7 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
         Template template = new TemplateBuilder()
                 .withServiceQuery("Query")
                 .withServiceQueryType("Query type")
+                .setName("Service Name")
                 .buildAsNew();
         return templateDao.saveOrUpdate(template);
     }

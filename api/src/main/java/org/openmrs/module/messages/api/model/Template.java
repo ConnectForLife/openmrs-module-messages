@@ -1,5 +1,7 @@
 package org.openmrs.module.messages.api.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -7,8 +9,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity(name = "messages.Template")
 @Table(name = "messages_template")
@@ -32,6 +32,9 @@ public class Template extends AbstractBaseOpenmrsData {
     
     @OneToMany(mappedBy = "template")
     private List<PatientTemplate> patientTemplates = new ArrayList<>();
+
+    @Column(name = "name", nullable = false)
+    private String name;
     
     @Override
     public Integer getId() {
@@ -73,5 +76,13 @@ public class Template extends AbstractBaseOpenmrsData {
 
     public void setPatientTemplates(List<PatientTemplate> patientTemplates) {
         this.patientTemplates = patientTemplates;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

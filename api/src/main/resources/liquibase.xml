@@ -528,4 +528,16 @@
         <dropColumn tableName="messages_template_field" columnName="value_concept"/>
     </changeSet>
 
+    <changeSet id="messages-16" author="Arkadiusz Lalo">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="messages_template"/>
+        </preConditions>
+        <comment>Added name column</comment>
+        <addColumn tableName="messages_template">
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
