@@ -1,12 +1,10 @@
 package org.openmrs.module.messages.api.exception;
 
-import org.openmrs.api.APIException;
-
 public class MessagesRuntimeException extends RuntimeException {
 
     private static final long serialVersionUID = -1434211965543042192L;
 
-    public MessagesRuntimeException(String message, APIException exception) {
+    public MessagesRuntimeException(String message, Throwable exception) {
         super(message, exception);
     }
 

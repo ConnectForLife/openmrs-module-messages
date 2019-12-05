@@ -141,6 +141,7 @@
             messages_template_id="1"
             service_query="SELECT (*) FROM messages_scheduled_service;"
             service_query_type="test query type"
+            name="Service1"
             creator="1"
             date_created="2019-11-20 00:00:00.0"
             voided="false"
