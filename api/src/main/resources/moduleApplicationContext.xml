@@ -92,6 +92,14 @@
         </property>
     </bean>
 
+    <bean id="messages.templateFieldValueMapper" class="org.openmrs.module.messages.api.mappers.TemplateFieldValueMapper"/>
+
+    <bean id="messages.patientTemplateMapper" class="org.openmrs.module.messages.api.mappers.PatientTemplateMapper">
+        <property name="valueMapper">
+            <ref local="messages.templateFieldValueMapper"/>
+        </property>
+    </bean>
+
     <bean id="messages.schedulerService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="transactionManager">
             <ref bean="transactionManager" />

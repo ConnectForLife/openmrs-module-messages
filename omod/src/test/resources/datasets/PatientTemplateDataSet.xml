@@ -1,0 +1,233 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+
+    <!-- Types -->
+    <relationship_type
+            relationship_type_id="100"
+            a_is_to_b="Patient"
+            b_is_to_a="Caregiver"
+            preferred="1"
+            weight="0"
+            description="Relationship between Patient and Caregiver."
+            creator="1"
+            date_created="2019-11-20 00:00:00.0"
+            retired="false"/>
+
+    <patient_identifier_type
+            patient_identifier_type_id="100"
+            name="Test Identifier Type"
+            description="Test description"
+            creator="1"
+            date_created="2019-11-16 15:57:09.0"
+            required="true"
+            retired="false"
+            uuid="9768c389-6c3a-47c0-9d8b-3c9e42793da3"/>
+
+    <!-- Caregiver -->
+    <person
+            person_id="100"
+            gender="M"
+            dead="false"
+            creator="1"
+            date_created="2019-11-16 15:57:09.0"
+            voided="false"/>
+
+    <person_name
+            person_name_id="100"
+            preferred="true"
+            person_id="100"
+            given_name="Care"
+            middle_name="Dont"
+            family_name="Giver"
+            creator="1"
+            date_created="2019-11-16 15:57:09.0"
+            voided="false"/>
+
+    <!-- Patient #1 -->
+    <person
+            person_id="101"
+            gender="M"
+            dead="false"
+            creator="1"
+            date_created="2019-11-16 15:57:09.0"
+            voided="false"/>
+
+    <person_name
+            person_name_id="101"
+            preferred="true"
+            person_id="101"
+            given_name="Sick"
+            middle_name=""
+            family_name="Person"
+            creator="1"
+            date_created="2019-11-16 15:57:09.0"
+            voided="false"/>
+
+    <patient
+            patient_id="101"
+            creator="1"
+            date_created="2019-11-16 15:57:09.0"
+            voided="false"/>
+
+    <patient_identifier
+            patient_identifier_id="101"
+            patient_id="101"
+            identifier="ABC123ABC123"
+            identifier_type="100"
+            preferred="1"
+            location_id="1"
+            creator="1"
+            date_created="2019-11-16 15:57:09.0"
+            voided="false"/>
+
+    <!-- Patient #2 -->
+    <person
+            person_id="102"
+            gender="M"
+            dead="false"
+            creator="1"
+            date_created="2019-11-16 15:57:09.0"
+            voided="false"/>
+
+    <person_name
+            person_name_id="102"
+            preferred="true"
+            person_id="102"
+            given_name="Another"
+            middle_name="Sick"
+            family_name="Person"
+            creator="1"
+            date_created="2019-11-16 15:57:09.0"
+            voided="false"/>
+
+    <patient
+            patient_id="102"
+            creator="1"
+            date_created="2019-11-16 15:57:09.0"
+            voided="false"/>
+
+    <patient_identifier
+            patient_identifier_id="102"
+            patient_id="102"
+            identifier="BBC123ABC123"
+            identifier_type="100"
+            preferred="1"
+            location_id="1"
+            creator="1"
+            date_created="2019-11-16 15:57:09.0"
+            voided="false"/>
+
+    <!-- Relations: caregiver and patients -->
+    <relationship
+            relationship_id="101"
+            person_a="101"
+            relationship="100"
+            person_b="100"
+            creator="1"
+            date_created="2019-11-20 00:00:00.0"
+            voided="false"/>
+
+    <relationship
+            relationship_id="102"
+            person_a="102"
+            relationship="100"
+            person_b="100"
+            creator="1"
+            date_created="2019-11-20 00:00:00.0"
+            voided="false"/>
+
+    <!-- Template -->
+    <messages_template
+            messages_template_id="1"
+            service_query="SELECT (*) FROM messages_scheduled_service;"
+            service_query_type="test query type"
+            creator="1"
+            date_created="2019-11-20 00:00:00.0"
+            voided="false"
+            uuid="fdd5191e-772c-4c67-9c39-e1a266f86afb"/>
+
+    <!-- Patient #1 template -->
+    <messages_template_field
+            messages_template_field_id="1"
+            name="test template"
+            mandatory="false"
+            default_value="default test value"
+            template_id="1"
+            template_field_type="SERVICE_TYPE"
+            creator="1"
+            date_created="2019-11-20 00:00:00.0"
+            voided="false"
+            uuid="29ee20d0-0e46-465d-b8a4-3bc3c5b41e96"/>
+
+    <!-- Patient #1 template #1 -->
+    <messages_patient_template
+            messages_patient_template_id="1"
+            actor_id="101"
+            actor_type="101"
+            template_id="1"
+            patient_id="101"
+            service_query_type="SQL"
+            service_query="SELECT (*) FROM messages_scheduled_service;"
+            creator="1"
+            date_created="2019-11-20 00:00:00.1"
+            voided="false"
+            uuid="ae21c3c3-66c7-401d-86d3-84e8bf2ea9c3"/>
+
+    <messages_template_field_value
+            messages_template_field_value_id="1"
+            value="test value"
+            patient_template_id="1"
+            template_field_id="1"
+            creator="1"
+            date_created="2019-11-20 00:00:00.2"
+            voided="false"
+            uuid="adb5f376-c9b9-4a1f-89eb-00e478aa9f6f"/>
+
+    <!-- Patient #1 template #2 -->
+    <messages_patient_template
+            messages_patient_template_id="2"
+            actor_id="101"
+            actor_type="101"
+            template_id="1"
+            patient_id="101"
+            service_query_type="SQL"
+            service_query="SELECT (*) FROM messages_scheduled_service;"
+            creator="1"
+            date_created="2019-11-20 00:00:00.1"
+            voided="false"
+            uuid="fc986ac8-10e1-4b42-8764-5d687a87a49e"/>
+
+    <messages_template_field_value
+            messages_template_field_value_id="2"
+            value="test value 2"
+            patient_template_id="2"
+            template_field_id="1"
+            creator="1"
+            date_created="2019-11-20 00:00:00.2"
+            voided="false"
+            uuid="4e032c88-3a86-4e8f-8863-649bfd26f464"/>
+
+    <!-- Patient #1 template #3 -->
+    <messages_patient_template
+            messages_patient_template_id="3"
+            actor_id="101"
+            actor_type="101"
+            template_id="1"
+            patient_id="101"
+            service_query_type="SQL"
+            service_query="SELECT (*) FROM messages_scheduled_service;"
+            creator="1"
+            date_created="2019-11-20 00:00:00.1"
+            voided="false"
+            uuid="ede7ea6d-9de3-48e6-97d7-c9a5c7cb636d"/>
+
+    <messages_template_field_value
+            messages_template_field_value_id="3"
+            value="test value 3"
+            patient_template_id="3"
+            template_field_id="1"
+            creator="1"
+            date_created="2019-11-20 00:00:00.2"
+            voided="false"
+            uuid="3e419c7f-fed1-4734-be3f-8d5a43feb73c"/>
+</dataset>

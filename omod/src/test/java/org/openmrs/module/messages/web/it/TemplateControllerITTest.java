@@ -21,6 +21,8 @@ import java.io.IOException;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.openmrs.module.messages.Constant.PAGE_PARAM;
+import static org.openmrs.module.messages.Constant.ROWS_PARAM;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -31,10 +33,6 @@ public class TemplateControllerITTest extends BaseModuleWebContextSensitiveTest 
     private static final String TEMPLATES_DATA_SET_PATH = "datasets/TemplateDataset.xml";
 
     private static final String BASE_URL = "/messages/templates";
-
-    private static final String ROWS_PARAM = "rows";
-
-    private static final String PAGE_PARAM = "page";
 
     private static final int THREE_ROWS = 3;
 
