@@ -36,7 +36,6 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
   }
 
   handleSave = () => {
-    //TODO: CFLM-304: Add validation .then .catch
     this.props.putPatientTemplates(this.props.patientTemplates);
   }
 

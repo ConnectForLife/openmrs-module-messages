@@ -7,6 +7,7 @@
     "url": "https://bitbucket.org/soldevelo/omrs-messages"
   },
   "dependencies": {
+    "@bit/soldevelo-omrs.cfl-components.request-toast-handler": "^1.0.0",
     "@bit/soldevelo-omrs.cfl-components.form-entry": "^1.0.5",
     "@fortawesome/fontawesome-svg-core": "1.2.25",
     "@fortawesome/free-brands-svg-icons": "5.11.2",

@@ -7,6 +7,9 @@ import { IPatientTemplate } from '../shared/model/patient-template.model';
 import { TemplateUI } from '../shared/model/template-ui';
 import { ITemplate } from '../shared/model/template.model';
 import { TemplateFieldType } from '../shared/model/template-field-type';
+import { handleRequest } from '@bit/soldevelo-omrs.cfl-components.request-toast-handler';
+import * as Msg from '../shared/utils/messages';
+import { history } from '../config/redux-store';
 import axiosInstance from '../config/axios';
 
 export const ACTION_TYPES = {
@@ -94,56 +97,65 @@ export const getPatientTemplates = (patientId: number) => async (dispatch) => {
         actorId: 1,
         actorTypeId: 1,
         templateFieldValues: [{
-            id: 1,
-            templateFieldId: 1,
-            value: 'a'
-          },
-          {
-            id: 2,
-            templateFieldId: 2,
-            value: 'b'
-          }
+          id: 1,
+          templateFieldId: 1,
+          value: 'a'
+        },
+        {
+          id: 2,
+          templateFieldId: 2,
+          value: 'b'
+        }
         ]
-      },{
+      }, {
         id: 2,
         patientId: patientId,
         templateId: 1,
         actorId: 2,
         actorTypeId: 2,
         templateFieldValues: [{
-            id: 3,
-            templateFieldId: 1,
-            value: 'a'
-          },
-          {
-            id: 4,
-            templateFieldId: 2,
-            value: 'b'
-          }
+          id: 3,
+          templateFieldId: 1,
+          value: 'a'
+        },
+        {
+          id: 4,
+          templateFieldId: 2,
+          value: 'b'
+        }
         ]
-      },{
+      }, {
         id: 3,
         patientId: patientId,
         templateId: 2,
         actorId: 3,
         actorTypeId: 1,
         templateFieldValues: [{
-            id: 5,
-            templateFieldId: 1,
-            value: 'c'
-          },
-          {
-            id: 6,
-            templateFieldId: 3,
-            value: 'd'
-          }
+          id: 5,
+          templateFieldId: 1,
+          value: 'c'
+        },
+        {
+          id: 6,
+          templateFieldId: 3,
+          value: 'd'
+        }
         ]
       }] as Array<IPatientTemplate>)
   });
 };
 
-export const putPatientTemplates = (patientTemplates: Array<PatientTemplateUI>) => {
+export const putPatientTemplates = (patientTemplates: Array<PatientTemplateUI>) => async (dispatch) => {
   console.log(patientTemplates);
+  // TODO: CFLM-302: Attach validation here
+
+  // const body = {
+  //   type: ACTION_TYPES.GET_PATIENT_TEMPLATES,
+  //   payload: ...
+  // };
+  // handleRequest(dispatch, body, Msg.GENERIC_SUCCESS, Msg.GENERIC_FAILURE);
+  
+  history.push('/messages/patient-template'); //TODO: CFLM-255: Return to 'messages manage'
   alert('Not yet implemented');
 };
 

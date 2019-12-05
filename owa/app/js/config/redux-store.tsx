@@ -15,7 +15,7 @@ import promiseMiddleware from 'redux-promise-middleware';
 import thunkMiddleware from 'redux-thunk';
 // @ts-ignore
 import { createLogger } from 'redux-logger';
-import { createHashHistory } from 'history';
+import { createHashHistory, History } from 'history';
 import { connectRouter, routerMiddleware } from 'connected-react-router';
 
 import reducers from '../reducers';
@@ -23,7 +23,7 @@ import initSagas from '../sagas';
 
 const sagaMiddleware = createSagaMiddleware();
 
-export const history = createHashHistory({
+export const history: History = createHashHistory({
   basename: '/',
 });
 
