@@ -13,15 +13,17 @@ import { history } from '../config/redux-store';
 import axiosInstance from '../config/axios';
 
 export const ACTION_TYPES = {
-  GET_TEMPLATES: 'messagingReducer/GET_TEMPLATES',
-  GET_PATIENT_TEMPLATES: 'messagingReducer/GET_PATIENT_TEMPLATES',
-  RESET: 'messagingReducer/RESET',
-  UPDATE_TEMPLATE_FIELD_VALUE: 'messagingReducer/UPDATE_TEMPLATE_FIELD_VALUE',
+  GET_TEMPLATES: 'patientTemplateReducer/GET_TEMPLATES',
+  GET_PATIENT_TEMPLATES: 'patientTemplateReducer/GET_PATIENT_TEMPLATES',
+  RESET: 'patientTemplateReducer/RESET',
+  SELECT_TEMPLATE: 'patientTemplateReducer/SELECT_TEMPLATE',
+  UPDATE_TEMPLATE_FIELD_VALUE: 'patientTemplateReducer/UPDATE_TEMPLATE_FIELD_VALUE',
 };
 
 const initialState = {
   templates: [] as Array<TemplateUI>,
   templatesLoading: false,
+  selectedTemplate: TemplateUI,
   patientTemplates: [] as Array<PatientTemplateUI>,
   patientTemplatesLoading: false
 };
@@ -41,7 +43,7 @@ export default (state = initialState, action) => {
         templatesLoading: false
       };
     case SUCCESS(ACTION_TYPES.GET_TEMPLATES):
-    return {
+      return {
         ...state,
         templatesLoading: false,
         templates: _.map(action.payload.data.content, TemplateUI.fromModel)
@@ -66,6 +68,11 @@ export default (state = initialState, action) => {
       return {
         ..._.cloneDeep(initialState)
       };
+    case ACTION_TYPES.SELECT_TEMPLATE:
+      return {
+        ...state,
+        selectedTemplate: action.payload
+      };
     case ACTION_TYPES.UPDATE_TEMPLATE_FIELD_VALUE:
       return {
         ...state
@@ -82,6 +89,13 @@ export const getTemplates = () => async (dispatch) => {
   await dispatch({
     type: ACTION_TYPES.GET_TEMPLATES,
     payload: axiosInstance.get(templatesUrl)
+  });
+};
+
+export const selectTemplate = (template) => async (dispatch) => {
+  await dispatch({
+    type: ACTION_TYPES.SELECT_TEMPLATE,
+    payload: template
   });
 };
 

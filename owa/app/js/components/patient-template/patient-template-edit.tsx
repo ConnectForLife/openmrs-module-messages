@@ -4,7 +4,8 @@ import { RouteComponentProps } from 'react-router-dom';
 import {
   getTemplates,
   getPatientTemplates,
-  putPatientTemplates
+  putPatientTemplates,
+  selectTemplate
 } from '../../reducers/patient-template.reducer'
 import { IRootState } from '../../reducers';
 import { Button } from 'react-bootstrap';
@@ -78,9 +79,8 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
       //(if the section was completed)
       const completed = false;
 
-      //TODO in CFLM-306: provide real callback
       const onSelectCallback = () => {
-        console.log("Not implemented yet");
+        this.props.selectTemplate(template);
       }
 
       subsections.push(new FormSubSection(name, completed, fragment, onSelectCallback));
@@ -112,13 +112,15 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
 
 const mapStateToProps = ({ patientTemplate }: IRootState) => ({
   templates: patientTemplate.templates,
-  patientTemplates: patientTemplate.patientTemplates
+  patientTemplates: patientTemplate.patientTemplates,
+  selectedTemplate: patientTemplate.selectedTemplate
 });
 
 const mapDispatchToProps = ({
   getTemplates,
   getPatientTemplates,
-  putPatientTemplates
+  putPatientTemplates,
+  selectTemplate
 });
 
 type StateProps = ReturnType<typeof mapStateToProps>;
