@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
-import { 
+import {
   getTemplates,
   getPatientTemplates,
   putPatientTemplates
@@ -9,6 +9,10 @@ import {
 import { IRootState } from '../../reducers';
 import { Button } from 'react-bootstrap';
 import * as Msg from '../../shared/utils/messages';
+import FormSection from '@bit/soldevelo-omrs.cfl-components.form-entry/model/form-section';
+import FormSubSection from '@bit/soldevelo-omrs.cfl-components.form-entry/model/form-subsection';
+import FormEntry from '@bit/soldevelo-omrs.cfl-components.form-entry';
+import './patient-template.scss';
 
 interface IPatientTemplateEditProps extends DispatchProps, StateProps, RouteComponentProps<{ patientId: string }> {
   isNew: boolean
@@ -37,21 +41,54 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
   }
 
   renderTemplateState = () => {
+    const sections = this.mapTemplatesToSections();
     if (this.props.isNew) {
       return (
-        <div>
-          The patient template is new
-          for patient (patientId: {this.props.match.params.patientId})
-        </div>
+        <>
+          <div className="page-header">
+            The patient template is new
+            for patient (patientId: {this.props.match.params.patientId})
+          </div>
+          <FormEntry sections={sections} />
+        </>
       );
     } else {
       return (
-        <div>
-          The patient template is not new
-          (patientId: {this.props.match.params.patientId})
-        </div>
+        <>
+          <div className="page-header">
+            The patient template is not new
+            (patientId: {this.props.match.params.patientId})
+          </div>
+          <FormEntry sections={sections} />
+        </>
       );
     }
+  }
+
+  mapTemplatesToSections = (): Array<FormSection> => {
+    const sections = [] as Array<FormSection>;
+    const subsections = [] as Array<FormSubSection>;
+
+    this.props.templates.forEach((template) => {
+      const name = template.name ? template.name : `Template ${template.localId}`;
+
+      //TODO in CFLM-305: replace fragment with real template component
+      const fragment = <div>{`Template ${template.localId} body (Work in progress...)`}</div>;
+
+      //TODO in CFLM-306: decide if the 'completed-icon' should be displayed next to section name
+      //(if the section was completed)
+      const completed = false;
+
+      //TODO in CFLM-306: provide real callback
+      const onSelectCallback = () => {
+        console.log("Not implemented yet");
+      }
+
+      subsections.push(new FormSubSection(name, completed, fragment, onSelectCallback));
+    });
+
+    sections.push(new FormSection('Messages', subsections));
+    return sections;
   }
 
   render() {
@@ -74,7 +111,10 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
   }
 }
 
-export const mapStateToProps = ({ patientTemplate }: IRootState) => (patientTemplate);
+const mapStateToProps = ({ patientTemplate }: IRootState) => ({
+  templates: patientTemplate.templates,
+  patientTemplates: patientTemplate.patientTemplates
+});
 
 const mapDispatchToProps = ({
   getTemplates,

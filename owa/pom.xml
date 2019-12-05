@@ -40,7 +40,7 @@
                         </goals>
                         <phase>generate-resources</phase>
                         <configuration>
-                            <arguments>install</arguments>
+                            <arguments>--userconfig=${project.basedir}/.npmrc install</arguments>
                         </configuration>
                     </execution>
 

@@ -71,7 +71,10 @@ const rules = [
 	{
 		test: /\.(t|j)sx?$/,
 		loader: "awesome-typescript-loader",
-		exclude: /node_modules/,
+		include: [
+			path.resolve(__dirname, "app/js"),
+			path.resolve(__dirname, "node_modules/@bit/soldevelo-omrs.cfl-components")
+		],
 		query: {
 			presets: ["env", "react"],
 			cacheDirectory: true,

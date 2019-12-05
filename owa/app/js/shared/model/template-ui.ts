@@ -6,6 +6,7 @@ import { TemplateFieldUI } from './template-field-ui';
 
 export class TemplateUI extends ObjectUI<ITemplate> implements ITemplate {
   id: number | null;
+  name: string | null;
   templateFields: Array<TemplateFieldUI>;
 
   constructor(model: ITemplate) {

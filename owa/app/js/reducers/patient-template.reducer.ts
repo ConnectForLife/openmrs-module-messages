@@ -7,6 +7,7 @@ import { IPatientTemplate } from '../shared/model/patient-template.model';
 import { TemplateUI } from '../shared/model/template-ui';
 import { ITemplate } from '../shared/model/template.model';
 import { TemplateFieldType } from '../shared/model/template-field-type';
+import axiosInstance from '../config/axios';
 
 export const ACTION_TYPES = {
   GET_TEMPLATES: 'messagingReducer/GET_TEMPLATES',
@@ -37,10 +38,10 @@ export default (state = initialState, action) => {
         templatesLoading: false
       };
     case SUCCESS(ACTION_TYPES.GET_TEMPLATES):
-      return {
+    return {
         ...state,
         templatesLoading: false,
-        templates: _.map(action.payload, TemplateUI.fromModel)
+        templates: _.map(action.payload.data.content, TemplateUI.fromModel)
       };
     case REQUEST(ACTION_TYPES.GET_PATIENT_TEMPLATES):
       return {
@@ -72,46 +73,12 @@ export default (state = initialState, action) => {
   }
 };
 
+const templatesUrl = "ws/messages/templates";
+
 export const getTemplates = () => async (dispatch) => {
-  // TODO: use API and invoke handleRequest method
   await dispatch({
     type: ACTION_TYPES.GET_TEMPLATES,
-    payload: Promise.resolve([
-      {
-        id: 1,
-        templateFields: [{
-            id: 1,
-            name: 'Test field 1',
-            mandatory: true,
-            defaultValue: 'mockedValue1',
-            type: TemplateFieldType.SERVICE_TYPE
-          },
-          {
-            id: 2,
-            name: 'Test field 2',
-            mandatory: false,
-            defaultValue: 'mockedValue2',
-            type: TemplateFieldType.MESSAGING_FREQUENCY
-          }
-        ]
-      },{
-        id: 2,
-        templateFields: [{
-            id: 1,
-            name: 'Test field 1',
-            mandatory: true,
-            defaultValue: 'mockedValue1',
-            type: TemplateFieldType.SERVICE_TYPE
-          },
-          {
-            id: 3,
-            name: 'Test field 3',
-            mandatory: true,
-            defaultValue: 'mockedValue3',
-            type: TemplateFieldType.DAY_OF_WEEK
-          }
-        ]
-      }] as Array<ITemplate>)
+    payload: axiosInstance.get(templatesUrl)
   });
 };
 
