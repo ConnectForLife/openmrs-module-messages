@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 public abstract class BaseRestController {
 
-    private static final Log LOGGER = LogFactory.getLog(BaseRestController.class);
+    private final Log logger = LogFactory.getLog(getClass());
 
     private static final String ERR_SYSTEM = "system.error";
 
@@ -30,7 +30,7 @@ public abstract class BaseRestController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public ErrorResponseDTO handleIllegalArgumentException(IllegalArgumentException e) {
-        LOGGER.error(e.getMessage(), e);
+        logger.error(e.getMessage(), e);
         return new ErrorResponseDTO(ERR_BAD_PARAM, e.getMessage());
     }
 
@@ -44,7 +44,11 @@ public abstract class BaseRestController {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     public ErrorResponseDTO handleException(Exception e) {
-        LOGGER.error(e.getMessage(), e);
+        logger.error(e.getMessage(), e);
         return new ErrorResponseDTO(ERR_SYSTEM, e.getMessage());
+    }
+
+    protected Log getLogger() {
+        return logger;
     }
 }

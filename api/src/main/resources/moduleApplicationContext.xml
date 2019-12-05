@@ -11,7 +11,7 @@
             http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
 
-    <bean name="messages.ServiceExecutor" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+    <bean id="messages.ServiceExecutor" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="target">
             <bean class="org.openmrs.module.messages.api.execution.impl.ServiceExecutorImpl">
                 <constructor-arg ref="messages.ExecutionEngineManager"/>
@@ -64,15 +64,34 @@
         </property>
     </bean>
 
-    <bean id="messages.messagingService" class="org.openmrs.module.messages.api.service.impl.MessagingServiceImpl">
-        <property name="dao">
-            <ref local="messages.MessagingDao"/>
+    <bean id="messages.messagingService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="target">
+            <bean class="org.openmrs.module.messages.api.service.impl.MessagingServiceImpl">
+                <property name="dao">
+                    <ref local="messages.MessagingDao"/>
+                </property>
+                <property name="conceptService">
+                    <ref bean="conceptServiceTarget"/>
+                </property>
+                <property name="actorResponseDao">
+                    <ref local="messages.ActorResponseDao"/>
+                </property>
+                <property name="patientTemplateService">
+                    <ref local="messages.patientTemplateService"/>
+                </property>
+                <property name="serviceExecutor">
+                    <ref local="messages.ServiceExecutor"/>
+                </property>
+            </bean>
         </property>
-        <property name="conceptService">
-            <ref bean="conceptServiceTarget"/>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
         </property>
-        <property name="actorResponseDao">
-            <ref local="messages.ActorResponseDao"/>
+        <property name="preInterceptors">
+            <ref bean="serviceInterceptors"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
         </property>
     </bean>
 

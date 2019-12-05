@@ -1,6 +1,8 @@
 package org.openmrs.module.messages.web.it;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Patient;
@@ -12,6 +14,8 @@ import org.openmrs.module.messages.api.dao.PatientTemplateDao;
 import org.openmrs.module.messages.api.dao.TemplateDao;
 import org.openmrs.module.messages.api.dto.MessageDTO;
 import org.openmrs.module.messages.api.dto.MessageDetailsDTO;
+import org.openmrs.module.messages.api.execution.ServiceResult;
+import org.openmrs.module.messages.api.execution.ServiceResultList;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.Template;
 import org.openmrs.module.messages.builder.PatientTemplateBuilder;
@@ -26,10 +30,13 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.io.IOException;
+import java.util.Date;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -48,8 +55,12 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
     private static final String ROWS_PARAM = "rows";
     private static final String PAGE_PARAM = "page";
     private static final String PATIENT_ID_PARAM = "patientId";
+    public static final String START_DATE_PARAM = "startDate";
+    public static final String END_DATE_PARAM = "endDate";
 
     private MockMvc mockMvc;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -99,7 +110,7 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
                 .andExpect(status().is(HttpStatus.OK.value())).andReturn();
 
         assertThat(result, is(notNullValue()));
-        MessageDetailsDTO dto = getDtoFromResult(result);
+        MessageDetailsDTO dto = getDtoFromMvcResult(result);
 
         assertThat(dto.getPatientId(), is(equalTo(patientWithId.getId())));
         assertThat(dto.getMessages().size(), is(equalTo(2)));
@@ -150,7 +161,7 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
                 .andExpect(status().is(HttpStatus.OK.value())).andReturn();
 
         assertThat(result, is(notNullValue()));
-        assertMessageDetailsDTO(getDtoFromResult(result), QUERY_TYPE_1,
+        assertMessageDetailsDTO(getDtoFromMvcResult(result), QUERY_TYPE_1,
                 patientWithId.getPatientId());
 
         // Fetch page 2
@@ -161,8 +172,44 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
                 .andExpect(status().is(HttpStatus.OK.value())).andReturn();
 
         assertThat(result, is(notNullValue()));
-        assertMessageDetailsDTO(getDtoFromResult(result), QUERY_TYPE_2,
+        assertMessageDetailsDTO(getDtoFromMvcResult(result), QUERY_TYPE_2,
                 patientWithId.getPatientId());
+    }
+
+    @Test
+    public void shouldReturnMessages() throws Exception {
+        createPatientTemplate(
+                patient1,
+                patient1,
+                null,
+                "SELECT now(), 'test-msg', 1;",
+                "SQL"
+        );
+
+        final Date startDate = DateUtils.addDays(new Date(), -1);
+        final Date endDate = DateUtils.addDays(new Date(), 3);
+
+        MvcResult result = mockMvc.perform(get("/messages")
+                .param(PATIENT_ID_PARAM, patient1.getId().toString())
+                .param(START_DATE_PARAM, String.valueOf(startDate.getTime()))
+                .param(END_DATE_PARAM, String.valueOf(endDate.getTime())))
+                .andExpect(status().is(HttpStatus.OK.value())).andReturn();
+
+        assertThat(result, is(notNullValue()));
+
+        List<ServiceResultList> results = getResultListFromMvcResult(result);
+        assertThat(results, hasSize(1));
+
+        ServiceResultList serviceResultList = results.get(0);
+        assertThat(serviceResultList.getStartDate(), is(startDate));
+        assertThat(serviceResultList.getEndDate(), is(endDate));
+        assertThat(serviceResultList.getPatientId(), is(patient1.getId()));
+        assertThat(serviceResultList.getActorId(), is(patient1.getId()));
+        assertThat(serviceResultList.getResults(), hasSize(1));
+
+        ServiceResult serviceResult = serviceResultList.getResults().get(0);
+        assertThat(serviceResult.getMessageId(), is("test-msg"));
+        assertThat(serviceResult.getChannelId(), is(1));
     }
 
     private void assertMessageDetailsDTO(MessageDetailsDTO dto, String queryType, Integer patientId) {
@@ -174,10 +221,15 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
         }
     }
 
-    private MessageDetailsDTO getDtoFromResult(MvcResult result) throws IOException {
-        return new ObjectMapper().readValue(
+    private MessageDetailsDTO getDtoFromMvcResult(MvcResult result) throws IOException {
+        return objectMapper.readValue(
                 result.getResponse().getContentAsString(),
                 MessageDetailsDTO.class);
+    }
+
+    private List<ServiceResultList> getResultListFromMvcResult(MvcResult result) throws IOException {
+        return objectMapper.readValue(result.getResponse().getContentAsString(),
+                new TypeReference<List<ServiceResultList>>() { });
     }
 
     private PatientTemplate createPatientTemplate(Patient patient, Person person,

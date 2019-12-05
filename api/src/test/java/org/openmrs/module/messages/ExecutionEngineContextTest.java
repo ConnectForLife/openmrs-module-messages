@@ -18,6 +18,7 @@ import org.openmrs.module.messages.api.model.Template;
 import org.openmrs.module.messages.api.model.TemplateField;
 import org.openmrs.module.messages.api.model.TemplateFieldType;
 import org.openmrs.module.messages.api.model.TemplateFieldValue;
+import org.openmrs.module.messages.api.model.types.ServiceStatus;
 import org.openmrs.module.messages.api.service.PatientTemplateService;
 import org.openmrs.module.messages.api.service.TemplateService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -31,6 +32,7 @@ public class ExecutionEngineContextTest extends BaseModuleContextSensitiveTest {
 
     private static final Date START_DATE = DateUtils.addYears(new Date(), -2);
     private static final Date END_DATE = DateUtils.addYears(new Date(), 2);
+    private static final String SERVICE_NAME = "Service Name";
     // drop mili precision for H2 testing purposes
     private static final Date BIRTH_DATE = DateUtils.setMilliseconds(DateUtils.addYears(new Date(), -1), 0);
 
@@ -61,10 +63,12 @@ public class ExecutionEngineContextTest extends BaseModuleContextSensitiveTest {
         assertEquals(START_DATE, serviceResultList.getStartDate());
         assertEquals(END_DATE, serviceResultList.getEndDate());
         assertEquals(1, serviceResultList.getResults().size());
+        assertEquals(SERVICE_NAME, serviceResultList.getServiceName());
 
         ServiceResult result = serviceResultList.getResults().get(0);
         assertEquals("msg", result.getMessageId());
         assertEquals(1, result.getChannelId().intValue());
+        assertEquals(ServiceStatus.FUTURE, result.getServiceStatus());
         // query adds 1 year to the birth date
         assertEquals(DateUtils.addYears(BIRTH_DATE, 1).getTime(), result.getExecutionDate().getTime());
     }
@@ -87,7 +91,7 @@ public class ExecutionEngineContextTest extends BaseModuleContextSensitiveTest {
         Template template = new Template();
         template.setServiceQuery("SELECT 0;");
         template.setServiceQueryType("SQL");
-        template.setName("Service name");
+        template.setName(SERVICE_NAME);
         template = templateService.saveOrUpdate(template);
 
         PatientTemplate patientTemplate = new PatientTemplate();

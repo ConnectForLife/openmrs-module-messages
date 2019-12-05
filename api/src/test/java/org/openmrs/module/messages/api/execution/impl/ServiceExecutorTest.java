@@ -1,5 +1,6 @@
 package org.openmrs.module.messages.api.execution.impl;
 
+import org.openmrs.Patient;
 import org.openmrs.module.messages.api.model.Range;
 import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Before;
@@ -26,6 +27,7 @@ public class ServiceExecutorTest {
 
     private static final Date START_DATE = new Date();
     private static final Date END_DATE = DateUtils.addDays(new Date(), 3);
+    private static final Integer PATIENT_ID = 1;
 
     private ServiceExecutor serviceExecutor;
 
@@ -38,6 +40,9 @@ public class ServiceExecutorTest {
     @Mock
     private PatientTemplate patientTemplate;
 
+    @Mock
+    private Patient patient;
+
     @Captor
     private ArgumentCaptor<ExecutionContext> ecCaptor;
 
@@ -49,6 +54,9 @@ public class ServiceExecutorTest {
     @Test
     public void shouldExecuteService() throws ExecutionException {
         when(patientTemplate.getServiceQueryType()).thenReturn(ExecutionEngineManager.SQL_KEY);
+        when(patientTemplate.getPatient()).thenReturn(patient);
+        when(patientTemplate.getActor()).thenReturn(patient);
+        when(patient.getPatientId()).thenReturn(PATIENT_ID);
         when(executionEngineManager.getEngine(ExecutionEngineManager.SQL_KEY)).thenReturn(executionEngine);
         Range<Date> dateRange = new Range<>(START_DATE, END_DATE);
 

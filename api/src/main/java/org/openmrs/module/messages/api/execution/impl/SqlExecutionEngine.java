@@ -4,7 +4,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.SQLQuery;
-import org.openmrs.api.APIException;
 import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.module.messages.api.execution.ExecutionContext;
 import org.openmrs.module.messages.api.execution.ExecutionEngine;
@@ -33,7 +32,7 @@ public class SqlExecutionEngine implements ExecutionEngine {
     public ServiceResultList execute(ExecutionContext executionContext) throws ExecutionException {
         try {
             return executeQuery(executionContext);
-        } catch (APIException e) {
+        } catch (Exception e) {
             throw new ExecutionException("Error while executing the SQL template", e);
         }
     }

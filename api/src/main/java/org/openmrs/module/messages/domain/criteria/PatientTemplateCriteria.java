@@ -24,4 +24,9 @@ public class PatientTemplateCriteria extends BaseCriteria implements Serializabl
     public void loadHibernateCriteria(Criteria hibernateCriteria) {
         hibernateCriteria.add(Restrictions.eq("patient", patient));
     }
+
+    public static PatientTemplateCriteria forPatientId(Integer patientId) {
+        Patient patient = new Patient(patientId);
+        return new PatientTemplateCriteria(patient);
+    }
 }

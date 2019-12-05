@@ -10,5 +10,4 @@ public class PatientTemplateDaoImpl extends BaseOpenmrsDataDao<PatientTemplate>
     public PatientTemplateDaoImpl() {
         super(PatientTemplate.class);
     }
-
 }

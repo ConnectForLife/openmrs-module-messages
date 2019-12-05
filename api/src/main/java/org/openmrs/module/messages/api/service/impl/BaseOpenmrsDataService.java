@@ -66,6 +66,11 @@ public class BaseOpenmrsDataService<T extends BaseOpenmrsData> extends BaseOpenm
         return dao.getAllCount(includeVoided);
     }
 
+    @Override
+    public List<T> findAllByCriteria(BaseCriteria criteria) {
+        return findAllByCriteria(criteria, null);
+    }
+
     public List<T> findAllByCriteria(BaseCriteria criteria, PagingInfo paging) {
         return dao.findAllByCriteria(criteria, paging);
     }

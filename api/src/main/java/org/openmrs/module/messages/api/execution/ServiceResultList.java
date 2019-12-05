@@ -17,6 +17,7 @@ public class ServiceResultList implements Serializable {
     private Integer patientId;
     private Integer actorId;
     private Integer serviceId;
+    private String serviceName;
     private Date startDate;
     private Date endDate;
     private List<ServiceResult> results;
@@ -34,6 +35,8 @@ public class ServiceResultList implements Serializable {
 
         resultList.setStartDate(dateRange.getStart());
         resultList.setEndDate(dateRange.getEnd());
+
+        resultList.setServiceName(patientTemplate.getTemplate().getName());
 
         return resultList;
     }
@@ -84,5 +87,13 @@ public class ServiceResultList implements Serializable {
 
     private void setResults(List<ServiceResult> results) {
         this.results = results;
+    }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
     }
 }

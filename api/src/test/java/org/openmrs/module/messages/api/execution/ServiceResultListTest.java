@@ -9,6 +9,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.module.messages.api.model.PatientTemplate;
+import org.openmrs.module.messages.api.model.Template;
+import org.openmrs.module.messages.api.model.types.ServiceStatus;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,6 +28,7 @@ public class ServiceResultListTest {
     private static final int SERVICE_ID = 11;
     private static final Date START_DATE = new Date();
     private static final Date END_DATE = DateUtils.addMonths(new Date(), 2);
+    private static final String SERVICE_NAME = "TestName";
 
     private static final List<Date> EXEC_DATES = Arrays.asList(
         DateUtils.addDays(new Date(), 10),
@@ -35,9 +38,17 @@ public class ServiceResultListTest {
 
     private static final List<String> MSG_IDS = Arrays.asList("ID_1", "ID 2", "abcdef");
     private static final List<Integer> CHANNEL_IDS = Arrays.asList(3, 5, 12);
+    private static final List<ServiceStatus> SERVICE_STATUSES = Arrays.asList(
+            ServiceStatus.DELIVERED,
+            ServiceStatus.PENDING,
+            ServiceStatus.FAILED
+    );
 
     @Mock
     private PatientTemplate patientTemplate;
+
+    @Mock
+    private Template template;
 
     @Mock
     private Person actor;
@@ -47,8 +58,10 @@ public class ServiceResultListTest {
 
     @Test
     public void shouldParseList() {
+        when(template.getName()).thenReturn(SERVICE_NAME);
         when(patientTemplate.getActor()).thenReturn(actor);
         when(patientTemplate.getPatient()).thenReturn(patient);
+        when(patientTemplate.getTemplate()).thenReturn(template);
         when(patient.getPatientId()).thenReturn(PATIENT_ID);
         when(actor.getPersonId()).thenReturn(ACTOR_ID);
         when(patientTemplate.getServiceId()).thenReturn(SERVICE_ID);
@@ -75,11 +88,12 @@ public class ServiceResultListTest {
     private List<Object[]> buildRows() {
         List<Object[]> rows = new ArrayList<>();
         for (int i = 0; i < EXEC_DATES.size(); i++) {
-            Object[] row = new Object[ServiceResult.EXPECTED_COL_NUM];
+            Object[] row = new Object[ServiceResult.MAX_COL_NUM];
 
-            row[0] = EXEC_DATES.get(i);
-            row[1] = MSG_IDS.get(i);
-            row[2] = CHANNEL_IDS.get(i);
+            row[ServiceResult.EXEC_DATE_INDEX] = EXEC_DATES.get(i);
+            row[ServiceResult.MSG_ID_INDEX] = MSG_IDS.get(i);
+            row[ServiceResult.CHANNEL_ID_INDEX] = CHANNEL_IDS.get(i);
+            row[ServiceResult.STATUS_COL_INDEX] = SERVICE_STATUSES.get(i).toString();
 
             rows.add(row);
         }

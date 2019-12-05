@@ -8,5 +8,7 @@ import java.util.List;
 
 public interface BaseOpenmrsCriteriaDataService<T extends BaseOpenmrsData> extends OpenmrsDataService<T> {
 
+    List<T> findAllByCriteria(BaseCriteria criteria);
+
     List<T> findAllByCriteria(BaseCriteria criteria, PagingInfo paging);
 }
