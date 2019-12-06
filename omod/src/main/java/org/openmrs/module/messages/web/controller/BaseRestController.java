@@ -3,6 +3,8 @@ package org.openmrs.module.messages.web.controller;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.messages.api.dto.ErrorResponseDTO;
+import org.openmrs.module.messages.api.exception.ValidationException;
+import org.openmrs.module.messages.api.model.ErrorMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -31,7 +33,7 @@ public abstract class BaseRestController {
     @ResponseBody
     public ErrorResponseDTO handleIllegalArgumentException(IllegalArgumentException e) {
         logger.error(e.getMessage(), e);
-        return new ErrorResponseDTO(ERR_BAD_PARAM, e.getMessage());
+        return new ErrorResponseDTO(new ErrorMessage(ERR_BAD_PARAM, e.getMessage()));
     }
 
     /**
@@ -45,7 +47,21 @@ public abstract class BaseRestController {
     @ResponseBody
     public ErrorResponseDTO handleException(Exception e) {
         logger.error(e.getMessage(), e);
-        return new ErrorResponseDTO(ERR_SYSTEM, e.getMessage());
+        return new ErrorResponseDTO(new ErrorMessage(ERR_SYSTEM, e.getMessage()));
+    }
+
+    /**
+     * Exception handler for bad request - Http status code of 400
+     *
+     * @param ex the exception throw
+     * @return a error response
+     */
+    @ExceptionHandler(ValidationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ErrorResponseDTO handleValidationException(ValidationException ex) {
+        logger.error(ex.getMessage(), ex);
+        return ex.getErrorResponse();
     }
 
     protected Log getLogger() {

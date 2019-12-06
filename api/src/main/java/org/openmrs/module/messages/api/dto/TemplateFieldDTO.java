@@ -2,6 +2,9 @@ package org.openmrs.module.messages.api.dto;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.hibernate.validator.constraints.NotBlank;
+import org.openmrs.module.messages.api.model.TemplateFieldType;
+import org.openmrs.module.messages.api.util.validate.ValueOfEnum;
 
 /**
  * Represent the DTO for the {@link org.openmrs.module.messages.api.model.TemplateField}
@@ -10,13 +13,16 @@ public class TemplateFieldDTO {
 
     private Integer id;
 
+    @NotBlank
     private String name;
 
     private boolean mandatory;
 
     private String defaultValue;
 
-    private String templateFieldType;
+    @NotBlank
+    @ValueOfEnum(enumClass = TemplateFieldType.class)
+    private String type;
 
     private String uuid;
 
@@ -56,12 +62,12 @@ public class TemplateFieldDTO {
         return this;
     }
 
-    public String getTemplateFieldType() {
-        return templateFieldType;
+    public String getType() {
+        return type;
     }
 
-    public TemplateFieldDTO setTemplateFieldType(String templateFieldType) {
-        this.templateFieldType = templateFieldType;
+    public TemplateFieldDTO setType(String templateFieldType) {
+        this.type = templateFieldType;
         return this;
     }
 

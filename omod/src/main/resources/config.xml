@@ -29,5 +29,15 @@
 		<description>Allows user to manage of messages template at the global level</description>
 	</privilege>
 
+	<filter>
+		<filter-name>Messages Authorization</filter-name>
+		<filter-class>org.openmrs.module.messages.web.filter.AuthorizationFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>Messages Authorization</filter-name>
+		<url-pattern>/ws/messages/*</url-pattern>
+	</filter-mapping>
+
 </module>
 

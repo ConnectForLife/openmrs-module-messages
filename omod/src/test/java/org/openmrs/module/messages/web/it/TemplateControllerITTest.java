@@ -4,8 +4,15 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.module.messages.Constant;
 import org.openmrs.module.messages.api.dto.PageDTO;
 import org.openmrs.module.messages.api.dto.TemplateDTO;
+import org.openmrs.module.messages.api.dto.TemplateFieldDTO;
+import org.openmrs.module.messages.api.mappers.TemplateMapper;
+import org.openmrs.module.messages.api.model.Template;
+import org.openmrs.module.messages.api.service.TemplateService;
+import org.openmrs.module.messages.builder.TemplateDTOBuilder;
+import org.openmrs.module.messages.builder.TemplateFieldDTOBuilder;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +24,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.io.IOException;
+import java.util.Collections;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -24,7 +32,10 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.openmrs.module.messages.Constant.PAGE_PARAM;
 import static org.openmrs.module.messages.Constant.ROWS_PARAM;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebAppConfiguration
@@ -50,10 +61,28 @@ public class TemplateControllerITTest extends BaseModuleWebContextSensitiveTest 
 
     private static final int EXPECTED_FIELDS_SET_SIZE_TEMP_2 = 1;
 
+    private static final String EMPTY_STRING = "";
+
+    private static final int EXPECTED_NUMBER_OF_ERROR = 6;
+
+    private static final String EXPECTED_ERROR_MESSAGE = "Template isn't a new object (use PUT tu update).";
+
+    private static final int EXISTING_TEMPLATE_ID = 2231;
+
+    private static final String UPDATED_NAME = "Updated Name";
+
+    private static final int EXPECTED_NUMBER_OF_FIELDS = 3;
+
     private MockMvc mockMvc;
 
     @Autowired
     private WebApplicationContext webApplicationContext;
+
+    @Autowired
+    private TemplateService templateService;
+
+    @Autowired
+    private TemplateMapper templateMapper;
 
     @Before
     public void setUp() throws Exception {
@@ -98,11 +127,73 @@ public class TemplateControllerITTest extends BaseModuleWebContextSensitiveTest 
         assertThat(page.getContent().get(0).getTemplateFields().size(), is(EXPECTED_FIELDS_SET_SIZE_TEMP_2));
     }
 
+    @Test
+    public void shouldReturnValidationExceptionWhenWrongRequest() throws Exception {
+        TemplateFieldDTO field = new TemplateFieldDTOBuilder()
+                .withName(EMPTY_STRING)
+                .withType(EMPTY_STRING)
+                .buildAsNew();
+        TemplateDTO request = new TemplateDTOBuilder()
+                .withName(EMPTY_STRING)
+                .withServiceQuery(EMPTY_STRING)
+                .withServiceQueryType(EMPTY_STRING)
+                .withTemplateFields(Collections.singletonList(field))
+                .buildAsNew();
+
+        mockMvc.perform(post(BASE_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json(request)))
+                .andExpect(status().is(org.apache.http.HttpStatus.SC_BAD_REQUEST))
+                .andExpect(content().contentType(Constant.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.errorMessages.length()").value(EXPECTED_NUMBER_OF_ERROR));
+    }
+
+    @Test
+    public void shouldCreateSuccessfully() throws Exception {
+        TemplateDTO request = new TemplateDTOBuilder().buildAsNew();
+        mockMvc.perform(post(BASE_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json(request)))
+                .andExpect(status().is(org.apache.http.HttpStatus.SC_CREATED))
+                .andExpect(content().contentType(Constant.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.id").value(notNullValue()))
+                .andExpect(jsonPath("$.uuid").value(notNullValue()));
+    }
+
+    @Test
+    public void shouldReturnValidationExceptionWhenPostWithNonNullId() throws Exception {
+        TemplateDTO request = new TemplateDTOBuilder().build();
+        mockMvc.perform(post(BASE_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json(request)))
+                .andExpect(status().is(org.apache.http.HttpStatus.SC_BAD_REQUEST))
+                .andExpect(content().contentType(Constant.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.errorMessages.[0].message").value(EXPECTED_ERROR_MESSAGE));
+    }
+
+    @Test
+    public void shouldUpdateSuccessfully() throws Exception {
+        Template existingTemplate = templateService.getById(EXISTING_TEMPLATE_ID);
+        TemplateDTO templateDTO = templateMapper.toDto(existingTemplate);
+        templateDTO.setName(UPDATED_NAME);
+        templateDTO.getTemplateFields().add(new TemplateFieldDTOBuilder().buildAsNew());
+        mockMvc.perform(put(BASE_URL + "/" + existingTemplate.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json(templateDTO)))
+                .andExpect(status().is(org.apache.http.HttpStatus.SC_OK))
+                .andExpect(content().contentType(Constant.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.name").value(UPDATED_NAME))
+                .andExpect(jsonPath("$.templateFields.length()").value(EXPECTED_NUMBER_OF_FIELDS));
+    }
+
     private PageDTO<TemplateDTO> getDtoFromResult(MvcResult result) throws IOException {
         return new ObjectMapper().readValue(
                 result.getResponse().getContentAsString(),
                 new TypeReference<PageDTO<TemplateDTO>>() {
-
                 });
+    }
+
+    private String json(Object obj) throws IOException {
+        return new ObjectMapper().writeValueAsString(obj);
     }
 }

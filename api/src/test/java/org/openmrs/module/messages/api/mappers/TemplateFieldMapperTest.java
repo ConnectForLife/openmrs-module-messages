@@ -34,7 +34,7 @@ public class TemplateFieldMapperTest {
         assertThat(actual.getName(), is(dao.getName()));
         assertThat(actual.getMandatory(), is(dao.getMandatory()));
         assertThat(actual.getDefaultValue(), is(dao.getDefaultValue()));
-        assertThat(actual.getTemplateFieldType(), is(dao.getTemplateFieldType().name()));
+        assertThat(actual.getType(), is(dao.getTemplateFieldType().name()));
         assertThat(actual.getUuid(), is(dao.getUuid()));
     }
 
@@ -46,7 +46,7 @@ public class TemplateFieldMapperTest {
         assertThat(actual.getName(), is(dto.getName()));
         assertThat(actual.getMandatory(), is(dto.getMandatory()));
         assertThat(actual.getDefaultValue(), is(dto.getDefaultValue()));
-        assertThat(actual.getTemplateFieldType().name(), is(dto.getTemplateFieldType()));
+        assertThat(actual.getTemplateFieldType().name(), is(dto.getType()));
         assertThat(actual.getUuid(), is(dto.getUuid()));
     }
 }

@@ -58,9 +58,22 @@
         <property name="dao" ref="messages.PatientTemplateDao"/>
     </bean>
 
-    <bean id="messages.templateService" class="org.openmrs.module.messages.api.service.impl.TemplateServiceImpl">
-        <property name="dao">
-            <ref local="messages.TemplateDao" />
+    <bean id="messages.templateService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="transactionManager">
+            <ref bean="transactionManager" />
+        </property>
+        <property name="target">
+            <bean class="org.openmrs.module.messages.api.service.impl.TemplateServiceImpl">
+                <property name="dao">
+                    <ref local="messages.TemplateDao" />
+                </property>
+            </bean>
+        </property>
+        <property name="preInterceptors">
+            <ref bean="serviceInterceptors" />
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource" />
         </property>
     </bean>
 
@@ -141,6 +154,14 @@
     <bean id="messages.templateMapper" class="org.openmrs.module.messages.api.mappers.TemplateMapper">
         <property name="templateFieldMapper">
             <ref local="messages.templateFieldMapper" />
+        </property>
+    </bean>
+
+    <bean id="messagesValidationFactory" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
+
+    <bean id="messages.validationComponent" class="org.openmrs.module.messages.api.util.validate.ValidationComponent">
+        <property name="factory">
+            <ref local="messagesValidationFactory"/>
         </property>
     </bean>
 </beans>

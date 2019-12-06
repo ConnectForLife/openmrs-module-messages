@@ -48,6 +48,11 @@
 				<version>${javax.servlet.version}</version>
 				<scope>provided</scope>
 			</dependency>
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpclient</artifactId>
+				<version>${apacheHttpClientVersion}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -275,6 +280,7 @@
 	</pluginRepositories>
 
 	<properties>
+		<apacheHttpClientVersion>4.4.1</apacheHttpClientVersion>
 		<openmrsPlatformVersion>2.0.1</openmrsPlatformVersion>
 		<javaCompilerSource>1.8</javaCompilerSource>
 		<javaCompilerTarget>1.8</javaCompilerTarget>

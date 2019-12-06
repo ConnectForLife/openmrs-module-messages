@@ -2,35 +2,57 @@ package org.openmrs.module.messages.api.dto;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.openmrs.module.messages.api.model.ErrorMessage;
+
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Represent the DTO for the Error Response
  */
-public class ErrorResponseDTO {
+public class ErrorResponseDTO implements Serializable {
 
-    private String code;
+    private static final long serialVersionUID = -8870048107491805181L;
 
-    private String message;
+    private String error;
 
-    public ErrorResponseDTO(String code, String message) {
-        this.code = code;
-        this.message = message;
+    private List<ErrorMessage> errorMessages;
+
+    public ErrorResponseDTO(String error) {
+        this.error = error;
     }
 
-    public String getMessage() {
-        return message;
+    public ErrorResponseDTO(String error, List<ErrorMessage> errorMessages) {
+        this.error = error;
+        this.errorMessages = errorMessages;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public ErrorResponseDTO(List<ErrorMessage> errorMessages) {
+        this.error = "Occurred errors:";
+        this.errorMessages = errorMessages;
     }
 
-    public String getCode() {
-        return code;
+    public ErrorResponseDTO(ErrorMessage errorMessage) {
+        this(Collections.singletonList(errorMessage));
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public String getError() {
+        return error;
+    }
+
+    public ErrorResponseDTO setError(String error) {
+        this.error = error;
+        return this;
+    }
+
+    public List<ErrorMessage> getErrorMessages() {
+        return errorMessages;
+    }
+
+    public ErrorResponseDTO setErrorMessages(List<ErrorMessage> errorMessages) {
+        this.errorMessages = errorMessages;
+        return this;
     }
 
     @Override

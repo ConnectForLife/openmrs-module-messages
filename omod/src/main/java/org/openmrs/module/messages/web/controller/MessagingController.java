@@ -5,12 +5,13 @@ import org.openmrs.module.messages.api.dto.MessageDetailsDTO;
 import org.openmrs.module.messages.api.execution.ExecutionException;
 import org.openmrs.module.messages.api.execution.ServiceResultList;
 import org.openmrs.module.messages.api.mappers.MessageDetailsMapper;
+import org.openmrs.module.messages.api.model.ErrorMessage;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.service.MessagingService;
 import org.openmrs.module.messages.api.service.PatientTemplateService;
-import org.openmrs.module.messages.web.model.MessagingParams;
 import org.openmrs.module.messages.domain.PagingInfo;
 import org.openmrs.module.messages.domain.criteria.PatientTemplateCriteria;
+import org.openmrs.module.messages.web.model.MessagingParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -70,6 +71,6 @@ public class MessagingController extends BaseRestController {
     @ResponseBody
     public ErrorResponseDTO handleIllegalArgumentException(ExecutionException exception) {
         getLogger().error(exception.getMessage(), exception);
-        return new ErrorResponseDTO(ERR_EXECUTION, exception.getMessage());
+        return new ErrorResponseDTO(new ErrorMessage(ERR_EXECUTION, exception.getMessage()));
     }
 }
