@@ -14,6 +14,9 @@ import FormSection from '@bit/soldevelo-omrs.cfl-components.form-entry/model/for
 import FormSubSection from '@bit/soldevelo-omrs.cfl-components.form-entry/model/form-subsection';
 import FormEntry from '@bit/soldevelo-omrs.cfl-components.form-entry';
 import './patient-template.scss';
+import PatientTemplateForm from './patient-template-form';
+import { TemplateUI } from '../../shared/model/template-ui';
+import { getPatientTemplateWithTemplateId } from '../../selectors/patient-template-selector';
 
 interface IPatientTemplateEditProps extends DispatchProps, StateProps, RouteComponentProps<{ patientId: string }> {
   isNew: boolean
@@ -37,7 +40,8 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
   }
 
   handleSave = () => {
-    this.props.putPatientTemplates(this.props.patientTemplates, this.props.templates);
+    this.props.putPatientTemplates(this.props.patientTemplates, this.props.templates,
+      parseInt(this.props.match.params.patientId));
   }
 
   renderTemplateState = () => {
@@ -69,11 +73,13 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
     const sections = [] as Array<FormSection>;
     const subsections = [] as Array<FormSubSection>;
 
-    this.props.templates.forEach((template) => {
+    this.props.templates.forEach((template: TemplateUI) => {
       const name = template.name ? template.name : `Template ${template.localId}`;
 
-      //TODO in CFLM-305: replace fragment with real template component
-      const fragment = <div>{`Template ${template.localId} body (Work in progress...)`}</div>;
+      const fragment = <PatientTemplateForm
+        patientTemplate={getPatientTemplateWithTemplateId(this.props.patientTemplates, template.id!)}
+        template={template}
+      />
 
       //TODO in CFLM-306: decide if the 'completed-icon' should be displayed next to section name
       //(if the section was completed)
@@ -91,12 +97,11 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
   }
 
   render() {
-    const { isNew } = this.props;
     return (
       <div className="body-wrapper">
         <div className="panel-body">
           <h2>Patient Template Edit page</h2>
-          {this.renderTemplateState()}
+          {!this.props.loading && this.renderTemplateState()}
         </div>
         <div className="panel-body">
           <Button
@@ -113,7 +118,8 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
 const mapStateToProps = ({ patientTemplate }: IRootState) => ({
   templates: patientTemplate.templates,
   patientTemplates: patientTemplate.patientTemplates,
-  selectedTemplate: patientTemplate.selectedTemplate
+  selectedTemplate: patientTemplate.selectedTemplate,
+  loading: patientTemplate.patientTemplatesLoading || patientTemplate.templatesLoading
 });
 
 const mapDispatchToProps = ({

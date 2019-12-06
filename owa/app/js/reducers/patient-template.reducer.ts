@@ -3,7 +3,6 @@ import _ from 'lodash';
 import { REQUEST, SUCCESS, FAILURE } from './action-type.util'
 import 'react-toastify/dist/ReactToastify.css';
 import { PatientTemplateUI } from '../shared/model/patient-template-ui';
-import { IPatientTemplate } from '../shared/model/patient-template.model';
 import { TemplateUI } from '../shared/model/template-ui';
 import { toModel, mergeWithObjectUIs } from '../shared/model/object-ui';
 import { handleRequest } from '@bit/soldevelo-omrs.cfl-components.request-toast-handler';
@@ -108,6 +107,7 @@ export default (state = initialState, action) => {
 };
 
 const templatesUrl = "ws/messages/templates";
+const patientTemplatesUrl = "ws/patient-templates";
 
 //TODO in CFLM-377: Change to real pagination request
 export const getTemplatesPage = (page, size, sort, order, filters) => async (dispatch) => {
@@ -122,67 +122,13 @@ export const getTemplates = () => ({
   payload: axiosInstance.get(templatesUrl)
 });
 
-export const getPatientTemplates = (patientId: number) => ({
-  // TODO: use API instead of resolved promise
-  type: ACTION_TYPES.GET_PATIENT_TEMPLATES,
-  payload: Promise.resolve({
-    data: {
-      content: [
-        {
-          id: 1,
-          patientId: patientId,
-          templateId: 1,
-          actorId: 1,
-          actorTypeId: 1,
-          templateFieldValues: [{
-            id: 1,
-            templateFieldId: 1,
-            value: 'a'
-          },
-          {
-            id: 2,
-            templateFieldId: 2,
-            value: 'b'
-          }
-          ]
-        }, {
-          id: 2,
-          patientId: patientId,
-          templateId: 1,
-          actorId: 2,
-          actorTypeId: 2,
-          templateFieldValues: [{
-            id: 3,
-            templateFieldId: 1,
-            value: 'a'
-          },
-          {
-            id: 4,
-            templateFieldId: 2,
-            value: 'b'
-          }
-          ]
-        }, {
-          id: 3,
-          patientId: patientId,
-          templateId: 2,
-          actorId: 3,
-          actorTypeId: 1,
-          templateFieldValues: [{
-            id: 5,
-            templateFieldId: 1,
-            value: 'c'
-          },
-          {
-            id: 6,
-            templateFieldId: 3,
-            value: 'd'
-          }
-          ]
-        }] as Array<IPatientTemplate>
-    }
-  })
-});
+export const getPatientTemplates = (patientId: number) => async (dispatch) => {
+  const requestUrl = `${patientTemplatesUrl}/patient/${patientId}`
+  await dispatch({
+    type: ACTION_TYPES.GET_PATIENT_TEMPLATES,
+    payload: axiosInstance.get(requestUrl)
+  });
+};
 
 export const selectTemplate = (template) => ({
   type: ACTION_TYPES.SELECT_TEMPLATE,
@@ -193,12 +139,13 @@ export const reset = () => ({
   type: ACTION_TYPES.RESET
 });
 
-export const putPatientTemplates = (patientTemplates: Array<PatientTemplateUI>, templates: Array<TemplateUI>) => async (dispatch) => {
+export const putPatientTemplates = (patientTemplates: Array<PatientTemplateUI>, templates: Array<TemplateUI>, patientId: number) => async (dispatch) => {
   const validated = await validatePatientTemplates(patientTemplates, templates, true);
+  const requestUrl = `${patientTemplatesUrl}/patient/${patientId}`
   if (isValid(validated)) {
     const body = {
       type: ACTION_TYPES.PUT_PATIENT_TEMPLATES,
-      payload: Promise.resolve(_.map(validated, toModel)) // TODO: use API instead of resolved promise
+      payload: axiosInstance.post(requestUrl, { patientTemplates: _.map(validated, toModel) })
     }
     await handleRequest(dispatch, body, Msg.GENERIC_SUCCESS, Msg.GENERIC_FAILURE);
     history.push('/messages/patient-template'); //TODO: CFLM-255: Return to 'messages manage'

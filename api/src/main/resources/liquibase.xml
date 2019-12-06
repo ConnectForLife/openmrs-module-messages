@@ -540,4 +540,20 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="messages-17" author="Karol Cissewski">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="messages_template_field_value"/>
+        </preConditions>
+        <comment>Added patient_template_id column</comment>
+        <addColumn tableName="messages_template_field_value">
+            <column name="patient_template_id" type="int">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+        <addForeignKeyConstraint baseTableName="messages_template_field_value" baseColumnNames="patient_template_id"
+                                 constraintName="fk_messages_template_field_value_patient_template_id"
+                                 referencedTableName="messages_patient_template"
+                                 referencedColumnNames="messages_patient_template_id"/>
+    </changeSet>
+
 </databaseChangeLog>
