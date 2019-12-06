@@ -1,6 +1,7 @@
 package org.openmrs.module.messages.api.dto;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PatientTemplateDTO implements Serializable {
@@ -9,7 +10,7 @@ public class PatientTemplateDTO implements Serializable {
 
     private Integer id;
 
-    private List<TemplateFieldValueDTO> templateFieldValues;
+    private List<TemplateFieldValueDTO> templateFieldValues = new ArrayList<TemplateFieldValueDTO>();
 
     private Integer patientId;
 
@@ -19,11 +20,11 @@ public class PatientTemplateDTO implements Serializable {
 
     private Integer actorTypeId;
 
-    public PatientTemplateDTO() {
-    }
+    private String serviceQuery;
 
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
+    private String serviceQueryType;
+
+    public PatientTemplateDTO() {
     }
 
     public Integer getId() {
@@ -77,6 +78,24 @@ public class PatientTemplateDTO implements Serializable {
 
     public PatientTemplateDTO setActorTypeId(Integer actorTypeId) {
         this.actorTypeId = actorTypeId;
+        return this;
+    }
+
+    public String getServiceQuery() {
+        return serviceQuery;
+    }
+
+    public PatientTemplateDTO setServiceQuery(String serviceQuery) {
+        this.serviceQuery = serviceQuery;
+        return this;
+    }
+
+    public String getServiceQueryType() {
+        return serviceQueryType;
+    }
+
+    public PatientTemplateDTO setServiceQueryType(String serviceQueryType) {
+        this.serviceQueryType = serviceQueryType;
         return this;
     }
 }

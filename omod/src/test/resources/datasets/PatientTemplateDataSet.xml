@@ -117,6 +117,43 @@
             date_created="2019-11-16 15:57:09.0"
             voided="false"/>
 
+    <!-- Patient #3 -->
+    <person
+            person_id="103"
+            gender="M"
+            dead="false"
+            creator="1"
+            date_created="2019-11-16 15:57:09.0"
+            voided="false"/>
+
+    <person_name
+            person_name_id="103"
+            preferred="true"
+            person_id="103"
+            given_name="Second"
+            middle_name="Sick"
+            family_name="Person"
+            creator="1"
+            date_created="2019-11-16 15:57:09.0"
+            voided="false"/>
+
+    <patient
+            patient_id="103"
+            creator="1"
+            date_created="2019-11-16 15:57:09.0"
+            voided="false"/>
+
+    <patient_identifier
+            patient_identifier_id="103"
+            patient_id="103"
+            identifier="CCC123ABC123"
+            identifier_type="100"
+            preferred="1"
+            location_id="1"
+            creator="1"
+            date_created="2019-11-16 15:57:09.0"
+            voided="false"/>
+
     <!-- Relations: caregiver and patients -->
     <relationship
             relationship_id="101"
@@ -130,6 +167,15 @@
     <relationship
             relationship_id="102"
             person_a="102"
+            relationship="100"
+            person_b="100"
+            creator="1"
+            date_created="2019-11-20 00:00:00.0"
+            voided="false"/>
+
+    <relationship
+            relationship_id="103"
+            person_a="103"
             relationship="100"
             person_b="100"
             creator="1"

@@ -1,6 +1,8 @@
 package org.openmrs.module.messages.api.mappers;
 
 import org.openmrs.module.messages.api.dto.TemplateFieldValueDTO;
+import org.openmrs.module.messages.api.model.PatientTemplate;
+import org.openmrs.module.messages.api.model.TemplateField;
 import org.openmrs.module.messages.api.model.TemplateFieldValue;
 
 public class TemplateFieldValueMapper extends AbstractMapper<TemplateFieldValueDTO, TemplateFieldValue> {
@@ -9,12 +11,25 @@ public class TemplateFieldValueMapper extends AbstractMapper<TemplateFieldValueD
     public TemplateFieldValueDTO toDto(TemplateFieldValue dao) {
         return new TemplateFieldValueDTO()
             .setId(dao.getId())
-            .setTemplateFieldId(dao.getTemplateField().getId())
-            .setValue(dao.getValue());
+            .setValue(dao.getValue())
+            .setPatientTemplateId(dao.getPatientTemplate().getId())
+            .setTemplateFieldId(dao.getTemplateField().getId());
     }
 
     @Override
     public TemplateFieldValue fromDto(TemplateFieldValueDTO dto) {
-            throw new UnsupportedOperationException();
+        TemplateFieldValue dao = new TemplateFieldValue();
+        dao.setId(dto.getId());
+        dao.setValue(dto.getValue());
+
+        PatientTemplate patientTemplate = new PatientTemplate();
+        patientTemplate.setId(dto.getPatientTemplateId());
+        dao.setPatientTemplate(patientTemplate);
+
+        TemplateField templateField = new TemplateField();
+        templateField.setId(dto.getTemplateFieldId());
+        dao.setTemplateField(templateField);
+
+        return dao;
     }
 }

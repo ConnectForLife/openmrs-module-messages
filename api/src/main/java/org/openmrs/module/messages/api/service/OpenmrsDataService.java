@@ -47,7 +47,17 @@ public interface OpenmrsDataService<T extends BaseOpenmrsData> extends OpenmrsSe
      * @throws APIException - service exception
      */
     T saveOrUpdate(T newOrPersisted) throws APIException;
-    
+
+    /**
+     * Save or update a collection of data in the database
+     * It can be called by users with this module's privilege. It is executed in a transaction.
+     *
+     * @param collection - collection of data to save or update
+     * @return collection of data that was saved or updated
+     * @throws APIException - service exception
+     */
+    List<T> saveOrUpdate(List<T> collection) throws APIException;
+
     /**
      * Return a list of persistents (optionally voided)
      * It can be called by users with this module's privilege. It is executed in a transaction.

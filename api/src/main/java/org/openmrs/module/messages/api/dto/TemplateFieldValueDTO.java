@@ -1,10 +1,16 @@
 package org.openmrs.module.messages.api.dto;
 
-public class TemplateFieldValueDTO {
+import java.io.Serializable;
+
+public class TemplateFieldValueDTO implements Serializable {
+
+    private static final long serialVersionUID = -1685385476367160219L;
 
     private Integer id;
 
     private Integer templateFieldId;
+
+    private Integer patientTemplateId;
 
     private String value;
 
@@ -26,6 +32,15 @@ public class TemplateFieldValueDTO {
 
     public TemplateFieldValueDTO setTemplateFieldId(Integer templateFieldId) {
         this.templateFieldId = templateFieldId;
+        return this;
+    }
+
+    public Integer getPatientTemplateId() {
+        return patientTemplateId;
+    }
+
+    public TemplateFieldValueDTO setPatientTemplateId(Integer patientTemplateId) {
+        this.patientTemplateId = patientTemplateId;
         return this;
     }
 

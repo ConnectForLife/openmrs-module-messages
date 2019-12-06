@@ -10,6 +10,7 @@ import org.openmrs.module.messages.domain.criteria.BaseCriteria;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Transactional
@@ -49,6 +50,15 @@ public class BaseOpenmrsDataService<T extends BaseOpenmrsData> extends BaseOpenm
     @Override
     public T saveOrUpdate(T newOrPersisted) throws APIException {
         return dao.saveOrUpdate(newOrPersisted);
+    }
+
+    @Override
+    public List<T> saveOrUpdate(List<T> collection) throws APIException {
+        List<T> result = new ArrayList<T>();
+        for (T newOrPersisted : collection) {
+            result.add(saveOrUpdate(newOrPersisted));
+        }
+        return result;
     }
 
     @Override
