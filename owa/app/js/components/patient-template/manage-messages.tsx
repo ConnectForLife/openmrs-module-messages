@@ -4,6 +4,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import { IRootState } from '../../reducers';
 import './patient-template.scss';
 import BestContactTime from './best-contact-time';
+import ScheduledMessages from './scheduled-messages';
 
 interface IManageMessagesProps extends DispatchProps, StateProps, RouteComponentProps<{ patientId: string }> {
 };
@@ -20,6 +21,7 @@ class ManageMessages extends React.PureComponent<IManageMessagesProps, IManageMe
         <p>For patient {patientId}</p>
         <div className="panel-body">
           <BestContactTime />
+          <ScheduledMessages patientId={patientId} />
         </div>
       </div>
     );

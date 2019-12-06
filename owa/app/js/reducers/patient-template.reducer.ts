@@ -109,6 +109,14 @@ export default (state = initialState, action) => {
 
 const templatesUrl = "ws/messages/templates";
 
+//TODO in CFLM-377: Change to real pagination request
+export const getTemplatesPage = (page, size, sort, order, filters) => async (dispatch) => {
+  await dispatch({
+    type: ACTION_TYPES.GET_TEMPLATES,
+    payload: axiosInstance.get(templatesUrl)
+  });
+};
+
 export const getTemplates = () => ({
   type: ACTION_TYPES.GET_TEMPLATES,
   payload: axiosInstance.get(templatesUrl)
