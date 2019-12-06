@@ -3,7 +3,7 @@ import uuid from 'uuid';
 
 export class ObjectUI<T> {
   private _localId: string;
-  private _modelKeys: Array<String>;
+  private _modelKeys: string[];
 
   constructor(model: T) {
     if (this.constructor === ObjectUI) {
@@ -47,7 +47,23 @@ export class ObjectUI<T> {
   }
 }
 
-export const toModel = <T>(ui: ObjectUI<T>): T => ui.toModel();
+export const mergeWithObjectUIs = <T>(oldArray: Array<ObjectUI<T>>, newObject: ObjectUI<T>): Array<ObjectUI<T>> => {
+  let modifiedAny = false;
+  const newArray: Array<ObjectUI<T>> = _.map(
+    oldArray,
+    oldObject => {
+      if (oldObject.localId === newObject.localId) {
+        modifiedAny = true;
+        return newObject;
+      }
+      return oldObject;
+    }
+  );
 
-// TODO: CFLM-302 object merging
-// TODO: CFLM-302 validatation https://github.com/jquense/yup/issues/368
+  if (!modifiedAny) {
+    newArray.push(newObject);
+  }
+  return newArray;
+}
+
+export const toModel = <T>(ui: ObjectUI<T>): T => ui.toModel();

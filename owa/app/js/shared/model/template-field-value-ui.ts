@@ -4,6 +4,7 @@ import { ObjectUI } from './object-ui';
 import { ITemplateFieldValue, getDefaultValue } from './template-field-value.model';
 import { IFormField } from './form-field';
 import { TemplateUI } from './template-ui';
+import { TemplateFieldUI } from './template-field-ui';
 
 export class TemplateFieldValueUI extends ObjectUI<ITemplateFieldValue> implements ITemplateFieldValue, IFormField {
   id: number | null;
@@ -37,14 +38,15 @@ export class TemplateFieldValueUI extends ObjectUI<ITemplateFieldValue> implemen
   getFieldName(template: TemplateUI): string {
     return _(template.templateFields)
       .filter(templateField => templateField.id === this.templateFieldId)
-      .first()
+      .first()!
       .name;
   }
 
-  static getNew(templateFieldId: number): TemplateFieldValueUI {
+  static getNew(templateField: TemplateFieldUI): TemplateFieldValueUI {
     return new TemplateFieldValueUI({
       ...getDefaultValue(),
-      templateFieldId
+      templateFieldId: templateField.id!,
+      value: templateField.defaultValue,
     });
   }
 }
