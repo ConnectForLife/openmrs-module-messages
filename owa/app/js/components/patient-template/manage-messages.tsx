@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
 import { IRootState } from '../../reducers';
 import './patient-template.scss';
+import BestContactTime from './best-contact-time';
 
 interface IManageMessagesProps extends DispatchProps, StateProps, RouteComponentProps<{ patientId: string }> {
 };
@@ -17,6 +18,9 @@ class ManageMessages extends React.PureComponent<IManageMessagesProps, IManageMe
       <div className="body-wrapper">
         <h2>Manage messages</h2>
         <p>For patient {patientId}</p>
+        <div className="panel-body">
+          <BestContactTime />
+        </div>
       </div>
     );
   }
