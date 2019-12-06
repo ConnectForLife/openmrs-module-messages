@@ -71,6 +71,9 @@ public class ExecutionEngineContextTest extends BaseModuleContextSensitiveTest {
         assertEquals(ServiceStatus.FUTURE, result.getServiceStatus());
         // query adds 1 year to the birth date
         assertEquals(DateUtils.addYears(BIRTH_DATE, 1).getTime(), result.getExecutionDate().getTime());
+
+        assertEquals(1, result.getAdditionalParams().size());
+        assertEquals("M", result.getAdditionalParams().get("GENDER"));
     }
 
     private PatientTemplate prepareData() {
@@ -98,7 +101,9 @@ public class ExecutionEngineContextTest extends BaseModuleContextSensitiveTest {
         patientTemplate.setPatient(patient);
         patientTemplate.setActor(patient);
         patientTemplate.setServiceQueryType("SQL");
-        patientTemplate.setServiceQuery("SELECT DATEADD('YEAR', 1, per.birthdate), 'msg', 1 FROM patient p " +
+        patientTemplate.setServiceQuery("SELECT DATEADD('YEAR', 1, per.birthdate) AS EXECUTION_DATE, 'msg' AS MESSAGE_ID, " +
+                "1 AS CHANNEL_ID, per.gender AS GENDER " +
+                "FROM patient p " +
                 "JOIN person per ON per.person_id = p.patient_id  " +
                 "WHERE per.birthdate > :startDate AND per.birthdate < :endDate");
 

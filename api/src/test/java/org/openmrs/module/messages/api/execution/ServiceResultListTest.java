@@ -15,7 +15,9 @@ import org.openmrs.module.messages.api.model.types.ServiceStatus;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
@@ -85,15 +87,15 @@ public class ServiceResultListTest {
         }
     }
 
-    private List<Object[]> buildRows() {
-        List<Object[]> rows = new ArrayList<>();
+    private List<Map<String, Object>> buildRows() {
+        List<Map<String, Object>> rows = new ArrayList<>();
         for (int i = 0; i < EXEC_DATES.size(); i++) {
-            Object[] row = new Object[ServiceResult.MAX_COL_NUM];
+            Map<String, Object> row = new HashMap<>();
 
-            row[ServiceResult.EXEC_DATE_INDEX] = EXEC_DATES.get(i);
-            row[ServiceResult.MSG_ID_INDEX] = MSG_IDS.get(i);
-            row[ServiceResult.CHANNEL_ID_INDEX] = CHANNEL_IDS.get(i);
-            row[ServiceResult.STATUS_COL_INDEX] = SERVICE_STATUSES.get(i).toString();
+            row.put(ServiceResult.EXEC_DATE_ALIAS, EXEC_DATES.get(i));
+            row.put(ServiceResult.MSG_ID_ALIAS, MSG_IDS.get(i));
+            row.put(ServiceResult.CHANNEL_ID_ALIAS, CHANNEL_IDS.get(i));
+            row.put(ServiceResult.STATUS_COL_ALIAS, SERVICE_STATUSES.get(i).toString());
 
             rows.add(row);
         }

@@ -4,6 +4,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.SQLQuery;
+import org.hibernate.transform.Transformers;
 import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.module.messages.api.execution.ExecutionContext;
 import org.openmrs.module.messages.api.execution.ExecutionEngine;
@@ -39,9 +40,10 @@ public class SqlExecutionEngine implements ExecutionEngine {
 
     private ServiceResultList executeQuery(ExecutionContext executionContext) {
         SQLQuery sqlQuery = dbSessionFactory.getCurrentSession().createSQLQuery(executionContext.getQuery());
+        sqlQuery.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
         setParams(sqlQuery, executionContext.getParams());
 
-        List<Object[]> result = sqlQuery.list();
+        List<Map<String, Object>> result = sqlQuery.list();
 
         return ServiceResultList.createList(
                 result,

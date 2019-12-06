@@ -6,6 +6,7 @@ import org.openmrs.module.messages.api.model.PatientTemplate;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Represents a list of execution for a service/message.
@@ -22,8 +23,8 @@ public class ServiceResultList implements Serializable {
     private Date endDate;
     private List<ServiceResult> results;
 
-    public static ServiceResultList createList(List<Object[]> rowList, PatientTemplate patientTemplate,
-                                           Range<Date> dateRange) {
+    public static ServiceResultList createList(List<Map<String, Object>> rowList, PatientTemplate patientTemplate,
+                                               Range<Date> dateRange) {
         ServiceResultList resultList = new ServiceResultList();
 
         List<ServiceResult> results = ServiceResult.parseList(rowList);

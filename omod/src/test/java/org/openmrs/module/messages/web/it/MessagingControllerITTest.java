@@ -182,7 +182,7 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
                 patient1,
                 patient1,
                 null,
-                "SELECT now(), 'test-msg', 1;",
+                "SELECT now() AS EXECUTION_DATE, 'test-msg' AS MESSAGE_ID, 1 AS CHANNEL_ID;",
                 "SQL"
         );
 
