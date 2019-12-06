@@ -5,7 +5,7 @@ import { IPatientTemplate, getDefaultValue } from './patient-template.model';
 import { TemplateFieldValueUI } from './template-field-value-ui';
 import { TemplateUI } from './template-ui';
 import { IForm } from './form';
-import { validateFormAsSuccess } from '../utils/validation-util';
+import { validateFormSafely } from '@bit/soldevelo-omrs.cfl-components.validation';
 
 export class PatientTemplateUI extends ObjectUI<IPatientTemplate> implements IPatientTemplate, IForm {
   id: number | null;
@@ -35,7 +35,7 @@ export class PatientTemplateUI extends ObjectUI<IPatientTemplate> implements IPa
       .first()!
       .getValidationSchema(validateNotTouched);
 
-    const validationResult = await validateFormAsSuccess(form, schema);
+    const validationResult = await validateFormSafely(form, schema);
 
     const patientTemplate = _.clone(this);
     patientTemplate.errors = validationResult;
