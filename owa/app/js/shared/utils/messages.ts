@@ -17,3 +17,7 @@ export const PATIENT_TEMPLATE_BREADCRUMB = 'Patient Template';
 export const MANAGE_BREADCRUMB = 'Manage';
 export const NEW_PATIENT_TEMPLATE_BREADCRUMB = 'New';
 export const EDIT_PATIENT_TEMPLATE_BREADCRUMB = 'Edit';
+
+// Best contact time
+export const BEST_CONTACT_TIME_LABEL = 'Best Contact Time';
+export const CALENDAR_OVERVIEW_LABEL = 'Calendar Overview';

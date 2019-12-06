@@ -1,13 +1,21 @@
-#best-contact-time-fieldset {
-  border: 1px solid silver;
-  margin: 0 2px;
-  width: fit-content;
-  padding: 0px 20px 10px 20px;
+#best-contact-time {
+
+  .button-section {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  fieldset {
+    border: 1px solid silver;
+    margin: 0 2px;
+    width: fit-content;
+    padding: 0px 20px 10px 20px;
+  }
 
   legend {
     width: auto;
     border: none;
-    margin-bottom: none;
+    margin-bottom: 0px;
     font-size: 14pt;
   }
 

@@ -19,7 +19,7 @@ export default (store) => (
         <Header />
         <BreadCrumb />
         <Switch>
-            <Route path="/messages/patient-template" component={PatientTemplate} />
+            <Route path="/messages/:patientId/patient-template" component={PatientTemplate} />
             <Route path="/messages/manage" component={AppManagement} />
             <Route path="/messages" component={App} />
         </Switch>

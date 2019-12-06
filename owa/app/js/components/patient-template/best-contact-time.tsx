@@ -5,9 +5,11 @@ import { IRootState } from '../../reducers';
 import { RouteComponentProps } from 'react-router';
 import { connect } from 'react-redux';
 import { getBestContactTime, putBestContactTime } from '../../reducers/best-contact-time.reducer';
+import { history } from '../../config/redux-store';
 import './best-contact-time.scss';
 
-interface IBestContactTimeProps extends DispatchProps, StateProps, RouteComponentProps<{ patientId: string }> {
+interface IBestContactTimeProps extends DispatchProps, StateProps {
+  patientId: string
 };
 
 interface IBestContactTimeState {
@@ -23,37 +25,61 @@ class BestContactTime extends React.PureComponent<IBestContactTimeProps, IBestCo
     //TODO: CFLM-377: this.props.getBestContactTime(this.props.match.params.patientId);
   }
 
+  handleCalendarOverview = () => {
+    const patientId = this.props.patientId;
+    history.push(`/messages/${patientId}`);
+  }
+
   handleSave = () => {
     alert('Not yet supported');
     //TODO: CFLM-377: this.props.putBestContactTime(this.props.match.params.patientId);
   }
 
-  renderTimePickers = () =>
-    <div className="sections">
-      <div className="time-section">
-        <span>Patient</span>
-        <input type="time"></input>
-      </div>
-      <div className="time-section">
-        <span>Caregiver</span>
-        <input type="time"></input>
-      </div>
-    </div>
+  renderCalendarOverviewButton() {
+    return (
+      <Button
+        className="btn btn-secondary btn-md"
+        onClick={this.handleCalendarOverview}>
+        {Msg.CALENDAR_OVERVIEW_LABEL}
+      </Button>
+    );
+  }
 
-  renderSaveButton = () =>
-    <Button
-      className="btn btn-success btn-md pull-right"
-      onClick={this.handleSave}>
-      {Msg.SAVE_BUTTON_LABEL}
-    </Button>
+  renderSaveButton() {
+    return (
+      <Button
+        className="btn btn-success btn-md"
+        onClick={this.handleSave}>
+        {Msg.SAVE_BUTTON_LABEL}
+      </Button>
+    );
+  }
+
+  renderTimePickers() {
+    return (
+      <div className="sections">
+        <div className="time-section">
+          <span>Patient</span>
+          <input type="time"></input>
+        </div>
+        <div className="time-section">
+          <span>Caregiver</span>
+          <input type="time"></input>
+        </div>
+      </div>
+    );
+  }
 
   render() {
     return (
-      <div>
-        <fieldset id="best-contact-time-fieldset">
-          <legend>Best Contact Time</legend>
-          {this.renderTimePickers()}
+      <div id="best-contact-time">
+        <div className="button-section">
+          {this.renderCalendarOverviewButton()}
           {this.renderSaveButton()}
+        </div>
+        <fieldset>
+          <legend>{Msg.BEST_CONTACT_TIME_LABEL}</legend>
+          {this.renderTimePickers()}
         </fieldset>
       </div>
     );
