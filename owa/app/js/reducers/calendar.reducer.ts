@@ -60,8 +60,8 @@ export const getServiceResultLists = (startDate: Date, endDate: Date, patientId:
     //payload: axiosInstance.get(`${templatesUrl}?startDate=${startDate.valueOf()}&endDate=${endDate.valueOf()}&patientId=${patientId}`)
     payload: Promise.resolve([
       {
-        patientId: 7,
-        actorId: 7,
+        patientId: patientId,
+        actorId: patientId,
         serviceId: 1,
         serviceName: 'Adherance Reports',
         startDate: new Date(),
@@ -76,8 +76,8 @@ export const getServiceResultLists = (startDate: Date, endDate: Date, patientId:
         ]
       },
       {
-        patientId: 7,
-        actorId: 7,
+        patientId: patientId,
+        actorId: patientId,
         serviceId: 1,
         serviceName: 'Adherance Reports',
         startDate: new Date(),
@@ -92,8 +92,8 @@ export const getServiceResultLists = (startDate: Date, endDate: Date, patientId:
         ]
       },
       {
-        patientId: 7,
-        actorId: 7,
+        patientId: patientId,
+        actorId: patientId,
         serviceId: 1,
         serviceName: 'Health Tip',
         startDate: new Date(),
@@ -108,8 +108,8 @@ export const getServiceResultLists = (startDate: Date, endDate: Date, patientId:
         ]
       },
       {
-        patientId: 7,
-        actorId: 7,
+        patientId: patientId,
+        actorId: patientId,
         serviceId: 1,
         serviceName: 'Health Tip',
         startDate: new Date(),
@@ -125,8 +125,8 @@ export const getServiceResultLists = (startDate: Date, endDate: Date, patientId:
       }
       ,
       {
-        patientId: 7,
-        actorId: 7,
+        patientId: patientId,
+        actorId: patientId,
         serviceId: 1,
         serviceName: 'Adherance Reports',
         startDate: new Date(),
@@ -141,8 +141,8 @@ export const getServiceResultLists = (startDate: Date, endDate: Date, patientId:
         ]
       },
       {
-        patientId: 7,
-        actorId: 8,
+        patientId: patientId,
+        actorId: patientId,
         serviceId: 1,
         serviceName: 'Adherance Reports',
         startDate: new Date(),

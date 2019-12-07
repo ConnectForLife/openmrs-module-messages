@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { REQUEST, SUCCESS, FAILURE } from './action-type.util'
+import { REQUEST, SUCCESS, FAILURE } from './action-type.util';
 import 'react-toastify/dist/ReactToastify.css';
 import { PatientTemplateUI } from '../shared/model/patient-template-ui';
 import { TemplateUI } from '../shared/model/template-ui';
@@ -9,6 +9,7 @@ import { handleRequest } from '@bit/soldevelo-omrs.cfl-components.request-toast-
 import * as Msg from '../shared/utils/messages';
 import { history } from '../config/redux-store';
 import axiosInstance from '../config/axios';
+import MessageDetails from '../shared/model/message-details';
 
 export const ACTION_TYPES = {
   GET_TEMPLATES: 'patientTemplateReducer/GET_TEMPLATES',
@@ -17,21 +18,29 @@ export const ACTION_TYPES = {
   RESET: 'patientTemplateReducer/RESET',
   UPDATE_PATIENT_TEMPLATE: 'patientTemplateReducer/UPDATE_PATIENT_TEMPLATE',
   UPDATE_PATIENT_TEMPLATES: 'patientTemplateReducer/UPDATE_PATIENT_TEMPLATES',
-  SELECT_TEMPLATE: 'patientTemplateReducer/SELECT_TEMPLATE'
+  SELECT_TEMPLATE: 'patientTemplateReducer/SELECT_TEMPLATE',
+  GET_MESSAGE_DETAILS: 'patientTemplateReducer/GET_MESSAGE_DETAILS'
 };
 
 const initialState = {
   templates: [] as Array<TemplateUI>,
   templatesLoading: false,
-  selectedTemplate: TemplateUI,
+  selectedTemplate: null as unknown as TemplateUI,
   patientTemplates: [] as Array<PatientTemplateUI>,
-  patientTemplatesLoading: false
+  patientTemplatesLoading: false,
+  messageDetails: null as unknown as MessageDetails
 };
 
 export type PatientTemplateState = Readonly<typeof initialState>;
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    //TODO in CFLM-376: add loading when fetching data
+    case REQUEST(ACTION_TYPES.GET_MESSAGE_DETAILS):
+    case REQUEST(ACTION_TYPES.GET_MESSAGE_DETAILS):
+      return {
+        ...state
+      };
     case REQUEST(ACTION_TYPES.GET_TEMPLATES):
       return {
         ...state,
@@ -47,6 +56,11 @@ export default (state = initialState, action) => {
         ...state,
         templatesLoading: false,
         templates: _.map(action.payload.data.content, TemplateUI.fromModel)
+      };
+    case SUCCESS(ACTION_TYPES.GET_MESSAGE_DETAILS):
+      return {
+        ...state,
+        messageDetails: action.payload.data
       };
     case REQUEST(ACTION_TYPES.GET_PATIENT_TEMPLATES):
       return {
@@ -106,14 +120,16 @@ export default (state = initialState, action) => {
   }
 };
 
-const templatesUrl = "ws/messages/templates";
+const messagesUrl = "ws/messages";
+const templatesUrl = messagesUrl + "/templates";
+const messageDetailsUrl = messagesUrl + "/details";
 const patientTemplatesUrl = "ws/patient-templates";
 
 //TODO in CFLM-377: Change to real pagination request
-export const getTemplatesPage = (page, size, sort, order, filters) => async (dispatch) => {
+export const getMessages = (page, size, sort, order, patientId) => async (dispatch) => {
   await dispatch({
-    type: ACTION_TYPES.GET_TEMPLATES,
-    payload: axiosInstance.get(templatesUrl)
+    type: ACTION_TYPES.GET_MESSAGE_DETAILS,
+    payload: axiosInstance.get(`${messageDetailsUrl}?rows=100&page=1&patientId=${patientId}`)
   });
 };
 
@@ -155,12 +171,12 @@ export const putPatientTemplates = (patientTemplates: Array<PatientTemplateUI>, 
 };
 
 export const updatePatientTemplate = (patientTemplate: PatientTemplateUI,
-                                      templates: Array<TemplateUI>) => async (dispatch) => {
-  dispatch({
-    type: ACTION_TYPES.UPDATE_PATIENT_TEMPLATE,
-    payload: await patientTemplate.validate(templates, false)
-  })
-};
+  templates: Array<TemplateUI>) => async (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.UPDATE_PATIENT_TEMPLATE,
+      payload: await patientTemplate.validate(templates, false)
+    })
+  };
 
 const updatePatientTemplates = (patientTemplates: Array<PatientTemplateUI>) => ({
   // Note: for only internal usage - it omits validation
@@ -169,8 +185,8 @@ const updatePatientTemplates = (patientTemplates: Array<PatientTemplateUI>) => (
 });
 
 const validatePatientTemplates = (patientTemplates: Array<PatientTemplateUI>,
-    templates: Array<TemplateUI>,
-    validateNotTouched: boolean): Promise<Array<PatientTemplateUI>> => {
+  templates: Array<TemplateUI>,
+  validateNotTouched: boolean): Promise<Array<PatientTemplateUI>> => {
   return Promise.all(_.map(
     patientTemplates,
     patientTemplate => patientTemplate.validate(templates, validateNotTouched)));
