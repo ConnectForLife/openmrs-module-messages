@@ -42,7 +42,7 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
       case TemplateFieldType.SERVICE_TYPE:
         return this.renderDynamicRadioButton(tfv, ['Call', 'SMS', 'Deactivate service'], fieldName);
       case TemplateFieldType.DAY_OF_WEEK:
-      case TemplateFieldType.PREFERED_DAY:
+      case TemplateFieldType.PREFERRED_DAY:
         return this.renderDynamicRadioButton(tfv, ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], fieldName);
       case TemplateFieldType.MESSAGING_FREQUENCY:
         return this.renderDynamicRadioButton(tfv, ['Daily', 'Weekly', 'Monthly'], fieldName);
