@@ -7,7 +7,7 @@ import org.openmrs.module.messages.domain.criteria.BaseCriteria;
 
 import java.util.List;
 
-public interface BaseOpenmrsCriteriaDao<T extends BaseOpenmrsData> extends OpenmrsDataDAO<T> {
+public interface BaseOpenmrsPageableDao<T extends BaseOpenmrsData> extends OpenmrsDataDAO<T> {
 
     List<T> findAllByCriteria(BaseCriteria criteria, PagingInfo pagingInfo);
 }

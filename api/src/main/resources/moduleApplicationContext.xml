@@ -55,7 +55,7 @@
 
     <bean id="messages.patientTemplateService"
           class="org.openmrs.module.messages.api.service.impl.PatientTemplateServiceImpl">
-        <property name="dao" ref="messages.PatientTemplateDao"/>
+        <property name="daoBeanName" value="messages.PatientTemplateDao"/>
     </bean>
 
     <bean id="messages.templateService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
@@ -64,9 +64,7 @@
         </property>
         <property name="target">
             <bean class="org.openmrs.module.messages.api.service.impl.TemplateServiceImpl">
-                <property name="dao">
-                    <ref local="messages.TemplateDao" />
-                </property>
+                <property name="daoBeanName" value="messages.TemplateDao"/>
             </bean>
         </property>
         <property name="preInterceptors">
@@ -80,9 +78,7 @@
     <bean id="messages.messagingService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="target">
             <bean class="org.openmrs.module.messages.api.service.impl.MessagingServiceImpl">
-                <property name="dao">
-                    <ref local="messages.MessagingDao"/>
-                </property>
+                <property name="daoBeanName" value="messages.MessagingDao"/>
                 <property name="conceptService">
                     <ref bean="conceptServiceTarget"/>
                 </property>
@@ -164,4 +160,23 @@
             <ref local="messagesValidationFactory"/>
         </property>
     </bean>
+
+    <bean id="messages.messagingGroupService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="transactionManager">
+            <ref bean="transactionManager" />
+        </property>
+        <property name="target">
+            <bean class="org.openmrs.module.messages.api.service.impl.MessagingGroupServiceImpl">
+                <property name="daoBeanName" value="messages.MessagingGroupDao"/>
+            </bean>
+        </property>
+        <property name="preInterceptors">
+            <ref bean="serviceInterceptors" />
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource" />
+        </property>
+    </bean>
+
+    <bean id="messages.actorMapper" class="org.openmrs.module.messages.api.mappers.ActorMapper"/>
 </beans>

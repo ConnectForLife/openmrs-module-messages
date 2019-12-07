@@ -2,8 +2,9 @@ package org.openmrs.module.messages.api.service.impl;
 
 import org.openmrs.BaseOpenmrsData;
 import org.openmrs.api.APIException;
+import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
-import org.openmrs.module.messages.api.dao.BaseOpenmrsCriteriaDao;
+import org.openmrs.module.messages.api.dao.BaseOpenmrsPageableDao;
 import org.openmrs.module.messages.api.service.BaseOpenmrsCriteriaDataService;
 import org.openmrs.module.messages.domain.PagingInfo;
 import org.openmrs.module.messages.domain.criteria.BaseCriteria;
@@ -17,39 +18,30 @@ import java.util.List;
 public class BaseOpenmrsDataService<T extends BaseOpenmrsData> extends BaseOpenmrsService
         implements BaseOpenmrsCriteriaDataService<T> {
 
-    private BaseOpenmrsCriteriaDao<T> dao;
+    private BaseOpenmrsPageableDao<T> dao;
 
-    public BaseOpenmrsDataService() {
-    }
-
-    public BaseOpenmrsDataService(BaseOpenmrsCriteriaDao<T> dao) {
-        this.dao = dao;
-    }
-
-    public void setDao(BaseOpenmrsCriteriaDao<T> dao) {
-        this.dao = dao;
-    }
+    private String daoBeanName;
 
     @Override
     @Transactional(readOnly = true)
     public T getById(Serializable id) throws APIException {
-        return dao.getById(id);
+        return getDao().getById(id);
     }
 
     @Override
     @Transactional(readOnly = true)
     public T getByUuid(String uuid) throws APIException {
-        return dao.getByUuid(uuid);
+        return getDao().getByUuid(uuid);
     }
 
     @Override
     public void delete(T persistent) throws APIException {
-        dao.delete(persistent);
+        getDao().delete(persistent);
     }
 
     @Override
     public T saveOrUpdate(T newOrPersisted) throws APIException {
-        return dao.saveOrUpdate(newOrPersisted);
+        return getDao().saveOrUpdate(newOrPersisted);
     }
 
     @Override
@@ -63,17 +55,17 @@ public class BaseOpenmrsDataService<T extends BaseOpenmrsData> extends BaseOpenm
 
     @Override
     public List<T> getAll(boolean includeVoided) throws APIException {
-        return dao.getAll(includeVoided);
+        return getDao().getAll(includeVoided);
     }
 
     @Override
     public List<T> getAll(boolean includeVoided, Integer firstResult, Integer maxResults) throws APIException {
-        return dao.getAll(includeVoided, firstResult, maxResults);
+        return getDao().getAll(includeVoided, firstResult, maxResults);
     }
 
     @Override
     public int getAllCount(boolean includeVoided) throws APIException {
-        return dao.getAllCount(includeVoided);
+        return getDao().getAllCount(includeVoided);
     }
 
     @Override
@@ -82,6 +74,17 @@ public class BaseOpenmrsDataService<T extends BaseOpenmrsData> extends BaseOpenm
     }
 
     public List<T> findAllByCriteria(BaseCriteria criteria, PagingInfo paging) {
-        return dao.findAllByCriteria(criteria, paging);
+        return getDao().findAllByCriteria(criteria, paging);
+    }
+
+    public BaseOpenmrsPageableDao<T> getDao() {
+        if (this.dao == null) {
+            this.dao = Context.getRegisteredComponent(daoBeanName, BaseOpenmrsPageableDao.class);
+        }
+        return this.dao;
+    }
+
+    public void setDaoBeanName(String daoBeanName) {
+        this.daoBeanName = daoBeanName;
     }
 }

@@ -12,7 +12,7 @@ import org.openmrs.module.messages.domain.criteria.BaseCriteria;
 import java.util.List;
 
 public abstract class BaseOpenmrsDataDao<T extends BaseOpenmrsData> extends HibernateOpenmrsDataDAO<T>
-        implements BaseOpenmrsCriteriaDao<T> {
+        implements BaseOpenmrsPageableDao<T> {
 
     private DbSessionFactory sessionFactory;
 
@@ -24,6 +24,7 @@ public abstract class BaseOpenmrsDataDao<T extends BaseOpenmrsData> extends Hibe
         this.sessionFactory = sessionFactory;
     }
 
+    @Override
     public List<T> findAllByCriteria(BaseCriteria criteria, PagingInfo paging) {
         Criteria hibernateCriteria = createCriteria();
         if (criteria != null) {
