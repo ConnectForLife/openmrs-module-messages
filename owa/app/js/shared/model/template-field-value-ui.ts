@@ -5,6 +5,7 @@ import { ITemplateFieldValue, getDefaultValue } from './template-field-value.mod
 import { IFormField } from './form-field';
 import { TemplateUI } from './template-ui';
 import { TemplateFieldUI } from './template-field-ui';
+import { TemplateFieldType } from './template-field-type';
 
 export class TemplateFieldValueUI extends ObjectUI<ITemplateFieldValue> implements ITemplateFieldValue, IFormField {
   id: number | null;
@@ -28,7 +29,7 @@ export class TemplateFieldValueUI extends ObjectUI<ITemplateFieldValue> implemen
   }
 
   get localId(): string {
-    return this.templateFieldId.toString();
+    return this.id ? this.id.toString() : super.getLocalId();
   }
 
   get isNew(): boolean {
@@ -40,6 +41,13 @@ export class TemplateFieldValueUI extends ObjectUI<ITemplateFieldValue> implemen
       .filter(templateField => templateField.id === this.templateFieldId)
       .first()!
       .name;
+  }
+
+  getFieldType(template: TemplateUI): TemplateFieldType {
+    return _(template.templateFields)
+      .filter(templateField => templateField.id === this.templateFieldId)
+      .first()!
+      .type;
   }
 
   static fromTemplateField(templateField: TemplateFieldUI): TemplateFieldValueUI {
