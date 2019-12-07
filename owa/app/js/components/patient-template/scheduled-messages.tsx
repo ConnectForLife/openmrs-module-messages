@@ -63,7 +63,7 @@ class ScheduledMessages extends React.PureComponent<IScheduledMessagesProps, ISc
         },    
         Cell: props => {
           //TODO to proper messages sidebar val
-          const link = `#messages/patient-template/${this.props.patientId}/edit/${props.value}`;
+          const link = `#messages/${this.props.patientId}/patient-template/edit/${props.value}`;
           return (
             <span>
               <a href={link}>
