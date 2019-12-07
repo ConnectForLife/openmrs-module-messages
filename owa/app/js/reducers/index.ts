@@ -11,15 +11,18 @@ import { combineReducers } from 'redux';
 import { reducers as openmrs } from '@openmrs/react-components';
 import patientTemplate, { PatientTemplateState } from './patient-template.reducer';
 import bestContactTime, { BestContactTimeState } from './best-contact-time.reducer';
+import calendar, { CalendarState } from './calendar.reducer';
 
 export interface IRootState {
   readonly openmrs: any;
   readonly patientTemplate: PatientTemplateState;
-  readonly bestContactTime: BestContactTimeState
+  readonly bestContactTime: BestContactTimeState;
+  readonly calendar: CalendarState;
 }
 
 export default combineReducers<IRootState>({
   openmrs,
   patientTemplate,
-  bestContactTime
+  bestContactTime,
+  calendar
 });

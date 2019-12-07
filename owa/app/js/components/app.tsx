@@ -8,20 +8,14 @@
  */
 import React from 'react';
 import { connect } from 'react-redux';
+import CalendarView from './calendar/calendar'
+import { RouteComponentProps } from 'react-router';
 
-class App extends React.Component {
+class App extends React.Component<RouteComponentProps<{ patientId: string }>> {
     render() {
         return (
-            <div className="body-wrapper">
-                <div className="row">
-                    <div className="col-md-12 col-xs-12">
-                        <h2>Messages</h2>
-                    </div>
-                </div>
-                <div className="panel-body"></div>
-            </div>
+            <CalendarView patientId={parseInt(this.props.match.params.patientId, 10)}/>
         );
-
     }
 }
 

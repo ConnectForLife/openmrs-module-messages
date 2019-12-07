@@ -1,7 +1,7 @@
 #!/bin/bash
 
 HOME_DIR=~
-MESSAGES_REPO=$HOME_DIR/cfl/omrs-messages
+MESSAGES_REPO=$HOME_DIR/omrs-messages
 MESSAGES_OMOD=messages-1.0.0-SNAPSHOT.omod
 MESSAGES_OMOD_PREFIX=messages
 CFL_REPO=$HOME_DIR/cfl/cfl-openmrs

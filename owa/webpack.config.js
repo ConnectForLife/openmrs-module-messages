@@ -86,25 +86,12 @@ const rules = [
 		loader: "url-loader"
 	},
 	{
-		test: /\.s?css$/,
-		include: [/node_modules/],
-		use: ["style-loader", "css-loader"]
-	},
-	{
 		test: /\.html$/,
 		loader: "html-loader"
 	},
 	{
 		test: /\.s?css$/,
-		exclude: [/node_modules/],
-		use: [
-			"style-loader",
-			{
-				loader: "css-loader"
-			},
-			"postcss-loader",
-			"sass-loader?sourceMap"
-		]
+		use: ['style-loader', 'css-loader','sass-loader']
 	},
 	{ enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
 ];

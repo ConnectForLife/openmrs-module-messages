@@ -21,7 +21,7 @@ export default (store) => (
         <Switch>
             <Route path="/messages/:patientId/patient-template" component={PatientTemplate} />
             <Route path="/messages/manage" component={AppManagement} />
-            <Route path="/messages" component={App} />
+            <Route path="/messages/:patientId" component={App} />
         </Switch>
     </div>
 );

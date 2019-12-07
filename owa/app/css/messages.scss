@@ -6,6 +6,10 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
+@import './tab.scss';
+@import '~@fullcalendar/core/main.css';
+@import '~@fullcalendar/daygrid/main.css';
+
 body {
     font-family: "OpenSans", Arial, sans-serif;
     -webkit-font-smoothing: subpixel-antialiased;
@@ -74,6 +78,11 @@ header .logo img {
     color: #fff;
     background: #28a745;
     border-color: #28a745;
+}
+
+.btn-manage-messages {
+    background: -webkit-linear-gradient(top, #fff, #DDD);
+    margin-top: 1em;
 }
 
 .u-mt-8 {
