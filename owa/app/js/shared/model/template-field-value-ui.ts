@@ -50,14 +50,6 @@ export class TemplateFieldValueUI extends ObjectUI<ITemplateFieldValue> implemen
       .type;
   }
 
-  static fromTemplateField(templateField: TemplateFieldUI): TemplateFieldValueUI {
-    return new TemplateFieldValueUI({
-      ...getDefaultValue(),
-      templateFieldId: templateField.id!,
-      value: templateField.defaultValue
-    });
-  }
-
   static getNew(templateField: TemplateFieldUI): TemplateFieldValueUI {
     return new TemplateFieldValueUI({
       ...getDefaultValue(),

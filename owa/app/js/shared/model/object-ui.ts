@@ -42,8 +42,12 @@ export class ObjectUI<T> {
     if (!model) {
       throw new Error('Model not provided');
     }
-    _.assign(this, model);
-    this._modelKeys = _.keys(model);
+    const simpleModel = (model instanceof ObjectUI)
+      ? model.toModel()
+      : model;
+
+    _.assign(this, simpleModel);
+    this._modelKeys = _.keys(simpleModel);
   }
 }
 

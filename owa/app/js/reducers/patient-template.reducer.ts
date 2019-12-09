@@ -164,7 +164,7 @@ export const putPatientTemplates = (patientTemplates: Array<PatientTemplateUI>, 
       payload: axiosInstance.post(requestUrl, { patientTemplates: _.map(validated, toModel) })
     }
     await handleRequest(dispatch, body, Msg.GENERIC_SUCCESS, Msg.GENERIC_FAILURE);
-    history.push('/messages/patient-template'); //TODO: CFLM-255: Return to 'messages manage'
+    history.push(`/messages/${patientId}`); //TODO: CFLM-255: Return to 'messages manage'
   } else {
     dispatch(updatePatientTemplates(validated));
   }
