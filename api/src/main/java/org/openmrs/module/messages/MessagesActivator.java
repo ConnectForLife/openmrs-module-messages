@@ -12,7 +12,10 @@ package org.openmrs.module.messages;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.GlobalProperty;
+import org.openmrs.PersonAttributeType;
 import org.openmrs.api.APIException;
+import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.BaseModuleActivator;
 import org.openmrs.module.DaemonToken;
@@ -42,8 +45,10 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
     public void started() {
         LOGGER.info("Started Messages");
         try {
-            createGlobalSettingIfNotExists(ConfigConstants.ACTOR_TYPES_KEY, ConfigConstants.ACTOR_TYPES_KEY_DEFAULT_VALUE);
+            createGlobalSettingIfNotExists(ConfigConstants.ACTOR_TYPES_KEY,
+                    ConfigConstants.ACTOR_TYPES_DEFAULT_VALUE, ConfigConstants.ACTOR_TYPES_DESCRIPTION);
             scheduleMessageDeliveries();
+            createConsentConfig();
         } catch (APIException e) {
             safeShutdownModule();
             LOGGER.error("Failed to setup the required modules");
@@ -83,10 +88,34 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
         return schedulerService;
     }
 
-    private void createGlobalSettingIfNotExists(String key, String value) {
+    private void createConsentConfig() {
+        createPatientStatusAttributeType();
+        createGlobalSettingIfNotExists(ConfigConstants.CONSENT_CONTROL_KEY,
+                ConfigConstants.CONSENT_CONTROL_DEFAULT_VALUE, ConfigConstants.CONSENT_CONTROL_DESCRIPTION);
+    }
+
+    private void createPatientStatusAttributeType() {
+        PersonAttributeType attributeType = new PersonAttributeType();
+        attributeType.setName(ConfigConstants.PATIENT_STATUS_ATTRIBUTE_TYPE_NAME);
+        attributeType.setFormat(ConfigConstants.PATIENT_STATUS_ATTRIBUTE_TYPE_FORMAT);
+        attributeType.setDescription(ConfigConstants.PATIENT_STATUS_ATTRIBUTE_TYPE_DESCRIPTION);
+        attributeType.setUuid(ConfigConstants.PATIENT_STATUS_ATTRIBUTE_TYPE_UUID);
+        createPersonAttributeTypeIfNotExists(ConfigConstants.PATIENT_STATUS_ATTRIBUTE_TYPE_UUID, attributeType);
+    }
+
+    private void createPersonAttributeTypeIfNotExists(String attributeTypeUUID, PersonAttributeType attributeType) {
+        PersonService personService = Context.getPersonService();
+        PersonAttributeType actual = personService.getPersonAttributeTypeByUuid(attributeTypeUUID);
+        if (actual == null) {
+            personService.savePersonAttributeType(attributeType);
+        }
+    }
+
+    private void createGlobalSettingIfNotExists(String key, String value, String description) {
         String existSetting = Context.getAdministrationService().getGlobalProperty(key);
         if (StringUtils.isBlank(existSetting)) {
-            Context.getAdministrationService().setGlobalProperty(key, value);
+            GlobalProperty gp = new GlobalProperty(key, value, description);
+            Context.getAdministrationService().saveGlobalProperty(gp);
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug(String.format("Message Module created '%s' global property with value - %s", key, value));
             }
