@@ -4,5 +4,7 @@ public enum TemplateFieldType {
     SERVICE_TYPE,
     MESSAGING_FREQUENCY,
     DAY_OF_WEEK,
-    PREFERRED_DAY;
+    START_OF_MESSAGES,
+    END_OF_MESSAGES,
+    CATEGORY_OF_MESSAGE;
 }

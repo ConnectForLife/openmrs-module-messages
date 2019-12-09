@@ -8,7 +8,7 @@ import { TemplateFieldValueUI } from '../../shared/model/template-field-value-ui
 import { TemplateFieldType } from '../../shared/model/template-field-type';
 import DynamicRadioButton from './form/dynamic-radio-button';
 
-interface IProps extends DispatchProps { 
+interface IProps extends DispatchProps {
   patientTemplate: PatientTemplateUI | undefined;
   template: TemplateUI;
 }
@@ -42,7 +42,6 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
       case TemplateFieldType.SERVICE_TYPE:
         return this.renderDynamicRadioButton(tfv, ['Call', 'SMS', 'Deactivate service'], fieldName);
       case TemplateFieldType.DAY_OF_WEEK:
-      case TemplateFieldType.PREFERRED_DAY:
         return this.renderDynamicRadioButton(tfv, ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], fieldName);
       case TemplateFieldType.MESSAGING_FREQUENCY:
         return this.renderDynamicRadioButton(tfv, ['Daily', 'Weekly', 'Monthly'], fieldName);
@@ -64,7 +63,7 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
   renderInputField = (tfv: TemplateFieldValueUI, fieldName: string) => (
     <FormGroup controlId={tfv.localId} key={tfv.localId}>
       <ControlLabel>{fieldName}</ControlLabel>
-      <FormControl 
+      <FormControl
         type="text"
         name={fieldName}
         value={tfv.value}
