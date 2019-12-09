@@ -10,8 +10,6 @@ public class TemplateFieldValueDTO implements Serializable {
 
     private Integer templateFieldId;
 
-    private Integer patientTemplateId;
-
     private String value;
 
     public TemplateFieldValueDTO() {
@@ -32,15 +30,6 @@ public class TemplateFieldValueDTO implements Serializable {
 
     public TemplateFieldValueDTO setTemplateFieldId(Integer templateFieldId) {
         this.templateFieldId = templateFieldId;
-        return this;
-    }
-
-    public Integer getPatientTemplateId() {
-        return patientTemplateId;
-    }
-
-    public TemplateFieldValueDTO setPatientTemplateId(Integer patientTemplateId) {
-        this.patientTemplateId = patientTemplateId;
         return this;
     }
 

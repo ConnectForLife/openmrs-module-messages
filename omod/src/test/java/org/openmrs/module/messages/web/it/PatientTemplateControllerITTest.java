@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.messages.Constant;
 import org.openmrs.module.messages.api.dto.PatientTemplateDTO;
+import org.openmrs.module.messages.api.dto.TemplateFieldValueDTO;
 import org.openmrs.module.messages.util.TestUtil;
 import org.openmrs.module.messages.web.model.PatientTemplatesWrapper;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
@@ -139,13 +140,7 @@ public class PatientTemplateControllerITTest extends BaseModuleWebContextSensiti
     @Test
     public void shouldReturnSaveCollection() throws Exception {
         final int resultSize = 1;
-        PatientTemplateDTO dto = new PatientTemplateDTO()
-            .setActorId(PATIENT_3_ACTOR_ID)
-            .setActorTypeId(PATIENT_3_ACTOR_TYPE_ID)
-            .setTemplateId(1)
-            .setPatientId(PATIENT_3_ID)
-            .setServiceQuery(PATIENT_3_QUERY)
-            .setServiceQueryType(PATIENT_3_QUERY_TYPE);
+        PatientTemplateDTO dto = createDTOForPatientTemplate3();
 
         List<PatientTemplateDTO> dtos = new ArrayList<>();
         dtos.add(dto);
@@ -166,4 +161,61 @@ public class PatientTemplateControllerITTest extends BaseModuleWebContextSensiti
             .andReturn();
     }
 
+    @Test
+    public void shouldSaveWithoutActorType() throws Exception {
+        PatientTemplateDTO dto = createDTOForPatientTemplate3()
+                .setActorTypeId(null);
+
+        List<PatientTemplateDTO> dtos = new ArrayList<>();
+        dtos.add(dto);
+        PatientTemplatesWrapper body = new PatientTemplatesWrapper(dtos);
+
+        mockMvc.perform(post("/patient-templates/patient/{id}", PATIENT_3_ID)
+            .contentType(Constant.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(body)))
+            .andExpect(status().is(HttpStatus.OK.value()))
+            .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.patientTemplates.length()").value(1))
+            .andExpect(jsonPath("$.patientTemplates.[0].actorTypeId").doesNotExist())
+            .andReturn();
+    }
+
+    @Test
+    public void shouldBeSavedTogetherWithNestedTemplateFieldValues() throws Exception {
+        final String expectedValue = "expectedValue";
+
+        TemplateFieldValueDTO valueDTO = new TemplateFieldValueDTO()
+                .setValue(expectedValue)
+                .setTemplateFieldId(TEMPLATE_1_ID);
+
+        List<TemplateFieldValueDTO> valueDTOs = new ArrayList<>();
+        valueDTOs.add(valueDTO);
+
+        PatientTemplateDTO dto = createDTOForPatientTemplate3()
+                .setTemplateFieldValues(valueDTOs);
+
+        List<PatientTemplateDTO> dtos = new ArrayList<>();
+        dtos.add(dto);
+        PatientTemplatesWrapper body = new PatientTemplatesWrapper(dtos);
+
+        mockMvc.perform(post("/patient-templates/patient/{id}", PATIENT_3_ID)
+                .contentType(Constant.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(body)))
+                .andExpect(status().is(HttpStatus.OK.value()))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.patientTemplates.length()").value(1))
+                .andExpect(jsonPath("$.patientTemplates.[0].templateFieldValues.length()").value(1))
+                .andExpect(jsonPath("$.patientTemplates.[0].templateFieldValues[0].value").value(expectedValue))
+                .andReturn();
+    }
+
+    private PatientTemplateDTO createDTOForPatientTemplate3() {
+        return new PatientTemplateDTO()
+                .setActorId(PATIENT_3_ACTOR_ID)
+                .setActorTypeId(PATIENT_3_ACTOR_TYPE_ID)
+                .setPatientId(PATIENT_3_ID)
+                .setServiceQuery(PATIENT_3_QUERY)
+                .setServiceQueryType(PATIENT_3_QUERY_TYPE)
+                .setTemplateId(TEMPLATE_1_ID);
+    }
 }

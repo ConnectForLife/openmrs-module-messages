@@ -556,4 +556,18 @@
                                  referencedColumnNames="messages_patient_template_id"/>
     </changeSet>
 
+    <changeSet id="messages-18" author="Daniel Serkowski">
+        <preConditions>
+            <tableExists tableName="messages_patient_template" />
+            <tableExists tableName="messages_template" />
+        </preConditions>
+        <comment>Fixing incorrect FK definition between PatientTemplate and Template tables</comment>
+        <dropForeignKeyConstraint baseTableName="messages_patient_template"
+                                  constraintName="messages_patient_template_template_fk" />
+        <addForeignKeyConstraint constraintName="messages_patient_template_template_fk"
+                                 baseTableName="messages_patient_template" baseColumnNames="template_id"
+                                 referencedTableName="messages_template"
+                                 referencedColumnNames="messages_template_id"/>
+    </changeSet>
+
 </databaseChangeLog>

@@ -94,7 +94,7 @@
             uuid="d8f91bf6-6d89-4da5-ad9d-735cd70ffc48"/>
 
     <messages_template
-            messages_template_id="1"
+            messages_template_id="51"
             service_query="SELECT (*) FROM messages_scheduled_service;"
             service_query_type="test query type"
             name="Service name"
@@ -104,22 +104,22 @@
             uuid="dc28e6db-db92-440a-a2db-3d9060d52911"/>
 
     <messages_template_field
-            messages_template_field_id="1"
+            messages_template_field_id="61"
             name="test template"
             mandatory="false"
             default_value="default test value"
             template_field_type="DAY_OF_WEEK"
-            template_id="1"
+            template_id="51"
             creator="1"
             date_created="2019-11-20 00:00:00.0"
             voided="false"
             uuid="5e776c48-3a0d-4585-b234-1673a71b91d6"/>
 
     <messages_patient_template
-            messages_patient_template_id="1"
+            messages_patient_template_id="71"
             actor_id="997"
             actor_type="998"
-            template_id="1"
+            template_id="51"
             patient_id="997"
             service_query_type="SQL"
             service_query="SELECT (*) FROM messages_scheduled_service;"
@@ -129,17 +129,17 @@
             uuid="e8e2ea41-13ca-403a-b05d-9128d2b085cd"/>
 
     <messages_template_field_value
-            messages_template_field_value_id="1"
+            messages_template_field_value_id="81"
             value="test value"
-            patient_template_id="1"
-            template_field_id="1"
+            patient_template_id="71"
+            template_field_id="61"
             creator="1"
             date_created="2019-11-20 00:00:00.2"
             voided="false"
             uuid="0309e34d-f863-4f7b-9116-7d4e41b45671"/>
 
     <messages_scheduled_service_group
-            messages_scheduled_service_group_id="1"
+            messages_scheduled_service_group_id="91"
             patient_id="997"
             creator="1"
             date_created="2019-11-20 00:00:00.0"
@@ -147,10 +147,10 @@
             uuid="3d3a36a6-ff59-4c7e-bf3e-fe3d7a6b47a6"/>
 
     <messages_scheduled_service
-            messages_scheduled_service_id="1"
-            group_id="1"
+            messages_scheduled_service_id="101"
+            group_id="91"
             service="1"
-            patient_template_id="1"
+            patient_template_id="71"
             channel_type="2"
             status="DELIVERED"
             last_service_execution_id="111111111111"
@@ -160,10 +160,10 @@
             uuid="b3de6d76-3e31-41cf-955d-ad14b9db07ff"/>
 
     <messages_scheduled_service
-            messages_scheduled_service_id="2"
-            group_id="1"
+            messages_scheduled_service_id="102"
+            group_id="91"
             service="1"
-            patient_template_id="1"
+            patient_template_id="71"
             channel_type="2"
             status="DELIVERED"
             last_service_execution_id="222222222222"

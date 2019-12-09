@@ -14,6 +14,8 @@ export class PatientTemplateUI extends ObjectUI<IPatientTemplate> implements IPa
   templateId: number;
   actorId: number;
   actorTypeId: number;
+  serviceQuery: string;
+  serviceQueryType: string;
 
   errors: {[key: string]: string};
 
@@ -50,9 +52,11 @@ export class PatientTemplateUI extends ObjectUI<IPatientTemplate> implements IPa
     return !this.id;
   }
 
-  static getNew(template: TemplateUI): PatientTemplateUI {
+  static getNew(patientId: number, actorId: number, template: TemplateUI): PatientTemplateUI {
     return new PatientTemplateUI({
       ...getDefaultValue(),
+      patientId,
+      actorId,
       templateId: template.id!,
       templateFieldValues: _.map(template.templateFields, TemplateFieldValueUI.getNew)
     });

@@ -75,13 +75,13 @@ public class PatientTemplateController {
     private void validateConsistency(Integer id, List<PatientTemplateDTO> templates)
                                      throws PatientTemplateConsistencyException {
         Patient patient = patientService.getPatient(id);
-        if (patient.getId() == null) {
+        if (patient == null || patient.getId() == null) {
             throw new PatientTemplateConsistencyException(
                 String.format("Invalid patient id: %s", id));
         }
 
         for (PatientTemplateDTO template : templates) {
-            if (!template.getPatientId().equals(id)) {
+            if (template.getPatientId() == null || !template.getPatientId().equals(id)) {
                 throw new PatientTemplateConsistencyException(
                     String.format("Patient templates contains invalid patient id! %s != %s",
                         id, template.getPatientId()));

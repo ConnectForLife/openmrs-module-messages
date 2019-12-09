@@ -79,6 +79,8 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
       const fragment = <PatientTemplateForm
         patientTemplate={getPatientTemplateWithTemplateId(this.props.patientTemplates, template.id!)}
         template={template}
+        patientId={parseInt(this.props.match.params.patientId)}
+        actorId={parseInt(this.props.match.params.patientId)}
       />
 
       //TODO in CFLM-306: decide if the 'completed-icon' should be displayed next to section name

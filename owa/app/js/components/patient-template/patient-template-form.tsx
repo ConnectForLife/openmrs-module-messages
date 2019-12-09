@@ -11,6 +11,8 @@ import DynamicRadioButton from './form/dynamic-radio-button';
 interface IProps extends DispatchProps {
   patientTemplate: PatientTemplateUI | undefined;
   template: TemplateUI;
+  patientId: number;
+  actorId: number;
 }
 
 interface IState {
@@ -22,7 +24,7 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.state = {
-      defaultPatientTemplate: PatientTemplateUI.getNew(props.template)
+      defaultPatientTemplate: PatientTemplateUI.getNew(props.patientId, props.actorId, props.template)
     }
   }
 
