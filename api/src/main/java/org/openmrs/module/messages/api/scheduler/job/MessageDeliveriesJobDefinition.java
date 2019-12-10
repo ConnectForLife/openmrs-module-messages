@@ -9,6 +9,7 @@ import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
 import org.openmrs.module.messages.api.execution.ExecutionException;
 import org.openmrs.module.messages.api.execution.ServiceResultGroupHelper;
 import org.openmrs.module.messages.api.execution.ServiceResultList;
+import org.openmrs.module.messages.api.service.MessagesSchedulerService;
 import org.openmrs.module.messages.api.service.MessagingService;
 import org.openmrs.module.messages.api.util.DateUtil;
 
@@ -29,8 +30,8 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
             List<ServiceResultList> groupedResults = ServiceResultGroupHelper
                     .groupByActorIdAndExecutionDate(results, groupingPeriod);
             for (ServiceResultList group : groupedResults) {
-                //TODO: create job definition for group and schedule it (as a part of CFLM-184)
-                new ServiceGroupDeliveryJobDefinition();
+                getSchedulerService().rescheduleOrCreateNewTask(
+                    new ServiceGroupDeliveryJobDefinition(group), JobRepeatInterval.NEVER);
             }
         } catch (ExecutionException e) {
             LOGGER.error("Failed to execute task: " + getTaskName());
@@ -56,6 +57,11 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
     private MessagingService getMessagingService() {
         return Context.getRegisteredComponent(
                 MessagesConstants.MESSAGING_SERVICE, MessagingService.class);
+    }
+
+    private MessagesSchedulerService getSchedulerService() {
+        return Context.getRegisteredComponent(
+                MessagesConstants.SCHEDULER_SERVICE, MessagesSchedulerService.class);
     }
 
     private ConfigService getConfigService() {

@@ -89,6 +89,7 @@ public class MessagesSchedulerServiceImpl extends BaseOpenmrsService implements 
         task.setTaskClass(jobDefinition.getTaskClass().getName());
         task.setStartTime(startTime);
         task.setStartOnStartup(false);
+        task.setProperties(jobDefinition.getProperties());
         return task;
     }
 
