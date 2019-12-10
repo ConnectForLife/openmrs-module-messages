@@ -1,5 +1,6 @@
 package org.openmrs.module.messages.api.execution;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
 
 import java.io.Serializable;
@@ -52,7 +53,7 @@ public class ServiceResult implements Serializable {
                     channel = (Integer) entry.getValue();
                     break;
                 case STATUS_COL_ALIAS:
-                    status = ServiceStatus.valueOf((String) entry.getValue());
+                    status = parseStatus((String) entry.getValue());
                     break;
                 default:
                      params.put(entry.getKey(), entry.getValue());
@@ -137,5 +138,13 @@ public class ServiceResult implements Serializable {
 
     public void setAdditionalParams(Map<String, Object> additionalParams) {
         this.additionalParams = additionalParams;
+    }
+
+    private static ServiceStatus parseStatus(String statusString) {
+        if (StringUtils.isNotBlank(statusString)) {
+            return ServiceStatus.valueOf((String) statusString);
+        } else {
+            return ServiceStatus.FUTURE;
+        }
     }
 }
