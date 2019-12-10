@@ -60,7 +60,7 @@ public class TemplateController extends BaseRestController {
         validationComponent.validate(templateDTO);
         validateIfNewTemplate(templateDTO);
         Template template = templateMapper.fromDto(templateDTO);
-        return templateMapper.toDto(templateService.saveOrUpdate(template));
+        return templateMapper.toDto(templateService.saveOrUpdateTemplate(template));
     }
 
     @RequestMapping(value = "/{templateId}", method = RequestMethod.PUT)
@@ -74,7 +74,7 @@ public class TemplateController extends BaseRestController {
         validateOldTemplate(templateId, oldTemplate);
         Template newTemplate = templateMapper.fromDto(templateDTO);
         oldTemplate = templateMapper.update(oldTemplate, newTemplate);
-        return templateMapper.toDto(templateService.saveOrUpdate(oldTemplate));
+        return templateMapper.toDto(templateService.saveOrUpdateTemplate(oldTemplate));
     }
 
     private void validateIfNewTemplate(TemplateDTO templateDTO) {
