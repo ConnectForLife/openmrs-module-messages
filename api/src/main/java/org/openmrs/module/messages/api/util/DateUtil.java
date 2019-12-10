@@ -20,6 +20,10 @@ public final class DateUtil {
         return DateUtils.addSeconds(DateUtil.now(), (int) seconds);
     }
 
+    public static boolean isNotAfter(Date first, Date second) {
+        return !first.after(second);
+    }
+
     public static Date getDateWithDefaultTimeZone(Date timestamp) {
         return getDateWithTimeZone(timestamp, getDefaultTimeZone());
     }

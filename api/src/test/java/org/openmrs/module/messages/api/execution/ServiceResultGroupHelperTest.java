@@ -1,6 +1,5 @@
 package org.openmrs.module.messages.api.execution;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.module.messages.builder.DateBuilder;
 import org.openmrs.module.messages.builder.ServiceResultBuilder;
@@ -13,8 +12,6 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.openmrs.module.messages.api.execution.ServiceResultGroupHelper.groupByActorIdAndExecutionDate;
 
-//TODO in CFLM-184: Un-ignore when functionality is implemented
-@Ignore
 @SuppressWarnings("checkstyle:magicnumber")
 public class ServiceResultGroupHelperTest {
 
@@ -127,7 +124,7 @@ public class ServiceResultGroupHelperTest {
         List<ServiceResultList> result = groupByActorIdAndExecutionDate(input, FIVE_MINUTES_IN_SECONDS);
         assertEquals(2, result.size());
         assertEquals(1, result.get(0).getResults().size());
-        assertEquals(1, result.get(2).getResults().size());
+        assertEquals(1, result.get(1).getResults().size());
     }
 
     @Test

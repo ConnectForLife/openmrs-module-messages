@@ -5,6 +5,7 @@ import org.openmrs.module.messages.api.model.PatientTemplate;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,20 @@ public class ServiceResultList implements Serializable {
     private Date startDate;
     private Date endDate;
     private List<ServiceResult> results;
+
+    public static ServiceResultList withEmptyResults(ServiceResultList other) {
+        ServiceResultList result = new ServiceResultList();
+
+        result.patientId = other.getPatientId();
+        result.actorId = other.getActorId();
+        result.serviceId = other.getServiceId();
+        result.serviceName = other.getServiceName();
+        result.startDate = other.getStartDate();
+        result.endDate = other.getEndDate();
+        result.results = new ArrayList<>();
+
+        return result;
+    }
 
     public static ServiceResultList createList(@NotNull List<Map<String, Object>> rowList, PatientTemplate patientTemplate,
                                                @NotNull Range<Date> dateRange) {
