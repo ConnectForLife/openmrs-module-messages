@@ -3,6 +3,7 @@ package org.openmrs.module.messages.api.execution;
 import org.openmrs.module.messages.api.model.Range;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -23,8 +24,8 @@ public class ServiceResultList implements Serializable {
     private Date endDate;
     private List<ServiceResult> results;
 
-    public static ServiceResultList createList(List<Map<String, Object>> rowList, PatientTemplate patientTemplate,
-                                               Range<Date> dateRange) {
+    public static ServiceResultList createList(@NotNull List<Map<String, Object>> rowList, PatientTemplate patientTemplate,
+                                               @NotNull Range<Date> dateRange) {
         ServiceResultList resultList = new ServiceResultList();
 
         List<ServiceResult> results = ServiceResult.parseList(rowList);
@@ -86,7 +87,7 @@ public class ServiceResultList implements Serializable {
         return results;
     }
 
-    private void setResults(List<ServiceResult> results) {
+    public void setResults(List<ServiceResult> results) {
         this.results = results;
     }
 
