@@ -8,12 +8,6 @@ import org.openmrs.module.messages.api.execution.ExecutionException;
 import org.openmrs.module.messages.api.execution.ServiceExecutor;
 import org.openmrs.module.messages.api.execution.ServiceResultList;
 import org.openmrs.module.messages.api.model.ActorResponse;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import javax.transaction.Transactional;
-
 import org.openmrs.module.messages.api.model.DeliveryAttempt;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.Range;
@@ -22,6 +16,11 @@ import org.openmrs.module.messages.api.model.types.ServiceStatus;
 import org.openmrs.module.messages.api.service.MessagingService;
 import org.openmrs.module.messages.api.service.PatientTemplateService;
 import org.openmrs.module.messages.domain.criteria.PatientTemplateCriteria;
+
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledService> implements MessagingService {
 
@@ -74,17 +73,15 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
             throws ExecutionException {
 
         PatientTemplateCriteria patientTemplateCriteria = PatientTemplateCriteria.forPatientId(patientId);
-        List<PatientTemplate> patientTemplates = patientTemplateService.findAllByCriteria(patientTemplateCriteria);
+        return retrieveAllServiceExecutions(patientTemplateService.findAllByCriteria(patientTemplateCriteria),
+                startDate, endDate);
+    }
 
-        Range<Date> dateRange = new Range<>(startDate, endDate);
-
-        List<ServiceResultList> results = new ArrayList<>();
-        for (PatientTemplate patientTemplate  : patientTemplates) {
-            ServiceResultList resultList = serviceExecutor.execute(patientTemplate, dateRange);
-            results.add(resultList);
-        }
-
-        return results;
+    @Override
+    @Transactional
+    public List<ServiceResultList> retrieveAllServiceExecutions(Date startDate, Date endDate)
+            throws ExecutionException {
+        return retrieveAllServiceExecutions(patientTemplateService.getAll(false), startDate, endDate);
     }
 
     @Override
@@ -108,5 +105,19 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
         scheduledServices.setDeliveryAttempts(deliveryAttempts);
 
         return saveOrUpdate(scheduledServices);
+    }
+
+    private List<ServiceResultList> retrieveAllServiceExecutions(List<PatientTemplate> patientTemplates, Date startDate,
+                                                                 Date endDate)
+            throws ExecutionException {
+
+        Range<Date> dateRange = new Range<>(startDate, endDate);
+
+        List<ServiceResultList> results = new ArrayList<>();
+        for (PatientTemplate patientTemplate  : patientTemplates) {
+            results.add(serviceExecutor.execute(patientTemplate, dateRange));
+        }
+
+        return results;
     }
 }

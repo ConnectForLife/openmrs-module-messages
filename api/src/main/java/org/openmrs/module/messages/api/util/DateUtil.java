@@ -16,6 +16,10 @@ public final class DateUtil {
         return getDateWithDefaultTimeZone(new Date());
     }
 
+    public static Date getDatePlusSeconds(long seconds) {
+        return DateUtils.addSeconds(DateUtil.now(), (int) seconds);
+    }
+
     public static Date getDateWithDefaultTimeZone(Date timestamp) {
         return getDateWithTimeZone(timestamp, getDefaultTimeZone());
     }
