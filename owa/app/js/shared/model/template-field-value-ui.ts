@@ -43,6 +43,13 @@ export class TemplateFieldValueUI extends ObjectUI<ITemplateFieldValue> implemen
       .name;
   }
 
+  isMandatory(template: TemplateUI): boolean {
+    return _(template.templateFields)
+      .filter(templateField => templateField.id === this.templateFieldId)
+      .first()!
+      .mandatory;
+  }
+
   getFieldType(template: TemplateUI): TemplateFieldType {
     return _(template.templateFields)
       .filter(templateField => templateField.id === this.templateFieldId)

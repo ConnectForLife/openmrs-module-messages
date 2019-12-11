@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { updatePatientTemplate } from '../../reducers/patient-template.reducer';
-import { Form, FormGroup, ControlLabel, FormControl } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import _ from 'lodash';
 
 import { PatientTemplateUI } from '../../shared/model/patient-template-ui';
@@ -10,6 +10,7 @@ import { TemplateFieldValueUI } from '../../shared/model/template-field-value-ui
 import { TemplateFieldType } from '../../shared/model/template-field-type';
 import DynamicRadioButton from './form/dynamic-radio-button';
 import DynamicCheckboxButton from './form/dynamic-checbox-button';
+import InputField from './form/input-field';
 
 interface IProps extends DispatchProps {
   patientTemplate: PatientTemplateUI | undefined;
@@ -43,50 +44,66 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
   renderField = (tfv: TemplateFieldValueUI) => {
     const fieldType: TemplateFieldType = tfv.getFieldType(this.props.template);
     const fieldName: string = tfv.getFieldName(this.props.template);
+    const isMandatory: boolean = tfv.isMandatory(this.props.template);
     switch (fieldType) {
       case TemplateFieldType.SERVICE_TYPE:
-        return this.renderDynamicRadioButton(tfv, ['Call', 'SMS', 'Deactivate service'], fieldName);
+        return this.renderDynamicRadioButton(tfv, ['Call', 'SMS', 'Deactivate service'],
+          fieldName, isMandatory);
       case TemplateFieldType.DAY_OF_WEEK:
-        return this.renderDynamicCheckboxButton(tfv, ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], fieldName);
+        return this.renderDynamicCheckboxButton(tfv,
+          ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+          fieldName, isMandatory);
       case TemplateFieldType.MESSAGING_FREQUENCY:
-        return this.renderDynamicRadioButton(tfv, ['Daily', 'Weekly', 'Monthly'], fieldName);
+        return this.renderDynamicRadioButton(tfv, ['Daily', 'Weekly', 'Monthly'],
+          fieldName, isMandatory);
       default:
-        return this.renderInputField(tfv, fieldName);
+        return this.renderInputField(tfv, fieldName, isMandatory);
     };
   };
 
-  renderDynamicRadioButton = (tfv: TemplateFieldValueUI, options: ReadonlyArray<string>, fieldName: string) => (
+  renderDynamicRadioButton = (tfv: TemplateFieldValueUI,
+    options: ReadonlyArray<string>,
+    fieldName: string,
+    isMandatory: boolean) => (
       <DynamicRadioButton
         options={options}
         selectedOption={tfv.value}
         label={fieldName}
         key={tfv.localId}
+        mandatory={isMandatory}
         onSelectChange={(value: string) => this.onTemplateFieldValueChange(tfv.localId, value)}
       />
-  );
+    );
 
-  renderDynamicCheckboxButton = (tfv: TemplateFieldValueUI, options: ReadonlyArray<string>, fieldName: string) => {
+  renderDynamicCheckboxButton = (tfv: TemplateFieldValueUI,
+    options: ReadonlyArray<string>,
+    fieldName: string,
+    isMandatory: boolean) => {
     const value = _.split(tfv.value, ',');
-    return(<DynamicCheckboxButton
-      options={options}
-      selectedOptions={value}
-      label={fieldName}
-      key={tfv.localId}
-      onSelectChange={(value: string) => this.onTemplateFieldValueChange(tfv.localId, value)} />
+    return (
+      <DynamicCheckboxButton
+        options={options}
+        selectedOptions={value}
+        label={fieldName}
+        key={tfv.localId}
+        mandatory={isMandatory}
+        onSelectChange={(value: string) => this.onTemplateFieldValueChange(tfv.localId, value)} />
     );
   };
 
-  renderInputField = (tfv: TemplateFieldValueUI, fieldName: string) => (
-    <FormGroup controlId={tfv.localId} key={tfv.localId}>
-      <ControlLabel>{fieldName}</ControlLabel>
-      <FormControl
-        type="text"
-        name={fieldName}
+  renderInputField = (tfv: TemplateFieldValueUI,
+    fieldName: string,
+    isMandatory: boolean) => (
+      <InputField
+        fieldName={fieldName}
         value={tfv.value}
-        onChange={e => this.onTemplateFieldValueChange(tfv.localId, e.target.value)}
-        className="form-control" />
-    </FormGroup>
-  );
+        label={fieldName}
+        key={tfv.localId}
+        mandatory={isMandatory}
+        handleChange={(value: string) => {
+          this.onTemplateFieldValueChange(tfv.localId, value)
+        }} />
+    );
 
   render = () => {
     const patientTemplate = this.getPatientTemplate();

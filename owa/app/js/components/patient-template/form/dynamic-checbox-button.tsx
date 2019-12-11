@@ -1,14 +1,15 @@
 import React from 'react';
-import { FormGroup, Checkbox, ControlLabel } from 'react-bootstrap';
+import { FormGroup, Checkbox } from 'react-bootstrap';
 import _ from 'lodash';
 
-import { TemplateFieldValueUI } from '../../../shared/model/template-field-value-ui';
+import FormLabel from './form-label';
 
 interface IProps {
   options: ReadonlyArray<string>
   selectedOptions: string[];
   label: string;
   key: string;
+  mandatory: boolean;
   onSelectChange: (valueSelected: string) => void;
 }
 
@@ -33,7 +34,7 @@ export default class DynamicCheckboxButton extends React.Component<IProps> {
 
     return (
       <FormGroup controlId={key} key={key}>
-        <ControlLabel>{`${label} ${key}`}</ControlLabel>
+        <FormLabel label={label} mandatory={this.props.mandatory} />
         {options.map(option => (
           <Checkbox
             name={`${option}`}

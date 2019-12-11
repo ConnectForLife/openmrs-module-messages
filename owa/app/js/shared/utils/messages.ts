@@ -21,3 +21,5 @@ export const EDIT_PATIENT_TEMPLATE_BREADCRUMB = 'Edit';
 // Best contact time
 export const BEST_CONTACT_TIME_LABEL = 'Best Contact Time';
 export const CALENDAR_OVERVIEW_LABEL = 'Calendar Overview';
+
+export const REQUIERD_FORM_FIELD = 'required';
