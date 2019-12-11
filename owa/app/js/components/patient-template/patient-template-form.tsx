@@ -2,11 +2,14 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { updatePatientTemplate } from '../../reducers/patient-template.reducer';
 import { Form, FormGroup, ControlLabel, FormControl } from 'react-bootstrap';
+import _ from 'lodash';
+
 import { PatientTemplateUI } from '../../shared/model/patient-template-ui';
 import { TemplateUI } from '../../shared/model/template-ui';
 import { TemplateFieldValueUI } from '../../shared/model/template-field-value-ui';
 import { TemplateFieldType } from '../../shared/model/template-field-type';
 import DynamicRadioButton from './form/dynamic-radio-button';
+import DynamicCheckboxButton from './form/dynamic-checbox-button';
 
 interface IProps extends DispatchProps {
   patientTemplate: PatientTemplateUI | undefined;
@@ -44,7 +47,7 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
       case TemplateFieldType.SERVICE_TYPE:
         return this.renderDynamicRadioButton(tfv, ['Call', 'SMS', 'Deactivate service'], fieldName);
       case TemplateFieldType.DAY_OF_WEEK:
-        return this.renderDynamicRadioButton(tfv, ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], fieldName);
+        return this.renderDynamicCheckboxButton(tfv, ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], fieldName);
       case TemplateFieldType.MESSAGING_FREQUENCY:
         return this.renderDynamicRadioButton(tfv, ['Daily', 'Weekly', 'Monthly'], fieldName);
       default:
@@ -60,7 +63,18 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
         key={tfv.localId}
         onSelectChange={(value: string) => this.onTemplateFieldValueChange(tfv.localId, value)}
       />
-  )
+  );
+
+  renderDynamicCheckboxButton = (tfv: TemplateFieldValueUI, options: ReadonlyArray<string>, fieldName: string) => {
+    const value = _.split(tfv.value, ',');
+    return(<DynamicCheckboxButton
+      options={options}
+      selectedOptions={value}
+      label={fieldName}
+      key={tfv.localId}
+      onSelectChange={(value: string) => this.onTemplateFieldValueChange(tfv.localId, value)} />
+    );
+  };
 
   renderInputField = (tfv: TemplateFieldValueUI, fieldName: string) => (
     <FormGroup controlId={tfv.localId} key={tfv.localId}>
