@@ -34,7 +34,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         serviceResultListsLoading: false,
-        serviceResultLists: _.map(action.payload, ServiceResultListUI.fromModel) //action.payload.data
+        serviceResultLists: _.map(action.payload.data, ServiceResultListUI.fromModel)
       };
     case ACTION_TYPES.RESET:
       return {
@@ -58,106 +58,7 @@ export const getServiceResultLists = (startDate: Date, endDate: Date, patientId:
   var mockedCaregicerId = 8;
   await dispatch({
     type: ACTION_TYPES.GET_SERVICE_RESULT_LISTS,
-    //payload: axiosInstance.get(`${templatesUrl}?startDate=${startDate.valueOf()}&endDate=${endDate.valueOf()}&patientId=${patientId}`)
-    payload: Promise.resolve([
-      {
-        patientId: patientId,
-        actorId: patientId,
-        serviceId: 1,
-        serviceName: 'Adherance Reports',
-        startDate: new Date(),
-        endDate: new Date(),
-        results: [
-          {
-            executionDate: date1,
-            messageId: 1,
-            channelId: 1,
-            serviceStatus: 'DELIVERED'
-          }
-        ]
-      },
-      {
-        patientId: patientId,
-        actorId: patientId,
-        serviceId: 1,
-        serviceName: 'Adherance Reports',
-        startDate: new Date(),
-        endDate: new Date(),
-        results: [
-          {
-            executionDate: date2,
-            messageId: 1,
-            channelId: 1,
-            serviceStatus: 'DELIVERED'
-          }
-        ]
-      },
-      {
-        patientId: patientId,
-        actorId: patientId,
-        serviceId: 1,
-        serviceName: 'Health Tip',
-        startDate: new Date(),
-        endDate: new Date(),
-        results: [
-          {
-            executionDate: date3,
-            messageId: 1,
-            channelId: 1,
-            serviceStatus: 'FAILED'
-          }
-        ]
-      },
-      {
-        patientId: patientId,
-        actorId: patientId,
-        serviceId: 1,
-        serviceName: 'Health Tip',
-        startDate: new Date(),
-        endDate: new Date(),
-        results: [
-          {
-            executionDate: date4,
-            messageId: 1,
-            channelId: 1,
-            serviceStatus: 'PENDING'
-          }
-        ]
-      }
-      ,
-      {
-        patientId: patientId,
-        actorId: patientId,
-        serviceId: 1,
-        serviceName: 'Adherance Reports',
-        startDate: new Date(),
-        endDate: new Date(),
-        results: [
-          {
-            executionDate: date5,
-            messageId: 1,
-            channelId: 1,
-            serviceStatus: 'PENDING'
-          }
-        ]
-      },
-      {
-        patientId: patientId,
-        actorId: mockedCaregicerId,
-        serviceId: 1,
-        serviceName: 'Adherance Reports',
-        startDate: new Date(),
-        endDate: new Date(),
-        results: [
-          {
-            executionDate: date5,
-            messageId: 1,
-            channelId: 1,
-            serviceStatus: 'PENDING'
-          }
-        ]
-      }
-    ])
+    payload: axiosInstance.get(`${templatesUrl}?startDate=${startDate.valueOf()}&endDate=${endDate.valueOf()}&patientId=${patientId}`)
   });
 };
 

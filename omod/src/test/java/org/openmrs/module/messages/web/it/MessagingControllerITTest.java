@@ -182,7 +182,7 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
                 patient1,
                 patient1,
                 null,
-                "SELECT now() AS EXECUTION_DATE, 'test-msg' AS MESSAGE_ID, 1 AS CHANNEL_ID;",
+                "SELECT now() AS EXECUTION_DATE, 1 AS MESSAGE_ID, '1' AS CHANNEL_ID;",
                 "SQL"
         );
 
@@ -208,8 +208,8 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
         assertThat(serviceResultList.getResults(), hasSize(1));
 
         ServiceResult serviceResult = serviceResultList.getResults().get(0);
-        assertThat(serviceResult.getMessageId(), is("test-msg"));
-        assertThat(serviceResult.getChannelId(), is(1));
+        assertThat(serviceResult.getMessageId(), is(1));
+        assertThat(serviceResult.getChannelName(), is("1"));
     }
 
     private void assertMessageDetailsDTO(MessageDetailsDTO dto, String queryType, Integer patientId) {
@@ -247,8 +247,8 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
 
     private Template createTemplate() {
         Template template = new TemplateBuilder()
-                .withServiceQuery("Query")
-                .withServiceQueryType("Query type")
+                .withServiceQuery("SELECT now() AS EXECUTION_DATE, 1 AS MESSAGE_ID, '1' AS CHANNEL_ID;")
+                .withServiceQueryType("SQL")
                 .setName("Service Name")
                 .buildAsNew();
         return templateDao.saveOrUpdate(template);

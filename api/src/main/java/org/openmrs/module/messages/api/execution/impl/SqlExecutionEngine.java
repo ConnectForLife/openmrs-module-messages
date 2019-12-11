@@ -20,15 +20,15 @@ import java.util.Map;
  * interpreted.
  */
 public class SqlExecutionEngine implements ExecutionEngine {
-
+    
     private static final Log LOG = LogFactory.getLog(SqlExecutionEngine.class);
-
+    
     private DbSessionFactory dbSessionFactory;
-
+    
     public SqlExecutionEngine(DbSessionFactory dbSessionFactory) {
         this.dbSessionFactory = dbSessionFactory;
     }
-
+    
     @Override
     public ServiceResultList execute(ExecutionContext executionContext) throws ExecutionException {
         try {
@@ -37,28 +37,26 @@ public class SqlExecutionEngine implements ExecutionEngine {
             throw new ExecutionException("Error while executing the SQL template", e);
         }
     }
-
+    
     private ServiceResultList executeQuery(ExecutionContext executionContext) {
-        SQLQuery sqlQuery = dbSessionFactory.getCurrentSession().createSQLQuery(executionContext.getQuery());
+        SQLQuery sqlQuery = dbSessionFactory.getCurrentSession()
+                .createSQLQuery(executionContext.getPatientTemplate()
+                        .getServiceQuery());
         sqlQuery.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
         setParams(sqlQuery, executionContext.getParams());
-
+        
         List<Map<String, Object>> result = sqlQuery.list();
-
-        return ServiceResultList.createList(
-                result,
-                executionContext.getPatientTemplate(),
-                executionContext.getDateRange()
-        );
+        
+        return ServiceResultList.createList(result, executionContext.getPatientTemplate(), executionContext.getDateRange());
     }
-
+    
     private void setParams(SQLQuery sqlQuery, Map<String, Object> params) {
         String[] namedParameters = sqlQuery.getNamedParameters();
-
+        
         for (Map.Entry<String, Object> paramEntry : params.entrySet()) {
             String paramName = paramEntry.getKey();
             Object paramValue = paramEntry.getValue();
-
+            
             if (ArrayUtils.contains(namedParameters, paramName)) {
                 LOG.debug(String.format("Replacing parameter: %s", paramName));
                 sqlQuery.setParameter(paramName, paramValue);

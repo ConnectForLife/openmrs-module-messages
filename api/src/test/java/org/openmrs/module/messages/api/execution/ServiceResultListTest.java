@@ -39,7 +39,7 @@ public class ServiceResultListTest {
     );
 
     private static final List<String> MSG_IDS = Arrays.asList("ID_1", "ID 2", "abcdef");
-    private static final List<Integer> CHANNEL_IDS = Arrays.asList(3, 5, 12);
+    private static final List<String> CHANNEL_NAMES = Arrays.asList("3", "5", "12");
     private static final List<ServiceStatus> SERVICE_STATUSES = Arrays.asList(
             ServiceStatus.DELIVERED,
             ServiceStatus.PENDING,
@@ -83,7 +83,7 @@ public class ServiceResultListTest {
 
             assertEquals(EXEC_DATES.get(i), result.getExecutionDate());
             assertEquals(MSG_IDS.get(i), result.getMessageId());
-            assertEquals(CHANNEL_IDS.get(i), result.getChannelId());
+            assertEquals(CHANNEL_NAMES.get(i), result.getChannelName());
         }
     }
 
@@ -94,7 +94,7 @@ public class ServiceResultListTest {
 
             row.put(ServiceResult.EXEC_DATE_ALIAS, EXEC_DATES.get(i));
             row.put(ServiceResult.MSG_ID_ALIAS, MSG_IDS.get(i));
-            row.put(ServiceResult.CHANNEL_ID_ALIAS, CHANNEL_IDS.get(i));
+            row.put(ServiceResult.CHANNEL_NAME_ALIAS, CHANNEL_NAMES.get(i));
             row.put(ServiceResult.STATUS_COL_ALIAS, SERVICE_STATUSES.get(i).toString());
 
             rows.add(row);

@@ -19,14 +19,14 @@ public class ServiceResult implements Serializable {
 
     public static final String EXEC_DATE_ALIAS = "EXECUTION_DATE";
     public static final String MSG_ID_ALIAS = "MESSAGE_ID";
-    public static final String CHANNEL_ID_ALIAS = "CHANNEL_ID";
+    public static final String CHANNEL_NAME_ALIAS = "CHANNEL_ID";
     public static final String STATUS_COL_ALIAS = "STATUS_ID";
     public static final int MIN_COL_NUM = 3;
     public static final int MAX_COL_NUM = 4;
 
     private Date executionDate;
     private Object messageId;
-    private Integer channelId;
+    private String channelName;
     private ServiceStatus serviceStatus = ServiceStatus.FUTURE;
     private Map<String, Object> additionalParams = new HashMap<>();
 
@@ -37,7 +37,7 @@ public class ServiceResult implements Serializable {
 
         Date date = null;
         Object msgId = null;
-        Integer channel = null;
+        String channel = null;
         ServiceStatus status = ServiceStatus.FUTURE;
         Map<String, Object> params = new HashMap<>();
 
@@ -49,8 +49,8 @@ public class ServiceResult implements Serializable {
                 case MSG_ID_ALIAS:
                     msgId = entry.getValue();
                     break;
-                case CHANNEL_ID_ALIAS:
-                    channel = (Integer) entry.getValue();
+                case CHANNEL_NAME_ALIAS:
+                    channel = entry.getValue().toString();
                     break;
                 case STATUS_COL_ALIAS:
                     status = parseStatus((String) entry.getValue());
@@ -60,7 +60,7 @@ public class ServiceResult implements Serializable {
                      break;
             }
         }
-
+        
         return new ServiceResult(date, msgId, channel, status, params);
     }
 
@@ -79,7 +79,7 @@ public class ServiceResult implements Serializable {
     public ServiceResult(
             Date executionDate,
             Object messageId,
-            Integer channelId,
+            String channelName,
             ServiceStatus serviceStatus,
             Map<String, Object> additionalParams
     ) {
@@ -89,13 +89,13 @@ public class ServiceResult implements Serializable {
         if (messageId == null) {
             throw new IllegalArgumentException("Message ID (external execution id) is required");
         }
-        if (channelId == null) {
+        if (channelName == null) {
             throw new IllegalArgumentException("Channel ID is required");
         }
 
         this.executionDate = executionDate;
         this.messageId = messageId;
-        this.channelId = channelId;
+        this.channelName = channelName;
         this.serviceStatus = serviceStatus;
         this.additionalParams = additionalParams == null ? new HashMap<>() : additionalParams;
     }
@@ -116,12 +116,12 @@ public class ServiceResult implements Serializable {
         this.messageId = messageId;
     }
 
-    public Integer getChannelId() {
-        return channelId;
+    public String getChannelName() {
+        return channelName;
     }
 
-    public void setChannelId(Integer channelId) {
-        this.channelId = channelId;
+    public void setChannelName(String channelName) {
+        this.channelName = channelName;
     }
 
     public ServiceStatus getServiceStatus() {

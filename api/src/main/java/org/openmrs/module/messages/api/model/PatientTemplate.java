@@ -1,5 +1,6 @@
 package org.openmrs.module.messages.api.model;
 
+import org.apache.commons.lang.StringUtils;
 import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.Relationship;
@@ -81,7 +82,7 @@ public class PatientTemplate extends AbstractBaseOpenmrsData {
     }
     
     public String getServiceQuery() {
-        return serviceQuery;
+        return StringUtils.isBlank(serviceQuery) ? getTemplate().getServiceQuery() : this.serviceQuery;
     }
     
     public void setServiceQuery(String serviceQuery) {
@@ -113,7 +114,7 @@ public class PatientTemplate extends AbstractBaseOpenmrsData {
     }
     
     public String getServiceQueryType() {
-        return serviceQueryType;
+        return StringUtils.isBlank(serviceQueryType) ? getTemplate().getServiceQueryType() : serviceQueryType;
     }
     
     public void setServiceQueryType(String serviceQueryType) {

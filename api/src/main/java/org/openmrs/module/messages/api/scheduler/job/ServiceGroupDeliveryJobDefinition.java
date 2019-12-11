@@ -23,8 +23,8 @@ public class ServiceGroupDeliveryJobDefinition extends JobDefinition {
     private static final Log LOGGER = LogFactory.getLog(ServiceGroupDeliveryJobDefinition.class);
     private static final String TASK_NAME_PREFIX = "Group";
     private static final String GROUP_ENTITY = "GROUP_ENTITY";
-    private static final int CALL_FLOW_TYPE = 0; //TODO: CFLM-184: Extract to const
-    private static final int SMS_TYPE = 1; //TODO: CFLM-184: Extract to const
+    private static final String CALL_FLOW_TYPE = "Call"; //TODO: CFLM-184: Extract to const
+    private static final String  SMS_TYPE = "Sms"; //TODO: CFLM-184: Extract to constF
 
     private final Gson gson =
         new GsonBuilder().setDateFormat(DateFormat.FULL, DateFormat.FULL).create();
@@ -72,7 +72,7 @@ public class ServiceGroupDeliveryJobDefinition extends JobDefinition {
     private void handleGroupedResults() {
         List<ServiceResult> results = group.getResults();
         for (ServiceResult result : results) {
-            switch (result.getChannelId()) {
+            switch (result.getChannelName()) {
                 case CALL_FLOW_TYPE:
                     triggerCallFlowEvent(result);
                     break;
@@ -81,7 +81,7 @@ public class ServiceGroupDeliveryJobDefinition extends JobDefinition {
                     break;
                 default:
                     throw new MessagesRuntimeException(
-                        String.format("Unsupported channel id: %d", result.getChannelId()));
+                        String.format("Unsupported channel id: %d", result.getChannelName()));
             }
         }
     }
