@@ -18,9 +18,6 @@
 		<require_module version="${uiframeworkVersion}">
 			org.openmrs.module.uiframework
 		</require_module>
-	</require_modules>
-
-	<require_modules>
 		<require_module version="${eventVersion}">
 			org.openmrs.event
 		</require_module>
