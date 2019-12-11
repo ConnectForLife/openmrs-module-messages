@@ -2,16 +2,21 @@ package org.openmrs.module.messages.api.scheduler.job;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.messages.api.constants.MessagesConstants;
+import org.openmrs.module.messages.api.event.MessagesEvent;
+import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
+import org.openmrs.module.messages.api.execution.ServiceResult;
+import org.openmrs.module.messages.api.execution.ServiceResultList;
+import org.openmrs.module.messages.api.service.MessagesEventService;
+import org.openmrs.module.messages.api.util.DateUtil;
+
 import java.text.DateFormat;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
-import org.openmrs.module.messages.api.execution.ServiceResult;
-import org.openmrs.module.messages.api.execution.ServiceResultList;
-import org.openmrs.module.messages.api.util.DateUtil;
 
 public class ServiceGroupDeliveryJobDefinition extends JobDefinition {
 
@@ -84,12 +89,19 @@ public class ServiceGroupDeliveryJobDefinition extends JobDefinition {
     private void triggerCallFlowEvent(ServiceResult result) {
         LOGGER.debug(String.format("%s: Callflow event triggered", getTaskName()));
         //TODO: CFLM-184: Trigger call flow event
+        getEventService().sendEventMessage(new MessagesEvent(null, null));
         LOGGER.debug(result);
     }
 
     private void triggerSmsEvent(ServiceResult result) {
         LOGGER.debug(String.format("%s: Sms event triggered", getTaskName()));
         //TODO: CFLM-184: Trigger sms event
+        getEventService().sendEventMessage(new MessagesEvent(null, null));
         LOGGER.debug(result);
+    }
+
+    private MessagesEventService getEventService() {
+        return Context.getRegisteredComponent(
+                MessagesConstants.CONFIG_SERVICE, MessagesEventService.class);
     }
 }

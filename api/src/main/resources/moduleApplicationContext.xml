@@ -179,4 +179,28 @@
     </bean>
 
     <bean id="messages.actorMapper" class="org.openmrs.module.messages.api.mappers.ActorMapper"/>
+
+    <bean id="messages.messagesEventService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="transactionManager">
+            <ref bean="transactionManager" />
+        </property>
+        <property name="target">
+            <bean class="org.openmrs.module.messages.api.service.impl.MessagesEventServiceImpl" />
+        </property>
+        <property name="preInterceptors">
+            <ref bean="serviceInterceptors" />
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource" />
+        </property>
+    </bean>
+
+    <bean parent="serviceContext">
+        <property name="moduleService">
+            <list merge="true">
+                <value>org.openmrs.module.messages.api.service.MessagesEventService</value>
+                <ref local="messages.messagesEventService"/>
+            </list>
+        </property>
+    </bean>
 </beans>

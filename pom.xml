@@ -59,6 +59,18 @@
 				<version>${uiframeworkVersion}</version>
 				<scope>provided</scope>
 			</dependency>
+			<dependency>
+				<groupId>org.openmrs</groupId>
+				<artifactId>event-api</artifactId>
+				<version>${eventVersion}</version>
+				<scope>provided</scope>
+				<exclusions>
+					<exclusion>
+						<groupId>commons-codec</groupId>
+						<artifactId>commons-codec</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -299,5 +311,6 @@
 		<surefireVersion>2.17</surefireVersion>
 		<javax.servlet.version>3.0.1</javax.servlet.version>
 		<uiframeworkVersion>3.9</uiframeworkVersion>
+        <eventVersion>2.6.0</eventVersion>
 	</properties>
 </project>

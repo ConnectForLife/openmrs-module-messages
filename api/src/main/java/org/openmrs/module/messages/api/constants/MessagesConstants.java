@@ -8,6 +8,8 @@ public final class MessagesConstants {
 
     public static final String CONFIG_SERVICE = "messages.configService";
 
+    public static final String EVENT_SERVICE = "messages.messagesEventService";
+
     private MessagesConstants() {
         // private. So can't be initialized
     }
