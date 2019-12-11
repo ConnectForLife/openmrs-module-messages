@@ -50,6 +50,7 @@ public class PatientTemplateControllerITTest extends BaseModuleWebContextSensiti
     private static final int TEMPLATE_1_ID = 1;
     private static final String PATIENT_3_QUERY_TYPE = "SQL";
     private static final String PATIENT_3_QUERY = "SELECT (*) FROM messages_scheduled_service;";
+    private static final int NON_EXISTING_PATIENT_ID = 999999;
 
     private MockMvc mockMvc;
 
@@ -206,6 +207,40 @@ public class PatientTemplateControllerITTest extends BaseModuleWebContextSensiti
                 .andExpect(jsonPath("$.patientTemplates.length()").value(1))
                 .andExpect(jsonPath("$.patientTemplates.[0].templateFieldValues.length()").value(1))
                 .andExpect(jsonPath("$.patientTemplates.[0].templateFieldValues[0].value").value(expectedValue))
+                .andReturn();
+    }
+
+    @Test
+    public void shouldReturnBadRequestWhenPatientIdIsMissing() throws Exception {
+        PatientTemplateDTO dto = createDTOForPatientTemplate3();
+        dto.setPatientId(null);
+
+        List<PatientTemplateDTO> dtos = new ArrayList<>();
+        dtos.add(dto);
+        PatientTemplatesWrapper body = new PatientTemplatesWrapper(dtos);
+
+        mockMvc.perform(post("/patient-templates/patient/{id}", PATIENT_3_ID)
+                .contentType(Constant.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(body)))
+                .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andReturn();
+    }
+
+    @Test
+    public void shouldReturnBadRequestWhenNonExistingPatientIdIsPassed() throws Exception {
+        PatientTemplateDTO dto = createDTOForPatientTemplate3();
+        dto.setPatientId(NON_EXISTING_PATIENT_ID);
+
+        List<PatientTemplateDTO> dtos = new ArrayList<>();
+        dtos.add(dto);
+        PatientTemplatesWrapper body = new PatientTemplatesWrapper(dtos);
+
+        mockMvc.perform(post("/patient-templates/patient/{id}", PATIENT_3_ID)
+                .contentType(Constant.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(body)))
+                .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andReturn();
     }
 
