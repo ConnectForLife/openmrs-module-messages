@@ -72,9 +72,9 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
         return this.renderDynamicRadioButton(tfv, ['Daily', 'Weekly', 'Monthly'],
           fieldName, isMandatory);
       case TemplateFieldType.START_OF_MESSAGES:
-        return this.renderDatePicker(tfv, isMandatory);
+        return this.renderDatePicker(tfv, PATIENT_TEMPLATE_START_DATE, isMandatory);
       case TemplateFieldType.END_OF_MESSAGES:
-        return this.renderDatePicker(tfv, isMandatory);
+        return this.renderDatePicker(tfv, fieldName, isMandatory);
       default:
         return this.renderInputField(tfv, fieldName, isMandatory);
     };
@@ -128,10 +128,10 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
     );
   };
 
-  renderDatePicker = (tfv: TemplateFieldValueUI, isMandatory: boolean) => (
+  renderDatePicker = (tfv: TemplateFieldValueUI, fieldName: string, isMandatory: boolean) => (
     <FormGroup controlId={tfv.localId} key={tfv.localId}>
       <FormLabel
-        label={PATIENT_TEMPLATE_START_DATE}
+        label={fieldName}
         mandatory={isMandatory} />
       <CustomDatePicker
         value={tfv.value}
