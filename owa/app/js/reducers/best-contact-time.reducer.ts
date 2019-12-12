@@ -31,7 +31,7 @@ export default (state = initialState, action) => {
     case SUCCESS(ACTION_TYPES.GET_BEST_CONTACT_TIME):
       return {
         ...state,
-        bestContactTime: { ...state.bestContactTime, patientTime: action.payload.data}
+        bestContactTime: { ...state.bestContactTime, patientTime: action.payload.data ? action.payload.data : initialState.bestContactTime.patientTime}
       };
 
     case REQUEST(ACTION_TYPES.POST_BEST_CONTACT_TIME):
