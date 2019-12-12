@@ -66,7 +66,7 @@ public class PatientTemplateControllerITTest extends BaseModuleWebContextSensiti
 
     @Test
     public void shouldReturnAllForPatientOne() throws Exception {
-        mockMvc.perform(get("/patient-templates/patient/{id}", PATIENT_1_ID))
+        mockMvc.perform(get("/messages/patient-templates/patient/{id}", PATIENT_1_ID))
             .andExpect(status().is(HttpStatus.OK.value()))
             .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.content.[*].id").value(hasItem(PATIENT_1_TEMPLATE_1_ID)))
@@ -84,7 +84,7 @@ public class PatientTemplateControllerITTest extends BaseModuleWebContextSensiti
 
     @Test
     public void shouldReturnThreePatientTemplatesForPatientOne() throws Exception {
-        mockMvc.perform(get("/patient-templates/patient/{id}", PATIENT_1_ID)
+        mockMvc.perform(get("/messages/patient-templates/patient/{id}", PATIENT_1_ID)
             .param(PAGE_PARAM, String.valueOf(PAGE_1))
             .param(ROWS_PARAM, String.valueOf(PAGE_SIZE_3)))
             .andExpect(status().is(HttpStatus.OK.value()))
@@ -104,7 +104,7 @@ public class PatientTemplateControllerITTest extends BaseModuleWebContextSensiti
 
     @Test
     public void shouldReturnTwoPatientTemplates() throws Exception {
-        mockMvc.perform(get("/patient-templates/patient/{id}", PATIENT_1_ID)
+        mockMvc.perform(get("/messages/patient-templates/patient/{id}", PATIENT_1_ID)
             .param(PAGE_PARAM, String.valueOf(PAGE_1))
             .param(ROWS_PARAM, String.valueOf(PAGE_SIZE_2)))
             .andExpect(status().is(HttpStatus.OK.value()))
@@ -117,7 +117,7 @@ public class PatientTemplateControllerITTest extends BaseModuleWebContextSensiti
 
     @Test
     public void shouldReturnSecondPageOfPatientTemplates() throws Exception {
-        mockMvc.perform(get("/patient-templates/patient/{id}", PATIENT_1_ID)
+        mockMvc.perform(get("/messages/patient-templates/patient/{id}", PATIENT_1_ID)
             .param(PAGE_PARAM, String.valueOf(PAGE_2))
             .param(ROWS_PARAM, String.valueOf(PAGE_SIZE_2)))
             .andExpect(status().is(HttpStatus.OK.value()))
@@ -129,7 +129,7 @@ public class PatientTemplateControllerITTest extends BaseModuleWebContextSensiti
 
     @Test
     public void shouldReturnEmptyPageForSecondPatient() throws Exception {
-        mockMvc.perform(get("/patient-templates/patient/{id}", PATIENT_2_ID)
+        mockMvc.perform(get("/messages/patient-templates/patient/{id}", PATIENT_2_ID)
             .param(PAGE_PARAM, String.valueOf(PAGE_1))
             .param(ROWS_PARAM, String.valueOf(PAGE_SIZE_10)))
             .andExpect(status().is(HttpStatus.OK.value()))
@@ -147,7 +147,7 @@ public class PatientTemplateControllerITTest extends BaseModuleWebContextSensiti
         dtos.add(dto);
         PatientTemplatesWrapper body = new PatientTemplatesWrapper(dtos);
 
-        mockMvc.perform(post("/patient-templates/patient/{id}", PATIENT_3_ID)
+        mockMvc.perform(post("/messages/patient-templates/patient/{id}", PATIENT_3_ID)
             .contentType(Constant.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(body)))
             .andExpect(status().is(HttpStatus.OK.value()))
@@ -171,7 +171,7 @@ public class PatientTemplateControllerITTest extends BaseModuleWebContextSensiti
         dtos.add(dto);
         PatientTemplatesWrapper body = new PatientTemplatesWrapper(dtos);
 
-        mockMvc.perform(post("/patient-templates/patient/{id}", PATIENT_3_ID)
+        mockMvc.perform(post("/messages/patient-templates/patient/{id}", PATIENT_3_ID)
             .contentType(Constant.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(body)))
             .andExpect(status().is(HttpStatus.OK.value()))
@@ -199,7 +199,7 @@ public class PatientTemplateControllerITTest extends BaseModuleWebContextSensiti
         dtos.add(dto);
         PatientTemplatesWrapper body = new PatientTemplatesWrapper(dtos);
 
-        mockMvc.perform(post("/patient-templates/patient/{id}", PATIENT_3_ID)
+        mockMvc.perform(post("/messages/patient-templates/patient/{id}", PATIENT_3_ID)
                 .contentType(Constant.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(body)))
                 .andExpect(status().is(HttpStatus.OK.value()))
@@ -219,7 +219,7 @@ public class PatientTemplateControllerITTest extends BaseModuleWebContextSensiti
         dtos.add(dto);
         PatientTemplatesWrapper body = new PatientTemplatesWrapper(dtos);
 
-        mockMvc.perform(post("/patient-templates/patient/{id}", PATIENT_3_ID)
+        mockMvc.perform(post("/messages/patient-templates/patient/{id}", PATIENT_3_ID)
                 .contentType(Constant.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(body)))
                 .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
@@ -236,7 +236,7 @@ public class PatientTemplateControllerITTest extends BaseModuleWebContextSensiti
         dtos.add(dto);
         PatientTemplatesWrapper body = new PatientTemplatesWrapper(dtos);
 
-        mockMvc.perform(post("/patient-templates/patient/{id}", PATIENT_3_ID)
+        mockMvc.perform(post("/messages/patient-templates/patient/{id}", PATIENT_3_ID)
                 .contentType(Constant.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(body)))
                 .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))

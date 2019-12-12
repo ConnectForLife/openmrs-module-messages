@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import java.util.List;
 
 @Controller
-@RequestMapping("/patient-templates")
+@RequestMapping("/messages/patient-templates")
 public class PatientTemplateController extends BaseRestController {
 
     private final Log logger = LogFactory.getLog(getClass());
