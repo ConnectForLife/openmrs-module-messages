@@ -69,10 +69,11 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
           ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
           fieldName, isMandatory);
       case TemplateFieldType.MESSAGING_FREQUENCY:
-
         return this.renderDynamicRadioButton(tfv, ['Daily', 'Weekly', 'Monthly'],
           fieldName, isMandatory);
       case TemplateFieldType.START_OF_MESSAGES:
+        return this.renderDatePicker(tfv, isMandatory);
+      case TemplateFieldType.END_OF_MESSAGES:
         return this.renderDatePicker(tfv, isMandatory);
       default:
         return this.renderInputField(tfv, fieldName, isMandatory);
@@ -128,16 +129,16 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
   };
 
   renderDatePicker = (tfv: TemplateFieldValueUI, isMandatory: boolean) => (
-      <FormGroup controlId={tfv.localId} key={tfv.localId}>
-        <FormLabel
-          label={PATIENT_TEMPLATE_START_DATE}
-          mandatory={isMandatory} />
-        <CustomDatePicker
-          value={tfv.value}
-          onChange={isoDate => this.onTemplateFieldValueChange(tfv.localId, isoDate)}
-        />
-      </FormGroup>
-    );
+    <FormGroup controlId={tfv.localId} key={tfv.localId}>
+      <FormLabel
+        label={PATIENT_TEMPLATE_START_DATE}
+        mandatory={isMandatory} />
+      <CustomDatePicker
+        value={tfv.value}
+        onChange={isoDate => this.onTemplateFieldValueChange(tfv.localId, isoDate)}
+      />
+    </FormGroup>
+  );
 
   render = () => {
     const patientTemplate = this.getPatientTemplate();
