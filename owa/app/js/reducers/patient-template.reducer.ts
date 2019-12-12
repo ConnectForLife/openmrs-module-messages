@@ -123,7 +123,7 @@ export default (state = initialState, action) => {
 const messagesUrl = "ws/messages";
 const templatesUrl = messagesUrl + "/templates";
 const messageDetailsUrl = messagesUrl + "/details";
-const patientTemplatesUrl = "ws/patient-templates";
+const patientTemplatesUrl = "ws/messages/patient-templates";
 
 //TODO in CFLM-377: Change to real pagination request
 export const getMessages = (page, size, sort, order, patientId) => async (dispatch) => {
