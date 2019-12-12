@@ -570,4 +570,472 @@
                                  referencedColumnNames="messages_template_id"/>
     </changeSet>
 
+    <changeSet id="messages-19" author="Dawid Ruchniewicz">
+        <comment>Added templates and their template fields</comment>
+        <insert tableName="messages_template">
+            <column name="messages_template_id">1</column>
+            <column name="service_query">select EXECUTION_DATE, MESSAGE_ID, CHANNEL_ID, mssg_status as STATUS_ID from
+                (select TIMESTAMP(selected_date, times) AS EXECUTION_DATE, 1 AS MESSAGE_ID, :Service_type AS CHANNEL_ID
+                from (select * from (select adddate('2019-12-01',t4*10000 + t3*1000 + t2*100 + t1*10 + t0) selected_date
+                from  (select 0 t0 union select 1 union select 2 union select 3 union select 4 union  select 5 union
+                select 6 union select 7 union select 8 union select 9) t0,  (select 0 t1 union select 1 union
+                select 2 union select 3 union select 4 union  select 5 union select 6 union select 7 union
+                select 8 union select 9) t1,  (select 0 t2 union select 1 union select 2 union select 3 union
+                select 4 union  select 5 union select 6 union select 7 union select 8 union select 9) t2,
+                (select 0 t3 union select 1 union select 2 union select 3 union select 4 union  select 5 union
+                select 6 union select 7 union select 8 union select 9) t3,  (select 0 t4 union select 1 union
+                select 2 union select 3 union select 4 union  select 5 union select 6 union select 7 union
+                select 8 union select 9) t4) v where selected_date between :Start_of_daily_messages and :End_of_daily_messages
+                and selected_date between :startDate and :endDate  and :Week_day_of_delivering_message
+                like concat('%',DAYNAME(selected_date),'%') ) dates JOIN (select '09:00:00' times) timeslist) temp
+                LEFT JOIN (select mssg.msg_send_time as mssg_dates, mssg.status as mssg_status
+                from messages_scheduled_service_group mssg where mssg.patient_id = :patientId) mss on mss.mssg_dates = EXECUTION_DATE;
+            </column>
+            <column name="service_query_type">SQL</column>
+            <column name="name">Adherence report daily</column>
+            <column name="uuid">868278cc-1c16-11ea-8999-0242ac160002</column>
+            <column name="creator">1</column>
+            <column name="changed_by">NULL</column>
+            <column name="date_changed">NULL</column>
+            <column name="date_created">1970-01-01 01:00:01</column>
+            <column name="date_voided">NULL</column>
+            <column name="void_reason">NULL</column>
+            <column name="voided">0</column>
+            <column name="voided_by">NULL</column>
+        </insert>
+        <insert tableName="messages_template_field">
+            <column name="messages_template_field_id">1</column>
+            <column name="name">Service type</column>
+            <column name="mandatory">1</column>
+            <column name="default_value">Deactivate service</column>
+            <column name="template_id">1</column>
+            <column name="template_field_type">SERVICE_TYPE</column>
+            <column name="uuid">86834fd6-1c16-11ea-8999-0242ac160002</column>
+            <column name="creator">1</column>
+            <column name="changed_by">NULL</column>
+            <column name="date_changed">NULL</column>
+            <column name="date_created">1970-01-01 01:00:01</column>
+            <column name="date_voided">NULL</column>
+            <column name="void_reason">NULL</column>
+            <column name="voided">0</column>
+            <column name="voided_by">NULL</column>
+        </insert>
+        <insert tableName="messages_template_field">
+            <column name="messages_template_field_id">2</column>
+            <column name="name">Week day of delivering message</column>
+            <column name="mandatory">1</column>
+            <column name="default_value">Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday</column>
+            <column name="template_id">1</column>
+            <column name="template_field_type">DAY_OF_WEEK</column>
+            <column name="uuid">868491e5-1c16-11ea-8999-0242ac160002</column>
+            <column name="creator">1</column>
+            <column name="changed_by">NULL</column>
+            <column name="date_changed">NULL</column>
+            <column name="date_created">1970-01-01 01:00:01.000</column>
+            <column name="date_voided">NULL</column>
+            <column name="void_reason">NULL</column>
+            <column name="voided">0</column>
+            <column name="voided_by">NULL</column>
+        </insert>
+        <insert tableName="messages_template_field">
+            <column name="messages_template_field_id">3</column>
+            <column name="name">Start of daily messages</column>
+            <column name="mandatory">0</column>
+            <column name="default_value">2019-12-09</column>
+            <column name="template_id">1</column>
+            <column name="template_field_type">START_OF_MESSAGES</column>
+            <column name="uuid">86858cdd-1c16-11ea-8999-0242ac160002</column>
+            <column name="creator">1</column>
+            <column name="changed_by">NULL</column>
+            <column name="date_changed">NULL</column>
+            <column name="date_created">1970-01-01 01:00:01.000</column>
+            <column name="date_voided">NULL</column>
+            <column name="void_reason">NULL</column>
+            <column name="voided">0</column>
+            <column name="voided_by">NULL</column>
+        </insert>
+        <insert tableName="messages_template_field">
+            <column name="messages_template_field_id">4</column>
+            <column name="name">End of daily messages</column>
+            <column name="mandatory">1</column>
+            <column name="default_value">2020-01-30</column>
+            <column name="template_id">1</column>
+            <column name="template_field_type">END_OF_MESSAGES</column>
+            <column name="uuid">8689519a-1c16-11ea-8999-0242ac160002</column>
+            <column name="creator">1</column>
+            <column name="changed_by">NULL</column>
+            <column name="date_changed">NULL</column>
+            <column name="date_created">1970-01-01 01:00:01.000</column>
+            <column name="date_voided">NULL</column>
+            <column name="void_reason">NULL</column>
+            <column name="voided">0</column>
+            <column name="voided_by">NULL</column>
+        </insert>
+        <insert tableName="messages_template">
+            <column name="messages_template_id">3</column>
+            <column name="service_query">''</column>
+            <column name="service_query_type">''</column>
+            <column name="name">Adherence feedback</column>
+            <column name="uuid">868a8f7b-1c16-11ea-8999-0242ac160002</column>
+            <column name="creator">1</column>
+            <column name="changed_by">NULL</column>
+            <column name="date_changed">NULL</column>
+            <column name="date_created">1970-01-01 01:00:01</column>
+            <column name="date_voided">NULL</column>
+            <column name="void_reason">NULL</column>
+            <column name="voided">0</column>
+            <column name="voided_by">NULL</column>
+        </insert>
+        <insert tableName="messages_template_field">
+            <column name="messages_template_field_id">20</column>
+            <column name="name">Service type</column>
+            <column name="mandatory">1</column>
+            <column name="default_value">Deactivate service</column>
+            <column name="template_id">3</column>
+            <column name="template_field_type">SERVICE_TYPE</column>
+            <column name="uuid">868bd0ac-1c16-11ea-8999-0242ac160002</column>
+            <column name="creator">1</column>
+            <column name="changed_by">NULL</column>
+            <column name="date_changed">NULL</column>
+            <column name="date_created">1970-01-01 01:00:01.000</column>
+            <column name="date_voided">NULL</column>
+            <column name="void_reason">NULL</column>
+            <column name="voided">0</column>
+            <column name="voided_by">NULL</column>
+        </insert>
+        <insert tableName="messages_template_field">
+            <column name="messages_template_field_id">21</column>
+            <column name="name">Frequency of the message</column>
+            <column name="mandatory">1</column>
+            <column name="default_value">Monthly</column>
+            <column name="template_id">3</column>
+            <column name="template_field_type">MESSAGING_FREQUENCY</column>
+            <column name="uuid">868fb9a6-1c16-11ea-8999-0242ac160002</column>
+            <column name="creator">1</column>
+            <column name="changed_by">NULL</column>
+            <column name="date_changed">NULL</column>
+            <column name="date_created">1970-01-01 01:00:01.000</column>
+            <column name="date_voided">NULL</column>
+            <column name="void_reason">NULL</column>
+            <column name="voided">0</column>
+            <column name="voided_by">NULL</column>
+        </insert>
+        <insert tableName="messages_template_field">
+            <column name="messages_template_field_id">22</column>
+            <column name="name">Week day of delivering message</column>
+            <column name="mandatory">1</column>
+            <column name="default_value">Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday</column>
+            <column name="template_id">3</column>
+            <column name="template_field_type">DAY_OF_WEEK</column>
+            <column name="uuid">8690f1fe-1c16-11ea-8999-0242ac160002</column>
+            <column name="creator">1</column>
+            <column name="changed_by">NULL</column>
+            <column name="date_changed">NULL</column>
+            <column name="date_created">1970-01-01 01:00:01.000</column>
+            <column name="date_voided">NULL</column>
+            <column name="void_reason">NULL</column>
+            <column name="voided">0</column>
+            <column name="voided_by">NULL</column>
+        </insert>
+        <insert tableName="messages_template_field">
+            <column name="messages_template_field_id">23</column>
+            <column name="name">Start of messages</column>
+            <column name="mandatory">0</column>
+            <column name="default_value">2019-12-09</column>
+            <column name="template_id">3</column>
+            <column name="template_field_type">START_OF_MESSAGES</column>
+            <column name="uuid">8692296c-1c16-11ea-8999-0242ac160002</column>
+            <column name="creator">1</column>
+            <column name="changed_by">NULL</column>
+            <column name="date_changed">NULL</column>
+            <column name="date_created">1970-01-01 01:00:01.000</column>
+            <column name="date_voided">NULL</column>
+            <column name="void_reason">NULL</column>
+            <column name="voided">0</column>
+            <column name="voided_by">NULL</column>
+        </insert>
+        <insert tableName="messages_template_field">
+            <column name="messages_template_field_id">24</column>
+            <column name="name">End of messages</column>
+            <column name="mandatory">1</column>
+            <column name="default_value">2020-01-30</column>
+            <column name="template_id">3</column>
+            <column name="template_field_type">END_OF_MESSAGES</column>
+            <column name="uuid">8693dd0b-1c16-11ea-8999-0242ac160002</column>
+            <column name="creator">1</column>
+            <column name="changed_by">NULL</column>
+            <column name="date_changed">NULL</column>
+            <column name="date_created">1970-01-01 01:00:01.000</column>
+            <column name="date_voided">NULL</column>
+            <column name="void_reason">NULL</column>
+            <column name="voided">0</column>
+            <column name="voided_by">NULL</column>
+        </insert>
+        <insert tableName="messages_template">
+            <column name="messages_template_id">4</column>
+            <column name="service_query">''</column>
+            <column name="service_query_type">''</column>
+            <column name="name">Health tip</column>
+            <column name="uuid">869522ae-1c16-11ea-8999-0242ac160002</column>
+            <column name="creator">1</column>
+            <column name="changed_by">NULL</column>
+            <column name="date_changed">NULL</column>
+            <column name="date_created">1970-01-01 01:00:01</column>
+            <column name="date_voided">NULL</column>
+            <column name="void_reason">NULL</column>
+            <column name="voided">0</column>
+            <column name="voided_by">NULL</column>
+        </insert>
+        <insert tableName="messages_template_field">
+            <column name="messages_template_field_id">30</column>
+            <column name="name">Service type</column>
+            <column name="mandatory">1</column>
+            <column name="default_value">Deactivate service</column>
+            <column name="template_id">4</column>
+            <column name="template_field_type">SERVICE_TYPE</column>
+            <column name="uuid">86966e7b-1c16-11ea-8999-0242ac160002</column>
+            <column name="creator">1</column>
+            <column name="changed_by">NULL</column>
+            <column name="date_changed">NULL</column>
+            <column name="date_created">1970-01-01 01:00:01.000</column>
+            <column name="date_voided">NULL</column>
+            <column name="void_reason">NULL</column>
+            <column name="voided">0</column>
+            <column name="voided_by">NULL</column>
+        </insert>
+        <insert tableName="messages_template_field">
+            <column name="messages_template_field_id">31</column>
+            <column name="name">Frequency of the message</column>
+            <column name="mandatory">1</column>
+            <column name="default_value">Monthly</column>
+            <column name="template_id">4</column>
+            <column name="template_field_type">MESSAGING_FREQUENCY</column>
+            <column name="uuid">8697aa77-1c16-11ea-8999-0242ac160002</column>
+            <column name="creator">1</column>
+            <column name="changed_by">NULL</column>
+            <column name="date_changed">NULL</column>
+            <column name="date_created">1970-01-01 01:00:01.000</column>
+            <column name="date_voided">NULL</column>
+            <column name="void_reason">NULL</column>
+            <column name="voided">0</column>
+            <column name="voided_by">NULL</column>
+        </insert>
+        <insert tableName="messages_template_field">
+            <column name="messages_template_field_id">32</column>
+            <column name="name">Week day of delivering message</column>
+            <column name="mandatory">1</column>
+            <column name="default_value">Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday</column>
+            <column name="template_id">4</column>
+            <column name="template_field_type">DAY_OF_WEEK</column>
+            <column name="uuid">8698ecaa-1c16-11ea-8999-0242ac160002</column>
+            <column name="creator">1</column>
+            <column name="changed_by">NULL</column>
+            <column name="date_changed">NULL</column>
+            <column name="date_created">1970-01-01 01:00:01.000</column>
+            <column name="date_voided">NULL</column>
+            <column name="void_reason">NULL</column>
+            <column name="voided">0</column>
+            <column name="voided_by">NULL</column>
+        </insert>
+        <insert tableName="messages_template_field">
+            <column name="messages_template_field_id">33</column>
+            <column name="name">Start of messages</column>
+            <column name="mandatory">0</column>
+            <column name="default_value">2019-12-09</column>
+            <column name="template_id">4</column>
+            <column name="template_field_type">START_OF_MESSAGES</column>
+            <column name="uuid">869a1860-1c16-11ea-8999-0242ac160002</column>
+            <column name="creator">1</column>
+            <column name="changed_by">NULL</column>
+            <column name="date_changed">NULL</column>
+            <column name="date_created">1970-01-01 01:00:01.000</column>
+            <column name="date_voided">NULL</column>
+            <column name="void_reason">NULL</column>
+            <column name="voided">0</column>
+            <column name="voided_by">NULL</column>
+        </insert>
+        <insert tableName="messages_template_field">
+            <column name="messages_template_field_id">34</column>
+            <column name="name">Categories of the message</column>
+            <column name="mandatory">1</column>
+            <column name="default_value">Category1</column>
+            <column name="template_id">4</column>
+            <column name="template_field_type">CATEGORY_OF_MESSAGE</column>
+            <column name="uuid">869b5d16-1c16-11ea-8999-0242ac160002</column>
+            <column name="creator">1</column>
+            <column name="changed_by">NULL</column>
+            <column name="date_changed">NULL</column>
+            <column name="date_created">1970-01-01 01:00:01.000</column>
+            <column name="date_voided">NULL</column>
+            <column name="void_reason">NULL</column>
+            <column name="voided">0</column>
+            <column name="voided_by">NULL</column>
+        </insert>
+        <insert tableName="messages_template_field">
+            <column name="messages_template_field_id">35</column>
+            <column name="name">End of messages</column>
+            <column name="mandatory">1</column>
+            <column name="default_value">2020-01-30</column>
+            <column name="template_id">4</column>
+            <column name="template_field_type">END_OF_MESSAGES</column>
+            <column name="uuid">869ca243-1c16-11ea-8999-0242ac160002</column>
+            <column name="creator">1</column>
+            <column name="changed_by">NULL</column>
+            <column name="date_changed">NULL</column>
+            <column name="date_created">1970-01-01 01:00:01.000</column>
+            <column name="date_voided">NULL</column>
+            <column name="void_reason">NULL</column>
+            <column name="voided">0</column>
+            <column name="voided_by">NULL</column>
+        </insert>
+        <insert tableName="messages_template">
+            <column name="messages_template_id">5</column>
+            <column name="service_query">''</column>
+            <column name="service_query_type">''</column>
+            <column name="name">Visit reminder</column>
+            <column name="uuid">869df249-1c16-11ea-8999-0242ac160002</column>
+            <column name="creator">1</column>
+            <column name="changed_by">NULL</column>
+            <column name="date_changed">NULL</column>
+            <column name="date_created">1970-01-01 01:00:01</column>
+            <column name="date_voided">NULL</column>
+            <column name="void_reason">NULL</column>
+            <column name="voided">0</column>
+            <column name="voided_by">NULL</column>
+        </insert>
+        <insert tableName="messages_template_field">
+            <column name="messages_template_field_id">40</column>
+            <column name="name">Service type</column>
+            <column name="mandatory">1</column>
+            <column name="default_value">Deactivate service</column>
+            <column name="template_id">5</column>
+            <column name="template_field_type">SERVICE_TYPE</column>
+            <column name="uuid">869f1ba8-1c16-11ea-8999-0242ac160002</column>
+            <column name="creator">1</column>
+            <column name="changed_by">NULL</column>
+            <column name="date_changed">NULL</column>
+            <column name="date_created">1970-01-01 01:00:01.000</column>
+            <column name="date_voided">NULL</column>
+            <column name="void_reason">NULL</column>
+            <column name="voided">0</column>
+            <column name="voided_by">NULL</column>
+        </insert>
+        <insert tableName="messages_template_field">
+            <column name="messages_template_field_id">41</column>
+            <column name="name">Start of messages</column>
+            <column name="mandatory">0</column>
+            <column name="default_value">2019-12-09</column>
+            <column name="template_id">5</column>
+            <column name="template_field_type">START_OF_MESSAGES</column>
+            <column name="uuid">86a03428-1c16-11ea-8999-0242ac160002</column>
+            <column name="creator">1</column>
+            <column name="changed_by">NULL</column>
+            <column name="date_changed">NULL</column>
+            <column name="date_created">1970-01-01 01:00:01.000</column>
+            <column name="date_voided">NULL</column>
+            <column name="void_reason">NULL</column>
+            <column name="voided">0</column>
+            <column name="voided_by">NULL</column>
+        </insert>
+        <insert tableName="messages_template_field">
+            <column name="messages_template_field_id">42</column>
+            <column name="name">End of messages</column>
+            <column name="mandatory">1</column>
+            <column name="default_value">2020-01-30</column>
+            <column name="template_id">5</column>
+            <column name="template_field_type">END_OF_MESSAGES</column>
+            <column name="uuid">86a14d9c-1c16-11ea-8999-0242ac160002</column>
+            <column name="creator">1</column>
+            <column name="changed_by">NULL</column>
+            <column name="date_changed">NULL</column>
+            <column name="date_created">1970-01-01 01:00:01.000</column>
+            <column name="date_voided">NULL</column>
+            <column name="void_reason">NULL</column>
+            <column name="voided">0</column>
+            <column name="voided_by">NULL</column>
+        </insert>
+        <insert tableName="messages_template">
+            <column name="messages_template_id">6</column>
+            <column name="service_query">''</column>
+            <column name="service_query_type">''</column>
+            <column name="name">Survey</column>
+            <column name="uuid">86a28ebf-1c16-11ea-8999-0242ac160002</column>
+            <column name="creator">1</column>
+            <column name="changed_by">NULL</column>
+            <column name="date_changed">NULL</column>
+            <column name="date_created">1970-01-01 01:00:01</column>
+            <column name="date_voided">NULL</column>
+            <column name="void_reason">NULL</column>
+            <column name="voided">0</column>
+            <column name="voided_by">NULL</column>
+        </insert>
+        <insert tableName="messages_template_field">
+            <column name="messages_template_field_id">51</column>
+            <column name="name">Service type</column>
+            <column name="mandatory">1</column>
+            <column name="default_value">Deactivate service</column>
+            <column name="template_id">6</column>
+            <column name="template_field_type">SERVICE_TYPE</column>
+            <column name="uuid">86a3c89f-1c16-11ea-8999-0242ac160002</column>
+            <column name="creator">1</column>
+            <column name="changed_by">NULL</column>
+            <column name="date_changed">NULL</column>
+            <column name="date_created">1970-01-01 01:00:01.000</column>
+            <column name="date_voided">NULL</column>
+            <column name="void_reason">NULL</column>
+            <column name="voided">0</column>
+            <column name="voided_by">NULL</column>
+        </insert>
+        <insert tableName="messages_template_field">
+            <column name="messages_template_field_id">52</column>
+            <column name="name">Preferred day to receive message</column>
+            <column name="mandatory">1</column>
+            <column name="default_value">Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday</column>
+            <column name="template_id">6</column>
+            <column name="template_field_type">DAY_OF_WEEK</column>
+            <column name="uuid">86a50f4a-1c16-11ea-8999-0242ac160002</column>
+            <column name="creator">1</column>
+            <column name="changed_by">NULL</column>
+            <column name="date_changed">NULL</column>
+            <column name="date_created">1970-01-01 01:00:01.000</column>
+            <column name="date_voided">NULL</column>
+            <column name="void_reason">NULL</column>
+            <column name="voided">0</column>
+            <column name="voided_by">NULL</column>
+        </insert>
+        <insert tableName="messages_template_field">
+            <column name="messages_template_field_id">53</column>
+            <column name="name">Start of messages</column>
+            <column name="mandatory">0</column>
+            <column name="default_value">2019-12-09</column>
+            <column name="template_id">6</column>
+            <column name="template_field_type">START_OF_MESSAGES</column>
+            <column name="uuid">86a64bbf-1c16-11ea-8999-0242ac160002</column>
+            <column name="creator">1</column>
+            <column name="changed_by">NULL</column>
+            <column name="date_changed">NULL</column>
+            <column name="date_created">1970-01-01 01:00:01.000</column>
+            <column name="date_voided">NULL</column>
+            <column name="void_reason">NULL</column>
+            <column name="voided">0</column>
+            <column name="voided_by">NULL</column>
+        </insert>
+        <insert tableName="messages_template_field">
+            <column name="messages_template_field_id">54</column>
+            <column name="name">End of daily messages</column>
+            <column name="mandatory">1</column>
+            <column name="default_value">2020-01-30</column>
+            <column name="template_id">6</column>
+            <column name="template_field_type">END_OF_MESSAGES</column>
+            <column name="uuid">86a79246-1c16-11ea-8999-0242ac160002</column>
+            <column name="creator">1</column>
+            <column name="changed_by">NULL</column>
+            <column name="date_changed">NULL</column>
+            <column name="date_created">1970-01-01 01:00:01.000</column>
+            <column name="date_voided">NULL</column>
+            <column name="void_reason">NULL</column>
+            <column name="voided">0</column>
+            <column name="voided_by">NULL</column>
+        </insert>
+    </changeSet>
 </databaseChangeLog>
