@@ -93,8 +93,20 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
 
     private void createConsentConfig() {
         createPatientStatusAttributeType();
+        createBestContactTimeAttributeType();
+        createGlobalSettingIfNotExists(ConfigConstants.BEST_CONTACT_TIME_KEY,
+                ConfigConstants.BEST_CONTACT_TIME_DEFAULT_VALUE, ConfigConstants.BEST_CONTACT_TIME_DESCRIPTION);
         createGlobalSettingIfNotExists(ConfigConstants.CONSENT_CONTROL_KEY,
                 ConfigConstants.CONSENT_CONTROL_DEFAULT_VALUE, ConfigConstants.CONSENT_CONTROL_DESCRIPTION);
+    }
+
+    private void createBestContactTimeAttributeType() {
+        PersonAttributeType attributeType = new PersonAttributeType();
+        attributeType.setName(ConfigConstants.PERSON_CONTACT_TIME_ATTRIBUTE_TYPE_NAME);
+        attributeType.setFormat(ConfigConstants.PERSON_CONTACT_TIME_TYPE_FORMAT);
+        attributeType.setDescription(ConfigConstants.PERSON_CONTACT_TIME_TYPE_DESCRIPTION);
+        attributeType.setUuid(ConfigConstants.PERSON_CONTACT_TIME_TYPE_UUID);
+        createPersonAttributeTypeIfNotExists(ConfigConstants.PERSON_CONTACT_TIME_TYPE_UUID, attributeType);
     }
 
     private void createPatientStatusAttributeType() {

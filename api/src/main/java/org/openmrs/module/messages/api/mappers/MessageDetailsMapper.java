@@ -41,7 +41,7 @@ public class MessageDetailsMapper {
     }
 
     private ActorScheduleDTO toActorScheduleDTO(PatientTemplate patientTemplate) {
-        return new ActorScheduleDTO(
+        return patientTemplate.getActorType() == null ? null : new ActorScheduleDTO(
                 patientTemplate.getActorType().getRelationshipType().getaIsToB()
         );
     }

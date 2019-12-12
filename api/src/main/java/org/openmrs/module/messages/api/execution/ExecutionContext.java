@@ -18,14 +18,17 @@ public class ExecutionContext {
     public static final String END_DATE_PARAM = "endDate";
     public static final String PATIENT_ID_PARAM = "patientId";
     public static final String ACTOR_ID_PARAM = "actorId";
-    
+    public static final String BEST_CONTACT_TIME_PARAM = "bestContactTime";
+
     private Map<String, Object> params;
     private PatientTemplate patientTemplate;
     private Range<Date> dateRange;
-    
-    public ExecutionContext(PatientTemplate patientTemplate, Range<Date> dateRange) {
+    private String bestContactTime;
+
+    public ExecutionContext(PatientTemplate patientTemplate, Range<Date> dateRange, String bestContactTime) {
         this.patientTemplate = patientTemplate;
         this.dateRange = dateRange;
+        this.bestContactTime = bestContactTime;
         
         params = new HashMap<>();
         
@@ -34,6 +37,7 @@ public class ExecutionContext {
         
         params.put(PATIENT_ID_PARAM, patientTemplate.getPatient().getPatientId());
         params.put(ACTOR_ID_PARAM, patientTemplate.getActor().getPersonId());
+        params.put(BEST_CONTACT_TIME_PARAM, bestContactTime);
         
         for (TemplateFieldValue param : patientTemplate.getTemplateFieldValues()) {
             params.put(param.getTemplateField().getName().replace(' ', '_'), param.getValue());
@@ -51,7 +55,11 @@ public class ExecutionContext {
     public Range<Date> getDateRange() {
         return dateRange;
     }
-    
+
+    public String getBestContactTime() {
+        return bestContactTime;
+    }
+
     public String getQuery() {
         return patientTemplate.getServiceQuery();
     }

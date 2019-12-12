@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebAppConfiguration
-public class ActorTypeControllerITTest extends BaseModuleWebContextSensitiveTest {
+public class ActorControllerITTest extends BaseModuleWebContextSensitiveTest {
 
     private static final String XML_DATASET_PATH = "datasets/";
 

@@ -4,9 +4,14 @@ import * as Msg from '../../shared/utils/messages';
 import { IRootState } from '../../reducers';
 import { RouteComponentProps } from 'react-router';
 import { connect } from 'react-redux';
-import { getBestContactTime, putBestContactTime } from '../../reducers/best-contact-time.reducer';
+import { getBestContactTime, postBestContactTime, updateBestConstactTime } from '../../reducers/best-contact-time.reducer';
 import { history } from '../../config/redux-store';
 import './best-contact-time.scss';
+import { TimePicker } from 'antd';
+import 'antd/dist/antd.css';
+import { IBestContactTime } from '../../shared/model/best-contact-time.model';
+import _ from 'lodash';
+import moment from 'moment';
 
 interface IBestContactTimeProps extends DispatchProps, StateProps {
   patientId: string
@@ -22,7 +27,7 @@ class BestContactTime extends React.PureComponent<IBestContactTimeProps, IBestCo
   }
 
   componentDidMount() {
-    //TODO: CFLM-377: this.props.getBestContactTime(this.props.match.params.patientId);
+    this.props.getBestContactTime(this.props.patientId);
   }
 
   handleCalendarOverview = () => {
@@ -31,8 +36,10 @@ class BestContactTime extends React.PureComponent<IBestContactTimeProps, IBestCo
   }
 
   handleSave = () => {
-    alert('Not yet supported');
-    //TODO: CFLM-377: this.props.putBestContactTime(this.props.match.params.patientId);
+    if (this.props.bestContactTime.patientTime) {
+      this.props.postBestContactTime(this.props.patientId, this.props.bestContactTime.patientTime);      
+    }
+    //TODO add save for caregivers
   }
 
   renderCalendarOverviewButton() {
@@ -54,17 +61,30 @@ class BestContactTime extends React.PureComponent<IBestContactTimeProps, IBestCo
       </Button>
     );
   }
+  
+  onPatientBestContactTime = (time, timeString) => {
+    let newValue : IBestContactTime = _.cloneDeep(this.props.bestContactTime);
+    newValue.patientTime = timeString;
+    this.props.updateBestConstactTime(newValue);
+  }
+
+  onCaregiverBestContactTime = (time, timeString) => {
+    let newValue : IBestContactTime = _.cloneDeep(this.props.bestContactTime);
+    newValue.caregiverTime = timeString;
+    this.props.updateBestConstactTime(newValue);
+  }
 
   renderTimePickers() {
+    const {bestContactTime} = this.props;
     return (
       <div className="sections">
         <div className="time-section">
           <span>Patient</span>
-          <input type="time"></input>
+          <TimePicker value={moment(bestContactTime.patientTime, 'HH:mm')} onChange={this.onPatientBestContactTime} format="HH:mm"/>
         </div>
         <div className="time-section">
           <span>Caregiver</span>
-          <input type="time"></input>
+          <TimePicker value={moment(bestContactTime.caregiverTime, 'HH:mm')} onChange={this.onCaregiverBestContactTime} format="HH:mm"/>
         </div>
       </div>
     );
@@ -90,7 +110,8 @@ const mapStateToProps = ({ bestContactTime }: IRootState) => (bestContactTime);
 
 const mapDispatchToProps = ({
   getBestContactTime,
-  putBestContactTime,
+  postBestContactTime,
+  updateBestConstactTime
 });
 
 type StateProps = ReturnType<typeof mapStateToProps>;

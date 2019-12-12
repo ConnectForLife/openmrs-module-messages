@@ -1038,4 +1038,35 @@
             <column name="voided_by">NULL</column>
         </insert>
     </changeSet>
+
+    <changeSet id="messages-20" author="Arkadiusz Lalo">
+        <preConditions>
+            <tableExists tableName="messages_template" />
+            <sqlCheck expectedResult="1">
+                SELECT COUNT(*) FROM messages_template
+                WHERE uuid = '868278cc-1c16-11ea-8999-0242ac160002'
+            </sqlCheck>
+        </preConditions>
+        <comment>Update the value of Adherence report daily service query</comment>
+        <sql>
+            UPDATE messages_template
+                SET service_query='select EXECUTION_DATE, MESSAGE_ID, CHANNEL_ID, mssg_status as STATUS_ID from
+                (select TIMESTAMP(selected_date, times) AS EXECUTION_DATE, 1 AS MESSAGE_ID, :Service_type AS CHANNEL_ID
+                from (select * from (select adddate(''2019-12-01'',t4*10000 + t3*1000 + t2*100 + t1*10 + t0) selected_date
+                from  (select 0 t0 union select 1 union select 2 union select 3 union select 4 union  select 5 union
+                select 6 union select 7 union select 8 union select 9) t0,  (select 0 t1 union select 1 union
+                select 2 union select 3 union select 4 union  select 5 union select 6 union select 7 union
+                select 8 union select 9) t1,  (select 0 t2 union select 1 union select 2 union select 3 union
+                select 4 union  select 5 union select 6 union select 7 union select 8 union select 9) t2,
+                (select 0 t3 union select 1 union select 2 union select 3 union select 4 union  select 5 union
+                select 6 union select 7 union select 8 union select 9) t3,  (select 0 t4 union select 1 union
+                select 2 union select 3 union select 4 union  select 5 union select 6 union select 7 union
+                select 8 union select 9) t4) v where selected_date between :Start_of_daily_messages and :End_of_daily_messages
+                and selected_date between :startDate and :endDate  and :Week_day_of_delivering_message
+                like concat(''%'',DAYNAME(selected_date),''%'') ) dates JOIN (select :bestContactTime times) timeslist) temp
+                LEFT JOIN (select mssg.msg_send_time as mssg_dates, mssg.status as mssg_status
+                from messages_scheduled_service_group mssg where mssg.patient_id = :patientId) mss on mss.mssg_dates = EXECUTION_DATE;'
+            WHERE uuid = '868278cc-1c16-11ea-8999-0242ac160002';
+        </sql>
+    </changeSet>
 </databaseChangeLog>
