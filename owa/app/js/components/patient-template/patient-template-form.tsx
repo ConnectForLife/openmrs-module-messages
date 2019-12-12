@@ -1,7 +1,16 @@
+/* * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+
 import React from 'react';
 import { connect } from 'react-redux';
 import { updatePatientTemplate } from '../../reducers/patient-template.reducer';
-import { Form } from 'react-bootstrap';
+import { Form, FormGroup } from 'react-bootstrap';
 import _ from 'lodash';
 
 import { PatientTemplateUI } from '../../shared/model/patient-template-ui';
@@ -11,12 +20,18 @@ import { TemplateFieldType } from '../../shared/model/template-field-type';
 import DynamicRadioButton from './form/dynamic-radio-button';
 import DynamicCheckboxButton from './form/dynamic-checbox-button';
 import InputField from './form/input-field';
+import CustomDatePicker from '../../shared/components/date-picker';
+import FormLabel from '../../shared/components/form-label';
+import { PATIENT_TEMPLATE_START_DATE } from '../../shared/utils/messages';
 
-interface IProps extends DispatchProps {
+interface IReactProps {
   patientTemplate: PatientTemplateUI | undefined;
   template: TemplateUI;
   patientId: number;
   actorId: number;
+}
+
+interface IProps extends IReactProps, DispatchProps {
 }
 
 interface IState {
@@ -54,8 +69,11 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
           ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
           fieldName, isMandatory);
       case TemplateFieldType.MESSAGING_FREQUENCY:
+
         return this.renderDynamicRadioButton(tfv, ['Daily', 'Weekly', 'Monthly'],
           fieldName, isMandatory);
+      case TemplateFieldType.START_OF_MESSAGES:
+        return this.renderDatePicker(tfv, isMandatory);
       default:
         return this.renderInputField(tfv, fieldName, isMandatory);
     };
@@ -64,7 +82,8 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
   renderDynamicRadioButton = (tfv: TemplateFieldValueUI,
     options: ReadonlyArray<string>,
     fieldName: string,
-    isMandatory: boolean) => (
+    isMandatory: boolean) => {
+    return (
       <DynamicRadioButton
         options={options}
         selectedOption={tfv.value}
@@ -74,6 +93,7 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
         onSelectChange={(value: string) => this.onTemplateFieldValueChange(tfv.localId, value)}
       />
     );
+  }
 
   renderDynamicCheckboxButton = (tfv: TemplateFieldValueUI,
     options: ReadonlyArray<string>,
@@ -93,7 +113,8 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
 
   renderInputField = (tfv: TemplateFieldValueUI,
     fieldName: string,
-    isMandatory: boolean) => (
+    isMandatory: boolean) => {
+    return (
       <InputField
         fieldName={fieldName}
         value={tfv.value}
@@ -103,6 +124,19 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
         handleChange={(value: string) => {
           this.onTemplateFieldValueChange(tfv.localId, value)
         }} />
+    );
+  };
+
+  renderDatePicker = (tfv: TemplateFieldValueUI, isMandatory: boolean) => (
+      <FormGroup controlId={tfv.localId} key={tfv.localId}>
+        <FormLabel
+          label={PATIENT_TEMPLATE_START_DATE}
+          mandatory={isMandatory} />
+        <CustomDatePicker
+          value={tfv.value}
+          onChange={isoDate => this.onTemplateFieldValueChange(tfv.localId, isoDate)}
+        />
+      </FormGroup>
     );
 
   render = () => {
