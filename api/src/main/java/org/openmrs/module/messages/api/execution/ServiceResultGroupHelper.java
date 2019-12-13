@@ -33,6 +33,16 @@ public final class ServiceResultGroupHelper {
         return groups;
     }
 
+    public static Date getEarliestDate(List<ServiceResult> results) {
+        Date min = results.get(0).getExecutionDate();
+        for (ServiceResult result : results) {
+            if (result.getExecutionDate().before(min)) {
+                min = result.getExecutionDate();
+            }
+        }
+        return min;
+    }
+
     private static List<ServiceResult> getNotAssignedResults(List<ServiceResult> alreadyAssigned,
                                                              List<ServiceResult> all) {
         List<ServiceResult> result = new ArrayList<>();
@@ -54,16 +64,6 @@ public final class ServiceResultGroupHelper {
             }
         }
         return result;
-    }
-
-    private static Date getEarliestDate(List<ServiceResult> results) {
-        Date min = results.get(0).getExecutionDate();
-        for (ServiceResult result : results) {
-            if (result.getExecutionDate().before(min)) {
-                min = result.getExecutionDate();
-            }
-        }
-        return min;
     }
 
     private ServiceResultGroupHelper() {

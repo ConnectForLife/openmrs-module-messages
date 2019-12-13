@@ -1,5 +1,6 @@
 package org.openmrs.module.messages.api.scheduler.job;
 
+import java.util.Date;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
@@ -7,6 +8,7 @@ import org.openmrs.module.messages.api.config.ConfigService;
 import org.openmrs.module.messages.api.constants.MessagesConstants;
 import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
 import org.openmrs.module.messages.api.execution.ExecutionException;
+import org.openmrs.module.messages.api.execution.ServiceResult;
 import org.openmrs.module.messages.api.execution.ServiceResultGroupHelper;
 import org.openmrs.module.messages.api.execution.ServiceResultList;
 import org.openmrs.module.messages.api.service.MessagesSchedulerService;
@@ -24,14 +26,18 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
     public void execute() {
         LOGGER.info(getTaskName() + " started");
         try {
-            List<ServiceResultList> results = getMessagingService().retrieveAllServiceExecutions(DateUtil.now(),
-                    DateUtil.getDatePlusSeconds(getTaskDefinition().getRepeatInterval()));
+            List<ServiceResultList> results =
+                getMessagingService().retrieveAllServiceExecutions(DateUtil.now(),
+                DateUtil.getDatePlusSeconds(getTaskDefinition().getRepeatInterval()));
+
             int groupingPeriod = getConfigService().getGroupingPeriodInSeconds();
             List<ServiceResultList> groupedResults = ServiceResultGroupHelper
-                    .groupByActorIdAndExecutionDate(results, groupingPeriod);
+                .groupByActorIdAndExecutionDate(results, groupingPeriod);
+
             for (ServiceResultList group : groupedResults) {
-                getSchedulerService().rescheduleOrCreateNewTask(
-                    new ServiceGroupDeliveryJobDefinition(group), JobRepeatInterval.NEVER);
+                JobDefinition definition = new ServiceGroupDeliveryJobDefinition(group);
+                Date startDate = getGroupResultsStartDate(group.getResults());
+                getSchedulerService().createNewTask(definition, startDate, JobRepeatInterval.NEVER);
             }
         } catch (ExecutionException e) {
             LOGGER.error("Failed to execute task: " + getTaskName());
@@ -56,16 +62,20 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
 
     private MessagingService getMessagingService() {
         return Context.getRegisteredComponent(
-                MessagesConstants.MESSAGING_SERVICE, MessagingService.class);
+            MessagesConstants.MESSAGING_SERVICE, MessagingService.class);
     }
 
     private MessagesSchedulerService getSchedulerService() {
         return Context.getRegisteredComponent(
-                MessagesConstants.SCHEDULER_SERVICE, MessagesSchedulerService.class);
+            MessagesConstants.SCHEDULER_SERVICE, MessagesSchedulerService.class);
     }
 
     private ConfigService getConfigService() {
         return Context.getRegisteredComponent(
-                MessagesConstants.CONFIG_SERVICE, ConfigService.class);
+            MessagesConstants.CONFIG_SERVICE, ConfigService.class);
+    }
+
+    private Date getGroupResultsStartDate(List<ServiceResult> results) {
+        return ServiceResultGroupHelper.getEarliestDate(results);
     }
 }

@@ -8,6 +8,7 @@ import org.openmrs.PatientIdentifierType;
 import org.openmrs.PersonName;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.PatientService;
+import org.openmrs.module.messages.api.execution.ChannelType;
 import org.openmrs.module.messages.api.execution.ExecutionException;
 import org.openmrs.module.messages.api.execution.ServiceExecutor;
 import org.openmrs.module.messages.api.execution.ServiceResult;
@@ -67,7 +68,7 @@ public class ExecutionEngineContextTest extends BaseModuleContextSensitiveTest {
         
         ServiceResult result = serviceResultList.getResults().get(0);
         assertEquals("msg", result.getMessageId());
-        assertEquals("1", result.getChannelName());
+        assertEquals(ChannelType.CALL, result.getChannelType());
         assertEquals(ServiceStatus.FUTURE, result.getServiceStatus());
         // query adds 1 year to the birth date
         assertEquals(DateUtils.addYears(BIRTH_DATE, 1).getTime(), result.getExecutionDate().getTime());
@@ -93,7 +94,7 @@ public class ExecutionEngineContextTest extends BaseModuleContextSensitiveTest {
         
         Template template = new Template();
         template.setServiceQuery("SELECT DATEADD('YEAR', 1, per.birthdate) AS EXECUTION_DATE, 'msg' AS MESSAGE_ID, " +
-                "1 AS CHANNEL_ID, per.gender AS GENDER " +
+                "'Call' AS CHANNEL_ID, per.gender AS GENDER " +
                 "FROM patient p " +
                 "JOIN person per ON per.person_id = p.patient_id  " +
                 "WHERE per.birthdate > :startDate AND per.birthdate < :endDate");
@@ -106,7 +107,7 @@ public class ExecutionEngineContextTest extends BaseModuleContextSensitiveTest {
         patientTemplate.setActor(patient);
         patientTemplate.setServiceQueryType("SQL");
         patientTemplate.setServiceQuery("SELECT DATEADD('YEAR', 1, per.birthdate) AS EXECUTION_DATE, 'msg' AS MESSAGE_ID, " +
-                "1 AS CHANNEL_ID, per.gender AS GENDER " +
+                "'Call' AS CHANNEL_ID, per.gender AS GENDER " +
                 "FROM patient p " +
                 "JOIN person per ON per.person_id = p.patient_id  " +
                 "WHERE per.birthdate > :startDate AND per.birthdate < :endDate");

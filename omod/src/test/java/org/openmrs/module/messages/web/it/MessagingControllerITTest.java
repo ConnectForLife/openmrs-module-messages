@@ -14,6 +14,7 @@ import org.openmrs.module.messages.api.dao.PatientTemplateDao;
 import org.openmrs.module.messages.api.dao.TemplateDao;
 import org.openmrs.module.messages.api.dto.MessageDTO;
 import org.openmrs.module.messages.api.dto.MessageDetailsDTO;
+import org.openmrs.module.messages.api.execution.ChannelType;
 import org.openmrs.module.messages.api.execution.ServiceResult;
 import org.openmrs.module.messages.api.execution.ServiceResultList;
 import org.openmrs.module.messages.api.model.PatientTemplate;
@@ -182,7 +183,7 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
                 patient1,
                 patient1,
                 null,
-                "SELECT now() AS EXECUTION_DATE, 1 AS MESSAGE_ID, '1' AS CHANNEL_ID;",
+                "SELECT now() AS EXECUTION_DATE, 1 AS MESSAGE_ID, 'Call' AS CHANNEL_ID;",
                 "SQL"
         );
 
@@ -209,7 +210,7 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
 
         ServiceResult serviceResult = serviceResultList.getResults().get(0);
         assertThat(serviceResult.getMessageId(), is(1));
-        assertThat(serviceResult.getChannelName(), is("1"));
+        assertThat(serviceResult.getChannelType(), is(ChannelType.CALL));
     }
 
     private void assertMessageDetailsDTO(MessageDetailsDTO dto, String queryType, Integer patientId) {
@@ -247,7 +248,7 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
 
     private Template createTemplate() {
         Template template = new TemplateBuilder()
-                .withServiceQuery("SELECT now() AS EXECUTION_DATE, 1 AS MESSAGE_ID, '1' AS CHANNEL_ID;")
+                .withServiceQuery("SELECT now() AS EXECUTION_DATE, 1 AS MESSAGE_ID, 'Call' AS CHANNEL_ID;")
                 .withServiceQueryType("SQL")
                 .setName("Service Name")
                 .buildAsNew();

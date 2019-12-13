@@ -15,14 +15,14 @@ public final class DateBuilder extends AbstractBuilder<Date> {
 
     public static final int DEFAULT_YEAR = 2019;
     public static final int DEFAULT_MONTH = 1;
-    public static final int DEFAULT_DATE = 1;
+    public static final int DEFAULT_DAY = 1;
     public static final int DEFAULT_HRS = 0;
     public static final int DEFAULT_MIN = 0;
     public static final int DEFAULT_SEC = 0;
 
     private int year = DEFAULT_YEAR;
     private int month = DEFAULT_MONTH;
-    private int date = DEFAULT_DATE;
+    private int day = DEFAULT_DAY;
     private int hrs = DEFAULT_HRS;
     private int min = DEFAULT_MIN;
     private int sec = DEFAULT_SEC;
@@ -33,7 +33,7 @@ public final class DateBuilder extends AbstractBuilder<Date> {
 
     @Override
     public Date build() {
-        return new Date(year, month, date, hrs, min, sec);
+        return new Date(year, month, day, hrs, min, sec);
     }
 
     @Override
@@ -51,8 +51,8 @@ public final class DateBuilder extends AbstractBuilder<Date> {
         return this;
     }
 
-    public DateBuilder withDate(int date) {
-        this.date = date;
+    public DateBuilder withDay(int day) {
+        this.day = day;
         return this;
     }
 

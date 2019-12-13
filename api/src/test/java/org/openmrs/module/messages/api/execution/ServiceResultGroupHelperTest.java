@@ -1,5 +1,6 @@
 package org.openmrs.module.messages.api.execution;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.module.messages.builder.DateBuilder;
 import org.openmrs.module.messages.builder.ServiceResultBuilder;
@@ -11,6 +12,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.openmrs.module.messages.api.execution.ServiceResultGroupHelper.groupByActorIdAndExecutionDate;
+import static org.openmrs.module.messages.api.execution.ServiceResultGroupHelper.getEarliestDate;
 
 @SuppressWarnings("checkstyle:magicnumber")
 public class ServiceResultGroupHelperTest {
@@ -136,7 +138,7 @@ public class ServiceResultGroupHelperTest {
                 new DateBuilder().build()).build());
 
         results.add(new ServiceResultBuilder().withExecutionDate(
-                new DateBuilder().withDate(DateBuilder.DEFAULT_DATE + 1).build()).build());
+                new DateBuilder().withDay(DateBuilder.DEFAULT_DAY + 1).build()).build());
 
         results.add(new ServiceResultBuilder().withExecutionDate(
                 new DateBuilder().withMonth(DateBuilder.DEFAULT_MONTH + 1).build()).build());
@@ -155,6 +157,26 @@ public class ServiceResultGroupHelperTest {
         assertEquals(1, result.get(1).getResults().size());
         assertEquals(1, result.get(2).getResults().size());
         assertEquals(1, result.get(3).getResults().size());
+    }
+
+    @Test
+    public void shouldCalculateEarliestDate() {
+        List<ServiceResult> results = new ArrayList<>();
+
+        results.add(new ServiceResultBuilder().withExecutionDate(
+            new DateBuilder().withDay(DateBuilder.DEFAULT_DAY + 1).build()).build());
+
+        results.add(new ServiceResultBuilder().withExecutionDate(
+            new DateBuilder().withMonth(DateBuilder.DEFAULT_MONTH + 1).build()).build());
+
+        results.add(new ServiceResultBuilder().withExecutionDate(
+            new DateBuilder().withYear(DateBuilder.DEFAULT_YEAR + 1).build()).build());
+
+        Date defaultDate = new DateBuilder().build();
+        results.add(new ServiceResultBuilder().withExecutionDate(defaultDate).build());
+
+        Date earliestDate = getEarliestDate(results);
+        Assert.assertEquals(defaultDate, earliestDate);
     }
 
     private ServiceResult getResultWithHrs(int hrs) {

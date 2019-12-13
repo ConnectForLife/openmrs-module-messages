@@ -1,12 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.openmrs.maven.parents</groupId>
-        <artifactId>maven-parent-openmrs-module</artifactId>
-        <version>1.1.0</version>
-    </parent>
+	<parent>
+		<groupId>org.openmrs.maven.parents</groupId>
+		<artifactId>maven-parent-openmrs-module</artifactId>
+		<version>1.1.0</version>
+	</parent>
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>messages</artifactId>
@@ -30,13 +30,13 @@
 	<dependencyManagement>
 		<dependencies>
 			<!-- Importing versions from refapp distro -->
-            <dependency>
-                <groupId>org.openmrs.distro</groupId>
-                <artifactId>referenceapplication</artifactId>
-                <version>2.4</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
+			<dependency>
+				<groupId>org.openmrs.distro</groupId>
+				<artifactId>referenceapplication</artifactId>
+				<version>2.4</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 			<dependency>
 				<groupId>com.google.code.gson</groupId>
 				<artifactId>gson</artifactId>
@@ -105,7 +105,7 @@
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-pmd-plugin</artifactId>
+					<artifactId>maven-pmd-plugin</artifactId>
 					<version>${pmdPluginVersion}</version>
 					<configuration>
 						<rulesets>
@@ -311,6 +311,6 @@
 		<surefireVersion>2.17</surefireVersion>
 		<javax.servlet.version>3.0.1</javax.servlet.version>
 		<uiframeworkVersion>3.9</uiframeworkVersion>
-        <eventVersion>2.6.0</eventVersion>
+		<eventVersion>2.6.0</eventVersion>
 	</properties>
 </project>

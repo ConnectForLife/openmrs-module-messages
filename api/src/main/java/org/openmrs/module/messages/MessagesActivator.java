@@ -80,7 +80,8 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
     }
 
     private void scheduleMessageDeliveries() {
-        getSchedulerService().rescheduleOrCreateNewTask(new MessageDeliveriesJobDefinition(), JobRepeatInterval.DAILY);
+        getSchedulerService().rescheduleOrCreateNewTask(new MessageDeliveriesJobDefinition(),
+            JobRepeatInterval.DAILY);
     }
 
     private MessagesSchedulerService getSchedulerService() {

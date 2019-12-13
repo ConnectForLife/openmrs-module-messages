@@ -60,7 +60,7 @@
 
     <bean id="messages.templateService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="transactionManager">
-            <ref bean="transactionManager" />
+            <ref bean="transactionManager"/>
         </property>
         <property name="target">
             <bean class="org.openmrs.module.messages.api.service.impl.TemplateServiceImpl">
@@ -68,10 +68,10 @@
             </bean>
         </property>
         <property name="preInterceptors">
-            <ref bean="serviceInterceptors" />
+            <ref bean="serviceInterceptors"/>
         </property>
         <property name="transactionAttributeSource">
-            <ref bean="transactionAttributeSource" />
+            <ref bean="transactionAttributeSource"/>
         </property>
     </bean>
 
@@ -130,18 +130,18 @@
 
     <bean id="messages.schedulerService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="transactionManager">
-            <ref bean="transactionManager" />
+            <ref bean="transactionManager"/>
         </property>
         <property name="target">
             <bean class="org.openmrs.module.messages.api.service.impl.MessagesSchedulerServiceImpl">
-                <property name="schedulerService" ref="schedulerService" />
+                <property name="schedulerService" ref="schedulerService"/>
             </bean>
         </property>
         <property name="preInterceptors">
-            <ref bean="serviceInterceptors" />
+            <ref bean="serviceInterceptors"/>
         </property>
         <property name="transactionAttributeSource">
-            <ref bean="transactionAttributeSource" />
+            <ref bean="transactionAttributeSource"/>
         </property>
     </bean>
 
@@ -149,7 +149,7 @@
 
     <bean id="messages.templateMapper" class="org.openmrs.module.messages.api.mappers.TemplateMapper">
         <property name="templateFieldMapper">
-            <ref local="messages.templateFieldMapper" />
+            <ref local="messages.templateFieldMapper"/>
         </property>
     </bean>
 
@@ -161,9 +161,10 @@
         </property>
     </bean>
 
-    <bean id="messages.messagingGroupService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+    <bean id="messages.messagingGroupService"
+          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="transactionManager">
-            <ref bean="transactionManager" />
+            <ref bean="transactionManager"/>
         </property>
         <property name="target">
             <bean class="org.openmrs.module.messages.api.service.impl.MessagingGroupServiceImpl">
@@ -171,10 +172,10 @@
             </bean>
         </property>
         <property name="preInterceptors">
-            <ref bean="serviceInterceptors" />
+            <ref bean="serviceInterceptors"/>
         </property>
         <property name="transactionAttributeSource">
-            <ref bean="transactionAttributeSource" />
+            <ref bean="transactionAttributeSource"/>
         </property>
     </bean>
 
@@ -182,16 +183,16 @@
 
     <bean id="messages.messagesEventService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="transactionManager">
-            <ref bean="transactionManager" />
+            <ref bean="transactionManager"/>
         </property>
         <property name="target">
-            <bean class="org.openmrs.module.messages.api.service.impl.MessagesEventServiceImpl" />
+            <bean class="org.openmrs.module.messages.api.service.impl.MessagesEventServiceImpl"/>
         </property>
         <property name="preInterceptors">
-            <ref bean="serviceInterceptors" />
+            <ref bean="serviceInterceptors"/>
         </property>
         <property name="transactionAttributeSource">
-            <ref bean="transactionAttributeSource" />
+            <ref bean="transactionAttributeSource"/>
         </property>
     </bean>
 
@@ -203,4 +204,24 @@
             </list>
         </property>
     </bean>
+
+    <bean id="messages.abstractServiceResultHandlerService"
+          class="org.openmrs.module.messages.api.service.impl.AbstractServiceResultHandlerService"
+          abstract="true">
+        <property name="patientService">
+            <ref bean="patientService"/>
+        </property>
+        <property name="messagesEventService">
+            <ref local="messages.messagesEventService"/>
+        </property>
+    </bean>
+
+    <bean id="messages.callFlowServiceResultHandlerService"
+          class="org.openmrs.module.messages.api.service.impl.CallFlowServiceResultHandlerServiceImpl"
+          parent="messages.abstractServiceResultHandlerService"/>
+
+    <bean id="messages.smsServiceResultHandlerService"
+          class="org.openmrs.module.messages.api.service.impl.SmsServiceResultHandlerServiceImpl"
+          parent="messages.abstractServiceResultHandlerService"/>
+
 </beans>

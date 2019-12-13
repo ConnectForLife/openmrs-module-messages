@@ -6,11 +6,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.api.constants.MessagesConstants;
-import org.openmrs.module.messages.api.event.MessagesEvent;
 import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
 import org.openmrs.module.messages.api.execution.ServiceResult;
 import org.openmrs.module.messages.api.execution.ServiceResultList;
-import org.openmrs.module.messages.api.service.MessagesEventService;
+import org.openmrs.module.messages.api.service.ServiceResultHandlerService;
 import org.openmrs.module.messages.api.util.DateUtil;
 
 import java.text.DateFormat;
@@ -23,11 +22,10 @@ public class ServiceGroupDeliveryJobDefinition extends JobDefinition {
     private static final Log LOGGER = LogFactory.getLog(ServiceGroupDeliveryJobDefinition.class);
     private static final String TASK_NAME_PREFIX = "Group";
     private static final String GROUP_ENTITY = "GROUP_ENTITY";
-    private static final String CALL_FLOW_TYPE = "Call"; //TODO: CFLM-184: Extract to const
-    private static final String  SMS_TYPE = "Sms"; //TODO: CFLM-184: Extract to constF
 
     private final Gson gson =
         new GsonBuilder().setDateFormat(DateFormat.FULL, DateFormat.FULL).create();
+
     private ServiceResultList group;
 
     public ServiceGroupDeliveryJobDefinition() {
@@ -40,9 +38,10 @@ public class ServiceGroupDeliveryJobDefinition extends JobDefinition {
 
     @Override
     public void execute() {
-        LOGGER.info(getTaskName() + " started");
+        // Firstly, we need to initialize object fields basing on the saved properties
         group = gson.fromJson(taskDefinition.getProperties().get(GROUP_ENTITY),
             ServiceResultList.class);
+        LOGGER.info(String.format("Started task with id %s", taskDefinition.getId()));
         handleGroupedResults();
     }
 
@@ -71,37 +70,37 @@ public class ServiceGroupDeliveryJobDefinition extends JobDefinition {
 
     private void handleGroupedResults() {
         List<ServiceResult> results = group.getResults();
+        boolean isCallFlowHandledAlready = false;
         for (ServiceResult result : results) {
-            switch (result.getChannelName()) {
-                case CALL_FLOW_TYPE:
-                    triggerCallFlowEvent(result);
+            if (result.getMessageId() == null) {
+                throw new MessagesRuntimeException("Message id must be specified");
+            }
+            switch (result.getChannelType()) {
+                case CALL:
+                    if (!isCallFlowHandledAlready) {
+                        getCallFlowsServiceResultHandlerService().handle(result, group);
+                    }
+                    isCallFlowHandledAlready = true;
                     break;
-                case SMS_TYPE:
-                    triggerSmsEvent(result);
+                case SMS:
+                    getSmsServiceResultHandlerService().handle(result, group);
                     break;
                 default:
                     throw new MessagesRuntimeException(
-                        String.format("Unsupported channel id: %d", result.getChannelName()));
+                        String.format("Unsupported channel: %s", result.getChannelType()));
             }
         }
     }
 
-    private void triggerCallFlowEvent(ServiceResult result) {
-        LOGGER.debug(String.format("%s: Callflow event triggered", getTaskName()));
-        //TODO: CFLM-184: Trigger call flow event
-        getEventService().sendEventMessage(new MessagesEvent(null, null));
-        LOGGER.debug(result);
-    }
-
-    private void triggerSmsEvent(ServiceResult result) {
-        LOGGER.debug(String.format("%s: Sms event triggered", getTaskName()));
-        //TODO: CFLM-184: Trigger sms event
-        getEventService().sendEventMessage(new MessagesEvent(null, null));
-        LOGGER.debug(result);
-    }
-
-    private MessagesEventService getEventService() {
+    private ServiceResultHandlerService getCallFlowsServiceResultHandlerService() {
         return Context.getRegisteredComponent(
-                MessagesConstants.CONFIG_SERVICE, MessagesEventService.class);
+            MessagesConstants.CALL_FLOW_SERVICE_RESULT_HANDLER_SERVICE,
+            ServiceResultHandlerService.class);
+    }
+
+    private ServiceResultHandlerService getSmsServiceResultHandlerService() {
+        return Context.getRegisteredComponent(
+            MessagesConstants.SMS_SERVICE_RESULT_HANDLER_SERVICE,
+            ServiceResultHandlerService.class);
     }
 }

@@ -26,7 +26,7 @@ public class ServiceResult implements Serializable {
 
     private Date executionDate;
     private Object messageId;
-    private String channelName;
+    private ChannelType channelType;
     private ServiceStatus serviceStatus = ServiceStatus.FUTURE;
     private Map<String, Object> additionalParams = new HashMap<>();
 
@@ -37,7 +37,7 @@ public class ServiceResult implements Serializable {
 
         Date date = null;
         Object msgId = null;
-        String channel = null;
+        ChannelType channel = null;
         ServiceStatus status = ServiceStatus.FUTURE;
         Map<String, Object> params = new HashMap<>();
 
@@ -50,7 +50,7 @@ public class ServiceResult implements Serializable {
                     msgId = entry.getValue();
                     break;
                 case CHANNEL_NAME_ALIAS:
-                    channel = entry.getValue().toString();
+                    channel = ChannelType.valueOf(String.valueOf(entry.getValue()).toUpperCase());
                     break;
                 case STATUS_COL_ALIAS:
                     status = parseStatus((String) entry.getValue());
@@ -79,7 +79,7 @@ public class ServiceResult implements Serializable {
     public ServiceResult(
             Date executionDate,
             Object messageId,
-            String channelName,
+            ChannelType channelType,
             ServiceStatus serviceStatus,
             Map<String, Object> additionalParams
     ) {
@@ -89,13 +89,13 @@ public class ServiceResult implements Serializable {
         if (messageId == null) {
             throw new IllegalArgumentException("Message ID (external execution id) is required");
         }
-        if (channelName == null) {
-            throw new IllegalArgumentException("Channel ID is required");
+        if (channelType == null) {
+            throw new IllegalArgumentException("Channel type (name) is required");
         }
 
         this.executionDate = executionDate;
         this.messageId = messageId;
-        this.channelName = channelName;
+        this.channelType = channelType;
         this.serviceStatus = serviceStatus;
         this.additionalParams = additionalParams == null ? new HashMap<>() : additionalParams;
     }
@@ -116,12 +116,12 @@ public class ServiceResult implements Serializable {
         this.messageId = messageId;
     }
 
-    public String getChannelName() {
-        return channelName;
+    public ChannelType getChannelType() {
+        return channelType;
     }
 
-    public void setChannelName(String channelName) {
-        this.channelName = channelName;
+    public void setChannelType(ChannelType channelType) {
+        this.channelType = channelType;
     }
 
     public ServiceStatus getServiceStatus() {
