@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@bit/soldevelo-omrs.cfl-components.calendar": "1.0.31",
-    "@bit/soldevelo-omrs.cfl-components.form-entry": "^1.0.7",
+    "@bit/soldevelo-omrs.cfl-components.form-entry": "^1.0.9",
     "@bit/soldevelo-omrs.cfl-components.request-toast-handler": "^1.0.0",
     "@bit/soldevelo-omrs.cfl-components.validation": "^1.0.1",
     "@fortawesome/fontawesome-svg-core": "1.2.25",

@@ -13,6 +13,7 @@ export class TemplateUI extends ObjectUI<ITemplate> implements ITemplate {
 
   constructor(model: ITemplate) {
     super(model);
+
     this.templateFields = _.map(model.templateFields,
       templateField => new TemplateFieldUI(templateField));
   }

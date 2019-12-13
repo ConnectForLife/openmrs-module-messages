@@ -17,6 +17,8 @@ import './patient-template.scss';
 import PatientTemplateForm from './patient-template-form';
 import { TemplateUI } from '../../shared/model/template-ui';
 import { getPatientTemplateWithTemplateId } from '../../selectors/patient-template-selector';
+import { PatientTemplateUI } from '../../shared/model/patient-template-ui';
+import _ from 'lodash';
 
 interface IPatientTemplateEditProps extends DispatchProps, StateProps, RouteComponentProps<{ patientId: string }> {
   isNew: boolean
@@ -76,22 +78,25 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
     this.props.templates.forEach((template: TemplateUI) => {
       const name = template.name ? template.name : `Template ${template.localId}`;
 
+      const patientTemplates: ReadonlyArray<PatientTemplateUI> =
+        getPatientTemplateWithTemplateId(this.props.patientTemplates, template.id!);
+
+      // TODO CFLM-447 handle multiple forms for multiple patient templates
       const fragment = <PatientTemplateForm
-        patientTemplate={getPatientTemplateWithTemplateId(this.props.patientTemplates, template.id!)}
+        patientTemplate={patientTemplates.length ? patientTemplates[0] : undefined}
         template={template}
         patientId={parseInt(this.props.match.params.patientId)}
         actorId={parseInt(this.props.match.params.patientId)}
       />
 
-      //TODO in CFLM-306: decide if the 'completed-icon' should be displayed next to section name
-      //(if the section was completed)
-      const completed = false;
+      const isValid = !_.some(patientTemplates, pt => pt.hasErrors());
+      const isPersisted = patientTemplates.length > 0;
 
       const onSelectCallback = () => {
         this.props.selectTemplate(template);
       }
 
-      subsections.push(new FormSubSection(name, completed, fragment, onSelectCallback));
+      subsections.push(new FormSubSection(name, isValid, isPersisted, fragment, onSelectCallback));
     });
 
     sections.push(new FormSection('Messages', subsections));

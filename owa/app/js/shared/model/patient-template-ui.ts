@@ -52,6 +52,10 @@ export class PatientTemplateUI extends ObjectUI<IPatientTemplate> implements IPa
     return !this.id;
   }
 
+  hasErrors(): boolean {
+    return Object.keys(this.errors).length != 0;
+  }
+
   static getNew(patientId: number, actorId: number, template: TemplateUI): PatientTemplateUI {
     return new PatientTemplateUI({
       ...getDefaultValue(),

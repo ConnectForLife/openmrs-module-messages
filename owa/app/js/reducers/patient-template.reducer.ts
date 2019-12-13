@@ -146,7 +146,7 @@ export const getPatientTemplates = (patientId: number) => async (dispatch) => {
   });
 };
 
-export const selectTemplate = (template) => ({
+export const selectTemplate = (template: TemplateUI) => ({
   type: ACTION_TYPES.SELECT_TEMPLATE,
   payload: template
 });
