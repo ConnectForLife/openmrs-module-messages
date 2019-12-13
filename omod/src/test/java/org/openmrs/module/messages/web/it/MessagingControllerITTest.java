@@ -119,7 +119,7 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
         for (MessageDTO messageDTO : dto.getMessages()) {
             assertThat(messageDTO.getType(), anyOf(is(QUERY_TYPE_1), is(QUERY_TYPE_2)));
             assertThat(messageDTO.getAuthor().getUsername(), is(equalTo("admin")));
-            assertThat(messageDTO.getActorSchedule().getActorType(),
+            assertThat(messageDTO.getActorSchedules().get(0).getActorType(),
                     is(equalTo(relationship.getRelationshipType().getaIsToB())));
             assertThat(messageDTO.getCreatedAt(), anyOf(
                     is(equalTo(template1.getDateCreated())),
