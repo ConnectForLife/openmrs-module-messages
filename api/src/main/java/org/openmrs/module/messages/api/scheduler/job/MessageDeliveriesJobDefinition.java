@@ -1,8 +1,8 @@
 package org.openmrs.module.messages.api.scheduler.job;
 
-import java.util.Date;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.api.config.ConfigService;
 import org.openmrs.module.messages.api.constants.MessagesConstants;
@@ -11,11 +11,15 @@ import org.openmrs.module.messages.api.execution.ExecutionException;
 import org.openmrs.module.messages.api.execution.ServiceResult;
 import org.openmrs.module.messages.api.execution.ServiceResultGroupHelper;
 import org.openmrs.module.messages.api.execution.ServiceResultList;
+import org.openmrs.module.messages.api.model.PatientStatus;
 import org.openmrs.module.messages.api.service.MessagesSchedulerService;
 import org.openmrs.module.messages.api.service.MessagingService;
 import org.openmrs.module.messages.api.util.DateUtil;
 
+import java.util.Date;
 import java.util.List;
+
+import static org.openmrs.module.messages.api.util.PersonAttributeUtil.getPersonStatus;
 
 public class MessageDeliveriesJobDefinition extends JobDefinition {
 
@@ -37,7 +41,9 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
             for (ServiceResultList group : groupedResults) {
                 JobDefinition definition = new ServiceGroupDeliveryJobDefinition(group);
                 Date startDate = getGroupResultsStartDate(group.getResults());
-                getSchedulerService().createNewTask(definition, startDate, JobRepeatInterval.NEVER);
+                if (PatientStatus.ACTIVE.equals(getPersonStatus(getPersonService().getPerson(group.getActorId())))) {
+                    getSchedulerService().createNewTask(definition, startDate, JobRepeatInterval.NEVER);
+                }
             }
         } catch (ExecutionException e) {
             LOGGER.error("Failed to execute task: " + getTaskName());
@@ -73,6 +79,11 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
     private ConfigService getConfigService() {
         return Context.getRegisteredComponent(
             MessagesConstants.CONFIG_SERVICE, ConfigService.class);
+    }
+
+    private PersonService getPersonService() {
+        return Context.getRegisteredComponent(
+                MessagesConstants.PERSON_SERVICE, PersonService.class);
     }
 
     private Date getGroupResultsStartDate(List<ServiceResult> results) {

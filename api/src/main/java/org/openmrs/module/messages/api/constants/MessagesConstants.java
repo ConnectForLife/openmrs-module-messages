@@ -10,11 +10,13 @@ public final class MessagesConstants {
 
     public static final String CONFIG_SERVICE = "messages.configService";
 
+    public static final String PERSON_SERVICE = "personService";
+
     public static final String EVENT_SERVICE = "messages.messagesEventService";
 
-    public static final String CALLFLOWS_DEFAULT_CONFIG = "voxeo"; //TODO: CFLM-184: Parametrize
+    public static final String CALLFLOWS_DEFAULT_CONFIG = "voxeo"; //TODO: CFLM-446: Parametrize
 
-    public static final String CALLFLOWS_DEFAULT_FLOW = "MainFlow"; //TODO: CFLM-184: Parametrize
+    public static final String CALLFLOWS_DEFAULT_FLOW = "MainFlow"; //TODO: CFLM-446: Parametrize
 
     public static final String CALL_FLOW_SERVICE_RESULT_HANDLER_SERVICE = MODULE_ID +
         ".callFlowServiceResultHandlerService";
