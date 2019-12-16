@@ -18,6 +18,7 @@ import { TemplateUI } from '../../shared/model/template-ui';
 import { TemplateFieldValueUI } from '../../shared/model/template-field-value-ui';
 import { TemplateFieldType } from '../../shared/model/template-field-type';
 import DynamicRadioButton from './form/dynamic-radio-button';
+import DynamicMultiselect from './form/dynamic-multiselect';
 import DynamicCheckboxButton from './form/dynamic-checbox-button';
 import InputField from './form/input-field';
 import OpenMrsDatePicker from '../../shared/components/openmrs-date-picker';
@@ -69,8 +70,9 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
           ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
           fieldName, isMandatory);
       case TemplateFieldType.MESSAGING_FREQUENCY:
-        return this.renderDynamicRadioButton(tfv, ['Daily', 'Weekly', 'Monthly'],
-          fieldName, isMandatory);
+        return this.renderDynamicRadioButton(tfv, ['Daily', 'Weekly', 'Monthly'], fieldName, isMandatory);
+      case TemplateFieldType.CATEGORY_OF_MESSAGE:
+        return this.renderDynamicMultiselect(tfv, ['Category 1', 'Category 2', 'Category 3'], fieldName, isMandatory);
       case TemplateFieldType.START_OF_MESSAGES:
         return this.renderDatePicker(tfv, PATIENT_TEMPLATE_START_DATE, isMandatory);
       case TemplateFieldType.END_OF_MESSAGES:
@@ -79,6 +81,20 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
         return this.renderInputField(tfv, fieldName, isMandatory);
     };
   };
+
+  renderDynamicMultiselect = (tfv: TemplateFieldValueUI,
+    options: ReadonlyArray<string>,
+    fieldName: string,
+    isMandatory: boolean) => (
+      <DynamicMultiselect
+        options={options}
+        selectedOptions={tfv.value}
+        label={fieldName}
+        key={tfv.localId}
+        mandatory={isMandatory}
+        onSelectChange={(value: string) => this.onTemplateFieldValueChange(tfv.localId, value)}
+      />
+    )
 
   renderDynamicRadioButton = (tfv: TemplateFieldValueUI,
     options: ReadonlyArray<string>,

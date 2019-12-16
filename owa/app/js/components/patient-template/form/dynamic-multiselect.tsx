@@ -1,0 +1,66 @@
+import React from 'react';
+import { FormGroup, Radio, ControlLabel } from 'react-bootstrap';
+import Select from 'react-select';
+import './dynamic-multiselect.scss';
+import FormLabel from '../../../shared/components/form-label';
+import MultiselectOption from '../../../shared/model/multiselect-option';
+
+interface IProps {
+  options: ReadonlyArray<string>
+  selectedOptions: string;
+  label: string;
+  key: string;
+  mandatory: boolean;
+  onSelectChange: (valueSelected: string) => void;
+}
+
+interface IState {
+  options: Array<MultiselectOption>,
+}
+
+export default class DynamicMultiselect extends React.Component<IProps, IState> {
+
+  constructor(props: IProps) {
+    super(props);
+    this.state = {
+      options: this.props.options.map((optionName) => (new MultiselectOption(optionName, optionName))),
+    }
+  }
+
+  mapOptionsToString = (options?: Array<MultiselectOption>) => {
+    return !!options ? options.map(o => o.value).join(',') : '';
+  }
+
+  mapOptionsToMultiselectOptionsArray = (optionString: string) => {
+    return optionString.split(',')
+      .filter(optionName => !!optionName)
+      .map((optionName) => (new MultiselectOption(optionName, optionName)));
+  }
+
+  handleChange = (selectedOptions?: Array<MultiselectOption>) => {
+    const newValue = this.mapOptionsToString(selectedOptions);
+    this.props.onSelectChange(newValue);
+  }
+
+  render = () => {
+    const selectedOptions = this.mapOptionsToMultiselectOptionsArray(this.props.selectedOptions);
+
+    return (
+      <FormGroup
+        className="multiselect"
+        controlId={this.props.key}
+        key={this.props.key} >
+        <FormLabel label={this.props.label} mandatory={this.props.mandatory} />
+        <Select
+          defaultValue={this.state.options}
+          isMulti
+          options={this.state.options}
+          className="basic-multi-select"
+          classNamePrefix="select"
+          value={selectedOptions}
+          onChange={this.handleChange}
+        />
+      </FormGroup>
+    )
+  }
+}
