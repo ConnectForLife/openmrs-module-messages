@@ -18,51 +18,43 @@ import DateDisplay from './date-display';
 import './index.scss';
 
 interface IProps {
-  minDate?: ParsableToDate;
-  maxDate?: ParsableToDate;
-  value: string;
+  value: ParsableToDate;
   onChange?: (isoDate: string) => void;
 }
 
 interface IState {
 }
 
-class CustomDatePicker extends PureComponent<IProps, IState> {
+class OpenMrsDatePicker extends PureComponent<IProps, IState> {
 
   getDate = (val: ParsableToDate): Date => {
-    const defalutDate = !!this.props.minDate
-          ? parse(this.props.minDate)
-          : parse(Date.now());
-    return parseDateOrDefault(val, defalutDate);
-  }; 
+    const defaultDate = parse(Date.now());
+    return parseDateOrDefault(val, defaultDate);
+  };
 
   handleChange = (newValue: string) => {
     const date: Date = this.getDate(newValue);
     if (!!this.props.onChange) {
-      let parsed: string = format(
-        startOfDay(date), ISO_DATE_FORMAT);
-      this.props.onChange(parsed);
+      const isoDate: string = format(startOfDay(date), ISO_DATE_FORMAT);
+      this.props.onChange(isoDate);
     }
   };
 
   render() {
-    const { value, minDate, maxDate } = this.props;
+    const { value } = this.props;
     const parsed = this.getDate(value);
 
     return (
-      <DatePicker
-        customInput={<DateDisplay />}
-        dateFormat={DATE_FORMAT}
-        onChange={this.handleChange}
-        // TODO: CFLM-308 decide if minDate
-        // should be always minDate or maybe
-        // min(savedOnBackend, minDate)
-        minDate={minDate}
-        maxDate={maxDate}
-        selected={parsed}
-      />
+      <span className="openmrs-date-picker">
+        <DatePicker
+          customInput={<DateDisplay />}
+          dateFormat={DATE_FORMAT}
+          onChange={this.handleChange}
+          selected={parsed}
+        />
+      </span>
     );
   };
 }
 
-export default CustomDatePicker;
+export default OpenMrsDatePicker;

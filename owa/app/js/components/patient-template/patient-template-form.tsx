@@ -20,7 +20,7 @@ import { TemplateFieldType } from '../../shared/model/template-field-type';
 import DynamicRadioButton from './form/dynamic-radio-button';
 import DynamicCheckboxButton from './form/dynamic-checbox-button';
 import InputField from './form/input-field';
-import CustomDatePicker from '../../shared/components/date-picker';
+import OpenMrsDatePicker from '../../shared/components/openmrs-date-picker';
 import FormLabel from '../../shared/components/form-label';
 import { PATIENT_TEMPLATE_START_DATE } from '../../shared/utils/messages';
 
@@ -133,7 +133,7 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
       <FormLabel
         label={fieldName}
         mandatory={isMandatory} />
-      <CustomDatePicker
+      <OpenMrsDatePicker
         value={tfv.value}
         onChange={isoDate => this.onTemplateFieldValueChange(tfv.localId, isoDate)}
       />

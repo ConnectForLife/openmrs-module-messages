@@ -12,9 +12,7 @@ import { FormControl } from 'react-bootstrap';
 import 'react-datepicker/dist/react-datepicker.css';
 
 import './index.scss';
-// TODO: CFLM-308 to styling; icon should be in datepicker box
 // TODO: CFLM-308 consider moving shared components
-// to component repository
 
 interface IProps {
   label?: string;
@@ -35,8 +33,11 @@ export default class DateDisplay extends PureComponent<IProps> {
           placeholder={placeholder}
           type="text"
           value={value} />
-        <i onClick={onClick}
-          className='icon-calendar small' />
+        <span className="add-on">
+          <i
+            onClick={onClick}
+            className='icon-calendar small' />
+        </span>
       </span>
     );
   }

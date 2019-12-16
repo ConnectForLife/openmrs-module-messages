@@ -9,24 +9,22 @@
 
 import { parse } from 'date-fns';
 
-const DEFAULT: Date = parse(Date.now());
-
 export type ParsableToDate = number | string | Date;
 
-export const isDateValid = (date: Date) => !isNaN(date.valueOf());
+export const isDateValid = (date: Date | undefined) =>
+  !!date && date instanceof Date && !isNaN(date.valueOf());
 
 export const parseDateOrDefault = (date: ParsableToDate,
-  defaultDate: Date | undefined): Date => {
-  if (defaultDate instanceof Date && !isDateValid(defaultDate)) {
+    defaultDate: Date): Date => {
+  if (!(defaultDate instanceof Date) || !isDateValid(defaultDate)) {
     throw 'Default date is not valid';
   }
 
-  const defaultValue = (!!defaultDate) ? defaultDate : DEFAULT;
   const parsed = parse(date);
-  return isDateValid(parsed) ? parsed : defaultValue;
+  return isDateValid(parsed) ? parsed : defaultDate;
 }
 
 export const parseOrNow = (date: ParsableToDate): Date => {
   const parsed = parse(date);
-  return isDateValid(parsed) ? parsed : DEFAULT;
+  return isDateValid(parsed) ? parsed : parse(Date.now());
 }
