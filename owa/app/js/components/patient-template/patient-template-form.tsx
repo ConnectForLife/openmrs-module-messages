@@ -21,7 +21,7 @@ import DynamicRadioButton from './form/dynamic-radio-button';
 import DynamicMultiselect from './form/dynamic-multiselect';
 import DynamicCheckboxButton from './form/dynamic-checbox-button';
 import InputField from './form/input-field';
-import OpenMrsDatePicker from '../../shared/components/openmrs-date-picker';
+import OpenMrsDatePicker from  '@bit/soldevelo-omrs.cfl-components.openmrs-date-picker';
 import FormLabel from '../../shared/components/form-label';
 import { PATIENT_TEMPLATE_START_DATE } from '../../shared/utils/messages';
 import { CATEGORIES_MAP } from './form/dynamic-multiselect.constants';

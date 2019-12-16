@@ -8,7 +8,7 @@ import {
   selectTemplate
 } from '../../reducers/patient-template.reducer'
 import { IRootState } from '../../reducers';
-import { Button } from 'react-bootstrap';
+import { Button, SelectCallback } from 'react-bootstrap';
 import * as Msg from '../../shared/utils/messages';
 import FormSection from '@bit/soldevelo-omrs.cfl-components.form-entry/model/form-section';
 import FormSubSection from '@bit/soldevelo-omrs.cfl-components.form-entry/model/form-subsection';
@@ -92,7 +92,7 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
       const isValid = !_.some(patientTemplates, pt => pt.hasErrors());
       const isPersisted = patientTemplates.length > 0;
 
-      const onSelectCallback = () => {
+      const onSelectCallback: SelectCallback = () => {
         this.props.selectTemplate(template);
       }
 

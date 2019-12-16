@@ -31,7 +31,7 @@ export default class InputField extends React.Component<IProps> {
           type="text"
           name={label}
           value={value}
-          onChange={e => { this.props.handleChange(e.target.value) }} />
+          onChange={e => { this.props.handleChange((e.target as HTMLInputElement).value) }} />
       </FormGroup>
     );
   };
