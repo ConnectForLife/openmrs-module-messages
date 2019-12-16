@@ -24,6 +24,7 @@ import InputField from './form/input-field';
 import OpenMrsDatePicker from '../../shared/components/openmrs-date-picker';
 import FormLabel from '../../shared/components/form-label';
 import { PATIENT_TEMPLATE_START_DATE } from '../../shared/utils/messages';
+import { CATEGORIES_MAP } from './form/dynamic-multiselect.constants';
 
 interface IReactProps {
   patientTemplate: PatientTemplateUI | undefined;
@@ -72,7 +73,7 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
       case TemplateFieldType.MESSAGING_FREQUENCY:
         return this.renderDynamicRadioButton(tfv, ['Daily', 'Weekly', 'Monthly'], fieldName, isMandatory);
       case TemplateFieldType.CATEGORY_OF_MESSAGE:
-        return this.renderDynamicMultiselect(tfv, ['Category 1', 'Category 2', 'Category 3'], fieldName, isMandatory);
+        return this.renderDynamicMultiselect(tfv, Object.keys(CATEGORIES_MAP), fieldName, isMandatory);
       case TemplateFieldType.START_OF_MESSAGES:
         return this.renderDatePicker(tfv, PATIENT_TEMPLATE_START_DATE, isMandatory);
       case TemplateFieldType.END_OF_MESSAGES:

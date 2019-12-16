@@ -4,6 +4,7 @@ import Select from 'react-select';
 import './dynamic-multiselect.scss';
 import FormLabel from '../../../shared/components/form-label';
 import MultiselectOption from '../../../shared/model/multiselect-option';
+import { CATEGORIES_MAP } from './dynamic-multiselect.constants';
 
 interface IProps {
   options: ReadonlyArray<string>
@@ -23,8 +24,14 @@ export default class DynamicMultiselect extends React.Component<IProps, IState> 
   constructor(props: IProps) {
     super(props);
     this.state = {
-      options: this.props.options.map((optionName) => (new MultiselectOption(optionName, optionName))),
+      options: this.props.options
+        .map((optionName) => (new MultiselectOption(this.getCategoryOptionLabel(optionName), optionName))),
     }
+  }
+
+  getCategoryOptionLabel = (optionName: string) => {
+    const mappedLabel = CATEGORIES_MAP[optionName];
+    return !!mappedLabel ? mappedLabel : optionName;
   }
 
   mapOptionsToString = (options?: Array<MultiselectOption>) => {
@@ -34,7 +41,7 @@ export default class DynamicMultiselect extends React.Component<IProps, IState> 
   mapOptionsToMultiselectOptionsArray = (optionString: string) => {
     return optionString.split(',')
       .filter(optionName => !!optionName)
-      .map((optionName) => (new MultiselectOption(optionName, optionName)));
+      .map((optionName) => (new MultiselectOption(this.getCategoryOptionLabel(optionName), optionName)));
   }
 
   handleChange = (selectedOptions?: Array<MultiselectOption>) => {
