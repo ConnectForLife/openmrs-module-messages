@@ -11,7 +11,7 @@ import React from 'react';
 import { FormGroup, Checkbox } from 'react-bootstrap';
 import _ from 'lodash';
 
-import FormLabel from '../../../shared/components/form-label';
+import FormLabel from '@bit/soldevelo-omrs.cfl-components.form-label';
 
 interface IProps {
   options: ReadonlyArray<string>

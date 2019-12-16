@@ -19,7 +19,6 @@ export const GENERIC_PROCESSING = 'Processing...';
 export const GENERIC_SUCCESS = 'Success.';
 export const GENERIC_INVALID_FORM = 'Form is invalid. Check fields and send it again.';
 export const GENERIC_LOADING = 'Loading...';
-export const REQUIERD_FORM_FIELD = 'required';
 
 // Breadcrumb
 export const GENERAL_MODULE_BREADCRUMB = 'Messages';
@@ -33,5 +32,3 @@ export const BEST_CONTACT_TIME_LABEL = 'Best Contact Time';
 export const CALENDAR_OVERVIEW_LABEL = 'Calendar Overview';
 
 export const PATIENT_TEMPLATE_START_DATE = 'Start of daily messages';
-export const ISO_DATE_FORMAT = 'YYYY-MM-DD';
-export const DATE_FORMAT = 'dd MMM yyyy';

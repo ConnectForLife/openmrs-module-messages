@@ -10,7 +10,7 @@
 import React from 'react';
 import { FormGroup, FormControl } from 'react-bootstrap';
 
-import FormLabel from '../../../shared/components/form-label';
+import FormLabel from '@bit/soldevelo-omrs.cfl-components.form-label';
 
 interface IProps {
   label: string;

@@ -2,7 +2,7 @@ import React from 'react';
 import { FormGroup, Radio, ControlLabel } from 'react-bootstrap';
 import Select from 'react-select';
 import './dynamic-multiselect.scss';
-import FormLabel from '../../../shared/components/form-label';
+import FormLabel from '@bit/soldevelo-omrs.cfl-components.form-label';
 import MultiselectOption from '../../../shared/model/multiselect-option';
 import { CATEGORIES_MAP } from './dynamic-multiselect.constants';
 
