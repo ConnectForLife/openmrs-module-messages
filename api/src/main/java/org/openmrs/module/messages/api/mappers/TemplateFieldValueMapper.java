@@ -10,9 +10,10 @@ public class TemplateFieldValueMapper extends AbstractMapper<TemplateFieldValueD
     @Override
     public TemplateFieldValueDTO toDto(TemplateFieldValue dao) {
         return new TemplateFieldValueDTO()
-            .setId(dao.getId())
-            .setValue(dao.getValue())
-            .setTemplateFieldId(dao.getTemplateField().getId());
+            .withId(dao.getId())
+            .withValue(dao.getValue())
+            .withTemplateFieldId(dao.getTemplateField().getId())
+            .withUuid(dao.getUuid());
     }
 
     @Override
@@ -20,6 +21,7 @@ public class TemplateFieldValueMapper extends AbstractMapper<TemplateFieldValueD
         TemplateFieldValue dao = new TemplateFieldValue();
         dao.setId(dto.getId());
         dao.setValue(dto.getValue());
+        dao.setUuid(dto.getUuid());
 
         PatientTemplate patientTemplate = new PatientTemplate();
         dao.setPatientTemplate(patientTemplate);

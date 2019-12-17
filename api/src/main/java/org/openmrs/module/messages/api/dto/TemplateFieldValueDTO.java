@@ -1,8 +1,10 @@
 package org.openmrs.module.messages.api.dto;
 
+import org.openmrs.BaseOpenmrsObject;
+
 import java.io.Serializable;
 
-public class TemplateFieldValueDTO implements Serializable {
+public class TemplateFieldValueDTO extends BaseOpenmrsObject implements Serializable {
 
     private static final long serialVersionUID = -1685385476367160219L;
 
@@ -19,7 +21,12 @@ public class TemplateFieldValueDTO implements Serializable {
         return id;
     }
 
-    public TemplateFieldValueDTO setId(Integer id) {
+    @Override
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public TemplateFieldValueDTO withId(Integer id) {
         this.id = id;
         return this;
     }
@@ -28,7 +35,7 @@ public class TemplateFieldValueDTO implements Serializable {
         return templateFieldId;
     }
 
-    public TemplateFieldValueDTO setTemplateFieldId(Integer templateFieldId) {
+    public TemplateFieldValueDTO withTemplateFieldId(Integer templateFieldId) {
         this.templateFieldId = templateFieldId;
         return this;
     }
@@ -37,8 +44,13 @@ public class TemplateFieldValueDTO implements Serializable {
         return value;
     }
 
-    public TemplateFieldValueDTO setValue(String value) {
+    public TemplateFieldValueDTO withValue(String value) {
         this.value = value;
+        return this;
+    }
+
+    public TemplateFieldValueDTO withUuid(String uuid) {
+        setUuid(uuid);
         return this;
     }
 }

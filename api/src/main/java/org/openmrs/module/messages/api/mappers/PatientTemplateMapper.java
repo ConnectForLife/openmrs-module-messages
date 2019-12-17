@@ -23,16 +23,17 @@ public final class PatientTemplateMapper extends AbstractMapper<PatientTemplateD
     @Override
     public PatientTemplateDTO toDto(PatientTemplate dao) {
         PatientTemplateDTO dto = new PatientTemplateDTO()
-            .setId(dao.getId())
-            .setTemplateFieldValues(valueMapper.toDtos(dao.getTemplateFieldValues()))
-            .setPatientId(dao.getPatient().getId())
-            .setTemplateId(dao.getTemplate().getId())
-            .setServiceQuery(dao.getServiceQuery())
-            .setServiceQueryType(dao.getServiceQueryType())
-            .setActorId(dao.getActor().getId());
+            .withId(dao.getId())
+            .withTemplateFieldValues(valueMapper.toDtos(dao.getTemplateFieldValues()))
+            .withPatientId(dao.getPatient().getId())
+            .withTemplateId(dao.getTemplate().getId())
+            .withServiceQuery(dao.getServiceQuery())
+            .withServiceQueryType(dao.getServiceQueryType())
+            .withActorId(dao.getActor().getId())
+            .withUuid(dao.getUuid());
 
         if (dao.getActorType() != null) {
-            dto.setActorTypeId(dao.getActorType().getId());
+            dto.withActorTypeId(dao.getActorType().getId());
         }
         return dto;
     }
@@ -42,6 +43,7 @@ public final class PatientTemplateMapper extends AbstractMapper<PatientTemplateD
         PatientTemplate dao = new PatientTemplate();
         dao.setId(dto.getId());
         dao.setTemplateFieldValues(fromDtos(dao, dto.getTemplateFieldValues()));
+        dao.setUuid(dto.getUuid());
 
         Person actor = new Person();
         actor.setId(dto.getActorId());

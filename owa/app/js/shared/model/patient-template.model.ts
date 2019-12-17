@@ -2,6 +2,7 @@ import { ITemplateFieldValue } from './template-field-value.model';
 
 export interface IPatientTemplate {
   id: number | null;
+  uuid: string | null;
   templateFieldValues: Array<ITemplateFieldValue>;
   patientId: number | undefined;
   templateId: number | undefined;
@@ -13,6 +14,7 @@ export interface IPatientTemplate {
 
 export const getDefaultValue = (): IPatientTemplate => ({
   id: null,
+  uuid: null,
   templateFieldValues: [] as Array<ITemplateFieldValue>,
   patientId: undefined,
   templateId: undefined,

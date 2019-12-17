@@ -37,7 +37,16 @@ public interface OpenmrsDataService<T extends BaseOpenmrsData> extends OpenmrsSe
      * @throws APIException - service exception
      */
     void delete(T persistent) throws APIException;
-    
+
+    /**
+     * Completely deletes a persistent from the database
+     * It can be called by users with this module's privilege. It is executed in a transaction.
+     *
+     * @param collection - the persistent collection to delete
+     * @throws APIException - service exception
+     */
+    void delete(List<T> collection) throws APIException;
+
     /**
      * Save or update a persistent in the database
      * It can be called by users with this module's privilege. It is executed in a transaction.

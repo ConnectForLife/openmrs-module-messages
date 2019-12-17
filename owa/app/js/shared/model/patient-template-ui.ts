@@ -9,6 +9,7 @@ import { validateFormSafely } from '@bit/soldevelo-omrs.cfl-components.validatio
 
 export class PatientTemplateUI extends ObjectUI<IPatientTemplate> implements IPatientTemplate, IForm {
   id: number | null;
+  uuid: string | null;
   templateFieldValues: Array<TemplateFieldValueUI>;
   patientId: number;
   templateId: number;

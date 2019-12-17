@@ -10,6 +10,7 @@ import org.openmrs.module.messages.api.dto.PageDTO;
 import org.openmrs.module.messages.api.dto.PatientTemplateDTO;
 import org.openmrs.module.messages.api.exception.ValidationException;
 import org.openmrs.module.messages.api.mappers.PatientTemplateMapper;
+import org.openmrs.module.messages.api.model.ErrorMessage;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.service.PatientTemplateService;
 import org.openmrs.module.messages.domain.PagingInfo;
@@ -30,6 +31,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
 
+import static org.openmrs.module.messages.api.model.ErrorMessageEnum.ERR_SYSTEM;
+
 @Controller
 @RequestMapping("/messages/patient-templates")
 public class PatientTemplateController extends BaseRestController {
@@ -37,6 +40,7 @@ public class PatientTemplateController extends BaseRestController {
     private final Log logger = LogFactory.getLog(getClass());
 
     @Autowired
+    @Qualifier("patientService")
     private PatientService patientService;
 
     @Autowired
@@ -66,20 +70,20 @@ public class PatientTemplateController extends BaseRestController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public PatientTemplatesWrapper updatePatientTemplates(@PathVariable("id") Integer id,
-                                                           @RequestBody PatientTemplatesWrapper wrapper)
-                                                           throws ValidationException, APIException {
+                                                          @RequestBody PatientTemplatesWrapper wrapper)
+            throws ValidationException, APIException {
         validateConsistency(id, wrapper.getPatientTemplates());
-        List<PatientTemplate> saved = patientTemplateService.saveOrUpdate(
-                mapper.fromDtos(wrapper.getPatientTemplates()));
+        List<PatientTemplate> saved = patientTemplateService.batchSave(
+                mapper.fromDtos(wrapper.getPatientTemplates()), id);
         return new PatientTemplatesWrapper(mapper.toDtos(saved));
     }
 
     @ExceptionHandler(APIException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public ErrorResponseDTO handleAPIException(ValidationException ex) {
+    public ErrorResponseDTO handleAPIException(APIException ex) {
         logger.error(ex.getMessage(), ex);
-        return ex.getErrorResponse();
+        return new ErrorResponseDTO(new ErrorMessage(ERR_SYSTEM.getCode(), ex.getMessage()));
     }
 
     private void validateConsistency(Integer id, List<PatientTemplateDTO> templates)

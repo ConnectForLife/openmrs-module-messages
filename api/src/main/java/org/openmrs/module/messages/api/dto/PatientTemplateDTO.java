@@ -1,10 +1,12 @@
 package org.openmrs.module.messages.api.dto;
 
+import org.openmrs.BaseOpenmrsObject;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PatientTemplateDTO implements Serializable {
+public class PatientTemplateDTO extends BaseOpenmrsObject implements Serializable {
 
     private static final long serialVersionUID = -6043667008851204408L;
 
@@ -31,7 +33,12 @@ public class PatientTemplateDTO implements Serializable {
         return id;
     }
 
-    public PatientTemplateDTO setId(Integer id) {
+    @Override
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public PatientTemplateDTO withId(Integer id) {
         this.id = id;
         return this;
     }
@@ -40,7 +47,7 @@ public class PatientTemplateDTO implements Serializable {
         return templateFieldValues;
     }
 
-    public PatientTemplateDTO setTemplateFieldValues(List<TemplateFieldValueDTO> templateFieldValues) {
+    public PatientTemplateDTO withTemplateFieldValues(List<TemplateFieldValueDTO> templateFieldValues) {
         this.templateFieldValues = templateFieldValues;
         return this;
     }
@@ -49,7 +56,7 @@ public class PatientTemplateDTO implements Serializable {
         return patientId;
     }
 
-    public PatientTemplateDTO setPatientId(Integer patientId) {
+    public PatientTemplateDTO withPatientId(Integer patientId) {
         this.patientId = patientId;
         return this;
     }
@@ -58,7 +65,7 @@ public class PatientTemplateDTO implements Serializable {
         return templateId;
     }
 
-    public PatientTemplateDTO setTemplateId(Integer templateId) {
+    public PatientTemplateDTO withTemplateId(Integer templateId) {
         this.templateId = templateId;
         return this;
     }
@@ -67,7 +74,7 @@ public class PatientTemplateDTO implements Serializable {
         return actorId;
     }
 
-    public PatientTemplateDTO setActorId(Integer actorId) {
+    public PatientTemplateDTO withActorId(Integer actorId) {
         this.actorId = actorId;
         return this;
     }
@@ -76,7 +83,7 @@ public class PatientTemplateDTO implements Serializable {
         return actorTypeId;
     }
 
-    public PatientTemplateDTO setActorTypeId(Integer actorTypeId) {
+    public PatientTemplateDTO withActorTypeId(Integer actorTypeId) {
         this.actorTypeId = actorTypeId;
         return this;
     }
@@ -85,7 +92,7 @@ public class PatientTemplateDTO implements Serializable {
         return serviceQuery;
     }
 
-    public PatientTemplateDTO setServiceQuery(String serviceQuery) {
+    public PatientTemplateDTO withServiceQuery(String serviceQuery) {
         this.serviceQuery = serviceQuery;
         return this;
     }
@@ -94,8 +101,13 @@ public class PatientTemplateDTO implements Serializable {
         return serviceQueryType;
     }
 
-    public PatientTemplateDTO setServiceQueryType(String serviceQueryType) {
+    public PatientTemplateDTO withServiceQueryType(String serviceQueryType) {
         this.serviceQueryType = serviceQueryType;
+        return this;
+    }
+
+    public PatientTemplateDTO withUuid(String uuid) {
+        setUuid(uuid);
         return this;
     }
 }

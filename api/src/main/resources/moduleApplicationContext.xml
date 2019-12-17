@@ -54,9 +54,22 @@
     <bean id="messages.MessagingDao" class="org.openmrs.module.messages.api.dao.impl.MessagingDaoImpl"/>
     <bean id="messages.ActorResponseDao" class="org.openmrs.module.messages.api.dao.impl.ActorResponseDaoImpl"/>
 
-    <bean id="messages.patientTemplateService"
-          class="org.openmrs.module.messages.api.service.impl.PatientTemplateServiceImpl">
-        <property name="daoBeanName" value="messages.PatientTemplateDao"/>
+
+    <bean id="messages.patientTemplateService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="transactionManager">
+            <ref bean="transactionManager" />
+        </property>
+        <property name="target">
+            <bean class="org.openmrs.module.messages.api.service.impl.PatientTemplateServiceImpl">
+                <property name="daoBeanName" value="messages.PatientTemplateDao"/>
+            </bean>
+        </property>
+        <property name="preInterceptors">
+            <ref bean="serviceInterceptors" />
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource" />
+        </property>
     </bean>
 
     <bean id="messages.templateService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">

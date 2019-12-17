@@ -193,7 +193,7 @@
             voided="false"
             uuid="fdd5191e-772c-4c67-9c39-e1a266f86afb"/>
 
-    <!-- Patient #1 template -->
+    <!-- Template Fields -->
     <messages_template_field
             messages_template_field_id="1"
             name="test template"
@@ -277,4 +277,52 @@
             date_created="2019-11-20 00:00:00.2"
             voided="false"
             uuid="3e419c7f-fed1-4734-be3f-8d5a43feb73c"/>
+
+    <!-- Patient #2 template #1 -->
+    <messages_patient_template
+            messages_patient_template_id="4"
+            actor_id="102"
+            actor_type="102"
+            template_id="1"
+            patient_id="102"
+            service_query_type="SQL"
+            service_query="SELECT (*) FROM messages_scheduled_service;"
+            creator="1"
+            date_created="2019-11-20 00:00:00.1"
+            voided="false"
+            uuid="81c5d663-47e8-4116-a972-b6c121a770e5"/>
+
+    <messages_template_field_value
+            messages_template_field_value_id="4"
+            value="test value"
+            patient_template_id="4"
+            template_field_id="1"
+            creator="1"
+            date_created="2019-11-20 00:00:00.2"
+            voided="false"
+            uuid="e8f09dc3-0655-486f-af1e-b3c39f39f101"/>
+
+    <!-- Patient #2 template #2 -->
+    <messages_patient_template
+            messages_patient_template_id="5"
+            actor_id="102"
+            actor_type="102"
+            template_id="1"
+            patient_id="102"
+            service_query_type="SQL"
+            service_query="SELECT (*) FROM messages_scheduled_service;"
+            creator="1"
+            date_created="2019-11-20 00:00:00.1"
+            voided="false"
+            uuid="332acf89-0c76-4303-97f6-c590d5ad5589"/>
+
+    <messages_template_field_value
+            messages_template_field_value_id="5"
+            value="test value 2"
+            patient_template_id="5"
+            template_field_id="1"
+            creator="1"
+            date_created="2019-11-20 00:00:00.2"
+            voided="false"
+            uuid="1c0055b3-b323-4f23-bad6-e75e0362af46"/>
 </dataset>

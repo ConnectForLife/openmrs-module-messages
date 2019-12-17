@@ -40,6 +40,13 @@ public class BaseOpenmrsDataService<T extends BaseOpenmrsData> extends BaseOpenm
     }
 
     @Override
+    public void delete(List<T> collection) throws APIException {
+        for (T newOrPersisted : collection) {
+            delete(newOrPersisted);
+        }
+    }
+
+    @Override
     public T saveOrUpdate(T newOrPersisted) throws APIException {
         return getDao().saveOrUpdate(newOrPersisted);
     }

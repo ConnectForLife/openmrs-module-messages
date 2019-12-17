@@ -18,6 +18,7 @@ import { TemplateFieldType } from './template-field-type';
 
 export class TemplateFieldValueUI extends ObjectUI<ITemplateFieldValue> implements ITemplateFieldValue, IFormField {
   id: number | null;
+  uuid: string | null;
   templateFieldId: number;
   value: string;
 

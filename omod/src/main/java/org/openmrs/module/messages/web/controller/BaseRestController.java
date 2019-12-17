@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import static org.openmrs.module.messages.api.model.ErrorMessageEnum.ERR_BAD_PARAM;
+import static org.openmrs.module.messages.api.model.ErrorMessageEnum.ERR_SYSTEM;
+
 /**
  * Base Rest Controller
  * All controllers in this module extend this for easy error handling
@@ -17,10 +20,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public abstract class BaseRestController {
 
     private final Log logger = LogFactory.getLog(getClass());
-
-    private static final String ERR_SYSTEM = "system.error";
-
-    private static final String ERR_BAD_PARAM = "system.param";
 
     /**
      * Exception handler for bad request - Http status code of 400
@@ -33,7 +32,7 @@ public abstract class BaseRestController {
     @ResponseBody
     public ErrorResponseDTO handleIllegalArgumentException(IllegalArgumentException e) {
         logger.error(e.getMessage(), e);
-        return new ErrorResponseDTO(new ErrorMessage(ERR_BAD_PARAM, e.getMessage()));
+        return new ErrorResponseDTO(new ErrorMessage(ERR_BAD_PARAM.getCode(), e.getMessage()));
     }
 
     /**
@@ -47,7 +46,7 @@ public abstract class BaseRestController {
     @ResponseBody
     public ErrorResponseDTO handleException(Exception e) {
         logger.error(e.getMessage(), e);
-        return new ErrorResponseDTO(new ErrorMessage(ERR_SYSTEM, e.getMessage()));
+        return new ErrorResponseDTO(new ErrorMessage(ERR_SYSTEM.getCode(), e.getMessage()));
     }
 
     /**
