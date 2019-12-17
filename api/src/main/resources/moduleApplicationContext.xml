@@ -115,9 +115,20 @@
 
     <bean id="messages.UserMapper" class="org.openmrs.module.messages.api.mappers.UserMapper"/>
 
+    <bean id="messages.ActorScheduleMapper" class="org.openmrs.module.messages.api.mappers.ActorScheduleMapper"/>
+
     <bean id="messages.MessageDetailsMapper" class="org.openmrs.module.messages.api.mappers.MessageDetailsMapper">
+        <property name="messageMapper">
+            <ref local="messages.MessageMapper"/>
+        </property>
+    </bean>
+
+    <bean id="messages.MessageMapper" class="org.openmrs.module.messages.api.mappers.MessageMapper">
         <property name="userMapper">
             <ref local="messages.UserMapper"/>
+        </property>
+        <property name="actorScheduleMapper">
+            <ref local="messages.ActorScheduleMapper"/>
         </property>
     </bean>
 

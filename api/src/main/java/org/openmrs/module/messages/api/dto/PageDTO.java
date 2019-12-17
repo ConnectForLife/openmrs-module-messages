@@ -19,6 +19,8 @@ public class PageDTO<T> {
 
     private int contentSize;
 
+    private Long totalRecords;
+
     private List<T> content = new ArrayList<T>();
 
     public PageDTO() { }
@@ -64,6 +66,14 @@ public class PageDTO<T> {
         return this;
     }
 
+    public Long getTotalRecords() {
+        return totalRecords;
+    }
+
+    public void setTotalRecords(Long totalRecords) {
+        this.totalRecords = totalRecords;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -93,6 +103,7 @@ public class PageDTO<T> {
         if (pagingInfo != null) {
             this.pageIndex = pagingInfo.getPage();
             this.pageSize = pagingInfo.getPageSize();
+            this.totalRecords = pagingInfo.getTotalRecordCount();
         }
     }
 

@@ -4,13 +4,12 @@ import { IRootState } from '../../reducers';
 import './patient-template.scss';
 import Table from '@bit/soldevelo-omrs.cfl-components.table/table';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { getMessages } from '../../reducers/patient-template.reducer'
+import { getMessagesPage } from '../../reducers/patient-template.reducer'
 import MessageDetails from '../../shared/model/message-details';
 import _ from 'lodash';
 import ActorSchedule from '../../shared/model/actor-schedule';
-import Message from '../../shared/model/message';
 import MessageRowData from '../../shared/model/message-row-data';
-import { getActorList } from '../../reducers/actor.reducer' 
+import { getActorList } from '../../reducers/actor.reducer'
 
 interface IScheduledMessagesProps extends DispatchProps, StateProps {
   patientId: string
@@ -23,7 +22,6 @@ interface IScheduledMessagesState {
 
 class ScheduledMessages extends React.PureComponent<IScheduledMessagesProps, IScheduledMessagesState> {
   componentDidMount() {
-    this.props.getMessages(null, null, null, null, this.props.patientId);
     this.props.getActorList(parseInt(this.props.patientId));
   }
 
@@ -38,16 +36,22 @@ class ScheduledMessages extends React.PureComponent<IScheduledMessagesProps, ISc
   mapMessageDetailsToData = (): Array<MessageRowData> => {
     let data = [] as Array<MessageRowData>;
 
-    if (this.props.messageDetails) {
-      this.props.messageDetails.messages.forEach((m) => {
-        data.push({
-          messageType: m.type,
-          schedules: this.mapActorSchedules(m.actorSchedules)
-        })
-      })
+    if (!this.props.messageDetails) {
+      return data;
     }
 
+    this.props.messageDetails.messages.forEach((m) => {
+      data.push({
+        messageType: m.type,
+        schedules: this.mapActorSchedules(m.actorSchedules)
+      })
+    })
+
     return data;
+  }
+
+  getMessages = (activePage: number, itemsPerPage: number, sort: string, order: string, filters: {}) => {
+    this.props.getMessagesPage(activePage, itemsPerPage, this.props.patientId);
   }
 
   renderMessagesTable = () => {
@@ -55,20 +59,17 @@ class ScheduledMessages extends React.PureComponent<IScheduledMessagesProps, ISc
 
     const columns = _.concat(
       this.getTypeColumnDefinition(),
-      this.getSchedulesColumnDefinition(this.props.messageDetails.messages),
+      this.getSchedulesColumnDefinition(),
       this.getActionsColumnDefinition()
     );
-
-    console.log(columns);
 
     return (
       <Table
         data={data}
         columns={columns}
-        loading={false}
-        //TODO in CFLM-377: Change to pages size
-        pages={1}
-        fetchDataCallback={getMessages}
+        loading={this.props.loading}
+        pages={this.props.pages}
+        fetchDataCallback={this.getMessages}
       />);
   };
 
@@ -77,7 +78,10 @@ class ScheduledMessages extends React.PureComponent<IScheduledMessagesProps, ISc
     accessor: 'messageType',
   });
 
-  getSchedulesColumnDefinition = (messages: Array<Message>) => {
+  getSchedulesColumnDefinition = () => {
+    if (!this.props.messageDetails) {
+      return [];
+    }
     const wrapedTextProps = () => {
       return {
         style: {
@@ -86,7 +90,7 @@ class ScheduledMessages extends React.PureComponent<IScheduledMessagesProps, ISc
       };
     }
 
-    const actorTypes = _.flatten(messages
+    const actorTypes = _.flatten(this.props.messageDetails.messages
       .map((msg) => msg.actorSchedules
         .map((s) => s.actorType)));
 
@@ -126,19 +130,20 @@ class ScheduledMessages extends React.PureComponent<IScheduledMessagesProps, ISc
     return (
       <div className="body-wrapper">
         <h4>Scheduled messages</h4>
-        {!this.props.loading && this.renderMessagesTable()}
+        {this.renderMessagesTable()}
       </div>
     );
   }
 }
 
 const mapStateToProps = ({ patientTemplate }: IRootState) => ({
+  pages: patientTemplate.messageDetailsPages,
   messageDetails: patientTemplate.messageDetails,
   loading: patientTemplate.messageDetailsLoading
 });
 
 const mapDispatchToProps = ({
-  getMessages,
+  getMessagesPage,
   getActorList
 });
 

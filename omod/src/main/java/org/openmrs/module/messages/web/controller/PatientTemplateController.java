@@ -59,7 +59,7 @@ public class PatientTemplateController extends BaseRestController {
         List<PatientTemplate> templates = patientTemplateService.findAllByCriteria(
             new PatientTemplateCriteria(patient),
             pagingInfo);
-        return new PageDTO<PatientTemplateDTO>(mapper.toDtos(templates), pagingInfo);
+        return new PageDTO<>(mapper.toDtos(templates), pagingInfo);
     }
 
     @RequestMapping(value = "/patient/{id}", method = RequestMethod.POST)

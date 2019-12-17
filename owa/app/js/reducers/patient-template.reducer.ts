@@ -29,7 +29,8 @@ const initialState = {
   patientTemplates: [] as Array<PatientTemplateUI>,
   patientTemplatesLoading: false,
   messageDetails: null as unknown as MessageDetails,
-  messageDetailsLoading: true
+  messageDetailsPages: 0,
+  messageDetailsLoading: false
 };
 
 export type PatientTemplateState = Readonly<typeof initialState>;
@@ -66,7 +67,10 @@ export default (state = initialState, action) => {
       return {
         ...state,
         messageDetailsLoading: false,
-        messageDetails: mockMessageDetails() //TODO: change to 'action.payload.data' to use real data
+        // the response is wrapped in a page because the collection inside is paginated,
+        // so the true result is always in the only collection element
+        messageDetails: mockMessageDetails(), //TODO: change to 'action.payload.data.content[0]' to use real data
+        pages: Math.ceil((action.payload.data.totalRecords / action.payload.data.pageSize))
       };
     case REQUEST(ACTION_TYPES.GET_PATIENT_TEMPLATES):
       return {
@@ -129,13 +133,18 @@ export default (state = initialState, action) => {
 const messagesUrl = "ws/messages";
 const templatesUrl = messagesUrl + "/templates";
 const messageDetailsUrl = messagesUrl + "/details";
-const patientTemplatesUrl = "ws/messages/patient-templates";
+const patientTemplatesUrl = messagesUrl + "/patient-templates";
 
-//TODO in CFLM-377: Change to real pagination request
-export const getMessages = (page, size, sort, order, patientId) => async (dispatch) => {
+export const getMessagesPage = (page: number, size: number, patientId: string) => async (dispatch) => {
   await dispatch({
     type: ACTION_TYPES.GET_MESSAGE_DETAILS,
-    payload: axiosInstance.get(`${messageDetailsUrl}?rows=100&page=1&patientId=${patientId}`)
+    payload: axiosInstance.get(messageDetailsUrl, {
+      params: {
+        patientId: patientId,
+        page: page + 1,
+        rows: size
+      }
+    })
   });
 };
 

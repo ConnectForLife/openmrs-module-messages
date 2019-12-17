@@ -14,6 +14,7 @@ import org.openmrs.module.messages.api.dao.PatientTemplateDao;
 import org.openmrs.module.messages.api.dao.TemplateDao;
 import org.openmrs.module.messages.api.dto.MessageDTO;
 import org.openmrs.module.messages.api.dto.MessageDetailsDTO;
+import org.openmrs.module.messages.api.dto.PageDTO;
 import org.openmrs.module.messages.api.execution.ChannelType;
 import org.openmrs.module.messages.api.execution.ServiceResult;
 import org.openmrs.module.messages.api.execution.ServiceResultList;
@@ -223,14 +224,27 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
     }
 
     private MessageDetailsDTO getDtoFromMvcResult(MvcResult result) throws IOException {
-        return objectMapper.readValue(
-                result.getResponse().getContentAsString(),
-                MessageDetailsDTO.class);
+        String contentString = objectMapper.writeValueAsString(
+                objectMapper.readValue(
+                        result.getResponse().getContentAsString(),
+                        PageDTO.class).getContent());
+
+        List<MessageDetailsDTO> resultList = objectMapper.readValue(contentString,
+                new TypeReference<List<MessageDetailsDTO>>() {
+                });
+
+        // the response is wrapped in a page because the collection inside is paginated
+        if (resultList.isEmpty()) {
+            return null;
+        } else {
+            return resultList.get(0);
+        }
     }
 
     private List<ServiceResultList> getResultListFromMvcResult(MvcResult result) throws IOException {
         return objectMapper.readValue(result.getResponse().getContentAsString(),
-                new TypeReference<List<ServiceResultList>>() { });
+                new TypeReference<List<ServiceResultList>>() {
+                });
     }
 
     private PatientTemplate createPatientTemplate(Patient patient, Person person,

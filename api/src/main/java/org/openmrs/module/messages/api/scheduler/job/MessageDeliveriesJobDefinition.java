@@ -11,7 +11,7 @@ import org.openmrs.module.messages.api.execution.ExecutionException;
 import org.openmrs.module.messages.api.execution.ServiceResult;
 import org.openmrs.module.messages.api.execution.ServiceResultGroupHelper;
 import org.openmrs.module.messages.api.execution.ServiceResultList;
-import org.openmrs.module.messages.api.model.PatientStatus;
+import org.openmrs.module.messages.api.model.PersonStatus;
 import org.openmrs.module.messages.api.service.MessagesSchedulerService;
 import org.openmrs.module.messages.api.service.MessagingService;
 import org.openmrs.module.messages.api.util.DateUtil;
@@ -41,7 +41,7 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
             for (ServiceResultList group : groupedResults) {
                 JobDefinition definition = new ServiceGroupDeliveryJobDefinition(group);
                 Date startDate = getGroupResultsStartDate(group.getResults());
-                if (PatientStatus.ACTIVE.equals(getPersonStatus(getPersonService().getPerson(group.getActorId())))) {
+                if (PersonStatus.ACTIVE.equals(getPersonStatus(getPersonService().getPerson(group.getActorId())))) {
                     getSchedulerService().createNewTask(definition, startDate, JobRepeatInterval.NEVER);
                 }
             }

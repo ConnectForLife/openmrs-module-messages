@@ -10,9 +10,13 @@ public class MessageDetailsDTO {
 
     public MessageDetailsDTO() { }
 
-    public MessageDetailsDTO(Integer patientId, List<MessageDTO> messages) {
-        this.patientId = patientId;
+    public MessageDetailsDTO(List<MessageDTO> messages) {
         this.messages = messages;
+    }
+
+    public MessageDetailsDTO withPatientId(Integer patientId) {
+        this.patientId = patientId;
+        return this;
     }
 
     public Integer getPatientId() {

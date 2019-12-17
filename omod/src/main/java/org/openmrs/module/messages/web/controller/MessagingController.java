@@ -2,6 +2,7 @@ package org.openmrs.module.messages.web.controller;
 
 import org.openmrs.module.messages.api.dto.ErrorResponseDTO;
 import org.openmrs.module.messages.api.dto.MessageDetailsDTO;
+import org.openmrs.module.messages.api.dto.PageDTO;
 import org.openmrs.module.messages.api.execution.ExecutionException;
 import org.openmrs.module.messages.api.execution.ServiceResultList;
 import org.openmrs.module.messages.api.mappers.MessageDetailsMapper;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -46,12 +48,16 @@ public class MessagingController extends BaseRestController {
 
     @RequestMapping(value = "/details", method = RequestMethod.GET)
     @ResponseBody
-    public MessageDetailsDTO getMessageDetails(MessagingParams messagingParams) {
+    public PageDTO<MessageDetailsDTO> getMessageDetails(MessagingParams messagingParams) {
         PatientTemplateCriteria criteria = messagingParams.getCriteria();
         PagingInfo paging = messagingParams.getPagingInfo();
         List<PatientTemplate> templates = patientTemplateService.findAllByCriteria(
                 criteria, paging);
-        return messageDetailsMapper.toDto(templates, criteria.getPatientId());
+
+        // the response is wrapped in a page because the collection inside is paginated
+        List<MessageDetailsDTO> details = new ArrayList<>();
+        details.add(messageDetailsMapper.toDto(templates).withPatientId(criteria.getPatientId()));
+        return new PageDTO<>(details, paging);
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
