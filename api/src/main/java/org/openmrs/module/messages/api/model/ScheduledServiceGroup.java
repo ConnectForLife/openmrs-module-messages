@@ -10,9 +10,12 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity(name = "messages.ScheduledServiceGroup")
 @Table(name = "messages_scheduled_service_group")
@@ -35,6 +38,9 @@ public class ScheduledServiceGroup extends AbstractBaseOpenmrsData {
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private ServiceStatus status;
+
+    @OneToMany(mappedBy = "group", orphanRemoval = true)
+    private List<ScheduledService> scheduledServices = new ArrayList<>();
     
     @Override
     public Integer getId() {
@@ -68,5 +74,13 @@ public class ScheduledServiceGroup extends AbstractBaseOpenmrsData {
     
     public void setStatus(ServiceStatus status) {
         this.status = status;
+    }
+
+    public List<ScheduledService> getScheduledServices() {
+        return scheduledServices;
+    }
+
+    public void setScheduledServices(List<ScheduledService> scheduledServices) {
+        this.scheduledServices = scheduledServices;
     }
 }

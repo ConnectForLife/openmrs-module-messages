@@ -77,6 +77,9 @@ public class ScheduledService extends AbstractBaseOpenmrsData {
 
     public void setGroup(ScheduledServiceGroup group) {
         this.group = group;
+        if (group != null && !group.getScheduledServices().contains(this)) {
+            group.getScheduledServices().add(this);
+        }
     }
 
     public Concept getService() {
