@@ -20,7 +20,7 @@ import { getPatientTemplateWithTemplateId } from '../../selectors/patient-templa
 import { PatientTemplateUI } from '../../shared/model/patient-template-ui';
 import _ from 'lodash';
 
-interface IPatientTemplateEditProps extends DispatchProps, StateProps, RouteComponentProps<{ patientId: string }> {
+interface IPatientTemplateEditProps extends DispatchProps, StateProps, RouteComponentProps<{ patientId: string, patientUuid: string }> {
   isNew: boolean
 };
 

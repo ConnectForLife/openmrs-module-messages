@@ -7,15 +7,15 @@ const Routes = (props) => (
   <>
     <Switch>
       <Route
-        path={'/messages/:patientId/patient-template/new'}
+        path={'/messages/:patientId&patientuuid=:patientUuid/patient-template/new'}
         render={(props) => <PatientTemplateEdit {...props} isNew={true} />}
       />
       <Route
-        path={'/messages/:patientId/patient-template/edit'}
+        path={'/messages/:patientId&patientuuid=:patientUuid/patient-template/edit'}
         render={(props) => <PatientTemplateEdit {...props} isNew={false} />}
       />
       <Route
-        path={'/messages/:patientId/patient-template'}
+        path={'/messages/:patientId&patientuuid=:patientUuid/patient-template'}
         render={(props) => <ManageMessages {...props} />}
       />
     </Switch>

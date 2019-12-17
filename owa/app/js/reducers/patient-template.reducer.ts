@@ -135,7 +135,7 @@ const templatesUrl = messagesUrl + "/templates";
 const messageDetailsUrl = messagesUrl + "/details";
 const patientTemplatesUrl = messagesUrl + "/patient-templates";
 
-export const getMessagesPage = (page: number, size: number, patientId: string) => async (dispatch) => {
+export const getMessagesPage = (page: number, size: number, patientId: number) => async (dispatch) => {
   await dispatch({
     type: ACTION_TYPES.GET_MESSAGE_DETAILS,
     payload: axiosInstance.get(messageDetailsUrl, {

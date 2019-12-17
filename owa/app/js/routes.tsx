@@ -13,15 +13,15 @@ import App from './components/app'
 import AppManagement from './components/app-management';
 import PatientTemplate from './components/patient-template/routes';
 import BreadCrumb from './components/bread-crumb';
+
 export default (store) => (
-    
     <div>
         <Header />
         <BreadCrumb />
         <Switch>
-            <Route path="/messages/:patientId/patient-template" component={PatientTemplate} />
+            <Route path="/messages/:patientId&patientuuid=:patientUuid/patient-template" component={PatientTemplate} />
             <Route path="/messages/manage" component={AppManagement} />
-            <Route path="/messages/:patientId" component={App} />
+            <Route path="/messages/:patientId&patientuuid=:patientUuid" component={App} />
         </Switch>
     </div>
 );

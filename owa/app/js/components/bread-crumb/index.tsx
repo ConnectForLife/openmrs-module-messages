@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { ReactFragment } from 'react';
 import { connect } from 'react-redux';
 import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -7,17 +7,22 @@ import UrlPattern from 'url-pattern';
 import './bread-crumb.scss';
 import { UnregisterCallback } from 'history';
 import * as Msg from '../../shared/utils/messages';
+import { getPatient } from '../../reducers/patient.reducer';
+import { IRootState } from '../../reducers';
 
-const PATIENT_TEMPLATE_PATTERN = new UrlPattern('/messages/patient-template*');
-const NEW_PATIENT_TEMPLATE_PATTERN = new UrlPattern('/messages/patient-template/new*');
-const EDIT_PATIENT_TEMPLATE_PATTERN = new UrlPattern('/messages/patient-template/edit*');
+const ids = 'patientId&patientuuid=:patientUuid';
+
+const PATIENT_TEMPLATE_PATTERN = new UrlPattern(`/messages/:${ids}/patient-template/:newOrEdit*`);
 const MANAGE_PATTERN = new UrlPattern('/messages/manage*');
+const BASE_MESSAGES_PATTERN = new UrlPattern(`/messages/:${ids}*`);
 
 const MODULE_ROUTE = '/';
 const OMRS_ROUTE = '../../';
-const PATIENT_TEMPLATE_ROUTE = '/messages/patient-template/';
+const PATIENT_TEMPLATE_ROUTE = (patientId, patientUuid) => `/messages/${patientId}&patientUuid=${patientUuid}/patient-template/`;
+const PATIENT_DASHBOARD_ROUTE = patientUuid => `${OMRS_ROUTE}coreapps/clinicianfacing/patient.page?patientId=${patientUuid}`;
+const SYSTEM_ADMINISTRATION_ROUTE = `${OMRS_ROUTE}coreapps/systemadministration/systemAdministration.page`;
 
-interface IBreadCrumbProps extends RouteComponentProps {
+interface IBreadCrumbProps extends DispatchProps, StateProps, RouteComponentProps {
 };
 
 interface IBreadCrumbState {
@@ -54,65 +59,79 @@ class BreadCrumb extends React.PureComponent<IBreadCrumbProps, IBreadCrumbState>
 
   buildBreadCrumb = () => {
     const { current } = this.state;
-    if (!!PATIENT_TEMPLATE_PATTERN.match(current.toLowerCase())) {
-      return this.buildPatientTemplateBreadCrumb(current);
-    } else if (!!MANAGE_PATTERN.match(current.toLowerCase())) {
-      return this.buildManageBreadCrumb(current);
-    } else {
-      return (
-        <div className="breadcrumb">
-          {this.renderCrumbs([this.renderLastCrumb(Msg.GENERAL_MODULE_BREADCRUMB)])}
-        </div>
-      );
-    }
-  }
-
-  buildPatientTemplateBreadCrumb = (path: string) => {
-    const patientTemplateCrumbs = [
-      this.renderCrumb(MODULE_ROUTE, Msg.GENERAL_MODULE_BREADCRUMB)
-    ];
-
-    if (NEW_PATIENT_TEMPLATE_PATTERN.match(path)) {
-      patientTemplateCrumbs.push(this.renderCrumb(PATIENT_TEMPLATE_ROUTE, Msg.PATIENT_TEMPLATE_BREADCRUMB));
-      patientTemplateCrumbs.push(this.renderLastCrumb(Msg.NEW_PATIENT_TEMPLATE_BREADCRUMB));
-    } else if (EDIT_PATIENT_TEMPLATE_PATTERN.match(path)) {
-      patientTemplateCrumbs.push(this.renderCrumb(PATIENT_TEMPLATE_ROUTE, Msg.PATIENT_TEMPLATE_BREADCRUMB));
-      patientTemplateCrumbs.push(this.renderLastCrumb(Msg.EDIT_PATIENT_TEMPLATE_BREADCRUMB));
-    } else {
-      patientTemplateCrumbs.push(this.renderLastCrumb(Msg.PATIENT_TEMPLATE_BREADCRUMB));
-    }
 
     return (
       <div className="breadcrumb">
-        {this.renderCrumbs(patientTemplateCrumbs)}
+        {this.renderCrumbs(this.getCrumbs(current))}
       </div>
     );
   }
 
-  buildManageBreadCrumb = (path: string) => {
-    const manageCrumbs = [
-      this.renderCrumb(MODULE_ROUTE, Msg.GENERAL_MODULE_BREADCRUMB)
-    ];
-
-    manageCrumbs.push(this.renderLastCrumb(Msg.MANAGE_BREADCRUMB));
-
-    return (
-      <div className="breadcrumb">
-        {this.renderCrumbs(manageCrumbs)}
-      </div>
-    );
+  getCrumbs = (path: string): Array<ReactFragment> => {
+    if (!!PATIENT_TEMPLATE_PATTERN.match(path.toLowerCase())) {
+      return this.getPatientTemplateCrumbs(path);
+    } else if (!!MANAGE_PATTERN.match(path.toLowerCase())) {
+      return this.getManageBreadCrumbs();
+    } else if (!!BASE_MESSAGES_PATTERN.match(path.toLowerCase())) {
+      return this.getBaseMessagesCrumbs(path);
+    } else {
+      return [this.renderLastCrumb(Msg.GENERAL_MODULE_BREADCRUMB)];
+    }
   }
 
-  renderCrumbs = (elements: Array<any>) => {
+  getBaseMessagesCrumbs = (path: string) => {
+    return [
+      this.getPatientNameCrumb(path),
+      this.renderLastCrumb(Msg.GENERAL_MODULE_BREADCRUMB)
+    ];
+  }
+
+  getPatientNameCrumb = (path: string) => {
+    const match = BASE_MESSAGES_PATTERN.match(path.toLowerCase());
+    const patientUuid = match.patientUuid;
+
+    if (this.props.patient.uuid != patientUuid) {
+      this.props.getPatient(patientUuid);
+    }
+
+    const patientName = this.props.patient.person ? this.props.patient.person.display : '';
+    return this.renderCrumb(PATIENT_DASHBOARD_ROUTE(patientUuid), patientName, true)
+  }
+
+  getPatientTemplateCrumbs = (path: string): Array<ReactFragment> => {
+    const match = PATIENT_TEMPLATE_PATTERN.match(path.toLowerCase());
+    let msg = "";
+
+    if (match.newOrEdit === "new") {
+      msg = Msg.NEW_PATIENT_TEMPLATE_BREADCRUMB;
+    } else if (match.newOrEdit === "edit") {
+      msg = Msg.EDIT_PATIENT_TEMPLATE_BREADCRUMB;
+    }
+
+    return [
+      this.getPatientNameCrumb(path),
+      this.renderCrumb(PATIENT_TEMPLATE_ROUTE(match.patientId, match.patientUuid), Msg.GENERAL_MODULE_BREADCRUMB),
+      this.renderLastCrumb(msg)
+    ];
+  }
+
+  getManageBreadCrumbs = () => {
+    return [
+      this.renderCrumb(SYSTEM_ADMINISTRATION_ROUTE, Msg.SYSTEM_ADMINITRATION_BREADCRUMB, true),
+      this.renderLastCrumb(Msg.MANAGE_BREADCRUMB)
+    ];
+  }
+
+  renderCrumbs = (elements: Array<ReactFragment>) => {
     const delimiter = this.renderDelimiter();
-    const lastElementId = elements.length - 1;
+
     return (
       <React.Fragment>
         {this.renderHomeCrumb()}
         {elements.map((e, i) =>
           <React.Fragment key={`crumb-${i}`}>
+            {delimiter}
             {e}
-            {i !== lastElementId && delimiter}
           </React.Fragment>)}
       </React.Fragment>
     );
@@ -132,8 +151,14 @@ class BreadCrumb extends React.PureComponent<IBreadCrumbProps, IBreadCrumbState>
       </a>);
   }
 
-  renderCrumb = (link: string, txt: string) => {
-    return <Link to={link} className="breadcrumb-link-item">{txt}</Link>;
+  renderCrumb = (link: string, txt: string, isAbsolute?: boolean) => {
+    if (isAbsolute) {
+      return (
+        <a href={link} className="breadcrumb-link-item" >{txt}</a>
+      );
+    } else {
+      return <Link to={link} className="breadcrumb-link-item">{txt}</Link>;
+    }
   }
 
   renderLastCrumb = (txt: string) => {
@@ -141,4 +166,18 @@ class BreadCrumb extends React.PureComponent<IBreadCrumbProps, IBreadCrumbState>
   }
 }
 
-export default withRouter(connect()(BreadCrumb));
+const mapStateToProps = ({ patient }: IRootState) => ({
+  patient: patient.patient
+});
+
+const mapDispatchToProps = ({
+  getPatient
+});
+
+type StateProps = ReturnType<typeof mapStateToProps>;
+type DispatchProps = typeof mapDispatchToProps;
+
+export default withRouter(connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(BreadCrumb));

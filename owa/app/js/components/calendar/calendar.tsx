@@ -129,7 +129,7 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
 
   render() {
     const actorsResults: Array<IActorIdWithEvents> = this.prepareActorsData();
-    console.log(this.props.serviceResultLists, actorsResults);
+
     return (
       <div className="body-wrapper">
         <div className="row">

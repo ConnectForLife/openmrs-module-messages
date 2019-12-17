@@ -1,7 +1,6 @@
 package org.openmrs.module.messages.web.it;
 
 import org.apache.commons.lang3.time.DateUtils;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,6 +21,7 @@ import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.Template;
 import org.openmrs.module.messages.builder.PatientTemplateBuilder;
 import org.openmrs.module.messages.builder.TemplateBuilder;
+import org.openmrs.module.messages.util.TestUtil;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -61,8 +61,6 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
     public static final String END_DATE_PARAM = "endDate";
 
     private MockMvc mockMvc;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -224,12 +222,12 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
     }
 
     private MessageDetailsDTO getDtoFromMvcResult(MvcResult result) throws IOException {
-        String contentString = objectMapper.writeValueAsString(
-                objectMapper.readValue(
+        String contentString = TestUtil.writeValueAsString(
+                TestUtil.readValue(
                         result.getResponse().getContentAsString(),
                         PageDTO.class).getContent());
 
-        List<MessageDetailsDTO> resultList = objectMapper.readValue(contentString,
+        List<MessageDetailsDTO> resultList = TestUtil.readValueAsList(contentString,
                 new TypeReference<List<MessageDetailsDTO>>() {
                 });
 
@@ -242,7 +240,7 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
     }
 
     private List<ServiceResultList> getResultListFromMvcResult(MvcResult result) throws IOException {
-        return objectMapper.readValue(result.getResponse().getContentAsString(),
+        return TestUtil.readValueAsList(result.getResponse().getContentAsString(),
                 new TypeReference<List<ServiceResultList>>() {
                 });
     }

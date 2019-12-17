@@ -1,12 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
-import { IRootState } from '../../reducers';
 import './patient-template.scss';
 import BestContactTime from './best-contact-time';
 import ScheduledMessages from './scheduled-messages';
 
-interface IManageMessagesProps extends DispatchProps, StateProps, RouteComponentProps<{ patientId: string }> {
+interface IManageMessagesProps extends DispatchProps, StateProps, RouteComponentProps<{ patientId: string, patientUuid: string }> {
 };
 
 interface IManageMessagesState {
@@ -14,20 +13,21 @@ interface IManageMessagesState {
 
 class ManageMessages extends React.PureComponent<IManageMessagesProps, IManageMessagesState> {
   render() {
-    const patientId = this.props.match.params.patientId;
+    const { patientId, patientUuid } = this.props.match.params;
+
     return (
       <div className="body-wrapper">
         <h2>Manage messages</h2>
         <div className="panel-body">
-          <BestContactTime patientId={parseInt(patientId)} />
-          <ScheduledMessages patientId={patientId} />
+          <BestContactTime patientId={parseInt(patientId)} patientUuid={patientUuid} />
+          <ScheduledMessages patientId={patientId} patientUuid={patientUuid} />
         </div>
       </div>
     );
   }
 }
 
-const mapStateToProps = ({ patientTemplate }: IRootState) => ({
+const mapStateToProps = ({}) => ({
 });
 
 const mapDispatchToProps = ({

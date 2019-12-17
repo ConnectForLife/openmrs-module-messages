@@ -14,7 +14,8 @@ import moment, { Moment } from 'moment';
 import { IActor } from '../../shared/model/actor.model';
 
 interface IBestContactTimeProps extends DispatchProps, StateProps {
-  patientId: number
+  patientId: number,
+  patientUuid: string
 };
 
 interface IBestContactTimeState {
@@ -44,8 +45,8 @@ class BestContactTime extends React.PureComponent<IBestContactTimeProps, IBestCo
   }
 
   handleCalendarOverview = () => {
-    const patientId = this.props.patientId;
-    history.push(`/messages/${patientId}`);
+    const { patientId, patientUuid } = this.props;
+    history.push(`/messages/${patientId}&patientUuid=${patientUuid}`);
   }
 
   handleSave = () => {

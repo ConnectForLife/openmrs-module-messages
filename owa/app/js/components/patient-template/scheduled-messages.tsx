@@ -12,7 +12,8 @@ import MessageRowData from '../../shared/model/message-row-data';
 import { getActorList } from '../../reducers/actor.reducer'
 
 interface IScheduledMessagesProps extends DispatchProps, StateProps {
-  patientId: string
+  patientId: number,
+  patientUuid: string,
   messageDetails: MessageDetails,
   loading: boolean
 };
@@ -22,7 +23,7 @@ interface IScheduledMessagesState {
 
 class ScheduledMessages extends React.PureComponent<IScheduledMessagesProps, IScheduledMessagesState> {
   componentDidMount() {
-    this.props.getActorList(parseInt(this.props.patientId));
+    this.props.getActorList(this.props.patientId);
   }
 
   mapActorSchedules = (actorSchedules: Array<ActorSchedule>) => {
@@ -115,7 +116,7 @@ class ScheduledMessages extends React.PureComponent<IScheduledMessagesProps, ISc
     },
     Cell: props => {
       //TODO in CFLm-376: Change link to proper messages sidebar val
-      const link = `#messages/${this.props.patientId}/patient-template/edit/${props.value}`;
+      const link = `#messages/${this.props.patientId}&patientuuid=${this.props.patientUuid}/patient-template/edit/${props.value}`;
       return (
         <span>
           <a href={link}>
