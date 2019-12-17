@@ -1069,4 +1069,116 @@
             WHERE uuid = '868278cc-1c16-11ea-8999-0242ac160002';
         </sql>
     </changeSet>
+
+    <changeSet id="messages-21" author="Dawid Ruchniewicz">
+        <preConditions>
+            <tableExists tableName="messages_template_field"/>
+        </preConditions>
+        <comment>Removed all data from messages_template_field table</comment>
+        <sql>
+            DELETE from messages_template_field;
+        </sql>
+    </changeSet>
+
+    <changeSet id="messages-22" author="Dawid Ruchniewicz">
+        <preConditions>
+            <tableExists tableName="messages_template"/>
+        </preConditions>
+        <comment>Removed all data from messages_template table</comment>
+        <sql>
+            DELETE from messages_template;
+        </sql>
+    </changeSet>
+
+    <changeSet id="messages-23" author="Dawid Ruchniewicz">
+        <preConditions>
+            <tableExists tableName="messages_template"/>
+            <tableExists tableName="messages_template_field"/>
+        </preConditions>
+        <comment>Added new inserts for templates and template fields</comment>
+        <sql>
+            INSERT INTO messages_template
+            (service_query, service_query_type, name, creator, uuid, date_created)
+            VALUES(
+            'select EXECUTION_DATE, MESSAGE_ID, CHANNEL_ID, mssg_status as STATUS_ID from
+            (select TIMESTAMP(selected_date, times) AS EXECUTION_DATE, 1 AS MESSAGE_ID, :Service_type AS CHANNEL_ID
+            from (select * from (select adddate(''2019-12-01'',t4*10000 + t3*1000 + t2*100 + t1*10 + t0) selected_date
+            from  (select 0 t0 union select 1 union select 2 union select 3 union select 4 union  select 5 union
+            select 6 union select 7 union select 8 union select 9) t0,  (select 0 t1 union select 1 union
+            select 2 union select 3 union select 4 union  select 5 union select 6 union select 7 union
+            select 8 union select 9) t1,  (select 0 t2 union select 1 union select 2 union select 3 union
+            select 4 union  select 5 union select 6 union select 7 union select 8 union select 9) t2,
+            (select 0 t3 union select 1 union select 2 union select 3 union select 4 union  select 5 union
+            select 6 union select 7 union select 8 union select 9) t3,  (select 0 t4 union select 1 union
+            select 2 union select 3 union select 4 union  select 5 union select 6 union select 7 union
+            select 8 union select 9) t4) v where selected_date between :Start_of_daily_messages and :End_of_daily_messages
+            and selected_date between :startDate and :endDate  and :Week_day_of_delivering_message
+            like concat(''%'',DAYNAME(selected_date),''%'') ) dates JOIN (select :bestContactTime times) timeslist) temp
+            LEFT JOIN (select mssg.msg_send_time as mssg_dates, mssg.status as mssg_status
+            from messages_scheduled_service_group mssg where mssg.patient_id = :patientId) mss on mss.mssg_dates = EXECUTION_DATE;',
+            'SQL',
+            'Adherence report daily',
+            1,
+            '9556482a-20b2-11ea-ac12-0242c0a82002',
+            now()
+            );
+        </sql>
+        <sql>
+            INSERT INTO messages_template_field
+            (name, mandatory, default_value, template_id, template_field_type, creator, uuid, date_created)
+            VALUES(
+            'Service type',
+            1,
+            'Deactivate service',
+            (select messages_template_id from messages_template where uuid = '9556482a-20b2-11ea-ac12-0242c0a82002'),
+            'SERVICE_TYPE',
+            1,
+            '95566224-20b2-11ea-ac12-0242c0a82002',
+            now()
+            );
+        </sql>
+        <sql>
+            INSERT INTO messages_template_field
+            (name, mandatory, default_value, template_id, template_field_type, creator, uuid, date_created)
+            VALUES(
+            'Week day of delivering message',
+            1,
+            'Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday',
+            (select messages_template_id from messages_template where uuid = '9556482a-20b2-11ea-ac12-0242c0a82002'),
+            'DAY_OF_WEEK',
+            1,
+            '95567627-20b2-11ea-ac12-0242c0a82002',
+            now()
+            );
+        </sql>
+        <sql>
+            INSERT INTO messages_template_field
+            (name, mandatory, default_value, template_id, template_field_type, creator, uuid, date_created)
+            VALUES(
+            'Start of daily messages',
+            0,
+            ' ',
+            (select messages_template_id from messages_template where uuid = '9556482a-20b2-11ea-ac12-0242c0a82002'),
+            'START_OF_MESSAGES',
+            1,
+            '955687fc-20b2-11ea-ac12-0242c0a82002',
+            now()
+            );
+        </sql>
+        <sql>
+            INSERT INTO messages_template_field
+            (name, mandatory, default_value, template_id, template_field_type, creator, uuid, date_created)
+            VALUES(
+            'End of daily messages',
+            1,
+            '2020-01-30',
+            (select messages_template_id from messages_template where uuid = '9556482a-20b2-11ea-ac12-0242c0a82002'),
+            'END_OF_MESSAGES',
+            1,
+            '9556992c-20b2-11ea-ac12-0242c0a82002',
+            now()
+            );
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
