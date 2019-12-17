@@ -8,7 +8,7 @@ import { ServiceResultListUI } from '../shared/model/service-result-list-ui';
 
 export const ACTION_TYPES = {
   GET_SERVICE_RESULT_LISTS: 'calendarReducer/GET_SERVICE_RESULT_LISTS',
-  RESET: 'patientTemplateReducer/RESET'
+  RESET: 'calendarReducer/RESET'
 };
 
 const initialState = {

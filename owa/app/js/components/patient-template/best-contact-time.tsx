@@ -2,7 +2,6 @@ import React from 'react';
 import { Button } from 'react-bootstrap';
 import * as Msg from '../../shared/utils/messages';
 import { IRootState } from '../../reducers';
-import { RouteComponentProps } from 'react-router';
 import { connect } from 'react-redux';
 import { getBestContactTime, postBestContactTime, updateBestConstactTime } from '../../reducers/best-contact-time.reducer';
 import { history } from '../../config/redux-store';
@@ -11,10 +10,11 @@ import { TimePicker } from 'antd';
 import 'antd/dist/antd.css';
 import { IBestContactTime } from '../../shared/model/best-contact-time.model';
 import _ from 'lodash';
-import moment from 'moment';
+import moment, { Moment } from 'moment';
+import { IActor } from '../../shared/model/actor.model';
 
 interface IBestContactTimeProps extends DispatchProps, StateProps {
-  patientId: string
+  patientId: number
 };
 
 interface IBestContactTimeState {
@@ -27,7 +27,20 @@ class BestContactTime extends React.PureComponent<IBestContactTimeProps, IBestCo
   }
 
   componentDidMount() {
-    this.props.getBestContactTime(this.props.patientId);
+    this.refreshBestContactTimeList();
+  }
+
+  componentDidUpdate(prevprops) {
+    if (this.props.actorResultList !== prevprops.actorResultList) {
+      this.refreshBestContactTimeList();
+    }
+  }
+
+  refreshBestContactTimeList = () => {
+    const personIds: Array<number> = [];
+    personIds.push(this.props.patientId);
+    this.props.actorResultList.forEach(e => personIds.push(e.actorId));
+    this.props.getBestContactTime(personIds);
   }
 
   handleCalendarOverview = () => {
@@ -36,10 +49,9 @@ class BestContactTime extends React.PureComponent<IBestContactTimeProps, IBestCo
   }
 
   handleSave = () => {
-    if (this.props.bestContactTime.patientTime) {
-      this.props.postBestContactTime(this.props.patientId, this.props.bestContactTime.patientTime);      
+    if (!!this.props.bestContactTimes && !!this.props.patientId) {
+      this.props.postBestContactTime(this.props.bestContactTimes);
     }
-    //TODO add save for caregivers
   }
 
   renderCalendarOverviewButton() {
@@ -61,36 +73,51 @@ class BestContactTime extends React.PureComponent<IBestContactTimeProps, IBestCo
       </Button>
     );
   }
-  
-  onPatientBestContactTime = (time, timeString) => {
-    let newValue : IBestContactTime = _.cloneDeep(this.props.bestContactTime);
-    newValue.patientTime = timeString;
-    this.props.updateBestConstactTime(newValue);
+
+  onTimeChange = (time: Moment, timeString: string, personId: number | null) => {
+    let contactTimes: Array<IBestContactTime> = _.cloneDeep(this.props.bestContactTimes);
+    const contactTime = _.find(contactTimes, (e) => e.personId === personId);
+    if (!!contactTime) {
+      contactTime.time = timeString;
+      this.props.updateBestConstactTime(contactTimes);
+    }
   }
 
-  onCaregiverBestContactTime = (time, timeString) => {
-    let newValue : IBestContactTime = _.cloneDeep(this.props.bestContactTime);
-    newValue.caregiverTime = timeString;
-    this.props.updateBestConstactTime(newValue);
-  }
+  getTimeValue = (stringDate) => {
+    var date = moment(stringDate, 'HH:mm');
+    return stringDate && date.isValid() ? date : undefined;
+  };
 
   renderTimePickers() {
-    const {bestContactTime} = this.props;
+    const { bestContactTimes, actorResultList, patientId } = this.props;
     return (
       <div className="sections">
-        <div className="time-section">
-          <span>Patient</span>
-          <TimePicker value={moment(bestContactTime.patientTime, 'HH:mm')} onChange={this.onPatientBestContactTime} format="HH:mm"/>
-        </div>
-        <div className="time-section">
-          <span>Caregiver</span>
-          <TimePicker value={moment(bestContactTime.caregiverTime, 'HH:mm')} onChange={this.onCaregiverBestContactTime} format="HH:mm"/>
-        </div>
+        {bestContactTimes.map((e, i) => {
+          let label: string = `Person ${e.personId}`;
+          if (e.personId === patientId) {
+            label = 'Patient';
+          } else {
+            const actor: IActor | undefined = _.find(actorResultList, (a) => a.actorId === e.personId);
+            if (!!actor) {
+              label = `${actor.actorTypeName} - ${actor.actorName}`;
+            }
+          }
+          return (
+            <div className="time-section">
+              <span>{label}</span>
+              <TimePicker
+                value={this.getTimeValue(e.time)}
+                onChange={(date, dateString) => this.onTimeChange(date, dateString, e.personId)}
+                format="HH:mm" />
+            </div>
+          )
+        })}
       </div>
     );
   }
 
   render() {
+    const { loading } = this.props;
     return (
       <div id="best-contact-time">
         <div className="button-section">
@@ -99,14 +126,18 @@ class BestContactTime extends React.PureComponent<IBestContactTimeProps, IBestCo
         </div>
         <fieldset>
           <legend>{Msg.BEST_CONTACT_TIME_LABEL}</legend>
-          {this.renderTimePickers()}
+          {!loading && this.renderTimePickers()}
         </fieldset>
       </div>
     );
   }
 };
 
-const mapStateToProps = ({ bestContactTime }: IRootState) => (bestContactTime);
+const mapStateToProps = ({ bestContactTime, actor }: IRootState) => ({
+  bestContactTimes: bestContactTime.bestContactTimes,
+  actorResultList: actor.actorResultList,
+  loading: bestContactTime.bestContactTimesLoading || actor.actorResultListLoading
+});;
 
 const mapDispatchToProps = ({
   getBestContactTime,

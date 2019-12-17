@@ -10,6 +10,7 @@ import _ from 'lodash';
 import ActorSchedule from '../../shared/model/actor-schedule';
 import Message from '../../shared/model/message';
 import MessageRowData from '../../shared/model/message-row-data';
+import { getActorList } from '../../reducers/actor.reducer' 
 
 interface IScheduledMessagesProps extends DispatchProps, StateProps {
   patientId: string
@@ -23,6 +24,7 @@ interface IScheduledMessagesState {
 class ScheduledMessages extends React.PureComponent<IScheduledMessagesProps, IScheduledMessagesState> {
   componentDidMount() {
     this.props.getMessages(null, null, null, null, this.props.patientId);
+    this.props.getActorList(parseInt(this.props.patientId));
   }
 
   mapActorSchedules = (actorSchedules: Array<ActorSchedule>) => {
@@ -136,7 +138,8 @@ const mapStateToProps = ({ patientTemplate }: IRootState) => ({
 });
 
 const mapDispatchToProps = ({
-  getMessages
+  getMessages,
+  getActorList
 });
 
 type StateProps = ReturnType<typeof mapStateToProps>;

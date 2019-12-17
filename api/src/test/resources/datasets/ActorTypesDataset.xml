@@ -1,6 +1,18 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
 
+    <person_attribute_type
+            person_attribute_type_id="738"
+            name="Best contact time"
+            description="Person Best contact time"
+            format="java.util.Date"
+            creator="1"
+            sort_weight="1"
+            searchable="0"
+            retired="false"
+            date_created="2010-11-16"
+            uuid="7a8ad9aa-bd0e-48c0-826d-fa628f1db644"/>
+
     <person
             person_id="254451"
             gender="M"
@@ -16,12 +28,32 @@
             person_id="254451"
             given_name="Arkadiusz"
             middle_name=""
-            family_name=""
+            family_name="Arkadiusz"
             creator="1"
             date_created="2010-11-16 15:57:09.0"
             voided="false"
             void_reason=""
             uuid="de589bdc-106f-47f7-afc9-dd1fdf5f202a"/>
+
+    <person_attribute
+            person_attribute_id="85423"
+            person_id="254451"
+            value="23:38"
+            person_attribute_type_id="738"
+            creator="1"
+            date_created="2010-11-16"
+            voided="false"
+            uuid="e9deb6dd-49da-4568-a24a-e6f0dae4133c"/>
+
+    <person_attribute
+            person_attribute_id="85424"
+            person_id="254451"
+            value="15:38"
+            person_attribute_type_id="738"
+            creator="1"
+            date_created="2010-11-16"
+            voided="true"
+            uuid="b456db75-4349-4a05-a48b-987fae5bbc09"/>
 
     <patient
             patient_id="254451"
@@ -59,13 +91,23 @@
             voided="false"
             uuid="982fbff4-2d3d-4e32-acf6-3ffc47f4def2"/>
 
+    <person_attribute
+            person_attribute_id="254452"
+            person_id="254452"
+            value="11:38"
+            person_attribute_type_id="738"
+            creator="1"
+            date_created="2010-11-16"
+            voided="false"
+            uuid="2e0e51f7-15f9-43c6-b6ca-148945518902"/>
+
     <person_name
             person_name_id="254452"
             preferred="true"
             person_id="254452"
             given_name="Daniel"
             middle_name=""
-            family_name=""
+            family_name="Daniel"
             creator="1"
             date_created="2010-11-16 15:57:09.0"
             voided="false"
@@ -87,7 +129,7 @@
             person_id="254453"
             given_name="Wojciech"
             middle_name=""
-            family_name=""
+            family_name="Wojciech"
             creator="1"
             date_created="2010-11-16 15:57:09.0"
             voided="false"
@@ -137,5 +179,37 @@
             date_created="2010-11-16 15:57:09.0"
             voided="false"
             uuid="6a9b2da5-608e-4bd4-92a1-4729cc13d685"/>
+
+    <person
+            person_id="254454"
+            gender="M"
+            dead="false"
+            creator="1"
+            date_created="2010-11-16 15:57:09.0"
+            voided="false"
+            uuid="45dfd0c4-d059-40bf-b6f0-a903d5ad1b29"/>
+
+    <person_attribute
+            person_attribute_id="254454"
+            person_id="254454"
+            value="07:15"
+            person_attribute_type_id="738"
+            creator="1"
+            date_created="2010-11-16"
+            voided="false"
+            uuid="1177ff5d-e555-4b9e-a1f5-a2c0cc340b4c"/>
+
+    <person_name
+            person_name_id="254454"
+            preferred="true"
+            person_id="254454"
+            given_name="Oskar"
+            middle_name=""
+            family_name="Oskar"
+            creator="1"
+            date_created="2010-11-16 15:57:09.0"
+            voided="false"
+            void_reason=""
+            uuid="31201118-9157-4f8b-ab30-c768974109eb"/>
 
 </dataset>

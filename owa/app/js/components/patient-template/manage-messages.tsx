@@ -19,7 +19,7 @@ class ManageMessages extends React.PureComponent<IManageMessagesProps, IManageMe
       <div className="body-wrapper">
         <h2>Manage messages</h2>
         <div className="panel-body">
-          <BestContactTime patientId={patientId} />
+          <BestContactTime patientId={parseInt(patientId)} />
           <ScheduledMessages patientId={patientId} />
         </div>
       </div>

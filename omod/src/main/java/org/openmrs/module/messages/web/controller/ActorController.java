@@ -1,23 +1,21 @@
 package org.openmrs.module.messages.web.controller;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 import org.openmrs.Patient;
-import org.openmrs.Person;
-import org.openmrs.PersonAttribute;
-import org.openmrs.PersonAttributeType;
 import org.openmrs.api.PatientService;
-import org.openmrs.api.PersonService;
 import org.openmrs.module.messages.api.actor.ActorService;
 import org.openmrs.module.messages.api.dto.ActorDTO;
+import org.openmrs.module.messages.api.dto.ContactTimeDTO;
 import org.openmrs.module.messages.api.exception.ValidationException;
 import org.openmrs.module.messages.api.mappers.ActorMapper;
-import org.openmrs.module.messages.api.util.ConfigConstants;
-import org.openmrs.module.messages.api.util.PersonAttributeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,8 +23,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Controller
 @RequestMapping(value = "/messages/actor")
@@ -44,17 +40,12 @@ public class ActorController extends BaseRestController {
     @Qualifier("patientService")
     private PatientService patientService;
 
-    @Autowired
-    @Qualifier("personService")
-    private PersonService personService;
-
-    private static Pattern timePtr = Pattern.compile("^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$");
-
-    @RequestMapping(value = "/{patientId}", method = RequestMethod.GET) //TODO should be changed into PatientUUID
+    @RequestMapping(value = "/{patientId}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<ActorDTO> getAllForPatient(@PathVariable Integer patientId) {
-        Patient patient = patientService.getPatient(patientId);
+    public List<ActorDTO> getAllForPatient(@PathVariable String patientId) {
+        validateId(patientId);
+        Patient patient = patientService.getPatient(Integer.parseInt(patientId));
         if (patient == null) {
             throw new ValidationException(String.format("Patient with %s id doesn't exist.", patientId));
         }
@@ -64,49 +55,44 @@ public class ActorController extends BaseRestController {
     @RequestMapping(value = "/{personId}/contact-time", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public String getBestContactTime(@PathVariable Integer personId) {
-        Person person = personService.getPerson(personId);
-        if (person == null) {
-            throw new ValidationException(String.format("Person with %d id doesn't exist.", personId));
-        }
-        PersonAttribute contactTime = person.getAttribute(ConfigConstants.PERSON_CONTACT_TIME_ATTRIBUTE_TYPE_NAME);
-        if (contactTime == null || StringUtils.isBlank(contactTime.getValue())) {
-            return null;
-        }
-        return contactTime.getValue();
+    public String getBestContactTime(@PathVariable String personId) {
+        validateId(personId);
+        return actorService.getContactTime(Integer.parseInt(personId));
     }
 
-    @RequestMapping(value = "/{personId}/contact-time", method = RequestMethod.POST)
+    @RequestMapping(value = "/contact-times", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public List<ContactTimeDTO> getBestContactTimes(@RequestParam(value = "personIds[]") List<Integer> personIds) {
+        return actorService.getContactTimes(personIds);
+    }
+
+    @RequestMapping(value = "/contact-time", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public void setBestContactTime(@PathVariable Integer personId, @RequestParam String time) {
-        Person person = personService.getPerson(personId);
-        validateContactTimeRequest(personId, time, person);
-        createOrUpdateAttriuteValue(time, person);
-        personService.savePerson(person);
+    public void setBestContactTime(@RequestBody ContactTimeDTO contactTimeDTO) {
+        actorService.saveContactTime(contactTimeDTO);
     }
 
-    private void createOrUpdateAttriuteValue(String time, Person person) {
-        PersonAttribute contactTime = PersonAttributeUtil.getBestContactTimeAttribute(person);
-        if (contactTime == null) {
-            PersonAttributeType attributeType =
-                    personService.getPersonAttributeTypeByUuid(ConfigConstants.PERSON_CONTACT_TIME_TYPE_UUID);
-            contactTime = new PersonAttribute(attributeType, time);
-            person.addAttribute(contactTime);
-        } else {
-            contactTime.setValue(time);
+    @RequestMapping(value = "/contact-times", method = RequestMethod.POST)
+    @ResponseStatus(HttpStatus.CREATED)
+    public void setBestContactTimes(@RequestBody List<ContactTimeDTO> contactTimeDTOs) {
+        List<ContactTimeDTO> contactTimes = convertContactTimeDTOs(contactTimeDTOs);
+        actorService.saveContactTimes(contactTimes);
+    }
+
+    private void validateId(String id) {
+        if (StringUtils.isBlank(id) || !StringUtils.isNumeric(id)) {
+            throw new ValidationException("Missing id parameter.");
         }
     }
 
-    private void validateContactTimeRequest(Integer personId, String time, Person person) {
-        if (person == null) {
-            throw new ValidationException(String.format("Person with %d id doesn't exist.", personId));
+    private List<ContactTimeDTO> convertContactTimeDTOs(List<ContactTimeDTO> contactTimeDTOs) {
+        List<ContactTimeDTO> result = contactTimeDTOs;
+        // OpenMRS by default convert requested list into List<LinkedHashMap>
+        if (!contactTimeDTOs.isEmpty() && !(contactTimeDTOs.get(0) instanceof ContactTimeDTO)) {
+            ObjectMapper mapper = new ObjectMapper();
+            result = mapper.convertValue(contactTimeDTOs, new TypeReference<List<ContactTimeDTO>>() { });
         }
-        if (StringUtils.isBlank(time)) {
-            throw new ValidationException("Missing date parameter");
-        }
-        Matcher mtch = timePtr.matcher(time);
-        if (!mtch.matches()) {
-            throw new ValidationException(String.format("Date %s is not match the required format HH:mm", time));
-        }
+        return result;
     }
 }

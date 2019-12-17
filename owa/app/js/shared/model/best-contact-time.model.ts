@@ -1,9 +1,9 @@
 export interface IBestContactTime {
-  patientTime?: string,
-  caregiverTime?: string
+  personId: number | null,
+  time: string | null
 }
 
 export const getDefaultValue = (): IBestContactTime => ({
-  patientTime: '00:00',
-  caregiverTime: '00:00'
+  personId: null,
+  time: null
 });
