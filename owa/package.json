@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@bit/soldevelo-omrs.cfl-components.calendar": "1.0.31",
-    "@bit/soldevelo-omrs.cfl-components.form-entry": "^1.0.10",
+    "@bit/soldevelo-omrs.cfl-components.form-entry": "^1.0.13",
     "@bit/soldevelo-omrs.cfl-components.form-label": "^1.0.0",
     "@bit/soldevelo-omrs.cfl-components.openmrs-date-picker": "^1.0.0",
     "@bit/soldevelo-omrs.cfl-components.request-toast-handler": "^1.0.0",
