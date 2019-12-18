@@ -23,6 +23,10 @@ public final class MessagesConstants {
     public static final String SMS_SERVICE_RESULT_HANDLER_SERVICE = MODULE_ID +
         ".smsServiceResultHandlerService";
 
+    public static final String DEFAULT_SERVER_SIDE_DATE_FORMAT = "yyyy-MM-dd";
+
+    public static final String DEFAULT_FRONT_END_DATE_FORMAT = "dd MMM yyyy";
+
     private MessagesConstants() {
         // private. So can't be initialized
     }

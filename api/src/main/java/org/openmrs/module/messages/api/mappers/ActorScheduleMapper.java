@@ -3,15 +3,13 @@ package org.openmrs.module.messages.api.mappers;
 import org.apache.commons.lang.NotImplementedException;
 import org.openmrs.module.messages.api.dto.ActorScheduleDTO;
 import org.openmrs.module.messages.api.model.PatientTemplate;
+import org.openmrs.module.messages.api.util.ActorScheduleBuildingUtil;
 
 public class ActorScheduleMapper extends AbstractMapper<ActorScheduleDTO, PatientTemplate> {
 
     @Override
     public ActorScheduleDTO toDto(PatientTemplate dao) {
-        return new ActorScheduleDTO(dao.getActorType() == null ? null :
-                dao.getActorType().getRelationshipType().getaIsToB(),
-                null
-        );
+        return ActorScheduleBuildingUtil.build(dao);
     }
 
     @Override

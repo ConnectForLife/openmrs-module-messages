@@ -21,7 +21,7 @@ public class MessageMapper extends AbstractMapper<MessageDTO, PatientTemplate> {
     @Override
     public MessageDTO toDto(PatientTemplate dao) {
         return new MessageDTO(
-                dao.getServiceQueryType(),
+                dao.getTemplate().getName(),
                 dao.getDateCreated(),
                 userMapper.toDto(dao.getCreator()),
                 actorScheduleMapper.toDto(dao)

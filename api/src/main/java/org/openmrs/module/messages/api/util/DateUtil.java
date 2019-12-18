@@ -1,5 +1,10 @@
 package org.openmrs.module.messages.api.util;
 
+import static org.openmrs.module.messages.api.constants.MessagesConstants.DEFAULT_FRONT_END_DATE_FORMAT;
+import static org.openmrs.module.messages.api.constants.MessagesConstants.DEFAULT_SERVER_SIDE_DATE_FORMAT;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import org.apache.commons.lang3.time.DateUtils;
 
 import java.util.Calendar;
@@ -40,6 +45,21 @@ public final class DateUtil {
 
     public static TimeZone getDefaultTimeZone() {
         return DEFAULT_TIME_ZONE;
+    }
+
+    public static String convertServerSideDateFormatToFrontend(String date) throws ParseException {
+        return convertDate(date, DEFAULT_SERVER_SIDE_DATE_FORMAT, DEFAULT_FRONT_END_DATE_FORMAT);
+    }
+
+    public static String convertFrontendDateFormatToServerSide(String date) throws ParseException {
+        return convertDate(date, DEFAULT_FRONT_END_DATE_FORMAT, DEFAULT_SERVER_SIDE_DATE_FORMAT);
+    }
+
+    private static String convertDate(String date, String fromFormat, String toFormat) throws ParseException {
+        SimpleDateFormat newDateFormat = new SimpleDateFormat(fromFormat);
+        Date myDate = newDateFormat.parse(date);
+        newDateFormat.applyPattern(toFormat);
+        return newDateFormat.format(myDate);
     }
 
     private DateUtil() { }

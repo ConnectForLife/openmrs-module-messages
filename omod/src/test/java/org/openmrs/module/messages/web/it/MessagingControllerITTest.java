@@ -59,6 +59,7 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
     private static final String PATIENT_ID_PARAM = "patientId";
     public static final String START_DATE_PARAM = "startDate";
     public static final String END_DATE_PARAM = "endDate";
+    private static final String MESSAGE_TEMPLATE_NAME = "Template Name";
 
     private MockMvc mockMvc;
 
@@ -116,7 +117,7 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
         assertThat(dto.getMessages().size(), is(equalTo(2)));
 
         for (MessageDTO messageDTO : dto.getMessages()) {
-            assertThat(messageDTO.getType(), anyOf(is(QUERY_TYPE_1), is(QUERY_TYPE_2)));
+            assertThat(messageDTO.getType(), is(MESSAGE_TEMPLATE_NAME));
             assertThat(messageDTO.getAuthor().getUsername(), is(equalTo("admin")));
             assertThat(messageDTO.getActorSchedules().get(0).getActorType(),
                     is(equalTo(relationship.getRelationshipType().getaIsToB())));
@@ -217,7 +218,7 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
         assertThat(dto.getMessages().size(), is(equalTo(THREE_ROWS)));
 
         for (MessageDTO messageDTO : dto.getMessages()) {
-            assertThat(messageDTO.getType(), is(queryType));
+            assertThat(messageDTO.getType(), is(MESSAGE_TEMPLATE_NAME));
         }
     }
 
@@ -262,7 +263,7 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
         Template template = new TemplateBuilder()
                 .withServiceQuery("SELECT now() AS EXECUTION_DATE, 1 AS MESSAGE_ID, 'Call' AS CHANNEL_ID;")
                 .withServiceQueryType("SQL")
-                .setName("Service Name")
+                .setName(MESSAGE_TEMPLATE_NAME)
                 .buildAsNew();
         return templateDao.saveOrUpdate(template);
     }

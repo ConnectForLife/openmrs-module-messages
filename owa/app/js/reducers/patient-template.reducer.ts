@@ -69,7 +69,7 @@ export default (state = initialState, action) => {
         messageDetailsLoading: false,
         // the response is wrapped in a page because the collection inside is paginated,
         // so the true result is always in the only collection element
-        messageDetails: mockMessageDetails(), //TODO: change to 'action.payload.data.content[0]' to use real data
+        messageDetails: action.payload.data.content[0],
         pages: Math.ceil((action.payload.data.totalRecords / action.payload.data.pageSize))
       };
     case REQUEST(ACTION_TYPES.GET_PATIENT_TEMPLATES):
@@ -147,97 +147,6 @@ export const getMessagesPage = (page: number, size: number, patientId: number) =
     })
   });
 };
-
-const mockMessageDetails = (): MessageDetails => {
-  return {
-    patientId: 1,
-    messages: [
-      {
-        type: 'Adherence report daily',
-        author: {},
-        actorSchedules: [
-          {
-            actorType: 'Patient',
-            schedule: 'Daily, Every day, Starts: 01.01.2020, Ends: 30.09.2020'
-          },
-          {
-            actorType: 'Caregiver',
-            schedule: 'Daily, Every day, Starts: 01.01.2020, Ends at 22.03.2020'
-          }
-        ]
-      },
-      {
-        type: 'Adherence report weekly',
-        author: {},
-        actorSchedules: [
-          {
-            actorType: 'Patient',
-            schedule: 'Weekly, Every day, Starts: 30.09.2020, Ends: 20.12.2020'
-          },
-          {
-            actorType: 'Caregiver',
-            schedule: 'Weekly, Every day, Starts: 30.09.2020, Ends: 20.12.2020'
-          }
-        ]
-      },
-      {
-        type: 'Adherence feedback',
-        author: {},
-        actorSchedules: [
-          {
-            actorType: 'Patient',
-            schedule: 'Weekly, Monday, Starts: 01.01.2020, Ends: after 20 times'
-          },
-          {
-            actorType: 'Caregiver',
-            schedule: 'Weekly, Monday, Starts: 01.01.2020, Ends: after 20 times'
-          }
-        ]
-      },
-      {
-        type: 'Health tip',
-        author: {},
-        actorSchedules: [
-          {
-            actorType: 'Patient',
-            schedule: 'Weekly, Monday, Starts: 01.01.2020, Categories: diet, lifestyle, Ends: after 20 times'
-          },
-          {
-            actorType: 'Caregiver',
-            schedule: 'Weekly, Monday, Starts: 01.01.2020, Ends: after 20 times'
-          }
-        ]
-      },
-      {
-        type: 'Visit reminder',
-        author: {},
-        actorSchedules: [
-          {
-            actorType: 'Patient',
-            schedule: 'Weekly, Monday, Starts: 01.01.2020, Ends: after 20 times'
-          },
-          {
-            actorType: 'Caregiver',
-            schedule: 'Weekly, Monday, Starts: 01.01.2020, Ends: after 20 times'
-          }
-        ]
-      },
-      {
-        type: 'Survey',
-        author: {},
-        actorSchedules: [
-          {
-            actorType: 'Patient',
-            schedule: 'Weekly, Monday, Starts: 01.01.2020, Ends: after 20 times'
-          },
-          {
-            actorType: 'Caregiver',
-            schedule: 'Weekly, Monday, Starts: 01.01.2020, Ends: after 20 times'
-          }
-        ]
-      }]
-  } as MessageDetails;
-}
 
 export const getTemplates = () => ({
   type: ACTION_TYPES.GET_TEMPLATES,
