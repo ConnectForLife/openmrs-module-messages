@@ -680,4 +680,54 @@
                                  referencedTableName="person" referencedColumnNames="person_id"/>
     </changeSet>
 
+    <changeSet id="messages-22" author="Michał Lewandowski">
+        <preConditions>
+            <tableExists tableName="messages_template"/>
+            <tableExists tableName="messages_patient_template"/>
+        </preConditions>
+        <comment>Update messages_template and messages_patient_template with improved query</comment>
+        <sql>
+            Update messages_template set service_query =
+            'select EXECUTION_DATE, MESSAGE_ID, CHANNEL_ID, mssg_status as STATUS_ID from
+            (select TIMESTAMP(selected_date, times) AS EXECUTION_DATE, 1 AS MESSAGE_ID, :Service_type AS CHANNEL_ID
+            from (select * from (select adddate(\'2019-12-01\',t4*10000 + t3*1000 + t2*100 + t1*10 + t0) selected_date
+            from  (select 0 t0 union select 1 union select 2 union select 3 union select 4 union  select 5 union
+            select 6 union select 7 union select 8 union select 9) t0,  (select 0 t1 union select 1 union
+            select 2 union select 3 union select 4 union  select 5 union select 6 union select 7 union
+            select 8 union select 9) t1,  (select 0 t2 union select 1 union select 2 union select 3 union
+            select 4 union  select 5 union select 6 union select 7 union select 8 union select 9) t2,
+            (select 0 t3 union select 1 union select 2 union select 3 union select 4 union  select 5 union
+            select 6 union select 7 union select 8 union select 9) t3,  (select 0 t4 union select 1 union
+            select 2 union select 3 union select 4 union  select 5 union select 6 union select 7 union
+            select 8 union select 9) t4) v where selected_date between :Start_of_daily_messages and :End_of_daily_messages
+            and :Week_day_of_delivering_message
+            like concat(\'%\',DAYNAME(selected_date),\'%\')) dates JOIN (select :bestContactTime times) timeslist) temp
+            LEFT JOIN (select mssg.msg_send_time as mssg_dates, mssg.status as mssg_status
+            from messages_scheduled_service_group mssg where mssg.patient_id = :patientId) mss on mss.mssg_dates = EXECUTION_DATE
+            where EXECUTION_DATE >= :startDate and EXECUTION_DATE &lt;= :endDate ;'
+            where name = 'Adherence report daily';
+        </sql>
+        <sql>
+            Update messages_patient_template set service_query = 'select EXECUTION_DATE, MESSAGE_ID, CHANNEL_ID, mssg_status as STATUS_ID from
+            (select TIMESTAMP(selected_date, times) AS EXECUTION_DATE, 1 AS MESSAGE_ID, :Service_type AS CHANNEL_ID
+            from (select * from (select adddate(\'2019-12-01\',t4*10000 + t3*1000 + t2*100 + t1*10 + t0) selected_date
+            from  (select 0 t0 union select 1 union select 2 union select 3 union select 4 union  select 5 union
+            select 6 union select 7 union select 8 union select 9) t0,  (select 0 t1 union select 1 union
+            select 2 union select 3 union select 4 union  select 5 union select 6 union select 7 union
+            select 8 union select 9) t1,  (select 0 t2 union select 1 union select 2 union select 3 union
+            select 4 union  select 5 union select 6 union select 7 union select 8 union select 9) t2,
+            (select 0 t3 union select 1 union select 2 union select 3 union select 4 union  select 5 union
+            select 6 union select 7 union select 8 union select 9) t3,  (select 0 t4 union select 1 union
+            select 2 union select 3 union select 4 union  select 5 union select 6 union select 7 union
+            select 8 union select 9) t4) v where selected_date between :Start_of_daily_messages and :End_of_daily_messages
+            and :Week_day_of_delivering_message
+            like concat(\'%\',DAYNAME(selected_date),\'%\')) dates JOIN (select :bestContactTime times) timeslist) temp
+            LEFT JOIN (select mssg.msg_send_time as mssg_dates, mssg.status as mssg_status
+            from messages_scheduled_service_group mssg where mssg.patient_id = :patientId) mss on mss.mssg_dates = EXECUTION_DATE
+            where EXECUTION_DATE >= :startDate and EXECUTION_DATE &lt;= :endDate ;'
+            where template_id = (select messages_template_id from messages_template where name = 'Adherence report daily') ;
+        </sql>
+
+    </changeSet>
+
 </databaseChangeLog>
