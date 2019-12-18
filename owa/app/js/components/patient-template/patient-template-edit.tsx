@@ -20,7 +20,11 @@ import { getPatientTemplateWithTemplateId } from '../../selectors/patient-templa
 import { PatientTemplateUI } from '../../shared/model/patient-template-ui';
 import _ from 'lodash';
 
-interface IPatientTemplateEditProps extends DispatchProps, StateProps, RouteComponentProps<{ patientId: string, patientUuid: string }> {
+interface IPatientTemplateEditProps extends DispatchProps, StateProps, RouteComponentProps<{
+  patientId: string,
+  patientUuid: string,
+  activeSection: string
+}> {
   isNew: boolean
 };
 
@@ -55,7 +59,7 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
             The patient template is new
             for patient (patientId: {this.props.match.params.patientId})
           </div>
-          <FormEntry sections={sections} />
+          <FormEntry sections={sections} activeSection={this.props.match.params.activeSection} />
         </>
       );
     } else {
@@ -65,7 +69,7 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
             The patient template is not new
             (patientId: {this.props.match.params.patientId})
           </div>
-          <FormEntry sections={sections} />
+          <FormEntry sections={sections} activeSection={this.props.match.params.activeSection} />
         </>
       );
     }

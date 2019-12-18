@@ -11,7 +11,7 @@ const Routes = (props) => (
         render={(props) => <PatientTemplateEdit {...props} isNew={true} />}
       />
       <Route
-        path={'/messages/:patientId&patientuuid=:patientUuid/patient-template/edit'}
+        path={'/messages/:patientId&patientuuid=:patientUuid/patient-template/edit/:activeSection'}
         render={(props) => <PatientTemplateEdit {...props} isNew={false} />}
       />
       <Route
