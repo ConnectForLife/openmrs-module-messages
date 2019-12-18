@@ -1,8 +1,8 @@
 package org.openmrs.module.messages.api.model;
 
-import org.openmrs.Patient;
-import org.openmrs.module.messages.api.model.types.ServiceStatus;
-
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -13,9 +13,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import org.openmrs.Patient;
+import org.openmrs.Person;
+import org.openmrs.module.messages.api.model.types.ServiceStatus;
 
 @Entity(name = "messages.ScheduledServiceGroup")
 @Table(name = "messages_scheduled_service_group")
@@ -34,7 +34,11 @@ public class ScheduledServiceGroup extends AbstractBaseOpenmrsData {
     @OneToOne
     @JoinColumn(name = "patient_id", nullable = false)
     private Patient patient;
-    
+
+    @OneToOne
+    @JoinColumn(name = "actor_id", nullable = false)
+    private Person actor;
+
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private ServiceStatus status;
@@ -82,5 +86,13 @@ public class ScheduledServiceGroup extends AbstractBaseOpenmrsData {
 
     public void setScheduledServices(List<ScheduledService> scheduledServices) {
         this.scheduledServices = scheduledServices;
+    }
+
+    public Person getActor() {
+        return actor;
+    }
+
+    public void setActor(Person actor) {
+        this.actor = actor;
     }
 }

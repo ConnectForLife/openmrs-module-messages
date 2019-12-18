@@ -665,4 +665,19 @@
         </sql>
     </changeSet>
 
+    <changeSet id="messages-20" author="Daniel Serkowski">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="messages_scheduled_service_group"/>
+        </preConditions>
+        <comment>Adding missing actor_id column</comment>
+        <addColumn tableName="messages_scheduled_service_group">
+            <column name="actor_id" type="int">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+        <addForeignKeyConstraint constraintName="messages_scheduled_service_group_actor_fk"
+                                 baseTableName="messages_scheduled_service_group" baseColumnNames="actor_id"
+                                 referencedTableName="person" referencedColumnNames="person_id"/>
+    </changeSet>
+
 </databaseChangeLog>

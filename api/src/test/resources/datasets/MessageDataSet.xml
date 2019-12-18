@@ -141,6 +141,7 @@
     <messages_scheduled_service_group
             messages_scheduled_service_group_id="91"
             patient_id="997"
+            actor_id="997"
             creator="1"
             date_created="2019-11-20 00:00:00.0"
             voided="false"

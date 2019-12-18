@@ -1,5 +1,12 @@
 package org.openmrs.module.messages.api.dao.impl;
 
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.is;
+
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.Before;
@@ -15,14 +22,6 @@ import org.openmrs.module.messages.api.util.TestConstants;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasProperty;
-import static org.hamcrest.Matchers.is;
 
 public class ScheduledServiceGroupITTest extends BaseModuleContextSensitiveTest {
 
@@ -60,6 +59,8 @@ public class ScheduledServiceGroupITTest extends BaseModuleContextSensitiveTest 
                 is(scheduledServiceGroup1.getMsgSendTime())));
         Assert.assertThat(savedScheduledServiceGroup, hasProperty("patient",
                 is(scheduledServiceGroup1.getPatient())));
+        Assert.assertThat(savedScheduledServiceGroup, hasProperty("actor",
+                is(scheduledServiceGroup1.getActor())));
         Assert.assertThat(savedScheduledServiceGroup, hasProperty("status",
                 is(scheduledServiceGroup1.getStatus())));
     }
