@@ -2,6 +2,7 @@ package org.openmrs.module.messages.web.controller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.StaleStateException;
 import org.openmrs.Patient;
 import org.openmrs.api.APIException;
 import org.openmrs.api.PatientService;
@@ -71,7 +72,7 @@ public class PatientTemplateController extends BaseRestController {
     @ResponseBody
     public PatientTemplatesWrapper updatePatientTemplates(@PathVariable("id") Integer id,
                                                           @RequestBody PatientTemplatesWrapper wrapper)
-            throws ValidationException, APIException {
+            throws ValidationException, APIException, StaleStateException {
         validateConsistency(id, wrapper.getPatientTemplates());
         List<PatientTemplate> saved = patientTemplateService.batchSave(
                 mapper.fromDtos(wrapper.getPatientTemplates()), id);
@@ -82,6 +83,14 @@ public class PatientTemplateController extends BaseRestController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public ErrorResponseDTO handleAPIException(APIException ex) {
+        logger.error(ex.getMessage(), ex);
+        return new ErrorResponseDTO(new ErrorMessage(ERR_SYSTEM.getCode(), ex.getMessage()));
+    }
+
+    @ExceptionHandler(StaleStateException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ErrorResponseDTO handleStaleStateException(StaleStateException ex) {
         logger.error(ex.getMessage(), ex);
         return new ErrorResponseDTO(new ErrorMessage(ERR_SYSTEM.getCode(), ex.getMessage()));
     }
