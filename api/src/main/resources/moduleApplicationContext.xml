@@ -233,8 +233,8 @@
     <bean id="messages.abstractServiceResultHandlerService"
           class="org.openmrs.module.messages.api.service.impl.AbstractServiceResultHandlerService"
           abstract="true">
-        <property name="patientService">
-            <ref bean="patientService"/>
+        <property name="personService">
+            <ref bean="personService"/>
         </property>
         <property name="messagesEventService">
             <ref local="messages.messagesEventService"/>

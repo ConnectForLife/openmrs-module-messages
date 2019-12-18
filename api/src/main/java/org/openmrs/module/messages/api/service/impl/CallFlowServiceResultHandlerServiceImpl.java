@@ -1,5 +1,12 @@
 package org.openmrs.module.messages.api.service.impl;
 
+import org.openmrs.module.messages.api.event.MessagesEvent;
+import org.openmrs.module.messages.api.execution.ServiceResult;
+import org.openmrs.module.messages.api.execution.ServiceResultList;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.openmrs.module.messages.api.constants.MessagesConstants.CALLFLOWS_DEFAULT_CONFIG;
 import static org.openmrs.module.messages.api.constants.MessagesConstants.CALLFLOWS_DEFAULT_FLOW;
 import static org.openmrs.module.messages.api.event.CallFlowParamConstants.ADDITIONAL_PARAMS;
@@ -8,12 +15,6 @@ import static org.openmrs.module.messages.api.event.CallFlowParamConstants.FLOW_
 import static org.openmrs.module.messages.api.event.CallFlowParamConstants.MESSAGE_ID;
 import static org.openmrs.module.messages.api.event.CallFlowParamConstants.PHONE;
 import static org.openmrs.module.messages.api.event.CallFlowParamConstants.SERVICE_NAME;
-
-import java.util.HashMap;
-import java.util.Map;
-import org.openmrs.module.messages.api.event.MessagesEvent;
-import org.openmrs.module.messages.api.execution.ServiceResult;
-import org.openmrs.module.messages.api.execution.ServiceResultList;
 
 public class CallFlowServiceResultHandlerServiceImpl extends AbstractServiceResultHandlerService {
     private static final String CALL_FLOW_INITIATE_CALL_EVENT = "callflows-call-initiate";
@@ -35,7 +36,7 @@ public class CallFlowServiceResultHandlerServiceImpl extends AbstractServiceResu
         params.put(FLOW_NAME, CALLFLOWS_DEFAULT_FLOW);
 
         Map<String, Object> additionalParams = new HashMap<>();
-        additionalParams.put(PHONE, getPatientPhone(group.getPatientId()));
+        additionalParams.put(PHONE, getPersonPhone(group.getActorId()));
         additionalParams.put(SERVICE_NAME, group.getServiceName());
 
         if (result.getAdditionalParams() != null) {

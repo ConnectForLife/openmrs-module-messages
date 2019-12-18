@@ -2,6 +2,7 @@ package org.openmrs.module.messages.api.scheduler.job;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Person;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.api.config.ConfigService;
@@ -41,8 +42,12 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
             for (ServiceResultList group : groupedResults) {
                 JobDefinition definition = new ServiceGroupDeliveryJobDefinition(group);
                 Date startDate = getGroupResultsStartDate(group.getResults());
-                if (PersonStatus.ACTIVE.equals(getPersonStatus(getPersonService().getPerson(group.getActorId())))) {
+                Person person = getPersonService().getPerson(group.getActorId());
+                if (PersonStatus.ACTIVE.equals(getPersonStatus(person))) {
                     getSchedulerService().createNewTask(definition, startDate, JobRepeatInterval.NEVER);
+                } else {
+                    LOGGER.warn("Status of a person with id=" + person.getId() + " is not active, " +
+                            "so no service execution events will be sent");
                 }
             }
         } catch (ExecutionException e) {
