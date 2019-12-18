@@ -1,12 +1,10 @@
 package org.openmrs.module.messages.api.dto;
 
-import org.openmrs.BaseOpenmrsObject;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PatientTemplateDTO extends BaseOpenmrsObject implements Serializable {
+public class PatientTemplateDTO implements Serializable {
 
     private static final long serialVersionUID = -6043667008851204408L;
 
@@ -26,16 +24,13 @@ public class PatientTemplateDTO extends BaseOpenmrsObject implements Serializabl
 
     private String serviceQueryType;
 
+    private String uuid;
+
     public PatientTemplateDTO() {
     }
 
     public Integer getId() {
         return id;
-    }
-
-    @Override
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public PatientTemplateDTO withId(Integer id) {
@@ -106,8 +101,12 @@ public class PatientTemplateDTO extends BaseOpenmrsObject implements Serializabl
         return this;
     }
 
+    public String getUuid() {
+        return uuid;
+    }
+
     public PatientTemplateDTO withUuid(String uuid) {
-        setUuid(uuid);
+        this.uuid = uuid;
         return this;
     }
 }

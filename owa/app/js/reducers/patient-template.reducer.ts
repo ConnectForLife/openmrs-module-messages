@@ -261,20 +261,21 @@ export const reset = () => ({
   type: ACTION_TYPES.RESET
 });
 
-export const putPatientTemplates = (patientTemplates: Array<PatientTemplateUI>, templates: Array<TemplateUI>, patientId: number) => async (dispatch) => {
-  const validated = await validatePatientTemplates(patientTemplates, templates, true);
-  const requestUrl = `${patientTemplatesUrl}/patient/${patientId}`
-  if (isValid(validated)) {
-    const body = {
-      type: ACTION_TYPES.PUT_PATIENT_TEMPLATES,
-      payload: axiosInstance.post(requestUrl, { patientTemplates: _.map(validated, toModel) })
+export const putPatientTemplates = (patientTemplates: Array<PatientTemplateUI>,
+  templates: Array<TemplateUI>, patientId: number, patientUuid: string) => async (dispatch) => {
+    const validated = await validatePatientTemplates(patientTemplates, templates, true);
+    const requestUrl = `${patientTemplatesUrl}/patient/${patientId}`
+    if (isValid(validated)) {
+      const body = {
+        type: ACTION_TYPES.PUT_PATIENT_TEMPLATES,
+        payload: axiosInstance.post(requestUrl, { patientTemplates: _.map(validated, toModel) })
+      }
+      await handleRequest(dispatch, body, Msg.GENERIC_SUCCESS, Msg.GENERIC_FAILURE);
+      history.push(`/messages/${patientId}&patientuuid=${patientUuid}`);
+    } else {
+      dispatch(updatePatientTemplates(validated));
     }
-    await handleRequest(dispatch, body, Msg.GENERIC_SUCCESS, Msg.GENERIC_FAILURE);
-    history.push(`/messages/${patientId}`); //TODO: CFLM-255: Return to 'messages manage'
-  } else {
-    dispatch(updatePatientTemplates(validated));
-  }
-};
+  };
 
 export const updatePatientTemplate = (patientTemplate: PatientTemplateUI,
   templates: Array<TemplateUI>) => async (dispatch) => {

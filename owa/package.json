@@ -128,7 +128,7 @@
     "build:prod": "npm run build",
     "build:deploy": "NODE_ENV=\"deploy\" webpack --progress --colors",
     "start": "npm run watch",
-    "watch": "NODE_ENV=\"deploy\" webpack --progress --colors --watch --cache=false",
+    "watch": "NODE_ENV=\"deploy\" webpack --mode=development --progress --colors --watch --cache=false",
     "test": "npm run lint && jest -u --coverage --maxWorkers=4",
     "lint": "./node_modules/.bin/eslint app/js/**",
     "lint:fix": "./node_modules/.bin/eslint --fix  app/js/**",

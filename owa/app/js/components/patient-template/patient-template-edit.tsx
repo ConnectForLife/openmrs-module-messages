@@ -42,8 +42,8 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
   }
 
   handleSave = () => {
-    this.props.putPatientTemplates(this.props.patientTemplates, this.props.templates,
-      parseInt(this.props.match.params.patientId));
+    const { patientId, patientUuid } = this.props.match.params;
+    this.props.putPatientTemplates(this.props.patientTemplates, this.props.templates, parseInt(patientId), patientUuid);
   }
 
   renderTemplateState = () => {

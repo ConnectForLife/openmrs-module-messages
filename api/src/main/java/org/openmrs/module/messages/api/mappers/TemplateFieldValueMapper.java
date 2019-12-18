@@ -21,7 +21,9 @@ public class TemplateFieldValueMapper extends AbstractMapper<TemplateFieldValueD
         TemplateFieldValue dao = new TemplateFieldValue();
         dao.setId(dto.getId());
         dao.setValue(dto.getValue());
-        dao.setUuid(dto.getUuid());
+        if (dto.getUuid() != null) {
+            dao.setUuid(dto.getUuid());
+        }
 
         PatientTemplate patientTemplate = new PatientTemplate();
         dao.setPatientTemplate(patientTemplate);

@@ -79,15 +79,10 @@ class BestContactTime extends React.PureComponent<IBestContactTimeProps, IBestCo
     let contactTimes: Array<IBestContactTime> = _.cloneDeep(this.props.bestContactTimes);
     const contactTime = _.find(contactTimes, (e) => e.personId === personId);
     if (!!contactTime) {
-      contactTime.time = timeString;
+      contactTime.time = time;
       this.props.updateBestConstactTime(contactTimes);
     }
   }
-
-  getTimeValue = (stringDate) => {
-    var date = moment(stringDate, 'HH:mm');
-    return stringDate && date.isValid() ? date : undefined;
-  };
 
   renderTimePickers() {
     const { bestContactTimes, actorResultList, patientId } = this.props;
@@ -104,10 +99,10 @@ class BestContactTime extends React.PureComponent<IBestContactTimeProps, IBestCo
             }
           }
           return (
-            <div className="time-section">
+            <div className="time-section" key={`time-section-${i}`}>
               <span>{label}</span>
               <TimePicker
-                value={this.getTimeValue(e.time)}
+                value={e.time}
                 onChange={(date, dateString) => this.onTimeChange(date, dateString, e.personId)}
                 format="HH:mm" />
             </div>

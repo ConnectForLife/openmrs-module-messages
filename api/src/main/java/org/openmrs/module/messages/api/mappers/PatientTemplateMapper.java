@@ -1,7 +1,5 @@
 package org.openmrs.module.messages.api.mappers;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.Relationship;
@@ -10,6 +8,9 @@ import org.openmrs.module.messages.api.dto.TemplateFieldValueDTO;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.Template;
 import org.openmrs.module.messages.api.model.TemplateFieldValue;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class PatientTemplateMapper extends AbstractMapper<PatientTemplateDTO, PatientTemplate> {
 
@@ -43,7 +44,9 @@ public final class PatientTemplateMapper extends AbstractMapper<PatientTemplateD
         PatientTemplate dao = new PatientTemplate();
         dao.setId(dto.getId());
         dao.setTemplateFieldValues(fromDtos(dao, dto.getTemplateFieldValues()));
-        dao.setUuid(dto.getUuid());
+        if (dto.getUuid() != null) {
+            dao.setUuid(dto.getUuid());
+        }
 
         Person actor = new Person();
         actor.setId(dto.getActorId());
