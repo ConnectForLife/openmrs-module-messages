@@ -7,9 +7,9 @@ import org.openmrs.api.PersonService;
 import org.openmrs.module.messages.api.event.MessagesEvent;
 import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
 import org.openmrs.module.messages.api.service.MessagesEventService;
-import org.openmrs.module.messages.api.service.ServiceResultHandlerService;
+import org.openmrs.module.messages.api.service.ServiceResultsHandlerService;
 
-public abstract class AbstractServiceResultHandlerService implements ServiceResultHandlerService {
+public abstract class AbstractServiceResultsHandlerService implements ServiceResultsHandlerService {
 
     private static final String PERSON_PHONE_ATTR = "Telephone Number";
 

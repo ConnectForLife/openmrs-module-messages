@@ -231,7 +231,7 @@
     </bean>
 
     <bean id="messages.abstractServiceResultHandlerService"
-          class="org.openmrs.module.messages.api.service.impl.AbstractServiceResultHandlerService"
+          class="org.openmrs.module.messages.api.service.impl.AbstractServiceResultsHandlerService"
           abstract="true">
         <property name="personService">
             <ref bean="personService"/>
@@ -242,11 +242,11 @@
     </bean>
 
     <bean id="messages.callFlowServiceResultHandlerService"
-          class="org.openmrs.module.messages.api.service.impl.CallFlowServiceResultHandlerServiceImpl"
+          class="org.openmrs.module.messages.api.service.impl.CallFlowServiceResultsHandlerServiceImpl"
           parent="messages.abstractServiceResultHandlerService"/>
 
     <bean id="messages.smsServiceResultHandlerService"
-          class="org.openmrs.module.messages.api.service.impl.SmsServiceResultHandlerServiceImpl"
+          class="org.openmrs.module.messages.api.service.impl.SmsServiceResultsHandlerServiceImpl"
           parent="messages.abstractServiceResultHandlerService"/>
 
 </beans>

@@ -40,7 +40,7 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
 
             for (GroupedServiceResultList groupedResult : groupedResults) {
                 ServiceResultList group = groupedResult.getGroup();
-                JobDefinition definition = new ServiceGroupDeliveryJobDefinition(group);
+                JobDefinition definition = new ServiceGroupDeliveryJobDefinition(groupedResult);
                 Date startDate = getGroupResultsStartDate(group.getResults());
                 Person person = getPersonService().getPerson(group.getActorId());
                 if (PersonStatus.ACTIVE.equals(getPersonStatus(person))) {

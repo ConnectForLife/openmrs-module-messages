@@ -7,12 +7,14 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.api.constants.MessagesConstants;
 import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
+import org.openmrs.module.messages.api.execution.ChannelType;
+import org.openmrs.module.messages.api.execution.GroupedServiceResultList;
 import org.openmrs.module.messages.api.execution.ServiceResult;
-import org.openmrs.module.messages.api.execution.ServiceResultList;
-import org.openmrs.module.messages.api.service.ServiceResultHandlerService;
+import org.openmrs.module.messages.api.service.ServiceResultsHandlerService;
 import org.openmrs.module.messages.api.util.DateUtil;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -26,21 +28,21 @@ public class ServiceGroupDeliveryJobDefinition extends JobDefinition {
     private final Gson gson =
         new GsonBuilder().setDateFormat(DateFormat.FULL, DateFormat.FULL).create();
 
-    private ServiceResultList group;
+    private GroupedServiceResultList groupedServiceResults;
 
     public ServiceGroupDeliveryJobDefinition() {
         // initiated by scheduler
     }
 
-    public ServiceGroupDeliveryJobDefinition(ServiceResultList group) {
-        this.group = group;
+    public ServiceGroupDeliveryJobDefinition(GroupedServiceResultList groupedServiceResults) {
+        this.groupedServiceResults = groupedServiceResults;
     }
 
     @Override
     public void execute() {
         // Firstly, we need to initialize object fields basing on the saved properties
-        group = gson.fromJson(taskDefinition.getProperties().get(GROUP_ENTITY),
-            ServiceResultList.class);
+        groupedServiceResults = gson.fromJson(taskDefinition.getProperties().get(GROUP_ENTITY),
+                GroupedServiceResultList.class);
         LOGGER.info(String.format("Started task with id %s", taskDefinition.getId()));
         handleGroupedResults();
     }
@@ -49,7 +51,7 @@ public class ServiceGroupDeliveryJobDefinition extends JobDefinition {
     public String getTaskName() {
         return String.format("%s:%s-%s",
             TASK_NAME_PREFIX,
-            this.group.getActorId(),
+            this.groupedServiceResults.getActorId(),
             DateUtil.now().toInstant());
     }
 
@@ -65,42 +67,40 @@ public class ServiceGroupDeliveryJobDefinition extends JobDefinition {
 
     @Override
     public Map<String, String> getProperties() {
-        return Collections.singletonMap(GROUP_ENTITY, gson.toJson(group));
+        return Collections.singletonMap(GROUP_ENTITY, gson.toJson(groupedServiceResults));
     }
 
     private void handleGroupedResults() {
-        List<ServiceResult> results = group.getResults();
-        boolean isCallFlowHandledAlready = false;
-        for (ServiceResult result : results) {
+        List<ServiceResult> smsList = new ArrayList<>();
+        List<ServiceResult> calls = new ArrayList<>();
+
+        for (ServiceResult result : groupedServiceResults.getGroup().getResults()) {
             if (result.getMessageId() == null) {
                 throw new MessagesRuntimeException("Message id must be specified");
             }
-            switch (result.getChannelType()) {
-                case CALL:
-                    if (!isCallFlowHandledAlready) {
-                        getCallFlowsServiceResultHandlerService().handle(result, group);
-                    }
-                    isCallFlowHandledAlready = true;
-                    break;
-                case SMS:
-                    getSmsServiceResultHandlerService().handle(result, group);
-                    break;
-                default:
-                    throw new MessagesRuntimeException(
-                        String.format("Unsupported channel: %s", result.getChannelType()));
+            if (ChannelType.CALL.equals(result.getChannelType())) {
+                calls.add(result);
+            } else if (ChannelType.SMS.equals(result.getChannelType())) {
+                smsList.add(result);
+            } else {
+                throw new MessagesRuntimeException(
+                    String.format("Unsupported channel: %s", result.getChannelType()));
             }
         }
+
+        getCallFlowsServiceResultHandlerService().handle(calls, groupedServiceResults);
+        getSmsServiceResultHandlerService().handle(smsList, groupedServiceResults);
     }
 
-    private ServiceResultHandlerService getCallFlowsServiceResultHandlerService() {
+    private ServiceResultsHandlerService getCallFlowsServiceResultHandlerService() {
         return Context.getRegisteredComponent(
             MessagesConstants.CALL_FLOW_SERVICE_RESULT_HANDLER_SERVICE,
-            ServiceResultHandlerService.class);
+            ServiceResultsHandlerService.class);
     }
 
-    private ServiceResultHandlerService getSmsServiceResultHandlerService() {
+    private ServiceResultsHandlerService getSmsServiceResultHandlerService() {
         return Context.getRegisteredComponent(
             MessagesConstants.SMS_SERVICE_RESULT_HANDLER_SERVICE,
-            ServiceResultHandlerService.class);
+            ServiceResultsHandlerService.class);
     }
 }
