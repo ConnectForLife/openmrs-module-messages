@@ -96,7 +96,7 @@ class ScheduledMessages extends React.PureComponent<IScheduledMessagesProps, ISc
         .map((s) => s.actorType)));
 
     return _.uniq(actorTypes).map((type) => ({
-      Header: `${type} ID`,
+      Header: `${type ? type : 'Patient'} ID`,
       accessor: `schedules[${type}]`,
       getProps: wrapedTextProps
     }));
