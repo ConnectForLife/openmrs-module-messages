@@ -22,7 +22,6 @@ public class ServiceResult implements Serializable {
     public static final String CHANNEL_NAME_ALIAS = "CHANNEL_ID";
     public static final String STATUS_COL_ALIAS = "STATUS_ID";
     public static final int MIN_COL_NUM = 3;
-    public static final int MAX_COL_NUM = 4;
 
     private Date executionDate;
     private Object messageId;
@@ -31,7 +30,7 @@ public class ServiceResult implements Serializable {
     private Map<String, Object> additionalParams = new HashMap<>();
 
     public static ServiceResult parse(Map<String, Object> row) {
-        if (row.size() < MIN_COL_NUM || row.size() > MAX_COL_NUM) {
+        if (row.size() < MIN_COL_NUM) {
             throw new IllegalStateException("Invalid number of columns in result row: " + row.size());
         }
 

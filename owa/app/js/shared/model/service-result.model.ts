@@ -5,13 +5,15 @@ export interface IServiceResult {
   executionDate: Moment | null;
   messageId: Object;
   channelId: number | null;
-  serviceStatus: ServiceStatus
+  serviceStatus: ServiceStatus;
+  additionalParams: { [name: string]: string };
 }
 
 export const getDefaultValue = (): IServiceResult => ({
   executionDate: null,
   messageId: {},
   channelId: null,
-  serviceStatus: ServiceStatus.FUTURE
+  serviceStatus: ServiceStatus.FUTURE,
+  additionalParams: {}
 });
 

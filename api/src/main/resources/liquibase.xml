@@ -730,4 +730,86 @@
 
     </changeSet>
 
+    <changeSet id="messages-23" author="Michał Lewandowski">
+        <preConditions>
+            <tableExists tableName="messages_template"/>
+            <tableExists tableName="messages_template_field"/>
+        </preConditions>
+        <comment>Added new inserts for templates and template fields</comment>
+        <sql>
+            INSERT INTO messages_template
+            (service_query, service_query_type, name, creator, uuid, date_created)
+            VALUES(
+            'select EXECUTION_DATE, MESSAGE_ID, CHANNEL_ID, mssg_status as STATUS_ID, visitTypeId, locationId, dateStarted from
+            (select TIMESTAMP(selected_date, :bestContactTime ) AS EXECUTION_DATE, 1 AS MESSAGE_ID, :Service_type AS
+            CHANNEL_ID, visitTypeId, locationId, visit_dates as dateStarted
+            from (select * from (select adddate(\'2019-11-01\',t4*10000 + t3*1000 + t2*100 + t1*10 + t0) selected_date
+            from (select 0 t0 union select 1 union select 2 union select 3 union select 4 union select 5 union
+            select 6 union select 7 union select 8 union select 9) t0, (select 0 t1 union select 1 union
+            select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union
+            select 8 union select 9) t1, (select 0 t2 union select 1 union select 2 union select 3 union
+            select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t2,
+            (select 0 t3 union select 1 union select 2 union select 3 union select 4 union select 5 union
+            select 6 union select 7 union select 8 union select 9) t3, (select 0 t4 union select 1 union
+            select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union
+            select 8 union select 9) t4) dates_list
+            where selected_date between :Start_of_messages and :End_of_messages) dates_in_range
+            JOIN (Select date_started as visit_dates, visit_type_id as visitTypeId, location_id as locationId from visit where
+            patient_id = :patientId ) dates_of_visit where (select property_value from global_property
+            where property =\'message.daysToCallBeforeVisit.default\') like concat(\'%\',datediff(visit_dates, selected_date),\'%\')
+            and date(visit_dates) !=  selected_date )dates_before_visit
+            LEFT JOIN (select mssg.msg_send_time as mssg_dates, mssg.status as mssg_status from
+            messages_scheduled_service_group mssg where mssg.patient_id = :patientId) mss on mss.mssg_dates = EXECUTION_DATE
+            where EXECUTION_DATE >= :startDate and EXECUTION_DATE &lt;= :endDate ;',
+            'SQL',
+            'Visit reminder',
+            1,
+            '95573fe3-20b2-11ea-ac12-0242c0a82002',
+            now()
+            );
+        </sql>
+        <sql>
+            INSERT INTO messages_template_field
+            (name, mandatory, default_value, template_id, template_field_type, creator, uuid, date_created)
+            VALUES(
+            'Service type',
+            1,
+            'Deactivate service',
+            (select messages_template_id from messages_template where uuid = '95573fe3-20b2-11ea-ac12-0242c0a82002'),
+            'SERVICE_TYPE',
+            1,
+            '95574976-20b2-11ea-ac12-0242c0a82002',
+            now()
+            );
+        </sql>
+        <sql>
+            INSERT INTO messages_template_field
+            (name, mandatory, default_value, template_id, template_field_type, creator, uuid, date_created)
+            VALUES(
+            'Start of messages',
+            0,
+            ' ',
+            (select messages_template_id from messages_template where uuid = '95573fe3-20b2-11ea-ac12-0242c0a82002'),
+            'START_OF_MESSAGES',
+            1,
+            '95575327-20b2-11ea-ac12-0242c0a82002',
+            now()
+            );
+        </sql>
+        <sql>
+            INSERT INTO messages_template_field
+            (name, mandatory, default_value, template_id, template_field_type, creator, uuid, date_created)
+            VALUES(
+            'End of messages',
+            1,
+            '2020-01-30',
+            (select messages_template_id from messages_template where uuid = '95573fe3-20b2-11ea-ac12-0242c0a82002'),
+            'END_OF_MESSAGES',
+            1,
+            '95575cbd-20b2-11ea-ac12-0242c0a82002',
+            now()
+            );
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

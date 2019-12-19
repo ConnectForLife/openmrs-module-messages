@@ -40,6 +40,13 @@ public final class ConfigConstants {
     public static final String BEST_CONTACT_TIME_DEFAULT_VALUE = "10:00";
 
     public static final String BEST_CONTACT_TIME_DESCRIPTION = "Used to determine the default contact time for services.";
+    
+    public static final String DAYS_NUMBER_BEFORE_VISIT_REMINDER_KEY = "message.daysToCallBeforeVisit.default";
+    
+    public static final String DAYS_NUMBER_BEFORE_VISIT_REMINDER_DEFAULT_VALUE = "1,7";
+    
+    public static final String DAYS_NUMBER_BEFORE_VISIT_REMINDER_DESCRIPTION =
+            "Used to determine the how many days before visit reminder should be shedule";
 
     private ConfigConstants() {
     }

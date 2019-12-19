@@ -11,6 +11,8 @@ export class ServiceResultUI extends ObjectUI<IServiceResult> implements IServic
   messageId: Object;
   channelId: number | null;
   serviceStatus: ServiceStatus;
+  additionalParams: { [name: string]: string };
+
 
   constructor(model: IServiceResult) {
     super(model);
