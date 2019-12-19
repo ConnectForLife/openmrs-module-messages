@@ -47,9 +47,6 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
         try {
             createGlobalSettingIfNotExists(ConfigConstants.ACTOR_TYPES_KEY,
                     ConfigConstants.ACTOR_TYPES_DEFAULT_VALUE, ConfigConstants.ACTOR_TYPES_DESCRIPTION);
-            createGlobalSettingIfNotExists(ConfigConstants.GROUPING_PERIOD_IN_SECONDS,
-                    String.valueOf(ConfigConstants.GROUPING_PERIOD_IN_SECONDS_DEFAULT_VALUE),
-                    ConfigConstants.GROUPING_PERIOD_IN_SECONDS_DESCRIPTION);
             scheduleMessageDeliveries();
             createConsentConfig();
         } catch (APIException e) {

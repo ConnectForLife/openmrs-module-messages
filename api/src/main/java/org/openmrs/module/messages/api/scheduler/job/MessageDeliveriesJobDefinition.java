@@ -5,10 +5,10 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Person;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.messages.api.config.ConfigService;
 import org.openmrs.module.messages.api.constants.MessagesConstants;
 import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
 import org.openmrs.module.messages.api.execution.ExecutionException;
+import org.openmrs.module.messages.api.execution.GroupedServiceResultList;
 import org.openmrs.module.messages.api.execution.ServiceResult;
 import org.openmrs.module.messages.api.execution.ServiceResultGroupHelper;
 import org.openmrs.module.messages.api.execution.ServiceResultList;
@@ -35,11 +35,11 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
                 getMessagingService().retrieveAllServiceExecutions(DateUtil.now(),
                 DateUtil.getDatePlusSeconds(getTaskDefinition().getRepeatInterval()));
 
-            int groupingPeriod = getConfigService().getGroupingPeriodInSeconds();
-            List<ServiceResultList> groupedResults = ServiceResultGroupHelper
-                .groupByActorIdAndExecutionDate(results, groupingPeriod);
+            List<GroupedServiceResultList> groupedResults = ServiceResultGroupHelper
+                .groupByActorAndExecutionDate(results);
 
-            for (ServiceResultList group : groupedResults) {
+            for (GroupedServiceResultList groupedResult : groupedResults) {
+                ServiceResultList group = groupedResult.getGroup();
                 JobDefinition definition = new ServiceGroupDeliveryJobDefinition(group);
                 Date startDate = getGroupResultsStartDate(group.getResults());
                 Person person = getPersonService().getPerson(group.getActorId());
@@ -81,17 +81,13 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
             MessagesConstants.SCHEDULER_SERVICE, MessagesSchedulerService.class);
     }
 
-    private ConfigService getConfigService() {
-        return Context.getRegisteredComponent(
-            MessagesConstants.CONFIG_SERVICE, ConfigService.class);
-    }
-
     private PersonService getPersonService() {
         return Context.getRegisteredComponent(
                 MessagesConstants.PERSON_SERVICE, PersonService.class);
     }
 
     private Date getGroupResultsStartDate(List<ServiceResult> results) {
-        return ServiceResultGroupHelper.getEarliestDate(results);
+        //TODO in CFLM-470: Refactor so we're not using get(0) here (which works but is ugly)
+        return results.get(0).getExecutionDate();
     }
 }

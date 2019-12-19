@@ -43,6 +43,10 @@ public final class DateUtil {
         return DateUtils.addSeconds(DateUtil.now(), (int) (seconds * -1));
     }
 
+    public static boolean isSameInstant(Date date1, Date date2) {
+        return DateUtils.isSameInstant(date1, date2);
+    }
+
     public static TimeZone getDefaultTimeZone() {
         return DEFAULT_TIME_ZONE;
     }

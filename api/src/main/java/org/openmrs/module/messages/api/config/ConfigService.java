@@ -5,6 +5,4 @@ public interface ConfigService {
     String getActorTypesConfiguration();
 
     String getDefaultActorRelationDirection();
-
-    int getGroupingPeriodInSeconds();
 }

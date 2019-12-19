@@ -15,6 +15,7 @@ import org.openmrs.module.messages.api.execution.ServiceResultList;
 import org.openmrs.module.messages.api.model.Range;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public final class ServiceResultListBuilder extends AbstractBuilder<ServiceResultList> {
@@ -51,5 +52,13 @@ public final class ServiceResultListBuilder extends AbstractBuilder<ServiceResul
     public ServiceResultListBuilder withServiceResults(List<ServiceResult> results) {
         this.results = results;
         return this;
+    }
+
+    public ServiceResultListBuilder withServiceResults(int count, Date date) {
+        List<ServiceResult> list = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            list.add(new ServiceResultBuilder().withExecutionDate(date).build());
+        }
+        return withServiceResults(list);
     }
 }

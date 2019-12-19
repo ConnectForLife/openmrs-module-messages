@@ -4,13 +4,6 @@ public final class ConfigConstants {
 
     public static final String ACTOR_TYPES_KEY = "messages.actor.types";
 
-    public static final String GROUPING_PERIOD_IN_SECONDS = "messages.grouping.period";
-
-    public static final int GROUPING_PERIOD_IN_SECONDS_DEFAULT_VALUE = 5 * 60;
-
-    public static final String GROUPING_PERIOD_IN_SECONDS_DESCRIPTION = "Period used for grouping service results" +
-            " (in seconds)";
-
     public static final String ACTOR_TYPES_DEFAULT_VALUE = "";
 
     public static final String ACTOR_TYPES_DESCRIPTION = "Coma separated list of relationship types used to control the "
