@@ -109,7 +109,7 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
 
   render() {
     return (
-      <div className="body-wrapper">
+      <>
         <div className="panel-body">
           <h2>Patient Template Edit page</h2>
           {!this.props.loading && this.renderTemplateState()}
@@ -121,7 +121,7 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
             {Msg.SAVE_BUTTON_LABEL}
           </Button>
         </div>
-      </div>
+      </>
     );
   }
 }

@@ -46,8 +46,6 @@ header .logo img {
 }
 
 .body-wrapper {
-    margin-top: 10px;
-    padding: 10px;
     background-color: white;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
@@ -57,6 +55,22 @@ header .logo img {
     border-radius: 5px;
     min-height: 500px;
     justify-content: center;
+
+    .patient-header {
+        margin: 0;
+        padding: 10px;
+        -moz-border-radius: 5px 5px 0px 0px;
+        -webkit-border-radius: 5px 5px 0px 0px;
+        -o-border-radius: 5px 5px 0px 0px;
+        -ms-border-radius: 5px 5px 0px 0px;
+        -khtml-border-radius: 5px 5px 0px 0px;
+        border-radius: 5px 5px 0px 0px;
+    }
+
+    .content {
+        margin-top: 10px;
+        padding: 10px;
+    }
 }
 
 .app-title {

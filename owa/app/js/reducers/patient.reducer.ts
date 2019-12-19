@@ -47,7 +47,7 @@ const patientUrl = "/ws/rest/v1/patient/";
 export const getPatient = (patientId) => async (dispatch) => {
   await dispatch({
     type: ACTION_TYPES.GET_PATIENT,
-    payload: axiosInstance.get(`${patientUrl}${patientId}`)
+    payload: axiosInstance.get(`${patientUrl}${patientId}?v=full`)
   });
 };
 

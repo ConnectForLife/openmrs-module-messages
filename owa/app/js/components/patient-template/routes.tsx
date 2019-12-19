@@ -1,7 +1,9 @@
 import React from 'react'
 import { Route, Switch } from 'react-router-dom';
-import PatientTemplateEdit from './patient-template-edit';
-import ManageMessages from './manage-messages';
+import {
+  PatientTemplateEditWithHeader as PatientTemplateEdit,
+  ManageMessagesWithHeader as ManageMessages 
+} from '../hoc/with-patient-header';
 
 const Routes = (props) => (
   <>

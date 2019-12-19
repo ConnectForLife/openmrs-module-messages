@@ -16,13 +16,13 @@ class ManageMessages extends React.PureComponent<IManageMessagesProps, IManageMe
     const { patientId, patientUuid } = this.props.match.params;
 
     return (
-      <div className="body-wrapper">
+      <>
         <h2>Manage messages</h2>
         <div className="panel-body">
           <BestContactTime patientId={parseInt(patientId)} patientUuid={patientUuid} />
           <ScheduledMessages patientId={patientId} patientUuid={patientUuid} />
         </div>
-      </div>
+      </>
     );
   }
 }

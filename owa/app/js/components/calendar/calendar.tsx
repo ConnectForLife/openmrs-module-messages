@@ -131,7 +131,7 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
     const actorsResults: Array<IActorIdWithEvents> = this.prepareActorsData();
 
     return (
-      <div className="body-wrapper">
+      <>
         <div className="row">
           <div className="col-md-12 col-xs-12">
             <h3>Calendar Overview</h3>
@@ -147,7 +147,7 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
                         <a href={`${window.location.href}/patient-template`}>
                           <Button className="btn btn-md pull-right btn-manage-messages">
                             Manage messages
-                          </Button>
+                        </Button>
                         </a>
                         <Calendar
                           dateRangeChangedCallback={(startDate, endDate) => this.dateRangeChanged(startDate, endDate, tabName)}
@@ -163,7 +163,7 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
             </Tabs>
           </div>
         </div>
-      </div>
+      </>
     );
   }
 }

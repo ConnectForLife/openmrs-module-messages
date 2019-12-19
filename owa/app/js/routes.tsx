@@ -9,10 +9,10 @@
 import React from 'react'
 import { Route, Switch } from 'react-router-dom';
 import { Header } from '@openmrs/react-components';
-import App from './components/app'
 import AppManagement from './components/app-management';
 import PatientTemplate from './components/patient-template/routes';
 import BreadCrumb from './components/bread-crumb';
+import { CalendarWithHeader as Calendar } from './components/hoc/with-patient-header';
 
 export default (store) => (
     <div>
@@ -21,7 +21,7 @@ export default (store) => (
         <Switch>
             <Route path="/messages/:patientId&patientuuid=:patientUuid/patient-template" component={PatientTemplate} />
             <Route path="/messages/manage" component={AppManagement} />
-            <Route path="/messages/:patientId&patientuuid=:patientUuid" component={App} />
+            <Route path="/messages/:patientId&patientuuid=:patientUuid" component={Calendar} />
         </Switch>
     </div>
 );
