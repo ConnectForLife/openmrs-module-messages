@@ -50,6 +50,7 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
             createGlobalSettingIfNotExists(ConfigConstants.DAYS_NUMBER_BEFORE_VISIT_REMINDER_KEY,
                     ConfigConstants.DAYS_NUMBER_BEFORE_VISIT_REMINDER_DEFAULT_VALUE,
                     ConfigConstants.DAYS_NUMBER_BEFORE_VISIT_REMINDER_DESCRIPTION);
+            createReschedulingStrategyConfig();
             scheduleMessageDeliveries();
             createConsentConfig();
         } catch (APIException e) {
@@ -99,6 +100,18 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
                 ConfigConstants.BEST_CONTACT_TIME_DEFAULT_VALUE, ConfigConstants.BEST_CONTACT_TIME_DESCRIPTION);
         createGlobalSettingIfNotExists(ConfigConstants.CONSENT_CONTROL_KEY,
                 ConfigConstants.CONSENT_CONTROL_DEFAULT_VALUE, ConfigConstants.CONSENT_CONTROL_DESCRIPTION);
+    }
+
+    private void createReschedulingStrategyConfig() {
+        createGlobalSettingIfNotExists(ConfigConstants.RESCHEDULING_STRATEGY_KEY,
+                ConfigConstants.RESCHEDULING_STRATEGY_DEFAULT_VALUE,
+                ConfigConstants.RESCHEDULING_STRATEGY_DESCRIPTION);
+        createGlobalSettingIfNotExists(ConfigConstants.MAX_NUMBER_OF_RESCHEDULING_KEY,
+                ConfigConstants.MAX_NUMBER_OF_RESCHEDULING_DEFAULT_VALUE,
+                ConfigConstants.MAX_NUMBER_OF_RESCHEDULING_DESCRIPTION);
+        createGlobalSettingIfNotExists(ConfigConstants.TIME_INTERVAL_TO_NEXT_RESCHEDULE_KEY,
+                ConfigConstants.TIME_INTERVAL_TO_NEXT_RESCHEDULE_DEFAULT_VALUE,
+                ConfigConstants.TIME_INTERVAL_TO_NEXT_RESCHEDULE_DESCRIPTION);
     }
 
     private void createBestContactTimeAttributeType() {

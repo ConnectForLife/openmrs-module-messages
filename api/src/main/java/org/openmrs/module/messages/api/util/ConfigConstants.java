@@ -40,13 +40,33 @@ public final class ConfigConstants {
     public static final String BEST_CONTACT_TIME_DEFAULT_VALUE = "10:00";
 
     public static final String BEST_CONTACT_TIME_DESCRIPTION = "Used to determine the default contact time for services.";
-    
+
     public static final String DAYS_NUMBER_BEFORE_VISIT_REMINDER_KEY = "message.daysToCallBeforeVisit.default";
-    
+
     public static final String DAYS_NUMBER_BEFORE_VISIT_REMINDER_DEFAULT_VALUE = "1,7";
-    
+
     public static final String DAYS_NUMBER_BEFORE_VISIT_REMINDER_DESCRIPTION =
-            "Used to determine the how many days before visit reminder should be shedule";
+            "Used to determine the how many days before visit reminder should be schedule";
+
+    public static final String RESCHEDULING_STRATEGY_KEY = "message.reschedulingStrategy";
+    public static final String RESCHEDULING_STRATEGY_DEFAULT_VALUE = "message.failedMessageReschedulingStrategy";
+    public static final String RESCHEDULING_STRATEGY_DESCRIPTION =
+            "Used to determine name of the Spring Bean which should be use to handle the reschedule logic.";
+
+    public static final String MAX_NUMBER_OF_RESCHEDULING_KEY = "message.maxNumberOfRescheduling";
+    public static final String MAX_NUMBER_OF_RESCHEDULING_DEFAULT_VALUE = "3";
+    public static final String MAX_NUMBER_OF_RESCHEDULING_DESCRIPTION =
+            "Used to determine the number of maximum attempts that can be taken for failing ScheduledServices. After "
+            + "exceeding the number of retries, services will be denied rescheduling next task. Changing this value "
+            + "will not influence on tasks which already exceeded the counter. In the primary approach, it is designed "
+            + "to be used by the strategy FailedMessageReschedulingStrategy.";
+
+    public static final String TIME_INTERVAL_TO_NEXT_RESCHEDULE_KEY = "message.timeIntervalToNextReschedule";
+    public static final String TIME_INTERVAL_TO_NEXT_RESCHEDULE_DEFAULT_VALUE = "900";
+    public static final String TIME_INTERVAL_TO_NEXT_RESCHEDULE_DESCRIPTION =
+            "Used to determine the time (in seconds) when the task for retry will be scheduled. The retry time will be "
+            + "set according to the time when the system gets registerAttempt response from the service plus the "
+            + "number of second expressed in the value of this property.";
 
     private ConfigConstants() {
     }
