@@ -249,4 +249,30 @@
           class="org.openmrs.module.messages.api.service.impl.SmsServiceResultsHandlerServiceImpl"
           parent="messages.abstractServiceResultHandlerService"/>
 
+    <bean id="messages.deliveryService"
+          class="org.openmrs.module.messages.api.service.impl.MessagesDeliveryServiceImpl">
+        <property name="schedulerService">
+            <ref bean="messages.schedulerService"/>
+        </property>
+    </bean>
+
+    <bean id="messages.MessagingParameterDao" class="org.openmrs.module.messages.api.dao.impl.MessagingParameterDaoImpl"/>
+
+    <bean id="messages.messagingParameterService"
+          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="target">
+            <bean class="org.openmrs.module.messages.api.service.impl.MessagingParameterServiceImpl">
+                <property name="daoBeanName" value="messages.MessagingParameterDao"/>
+            </bean>
+        </property>
+        <property name="preInterceptors">
+            <ref bean="serviceInterceptors"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
 </beans>

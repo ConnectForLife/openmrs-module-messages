@@ -6,6 +6,8 @@ public final class MessagesConstants {
 
     public static final String SCHEDULER_SERVICE = "messages.schedulerService";
 
+    public static final String DELIVERY_SERVICE = "messages.deliveryService";
+
     public static final String MESSAGING_SERVICE = "messages.messagingService";
 
     public static final String CONFIG_SERVICE = "messages.configService";

@@ -11,7 +11,6 @@ import org.openmrs.module.messages.api.execution.ChannelType;
 import org.openmrs.module.messages.api.execution.GroupedServiceResultList;
 import org.openmrs.module.messages.api.execution.ServiceResult;
 import org.openmrs.module.messages.api.service.ServiceResultsHandlerService;
-import org.openmrs.module.messages.api.util.DateUtil;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -52,7 +51,7 @@ public class ServiceGroupDeliveryJobDefinition extends JobDefinition {
         return String.format("%s:%s-%s",
             TASK_NAME_PREFIX,
             this.groupedServiceResults.getActorId(),
-            DateUtil.now().toInstant());
+                this.groupedServiceResults.getExecutionDate());
     }
 
     @Override
