@@ -1,7 +1,8 @@
 import {
   faHome,
   faChevronRight,
-  faPencilAlt
+  faPencilAlt,
+  faFilter
 } from '@fortawesome/free-solid-svg-icons';
 import {
   faCheckCircle
@@ -13,6 +14,7 @@ export const loadIcons = () => {
     faHome,
     faChevronRight,
     faCheckCircle,
-    faPencilAlt
+    faPencilAlt,
+    faFilter
   );
 };

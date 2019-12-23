@@ -14,7 +14,7 @@ import { getPatient } from '../../reducers/patient.reducer'
 import { Accordion } from '@openmrs/react-components';
 
 interface IHeaderProps extends DispatchProps, StateProps {
-  patientuuid: string;
+  patientUuid: string;
 };
 
 class Header extends React.Component<IHeaderProps> {
@@ -23,7 +23,7 @@ class Header extends React.Component<IHeaderProps> {
   }
 
   componentDidMount = () => {
-    this.props.getPatient(this.props.patientuuid);
+    this.props.getPatient(this.props.patientUuid);
   }
 
   render() {
@@ -31,7 +31,7 @@ class Header extends React.Component<IHeaderProps> {
       <>
         {!this.props.patientLoading && !!this.props.patient &&
           <PatientHeader
-          patient={this.props.patient}
+            patient={this.props.patient}
             note={[]}
           />
         } 

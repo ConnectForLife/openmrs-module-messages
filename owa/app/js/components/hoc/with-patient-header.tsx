@@ -5,7 +5,7 @@ import PatientTemplateEdit from '../patient-template/patient-template-edit';
 import { RouteComponentProps } from 'react-router-dom';
 import ManageMessages from '../patient-template/manage-messages';
 
-interface IWrappedComponentProps extends RouteComponentProps<{ patientuuid: string }> {
+interface IWrappedComponentProps extends RouteComponentProps<{ patientUuid: string }> {
   isNew?: boolean;
 }
 
@@ -14,7 +14,7 @@ const withPatientHeader = (WrappedComponent) => {
     render() {
       return (
           <div className="body-wrapper">
-            <Header patientuuid={this.props.match.params.patientuuid} />
+            <Header patientUuid={this.props.match.params.patientUuid} />
             <div className="content">
               <WrappedComponent  {...this.props}/>
             </div>
