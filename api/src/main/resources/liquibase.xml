@@ -4,7 +4,7 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
- 
+
     <changeSet id="messages-1" author="Dawid Ruchniewicz">
         <preConditions onFail="MARK_RAN">
             <not><tableExists tableName="messages_scheduled_service_group"/></not>
@@ -812,4 +812,32 @@
         </sql>
     </changeSet>
 
+    <changeSet id="messages-24" author="Oskar Hinc">
+        <preConditions>
+            <tableExists tableName="messages_scheduled_service"/>
+            <foreignKeyConstraintExists foreignKeyName="messages_scheduled_service_channel_type_fk"/>
+            <foreignKeyConstraintExists foreignKeyName="messages_scheduled_service_service_fk"/>
+            <columnExists tableName="messages_scheduled_service" columnName="channel_type"/>
+            <columnExists tableName="messages_scheduled_service" columnName="service"/>
+        </preConditions>
+
+        <comment>Changes type of few messages_scheduled_service columns from concept to string</comment>
+
+        <dropForeignKeyConstraint constraintName="messages_scheduled_service_channel_type_fk"
+                                  baseTableName="messages_scheduled_service" />
+        <dropColumn tableName="messages_scheduled_service"
+                    columnName="channel_type"/>
+
+        <dropForeignKeyConstraint constraintName="messages_scheduled_service_service_fk"
+                                  baseTableName="messages_scheduled_service" />
+        <dropColumn tableName="messages_scheduled_service"
+                    columnName="service"/>
+
+        <addColumn tableName="messages_template">
+            <column name="channel_type" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="service" type="varchar(255)" />
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

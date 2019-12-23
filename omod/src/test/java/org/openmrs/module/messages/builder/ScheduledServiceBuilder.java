@@ -9,7 +9,6 @@
 
 package org.openmrs.module.messages.builder;
 
-import org.openmrs.Concept;
 import org.openmrs.module.messages.api.model.ActorResponse;
 import org.openmrs.module.messages.api.model.DeliveryAttempt;
 import org.openmrs.module.messages.api.model.PatientTemplate;
@@ -23,11 +22,16 @@ import java.util.List;
 
 public class ScheduledServiceBuilder extends AbstractBuilder<ScheduledService> {
     // Please, consider creating ScheduledServiceGroup and PatientTemplate builders if needed.
+
+    public static final String DEFAULT_CHANNEL_TYPE = "SMS";
+    public static final String DUMMY_SERVICE = "service";
+    public static final String DUMMY_SERVICE_EXEC = "service exec";
+
     private Integer id;
     private ScheduledServiceGroup group;
-    private Concept service;
+    private String service;
     private PatientTemplate template;
-    private Concept channelType;
+    private String channelType;
     private ServiceStatus status;
     private String serviceExec;
     private List<DeliveryAttempt> deliveryAttempts;
@@ -37,11 +41,11 @@ public class ScheduledServiceBuilder extends AbstractBuilder<ScheduledService> {
     public ScheduledServiceBuilder() {
         this.id = getInstanceNumber();
         this.group = new ScheduledServiceGroup();
-        this.service = new ConceptBuilder().build();
+        this.service = DUMMY_SERVICE;
         this.template = new PatientTemplate();
-        this.channelType = new ConceptBuilder().build();
+        this.channelType = DEFAULT_CHANNEL_TYPE;
         this.status = ServiceStatus.PENDING;
-        this.serviceExec = "test";
+        this.serviceExec = DUMMY_SERVICE_EXEC;
         this.deliveryAttempts = new ArrayList<>();
         this.scheduledServiceParameters = new ArrayList<>();
         this.actorResponses = new ArrayList<>();
@@ -76,7 +80,7 @@ public class ScheduledServiceBuilder extends AbstractBuilder<ScheduledService> {
         return this;
     }
 
-    public ScheduledServiceBuilder withService(Concept service) {
+    public ScheduledServiceBuilder withService(String service) {
         this.service = service;
         return this;
     }
@@ -86,7 +90,7 @@ public class ScheduledServiceBuilder extends AbstractBuilder<ScheduledService> {
         return this;
     }
 
-    public ScheduledServiceBuilder withChannelType(Concept channelType) {
+    public ScheduledServiceBuilder withChannelType(String channelType) {
         this.channelType = channelType;
         return this;
     }

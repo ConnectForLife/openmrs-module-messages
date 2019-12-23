@@ -1,7 +1,7 @@
 package org.openmrs.module.messages.api.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.openmrs.module.messages.api.model.types.ServiceStatus;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,11 +12,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import org.openmrs.Concept;
-import org.openmrs.module.messages.api.model.types.ServiceStatus;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name = "messages.ScheduledService")
 @Table(name = "messages_scheduled_service")
@@ -33,17 +31,15 @@ public class ScheduledService extends AbstractBaseOpenmrsData {
     @JoinColumn(name = "group_id")
     private ScheduledServiceGroup group;
 
-    @OneToOne
-    @JoinColumn(name = "service")
-    private Concept service;
+    @Column(name = "service")
+    private String service;
 
     @ManyToOne
     @JoinColumn(name = "patient_template_id", nullable = false)
     private PatientTemplate patientTemplate;
 
-    @OneToOne
-    @JoinColumn(name = "channel_type", nullable = false)
-    private Concept channelType;
+    @Column(name = "channel_type", nullable = false)
+    private String channelType;
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
@@ -82,11 +78,11 @@ public class ScheduledService extends AbstractBaseOpenmrsData {
         }
     }
 
-    public Concept getService() {
+    public String getService() {
         return service;
     }
 
-    public void setService(Concept service) {
+    public void setService(String service) {
         this.service = service;
     }
 
@@ -98,11 +94,11 @@ public class ScheduledService extends AbstractBaseOpenmrsData {
         this.patientTemplate = patientTemplate;
     }
 
-    public Concept getChannelType() {
+    public String getChannelType() {
         return channelType;
     }
 
-    public void setChannelType(Concept channelType) {
+    public void setChannelType(String channelType) {
         this.channelType = channelType;
     }
 
