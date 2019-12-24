@@ -22,14 +22,13 @@ import org.openmrs.module.messages.api.model.TemplateFieldValue;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
 import org.openmrs.module.messages.api.service.PatientTemplateService;
 import org.openmrs.module.messages.api.service.TemplateService;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
 
-public class ExecutionEngineContextTest extends BaseModuleContextSensitiveTest {
+public class ExecutionEngineContextTest extends ContextSensitiveTest {
     
     private static final Date START_DATE = DateUtils.addYears(new Date(), -2);
     private static final Date END_DATE = DateUtils.addYears(new Date(), 2);

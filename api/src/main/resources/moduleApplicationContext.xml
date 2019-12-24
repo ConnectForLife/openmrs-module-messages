@@ -249,10 +249,43 @@
           class="org.openmrs.module.messages.api.service.impl.SmsServiceResultsHandlerServiceImpl"
           parent="messages.abstractServiceResultHandlerService"/>
 
+    <bean id="messages.scheduledParamsMapper" class="org.openmrs.module.messages.api.mappers.ScheduledParamsMapper"/>
+
+    <bean id="messages.scheduledServiceMapper" class="org.openmrs.module.messages.api.mappers.ScheduledServiceMapper">
+        <property name="paramsMapper">
+            <ref local="messages.scheduledParamsMapper"/>
+        </property>
+    </bean>
+
+    <bean id="messages.scheduledGroupMapper" class="org.openmrs.module.messages.api.mappers.ScheduledGroupMapper">
+        <property name="serviceMapper">
+            <ref local="messages.scheduledServiceMapper"/>
+        </property>
+    </bean>
+
     <bean id="messages.deliveryService"
-          class="org.openmrs.module.messages.api.service.impl.MessagesDeliveryServiceImpl">
-        <property name="schedulerService">
-            <ref bean="messages.schedulerService"/>
+          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="target">
+            <bean class="org.openmrs.module.messages.api.service.impl.MessagesDeliveryServiceImpl">
+                <property name="schedulerService">
+                    <ref bean="messages.schedulerService"/>
+                </property>
+                <property name="groupMapper">
+                    <ref bean="messages.scheduledGroupMapper"/>
+                </property>
+                <property name="groupService">
+                    <ref bean="messages.messagingGroupService"/>
+                </property>
+            </bean>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="preInterceptors">
+            <ref bean="serviceInterceptors"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
         </property>
     </bean>
 

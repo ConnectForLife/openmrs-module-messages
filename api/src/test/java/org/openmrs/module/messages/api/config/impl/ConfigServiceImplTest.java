@@ -1,16 +1,16 @@
 package org.openmrs.module.messages.api.config.impl;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.module.messages.ContextSensitiveTest;
 import org.openmrs.module.messages.api.config.ConfigService;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-public class ConfigServiceImplTest extends BaseModuleContextSensitiveTest {
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
+public class ConfigServiceImplTest extends ContextSensitiveTest {
 
     private static final String XML_DATASET_PATH = "datasets/";
 

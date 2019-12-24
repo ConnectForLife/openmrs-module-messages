@@ -4,12 +4,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.messages.ContextSensitiveTest;
 import org.openmrs.module.messages.api.dao.ActorResponseDao;
 import org.openmrs.module.messages.api.dao.MessagingDao;
 import org.openmrs.module.messages.api.model.ActorResponse;
 import org.openmrs.module.messages.api.model.ScheduledService;
 import org.openmrs.module.messages.builder.ActorResponseBuilder;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -25,7 +25,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
-public class ActorResponseITTest extends BaseModuleContextSensitiveTest {
+public class ActorResponseITTest extends ContextSensitiveTest {
     
     private static final String XML_DATA_SET_PATH = "datasets/";
     

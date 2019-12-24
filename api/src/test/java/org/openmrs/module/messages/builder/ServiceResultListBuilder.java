@@ -9,6 +9,7 @@
 
 package org.openmrs.module.messages.builder;
 
+import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.module.messages.api.execution.ServiceResult;
 import org.openmrs.module.messages.api.execution.ServiceResultList;
@@ -20,8 +21,12 @@ import java.util.List;
 
 public final class ServiceResultListBuilder extends AbstractBuilder<ServiceResultList> {
 
+    public static final String DUMMY_SERVICE_NAME = "Service Result List Service";
+
     private Integer actorId;
+    private Integer patientId;
     private List<ServiceResult> results;
+    private String serviceName;
 
     public ServiceResultListBuilder() {
         super();
@@ -29,13 +34,14 @@ public final class ServiceResultListBuilder extends AbstractBuilder<ServiceResul
 
     @Override
     public ServiceResultList build() {
-        Person actor = new Person();
-        actor.setId(actorId);
+        Person actor = new PersonBuilder().withId(actorId).build();
+        Patient patient = new PatientBuilder().withId(patientId).build();
         ServiceResultList result = ServiceResultList.createList(
                 new ArrayList<>(),
-                new PatientTemplateBuilder().withActor(actor).build(),
+                new PatientTemplateBuilder().withActor(actor).withPatient(patient).build(),
                 new Range<>(null, null));
         result.setResults(results);
+        result.setServiceName(serviceName);
         return result;
     }
 
@@ -46,6 +52,11 @@ public final class ServiceResultListBuilder extends AbstractBuilder<ServiceResul
 
     public ServiceResultListBuilder withActorId(Integer actorId) {
         this.actorId = actorId;
+        return this;
+    }
+
+    public ServiceResultListBuilder withPatientId(Integer patientId) {
+        this.patientId = patientId;
         return this;
     }
 
@@ -60,5 +71,10 @@ public final class ServiceResultListBuilder extends AbstractBuilder<ServiceResul
             list.add(new ServiceResultBuilder().withExecutionDate(date).build());
         }
         return withServiceResults(list);
+    }
+
+    public ServiceResultListBuilder withServiceName(String serviceName) {
+        this.serviceName = serviceName;
+        return this;
     }
 }

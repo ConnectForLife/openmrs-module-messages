@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.openmrs.Patient;
 import org.openmrs.RelationshipType;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.messages.ContextSensitiveTest;
 import org.openmrs.module.messages.api.actor.ActorService;
 import org.openmrs.module.messages.api.dto.ContactTimeDTO;
 import org.openmrs.module.messages.api.exception.ValidationException;
@@ -13,7 +14,6 @@ import org.openmrs.module.messages.api.model.Actor;
 import org.openmrs.module.messages.api.model.ActorType;
 import org.openmrs.module.messages.api.model.RelationshipTypeDirection;
 import org.openmrs.module.messages.api.util.ConfigConstants;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -28,7 +28,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
-public class ActorServiceImplTest extends BaseModuleContextSensitiveTest {
+public class ActorServiceImplTest extends ContextSensitiveTest {
 
     private static final String XML_DATASET_PATH = "datasets/";
 

@@ -7,4 +7,6 @@ import java.util.List;
 public interface ListMapper<T, R extends BaseOpenmrsData> {
 
     T toDto(List<R> daos);
+
+    List<R> fromDto(T dao);
 }

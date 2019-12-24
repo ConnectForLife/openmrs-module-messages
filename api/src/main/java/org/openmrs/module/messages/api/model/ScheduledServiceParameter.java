@@ -1,10 +1,12 @@
 package org.openmrs.module.messages.api.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity(name = "messages.ScheduleServiceParameter")
@@ -17,7 +19,8 @@ public class ScheduledServiceParameter extends AbstractBaseOpenmrsData {
     @GeneratedValue
     @Column(name = "messages_schedule_service_parameter_id")
     private Integer id;
-    
+
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "scheduled_message")
     private ScheduledService scheduledMessage;
     
@@ -26,7 +29,15 @@ public class ScheduledServiceParameter extends AbstractBaseOpenmrsData {
     
     @Column(name = "parameter_value", columnDefinition = "text")
     private String parameterValue;
-    
+
+    public ScheduledServiceParameter() {
+    }
+
+    public ScheduledServiceParameter(String parameterType, String parameterValue) {
+        this.parameterType = parameterType;
+        this.parameterValue = parameterValue;
+    }
+
     @Override
     public Integer getId() {
         return id;

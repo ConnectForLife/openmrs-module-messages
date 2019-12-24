@@ -1,8 +1,10 @@
 package org.openmrs.module.messages.api.model;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import org.openmrs.Patient;
+import org.openmrs.Person;
+import org.openmrs.module.messages.api.model.types.ServiceStatus;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -13,9 +15,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import org.openmrs.Patient;
-import org.openmrs.Person;
-import org.openmrs.module.messages.api.model.types.ServiceStatus;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Entity(name = "messages.ScheduledServiceGroup")
 @Table(name = "messages_scheduled_service_group")
@@ -43,7 +45,7 @@ public class ScheduledServiceGroup extends AbstractBaseOpenmrsData {
     @Enumerated(EnumType.STRING)
     private ServiceStatus status;
 
-    @OneToMany(mappedBy = "group", orphanRemoval = true)
+    @OneToMany(mappedBy = "group", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<ScheduledService> scheduledServices = new ArrayList<>();
     
     @Override
@@ -86,6 +88,9 @@ public class ScheduledServiceGroup extends AbstractBaseOpenmrsData {
 
     public void setScheduledServices(List<ScheduledService> scheduledServices) {
         this.scheduledServices = scheduledServices;
+        for (ScheduledService service : scheduledServices) {
+            service.setGroup(this);
+        }
     }
 
     public Person getActor() {

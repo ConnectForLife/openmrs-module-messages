@@ -3,11 +3,11 @@ package org.openmrs.module.messages.api.dao.impl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.module.messages.ContextSensitiveTest;
 import org.openmrs.module.messages.api.dao.TemplateDao;
 import org.openmrs.module.messages.api.helper.TemplateHelper;
 import org.openmrs.module.messages.api.model.Template;
 import org.openmrs.module.messages.api.util.TestConstants;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.List;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 
-public class TemplateDaoITTest extends BaseModuleContextSensitiveTest {
+public class TemplateDaoITTest extends ContextSensitiveTest {
     
     @Autowired
     private TemplateDao templateDao;

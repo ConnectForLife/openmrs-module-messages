@@ -1,7 +1,6 @@
 package org.openmrs.module.messages.api.scheduler.job;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
@@ -11,8 +10,8 @@ import org.openmrs.module.messages.api.execution.ChannelType;
 import org.openmrs.module.messages.api.execution.GroupedServiceResultList;
 import org.openmrs.module.messages.api.execution.ServiceResult;
 import org.openmrs.module.messages.api.service.ServiceResultsHandlerService;
+import org.openmrs.module.messages.api.util.MapperUtil;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -24,8 +23,7 @@ public class ServiceGroupDeliveryJobDefinition extends JobDefinition {
     private static final String TASK_NAME_PREFIX = "Group";
     private static final String GROUP_ENTITY = "GROUP_ENTITY";
 
-    private final Gson gson =
-        new GsonBuilder().setDateFormat(DateFormat.FULL, DateFormat.FULL).create();
+    private final Gson gson = MapperUtil.getGson();
 
     private GroupedServiceResultList groupedServiceResults;
 

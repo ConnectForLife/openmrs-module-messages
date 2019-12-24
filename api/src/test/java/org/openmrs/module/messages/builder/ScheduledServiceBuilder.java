@@ -58,6 +58,7 @@ public class ScheduledServiceBuilder extends AbstractBuilder<ScheduledService> {
         scheduled.setService(service);
         scheduled.setChannelType(channelType);
         scheduled.setStatus(status);
+        scheduled.setPatientTemplate(template);
         scheduled.setLastServiceExecution(serviceExec);
         scheduled.setDeliveryAttempts(deliveryAttempts);
         scheduled.setScheduledServiceParameters(scheduledServiceParameters);

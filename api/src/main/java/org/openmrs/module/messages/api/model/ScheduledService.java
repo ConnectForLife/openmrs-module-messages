@@ -27,7 +27,7 @@ public class ScheduledService extends AbstractBaseOpenmrsData {
     @Column(name = "messages_scheduled_service_id")
     private Integer id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "group_id")
     private ScheduledServiceGroup group;
 
@@ -132,6 +132,9 @@ public class ScheduledService extends AbstractBaseOpenmrsData {
 
     public void setScheduledServiceParameters(List<ScheduledServiceParameter> scheduledServiceParameters) {
         this.scheduledServiceParameters = scheduledServiceParameters;
+        for (ScheduledServiceParameter parameter : scheduledServiceParameters) {
+            parameter.setScheduledMessage(this);
+        }
     }
 
     public List<ActorResponse> getActorResponses() {

@@ -1,5 +1,6 @@
 package org.openmrs.module.messages.api.mappers;
 
+import org.apache.commons.lang.NotImplementedException;
 import org.openmrs.module.messages.api.dto.MessageDetailsDTO;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 
@@ -18,5 +19,11 @@ public class MessageDetailsMapper implements ListMapper<MessageDetailsDTO, Patie
         return new MessageDetailsDTO(
                 messageMapper.toDtos(patientTemplates)
         );
+    }
+
+    @Override
+    public List<PatientTemplate> fromDto(MessageDetailsDTO dao) {
+        throw new NotImplementedException("mapping from MessageDetailsDTO to List<PatientTemplate> " +
+                "is not implemented yet");
     }
 }

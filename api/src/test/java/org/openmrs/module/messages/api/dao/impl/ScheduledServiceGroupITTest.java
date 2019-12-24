@@ -1,17 +1,11 @@
 package org.openmrs.module.messages.api.dao.impl;
 
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasProperty;
-import static org.hamcrest.Matchers.is;
-
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.messages.ContextSensitiveTest;
 import org.openmrs.module.messages.api.dao.MessagingDao;
 import org.openmrs.module.messages.api.dao.MessagingGroupDao;
 import org.openmrs.module.messages.api.helper.ScheduledServiceGroupHelper;
@@ -19,11 +13,18 @@ import org.openmrs.module.messages.api.model.ScheduledService;
 import org.openmrs.module.messages.api.model.ScheduledServiceGroup;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
 import org.openmrs.module.messages.api.util.TestConstants;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-public class ScheduledServiceGroupITTest extends BaseModuleContextSensitiveTest {
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.is;
+
+public class ScheduledServiceGroupITTest extends ContextSensitiveTest {
 
     private static final String XML_DATA_SET_PATH = "datasets/";
     private static final String SCHEDULE_1_UUID = "b3de6d76-3e31-41cf-955d-ad14b9db07ff";
@@ -108,7 +109,7 @@ public class ScheduledServiceGroupITTest extends BaseModuleContextSensitiveTest 
     }
 
     @Test
-    public void shouldNotChangeGroupOfScheduledServiceBySettingItInScheduledServiceGroup() throws Exception {
+    public void shouldChangeGroupOfScheduledServiceBySettingItInScheduledServiceGroup() throws Exception {
         executeMessageDataSet();
         Context.evictFromSession(scheduledServiceGroup1);
 
@@ -123,7 +124,7 @@ public class ScheduledServiceGroupITTest extends BaseModuleContextSensitiveTest 
                 .getByUuid(SCHEDULE_1_UUID)
                 .getGroup();
 
-        Assert.assertNotEquals(scheduledServiceGroup1, group);
+        Assert.assertEquals(scheduledServiceGroup1, group);
     }
 
     @Test

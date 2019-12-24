@@ -28,6 +28,7 @@ public class ServiceResult implements Serializable {
     private ChannelType channelType;
     private ServiceStatus serviceStatus = ServiceStatus.FUTURE;
     private Map<String, Object> additionalParams = new HashMap<>();
+    private Integer patientTemplateId;
 
     public static ServiceResult parse(Map<String, Object> row) {
         if (row.size() < MIN_COL_NUM) {
@@ -137,6 +138,14 @@ public class ServiceResult implements Serializable {
 
     public void setAdditionalParams(Map<String, Object> additionalParams) {
         this.additionalParams = additionalParams;
+    }
+
+    public Integer getPatientTemplateId() {
+        return patientTemplateId;
+    }
+
+    public void setPatientTemplateId(Integer patientTemplateId) {
+        this.patientTemplateId = patientTemplateId;
     }
 
     private static ServiceStatus parseStatus(String statusString) {

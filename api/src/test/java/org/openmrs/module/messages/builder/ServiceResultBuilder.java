@@ -9,13 +9,18 @@
 
 package org.openmrs.module.messages.builder;
 
+import org.openmrs.module.messages.api.execution.ChannelType;
 import org.openmrs.module.messages.api.execution.ServiceResult;
 
 import java.util.Date;
+import java.util.Map;
 
 public final class ServiceResultBuilder extends AbstractBuilder<ServiceResult> {
 
     private Date executionDate;
+    private ChannelType channelType;
+    private Integer patientTemplateId;
+    private Map<String, Object> additionalParams;
 
     public ServiceResultBuilder() {
         super();
@@ -25,6 +30,9 @@ public final class ServiceResultBuilder extends AbstractBuilder<ServiceResult> {
     public ServiceResult build() {
         ServiceResult result = new ServiceResult();
         result.setExecutionDate(executionDate);
+        result.setChannelType(channelType);
+        result.setPatientTemplateId(patientTemplateId);
+        result.setAdditionalParams(additionalParams);
         return result;
     }
 
@@ -35,6 +43,21 @@ public final class ServiceResultBuilder extends AbstractBuilder<ServiceResult> {
 
     public ServiceResultBuilder withExecutionDate(Date executionDate) {
         this.executionDate = executionDate;
+        return this;
+    }
+
+    public ServiceResultBuilder withChannelType(ChannelType channelType) {
+        this.channelType = channelType;
+        return this;
+    }
+
+    public ServiceResultBuilder withPatientTemplate(Integer patientTemplateId) {
+        this.patientTemplateId = patientTemplateId;
+        return this;
+    }
+
+    public ServiceResultBuilder withParams(Map<String, Object> additionalParams) {
+        this.additionalParams = additionalParams;
         return this;
     }
 }
