@@ -51,7 +51,11 @@
 
     <bean id="messages.MessagingGroupDao" class="org.openmrs.module.messages.api.dao.impl.MessagingGroupDaoImpl"/>
 
-    <bean id="messages.MessagingDao" class="org.openmrs.module.messages.api.dao.impl.MessagingDaoImpl"/>
+    <bean id="messages.MessagingDao" class="org.openmrs.module.messages.api.dao.impl.MessagingDaoImpl">
+        <property name="dbSessionFactory">
+            <ref bean="dbSessionFactory"/>
+        </property>
+    </bean>
     <bean id="messages.ActorResponseDao" class="org.openmrs.module.messages.api.dao.impl.ActorResponseDaoImpl"/>
 
 
@@ -104,6 +108,9 @@
                 </property>
                 <property name="serviceExecutor">
                     <ref local="messages.ServiceExecutor"/>
+                </property>
+                <property name="configService">
+                    <ref local="messages.configService"/>
                 </property>
             </bean>
         </property>
@@ -230,6 +237,16 @@
         </property>
     </bean>
 
+    <bean id="messages.failedMessageReschedulingStrategy"
+          class="org.openmrs.module.messages.api.strategy.impl.FailedMessageReschedulingStrategyImpl">
+        <property name="configService">
+            <ref local="messages.configService"/>
+        </property>
+        <property name="deliveryService">
+            <ref local="messages.deliveryService"/>
+        </property>
+    </bean>
+
     <bean id="messages.abstractServiceResultHandlerService"
           class="org.openmrs.module.messages.api.service.impl.AbstractServiceResultsHandlerService"
           abstract="true">
@@ -270,17 +287,11 @@
                 <property name="schedulerService">
                     <ref bean="messages.schedulerService"/>
                 </property>
-                <property name="groupMapper">
-                    <ref bean="messages.scheduledGroupMapper"/>
-                </property>
-                <property name="groupService">
-                    <ref bean="messages.messagingGroupService"/>
-                </property>
             </bean>
         </property>
         <property name="transactionManager">
             <ref bean="transactionManager"/>
-        </property>
+    </property>
         <property name="preInterceptors">
             <ref bean="serviceInterceptors"/>
         </property>

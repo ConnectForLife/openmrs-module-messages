@@ -21,5 +21,9 @@
             <groupId>org.openmrs</groupId>
             <artifactId>event-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.vividsolutions</groupId>
+            <artifactId>jts-core</artifactId>
+        </dependency>
     </dependencies>
 </project>

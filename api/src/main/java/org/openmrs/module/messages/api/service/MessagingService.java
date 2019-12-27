@@ -10,11 +10,12 @@ import org.openmrs.module.messages.api.model.types.ServiceStatus;
 import java.util.Date;
 import java.util.List;
 
-public interface MessagingService extends OpenmrsDataService<ScheduledService> {
+public interface MessagingService extends BaseOpenmrsCriteriaDataService<ScheduledService> {
 
     /**
      * The API to be called by other modules, such as callflows and sms, in order to update the delivery status of a
-     * given service scheduled.
+     * given service scheduled. The method also invokes rescheduling strategy (determined by Global Property)
+     * for all attempts.
      *
      * @param scheduledServiceId is the id of the ScheduledService for which the status should be updated
      * @param status             is a new value of a service delivery which should be set (eg. delivered, failed)

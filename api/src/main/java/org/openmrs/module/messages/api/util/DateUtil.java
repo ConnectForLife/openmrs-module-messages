@@ -59,6 +59,13 @@ public final class DateUtil {
         return convertDate(date, DEFAULT_FRONT_END_DATE_FORMAT, DEFAULT_SERVER_SIDE_DATE_FORMAT);
     }
 
+    public static Date toSimpleDate(Date date) {
+        if (date instanceof java.sql.Date) { // java.sql.Date cannot be persisted by hibernate
+            return new Date(date.getTime());
+        }
+        return date;
+    }
+
     private static String convertDate(String date, String fromFormat, String toFormat) throws ParseException {
         SimpleDateFormat newDateFormat = new SimpleDateFormat(fromFormat);
         Date myDate = newDateFormat.parse(date);

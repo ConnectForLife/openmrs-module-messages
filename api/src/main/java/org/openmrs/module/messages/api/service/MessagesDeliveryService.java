@@ -1,9 +1,9 @@
 package org.openmrs.module.messages.api.service;
 
 import org.openmrs.api.OpenmrsService;
-import org.openmrs.module.messages.api.execution.GroupedServiceResultList;
+import org.openmrs.module.messages.api.model.ScheduledServicesExecutionContext;
 
 public interface MessagesDeliveryService extends OpenmrsService {
 
-    void schedulerDelivery(GroupedServiceResultList groupedResult);
+    void schedulerDelivery(ScheduledServicesExecutionContext executionContext);
 }

@@ -1,10 +1,9 @@
 package org.openmrs.module.messages.api.service;
 
-import org.openmrs.module.messages.api.execution.GroupedServiceResultList;
-import org.openmrs.module.messages.api.execution.ServiceResult;
-
 import java.util.List;
+import org.openmrs.module.messages.api.model.ScheduledService;
+import org.openmrs.module.messages.api.model.ScheduledServicesExecutionContext;
 
 public interface ServiceResultsHandlerService {
-    void handle(List<ServiceResult> result, GroupedServiceResultList group);
+    void handle(List<ScheduledService> services, ScheduledServicesExecutionContext executionContext);
 }

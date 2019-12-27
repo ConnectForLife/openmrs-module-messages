@@ -1,11 +1,15 @@
+/* * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+
 package org.openmrs.module.messages.api.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.Date;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -14,13 +18,22 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.openmrs.module.messages.BaseTest;
+import org.openmrs.module.messages.api.config.ConfigService;
 import org.openmrs.module.messages.api.dao.MessagingDao;
 import org.openmrs.module.messages.api.model.DeliveryAttempt;
 import org.openmrs.module.messages.api.model.ScheduledService;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
 import org.openmrs.module.messages.api.service.impl.MessagingServiceImpl;
+import org.openmrs.module.messages.api.strategy.ReschedulingStrategy;
 import org.openmrs.module.messages.builder.DeliveryAttemptBuilder;
 import org.openmrs.module.messages.builder.ScheduledServiceBuilder;
+
+import java.util.Date;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MessagingServiceTest extends BaseTest {
@@ -31,8 +44,19 @@ public class MessagingServiceTest extends BaseTest {
     @Mock
     private MessagingDao dao;
 
+    @Mock
+    private ConfigService configService;
+
+    @Mock
+    private ReschedulingStrategy reschedulingStrategy;
+
     @InjectMocks
     private MessagingServiceImpl messagingService;
+
+    @Before
+    public void setUp() {
+        when(configService.getReschedulingStrategy()).thenReturn(reschedulingStrategy);
+    }
 
     @Test
     public void registerAttemptShouldRegisterFirstAttempt() {

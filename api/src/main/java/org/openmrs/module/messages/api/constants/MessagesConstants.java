@@ -8,6 +8,8 @@ public final class MessagesConstants {
 
     public static final String DELIVERY_SERVICE = "messages.deliveryService";
 
+    public static final String MESSAGING_GROUP_SERVICE = "messages.messagingGroupService";
+
     public static final String MESSAGING_SERVICE = "messages.messagingService";
 
     public static final String CONFIG_SERVICE = "messages.configService";
@@ -28,6 +30,8 @@ public final class MessagesConstants {
     public static final String DEFAULT_SERVER_SIDE_DATE_FORMAT = "yyyy-MM-dd";
 
     public static final String DEFAULT_FRONT_END_DATE_FORMAT = "dd MMM yyyy";
+
+    public static final String SCHEDULED_GROUP_MAPPER = "messages.scheduledGroupMapper";
 
     private MessagesConstants() {
         // private. So can't be initialized

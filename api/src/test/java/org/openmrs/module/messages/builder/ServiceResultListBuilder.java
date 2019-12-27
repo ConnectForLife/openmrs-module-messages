@@ -21,8 +21,6 @@ import java.util.List;
 
 public final class ServiceResultListBuilder extends AbstractBuilder<ServiceResultList> {
 
-    public static final String DUMMY_SERVICE_NAME = "Service Result List Service";
-
     private Integer actorId;
     private Integer patientId;
     private List<ServiceResult> results;

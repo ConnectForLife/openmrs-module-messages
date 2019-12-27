@@ -1,11 +1,12 @@
 package org.openmrs.module.messages.api.service.impl;
 
+import java.util.Date;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Daemon;
-import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.DaemonToken;
 import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
+import org.openmrs.module.messages.api.model.ScheduledService;
 import org.openmrs.module.messages.api.scheduler.job.JobDefinition;
 import org.openmrs.module.messages.api.scheduler.job.JobRepeatInterval;
 import org.openmrs.module.messages.api.service.MessagesSchedulerService;
@@ -14,9 +15,8 @@ import org.openmrs.scheduler.SchedulerException;
 import org.openmrs.scheduler.SchedulerService;
 import org.openmrs.scheduler.TaskDefinition;
 
-import java.util.Date;
-
-public class MessagesSchedulerServiceImpl extends BaseOpenmrsService implements MessagesSchedulerService {
+public class MessagesSchedulerServiceImpl extends BaseOpenmrsDataService<ScheduledService>
+        implements MessagesSchedulerService {
 
     private static final Log LOGGER = LogFactory.getLog(MessagesSchedulerServiceImpl.class);
 

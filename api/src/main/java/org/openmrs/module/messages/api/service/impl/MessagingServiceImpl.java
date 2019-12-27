@@ -1,8 +1,22 @@
+/* * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+ 
 package org.openmrs.module.messages.api.service.impl;
 
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import org.hibernate.PropertyValueException;
 import org.openmrs.Concept;
 import org.openmrs.api.ConceptService;
+import org.openmrs.module.messages.api.config.ConfigService;
 import org.openmrs.module.messages.api.dao.ActorResponseDao;
 import org.openmrs.module.messages.api.execution.ExecutionException;
 import org.openmrs.module.messages.api.execution.ServiceExecutor;
@@ -17,36 +31,16 @@ import org.openmrs.module.messages.api.service.MessagingService;
 import org.openmrs.module.messages.api.service.PatientTemplateService;
 import org.openmrs.module.messages.domain.criteria.PatientTemplateCriteria;
 
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
+@Transactional
 public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledService> implements MessagingService {
 
     private ConceptService conceptService;
     private ActorResponseDao actorResponseDao;
     private ServiceExecutor serviceExecutor;
     private PatientTemplateService patientTemplateService;
-
-    public void setConceptService(ConceptService conceptService) {
-        this.conceptService = conceptService;
-    }
-
-    public void setActorResponseDao(ActorResponseDao actorResponseDao) {
-        this.actorResponseDao = actorResponseDao;
-    }
-
-    public void setServiceExecutor(ServiceExecutor serviceExecutor) {
-        this.serviceExecutor = serviceExecutor;
-    }
-
-    public void setPatientTemplateService(PatientTemplateService patientTemplateService) {
-        this.patientTemplateService = patientTemplateService;
-    }
+    private ConfigService configService;
 
     @Override
-    @Transactional
     public ActorResponse registerResponse(Integer scheduledId,
                                           Integer questionId,
                                           Integer responseId,
@@ -68,7 +62,6 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
     }
 
     @Override
-    @Transactional
     public List<ServiceResultList> retrieveAllServiceExecutions(Integer patientId, Date startDate, Date endDate)
             throws ExecutionException {
 
@@ -78,33 +71,32 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
     }
 
     @Override
-    @Transactional
     public List<ServiceResultList> retrieveAllServiceExecutions(Date startDate, Date endDate)
             throws ExecutionException {
         return retrieveAllServiceExecutions(patientTemplateService.getAll(false), startDate, endDate);
     }
 
     @Override
-    @Transactional
     public ScheduledService registerAttempt(int scheduledServiceId, ServiceStatus status, Date timestamp,
                                             String executionId) {
-        ScheduledService scheduledServices = getById(scheduledServiceId);
+        ScheduledService scheduledService = getById(scheduledServiceId);
 
         DeliveryAttempt deliveryAttempt = new DeliveryAttempt();
         deliveryAttempt.setServiceExecution(executionId);
-        deliveryAttempt.setAttemptNumber(scheduledServices.getDeliveryAttempts().size() + 1);
+        deliveryAttempt.setAttemptNumber(scheduledService.getNumberOfAttempts() + 1);
         deliveryAttempt.setStatus(status);
         deliveryAttempt.setTimestamp(timestamp);
-        deliveryAttempt.setScheduledService(scheduledServices);
+        deliveryAttempt.setScheduledService(scheduledService);
 
-        scheduledServices.setStatus(status);
-        scheduledServices.setLastServiceExecution(executionId);
+        scheduledService.setStatus(status);
+        scheduledService.setLastServiceExecution(executionId);
 
-        ArrayList<DeliveryAttempt> deliveryAttempts = new ArrayList<>(scheduledServices.getDeliveryAttempts());
-        deliveryAttempts.add(deliveryAttempt);
-        scheduledServices.setDeliveryAttempts(deliveryAttempts);
+        scheduledService.getDeliveryAttempts().add(deliveryAttempt);
+        scheduledService = saveOrUpdate(scheduledService);
 
-        return saveOrUpdate(scheduledServices);
+        configService.getReschedulingStrategy().execute(scheduledService);
+
+        return scheduledService;
     }
 
     private List<ServiceResultList> retrieveAllServiceExecutions(List<PatientTemplate> patientTemplates, Date startDate,
@@ -119,5 +111,25 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
         }
 
         return results;
+    }
+
+    public void setConceptService(ConceptService conceptService) {
+        this.conceptService = conceptService;
+    }
+
+    public void setActorResponseDao(ActorResponseDao actorResponseDao) {
+        this.actorResponseDao = actorResponseDao;
+    }
+
+    public void setServiceExecutor(ServiceExecutor serviceExecutor) {
+        this.serviceExecutor = serviceExecutor;
+    }
+
+    public void setPatientTemplateService(PatientTemplateService patientTemplateService) {
+        this.patientTemplateService = patientTemplateService;
+    }
+
+    public void setConfigService(ConfigService configService) {
+        this.configService = configService;
     }
 }

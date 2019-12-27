@@ -1,5 +1,39 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
+    <person_attribute_type
+            person_attribute_type_id="710"
+            name="Patient status"
+            description="Patient status attribute"
+            format="java.lang.String"
+            creator="1"
+            sort_weight="1"
+            searchable="0"
+            retired="false"
+            date_created="2010-11-16"
+            uuid="2a8ad9aa-bd0e-48c0-826d-fa628f1db644"/>
+
+    <relationship_type
+            relationship_type_id="2500"
+            a_is_to_b="Patient"
+            b_is_to_a="Caregiver"
+            preferred="0"
+            weight="0"
+            description="Relationship between Patient and Caregiver."
+            creator="1"
+            date_created="2019-11-20 00:00:00.0"
+            retired="false"
+            uuid="78378704-7707-428e-be05-d85cae980b59"/>
+
+    <patient_identifier_type
+            patient_identifier_type_id="3500"
+            name="Test Identifier Type"
+            description="Test description"
+            creator="1"
+            date_created="2019-11-16 15:57:09.0"
+            required="false"
+            retired="false"
+            uuid="b25172d5-a1b6-4c26-9385-b722f144f547"/>
+
     <person
             person_id="997"
             gender="M"
@@ -22,26 +56,26 @@
             void_reason=""
             uuid="7ee91cef-3e11-4445-bd83-eebe5b1759d3"/>
 
+    <person_attribute
+            person_id="997"
+            person_attribute_id="1010"
+            value="ACTIVE"
+            person_attribute_type_id="710"
+            creator="1"
+            date_created="2010-11-16"
+            voided="false"
+            uuid="a3deb6dd-49da-4568-a24a-e6f0dae4133c"/>
+
     <patient
             patient_id="997"
             creator="1"
             date_created="2019-11-16 15:57:09.0"
             voided="false"/>
 
-    <patient_identifier_type
-            patient_identifier_type_id="997"
-            name="Test Identifier Type"
-            description="Test description"
-            creator="1"
-            date_created="2019-11-16 15:57:09.0"
-            required="false"
-            retired="false"
-            uuid="b25172d5-a1b6-4c26-9385-b722f144f547"/>
-
     <patient_identifier
             patient_identifier_id="997"
             patient_id="997" identifier="997"
-            identifier_type="997"
+            identifier_type="3500"
             preferred="1"
             location_id="1"
             creator="1"
@@ -49,6 +83,7 @@
             voided="false"
             uuid="e902c21d-c57d-4b96-8929-b8b7f07f3d19"/>
 
+    <!-- Active Caregiver -->
     <person
             person_id="999"
             gender="M"
@@ -71,33 +106,75 @@
             void_reason=""
             uuid="18277feb-f5c5-451c-bb4a-235723c7a3c6"/>
 
-    <relationship_type
-            relationship_type_id="998"
-            a_is_to_b="Patient"
-            b_is_to_a="Caregiver"
-            preferred="0"
-            weight="0"
-            description="Relationship between Patient and Caregiver."
+    <person_attribute
+            person_attribute_id="999"
+            person_id="999"
+            value="ACTIVE"
+            person_attribute_type_id="710"
             creator="1"
-            date_created="2019-11-20 00:00:00.0"
-            retired="false"
-            uuid="78378704-7707-428e-be05-d85cae980b59"/>
+            date_created="2010-11-16"
+            voided="false"
+            uuid="a7deb6dd-49da-4568-a24a-e6f0dae4133c"/>
 
     <relationship
-            relationship_id="998"
+            relationship_id="999"
             person_a="997"
-            relationship="998"
+            relationship="2500"
             person_b="999"
             creator="1"
             date_created="2019-11-20 00:00:00.0"
             voided="false"
             uuid="d8f91bf6-6d89-4da5-ad9d-735cd70ffc48"/>
 
+    <!-- No consent Caregiver -->
+    <person
+            person_id="998"
+            gender="M"
+            dead="false"
+            creator="1"
+            date_created="2019-11-16 15:57:09.0"
+            voided="false"
+            uuid="c53ccd60-a747-4de2-8289-3fd3d8be55d7"/>
+
+    <person_name
+            person_name_id="998"
+            preferred="true"
+            person_id="998"
+            given_name="John"
+            middle_name=""
+            family_name="NoConsent_Caregiver"
+            creator="1"
+            date_created="2019-11-16 15:57:09.0"
+            voided="false"
+            void_reason=""
+            uuid="a7277feb-f5c5-451c-bb4a-235723c7a3c6"/>
+
+    <person_attribute
+            person_attribute_id="998"
+            person_id="998"
+            value="NO_CONSENT"
+            person_attribute_type_id="710"
+            creator="1"
+            date_created="2010-11-16"
+            voided="false"
+            uuid="a7abb6dd-49da-4568-a24a-e6f0dae4133c"/>
+
+    <relationship
+            relationship_id="998"
+            person_a="997"
+            relationship="2500"
+            person_b="998"
+            creator="1"
+            date_created="2019-11-20 00:00:00.0"
+            voided="false"
+            uuid="b9f91bf6-6d89-4da5-ad9d-735cd70ffc48"/>
+
     <messages_template
             messages_template_id="51"
-            service_query="SELECT (*) FROM messages_scheduled_service;"
-            service_query_type="test query type"
-            name="Service name"
+            service_query="select CAST('2019-12-01' as date) as EXECUTION_DATE, '1' as MESSAGE_ID, 'CALL' as CHANNEL_ID, 'FUTURE' as STATUS_ID, '1' as visitTypeId, '1' as locationId
+                UNION select CAST('2019-12-01' as date) as EXECUTION_DATE, '1' as MESSAGE_ID, 'SMS' as CHANNEL_ID, 'FUTURE' as STATUS_ID, '1' as visitTypeId, '1' as locationId;"
+            service_query_type="SQL"
+            name="Dummy Visit Reminder"
             creator="1"
             date_created="2019-11-20 00:00:00.0"
             voided="false"
@@ -115,18 +192,46 @@
             voided="false"
             uuid="5e776c48-3a0d-4585-b234-1673a71b91d6"/>
 
+    <!--  Patient  -->
     <messages_patient_template
             messages_patient_template_id="71"
             actor_id="997"
-            actor_type="998"
             template_id="51"
             patient_id="997"
-            service_query_type="SQL"
-            service_query="SELECT (*) FROM messages_scheduled_service;"
+            service_query_type=""
+            service_query=""
             creator="1"
             date_created="2019-11-20 00:00:00.1"
             voided="false"
             uuid="e8e2ea41-13ca-403a-b05d-9128d2b085cd"/>
+
+    <!--  Caregiver  -->
+    <messages_patient_template
+            messages_patient_template_id="72"
+            actor_id="999"
+            actor_type="999"
+            template_id="51"
+            patient_id="997"
+            service_query_type=""
+            service_query=""
+            creator="1"
+            date_created="2019-11-20 00:00:00.1"
+            voided="false"
+            uuid="a8e2ea41-13ca-403a-b05d-9128d2b085cd"/>
+
+    <!--  No PatientStatus Caregiver  -->
+    <messages_patient_template
+            messages_patient_template_id="73"
+            actor_id="998"
+            actor_type="998"
+            template_id="51"
+            patient_id="997"
+            service_query_type=""
+            service_query=""
+            creator="1"
+            date_created="2019-11-20 00:00:00.1"
+            voided="false"
+            uuid="1232ea41-13ca-403a-b05d-9128d2b085cd"/>
 
     <messages_template_field_value
             messages_template_field_value_id="81"
@@ -166,7 +271,7 @@
             service="1"
             patient_template_id="71"
             channel_type="2"
-            status="DELIVERED"
+            status="FAILED"
             last_service_execution_id="222222222222"
             creator="1"
             date_created="2019-11-25 00:00:00.0"

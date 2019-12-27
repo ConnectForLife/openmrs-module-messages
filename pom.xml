@@ -60,6 +60,13 @@
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
+				<!-- fixes the issue: https://github.com/h2database/h2database/issues/388-->
+				<groupId>com.vividsolutions</groupId>
+				<artifactId>jts-core</artifactId>
+				<version>1.14.0</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
 				<groupId>org.openmrs</groupId>
 				<artifactId>event-api</artifactId>
 				<version>${eventVersion}</version>

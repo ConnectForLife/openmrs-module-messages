@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.messages.ContextSensitiveTest;
 import org.openmrs.module.messages.api.config.ConfigService;
+import org.openmrs.module.messages.api.strategy.ReschedulingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -19,11 +20,15 @@ public class ConfigServiceImplTest extends ContextSensitiveTest {
     private static final String EXPECTED_ACTOR_CONFIGURATION =
             "1286b4bc-2d35-46d6-b645-a1b563aaf62a:A,5b82938d-5cab-43b7-a8f1-e4d6fbb484cc:B";
 
-    private static final String EXPECTED_RESCHEDULING_STRATEGY = "message.failedMessageReschedulingStrategy";
+    private static final String EXPECTED_RESCHEDULING_STRATEGY = "messages.failedMessageReschedulingStrategy";
 
     private static final int EXPECTED_MAX_NUMBER_OF_RESCHEDULING = 3;
 
     private static final int EXPECTED_TIME_INTERVAL_TO_NEXT_RESCHEDULE = 900;
+
+    @Autowired(required = false)
+    @Qualifier(EXPECTED_RESCHEDULING_STRATEGY)
+    private ReschedulingStrategy reschedulingStrategy;
 
     @Autowired
     @Qualifier("messages.configService")
@@ -36,8 +41,9 @@ public class ConfigServiceImplTest extends ContextSensitiveTest {
 
     @Test
     public void shouldReturnExpectedReschedulingStrategy() {
-        String actual = configService.getReschedulingStrategy();
-        assertThat(actual, is(EXPECTED_RESCHEDULING_STRATEGY));
+        ReschedulingStrategy actual = configService.getReschedulingStrategy();
+
+        assertThat(actual, is(reschedulingStrategy));
     }
 
     @Test

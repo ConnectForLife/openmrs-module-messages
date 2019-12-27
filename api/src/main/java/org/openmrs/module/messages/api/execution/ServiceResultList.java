@@ -1,3 +1,12 @@
+/* * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+
 package org.openmrs.module.messages.api.execution;
 
 import org.openmrs.module.messages.api.model.Range;
@@ -43,16 +52,18 @@ public class ServiceResultList implements Serializable {
                                                @NotNull Range<Date> dateRange) {
         ServiceResultList resultList = new ServiceResultList();
 
-        List<ServiceResult> results = ServiceResult.parseList(rowList);
+        List<ServiceResult> results = ServiceResult.parseList(rowList, patientTemplate);
         resultList.setResults(results);
 
         resultList.setPatientId(patientTemplate.getPatient().getPatientId());
         resultList.setActorId(patientTemplate.getActor().getPersonId());
+        // at this moment is is always set to 0 - it should not be in ServiceResultList
         resultList.setServiceId(patientTemplate.getServiceId());
 
         resultList.setStartDate(dateRange.getStart());
         resultList.setEndDate(dateRange.getEnd());
 
+        // most probably it does point to incorrect value - it should not be in ServiceResultList
         resultList.setServiceName(patientTemplate.getTemplate().getName());
 
         return resultList;

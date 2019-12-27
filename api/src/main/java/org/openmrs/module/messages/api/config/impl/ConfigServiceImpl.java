@@ -1,17 +1,28 @@
+/* * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+
 package org.openmrs.module.messages.api.config.impl;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.api.config.ConfigService;
 import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
 import org.openmrs.module.messages.api.model.RelationshipTypeDirection;
+import org.openmrs.module.messages.api.strategy.ReschedulingStrategy;
 import org.openmrs.module.messages.api.util.ConfigConstants;
 
 public class ConfigServiceImpl implements ConfigService {
 
     @Override
-    public String getReschedulingStrategy() {
-        return Context.getAdministrationService().getGlobalProperty(
+    public ReschedulingStrategy getReschedulingStrategy() {
+        String beanName = Context.getAdministrationService().getGlobalProperty(
                 ConfigConstants.RESCHEDULING_STRATEGY_KEY);
+        return Context.getRegisteredComponent(beanName, ReschedulingStrategy.class);
     }
 
     @Override

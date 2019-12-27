@@ -1,6 +1,15 @@
+/* * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+
 package org.openmrs.module.messages.api.service;
 
-final class DatasetConstants {
+public final class DatasetConstants {
 
     public static final String XML_DATA_SET_PATH = "datasets/";
 
@@ -12,7 +21,18 @@ final class DatasetConstants {
     //Pablo Caregiver
     public static final int DEFAULT_CAREGIVER_ID = 999;
 
+    //John Caregiver - no consent
+    public static final int DEFAULT_NO_CONSENT_CAREGIVER_ID = 998;
+
     public static final int DEFAULT_PATIENT_TEMPLATE_ID = 71;
+    public static final int DEFAULT_CAREGIVER_PATIENT_TEMPLATE_ID = 72;
+
+    //Dummy Visit Reminder
+    public static final int DEFAULT_TEMPLATE = 51;
+    public static final String DEFAULT_TEMPLATE_NAME = "Dummy Visit Reminder";
+
+    public static final int DELIVERED_SCHEDULED_SERVICE = 101;
+    public static final int FAILED_SCHEDULED_SERVICE = 102;
 
     private DatasetConstants() {
     }

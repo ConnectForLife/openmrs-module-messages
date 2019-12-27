@@ -24,6 +24,7 @@ import org.openmrs.module.messages.api.model.DeliveryAttempt;
 import org.openmrs.module.messages.api.model.ScheduledService;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
 import org.openmrs.module.messages.builder.ActorResponseBuilder;
+import org.openmrs.scheduler.SchedulerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -37,6 +38,10 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.openmrs.module.messages.api.service.DatasetConstants.XML_DATA_SET_PATH;
 
 public class MessagingServiceITTest extends ContextSensitiveTest {
@@ -67,13 +72,20 @@ public class MessagingServiceITTest extends ContextSensitiveTest {
     @Qualifier("messages.ActorResponseDao")
     private ActorResponseDao actorResponseDao;
 
+    @Autowired
+    @Qualifier("schedulerService")
+    private SchedulerService schedulerService; // this is mocked in xml - in does not work in testing env
+
     @Before
     public void setUp() throws Exception {
+        executeDataSet(XML_DATA_SET_PATH + "ConfigDataset.xml");
         executeDataSet(XML_DATA_SET_PATH + "ConceptDataSet.xml");
         executeDataSet(XML_DATA_SET_PATH + "MessageDataSet.xml");
         question = Context.getConceptService().getConceptByUuid(QUESTION_UUID);
         response = Context.getConceptService().getConceptByUuid(RESPONSE_UUID);
         scheduledService = messagingDao.getByUuid(SCHEDULE_UUID);
+
+        reset(schedulerService);
     }
 
     @Test
@@ -127,22 +139,21 @@ public class MessagingServiceITTest extends ContextSensitiveTest {
 
     @Test
     public void registerAttemptShouldAddFirstAttemptAndUpdateScheduledService() {
-        Assume.assumeThat(scheduledService.getDeliveryAttempts().size(), Matchers.is(0));
+        Assume.assumeThat(scheduledService.getNumberOfAttempts(), Matchers.is(0));
 
         final ServiceStatus newStatus = ServiceStatus.DELIVERED;
         final String serviceExecution = "321";
-        final Date timestamp = new Date();
 
         ScheduledService actualScheduledService = messagingService
-                .registerAttempt(scheduledService.getId(), newStatus, timestamp, serviceExecution);
+                .registerAttempt(scheduledService.getId(), newStatus, TIMESTAMP, serviceExecution);
         DeliveryAttempt actualAttempt = actualScheduledService.getDeliveryAttempts().get(0);
 
         assertEquals(newStatus, actualScheduledService.getStatus());
         assertEquals(serviceExecution, actualScheduledService.getLastServiceExecution());
-        assertEquals(1, actualScheduledService.getDeliveryAttempts().size());
+        assertEquals(1, actualScheduledService.getNumberOfAttempts());
         assertEquals(scheduledService.getId(), actualAttempt.getScheduledService().getId());
         assertEquals(newStatus, actualAttempt.getStatus());
-        assertEquals(timestamp, actualAttempt.getTimestamp());
+        assertEquals(TIMESTAMP, actualAttempt.getTimestamp());
         assertEquals(serviceExecution, actualAttempt.getServiceExecution());
     }
 
@@ -150,22 +161,37 @@ public class MessagingServiceITTest extends ContextSensitiveTest {
     public void registerAttemptShouldAddNextAttemptAndUpdateScheduledService() {
         scheduledService = messagingService.registerAttempt(scheduledService.getId(), ServiceStatus.PENDING,
                 new Date(), UUID.randomUUID().toString());
-        assertEquals(1, scheduledService.getDeliveryAttempts().size());
+        assertEquals(1, scheduledService.getNumberOfAttempts());
 
         final ServiceStatus newStatus = ServiceStatus.DELIVERED;
         final String serviceExecution = "321";
-        final Date timestamp = new Date();
 
         ScheduledService actualScheduledService = messagingService
-                .registerAttempt(scheduledService.getId(), newStatus, timestamp, serviceExecution);
+                .registerAttempt(scheduledService.getId(), newStatus, TIMESTAMP, serviceExecution);
         DeliveryAttempt actualAttempt = actualScheduledService.getDeliveryAttempts().get(1);
 
         assertEquals(newStatus, actualScheduledService.getStatus());
         assertEquals(serviceExecution, actualScheduledService.getLastServiceExecution());
-        assertEquals(2, actualScheduledService.getDeliveryAttempts().size());
+        assertEquals(2, actualScheduledService.getNumberOfAttempts());
         assertEquals(scheduledService.getId(), actualAttempt.getScheduledService().getId());
         assertEquals(newStatus, actualAttempt.getStatus());
-        assertEquals(timestamp, actualAttempt.getTimestamp());
+        assertEquals(TIMESTAMP, actualAttempt.getTimestamp());
         assertEquals(serviceExecution, actualAttempt.getServiceExecution());
+    }
+
+    @Test
+    public void registerAttemptShouldRescheduleFailedAttempt() throws Exception {
+        scheduledService = messagingService.registerAttempt(scheduledService.getId(), ServiceStatus.FAILED,
+                new Date(), UUID.randomUUID().toString());
+
+        verify(schedulerService, times(1)).scheduleTask(any());
+    }
+
+    @Test
+    public void registerAttemptShouldRescheduleSuccessfulAttempt() throws Exception {
+        scheduledService = messagingService.registerAttempt(scheduledService.getId(), ServiceStatus.DELIVERED,
+                new Date(), UUID.randomUUID().toString());
+
+        verify(schedulerService, times(0)).scheduleTask(any());
     }
 }

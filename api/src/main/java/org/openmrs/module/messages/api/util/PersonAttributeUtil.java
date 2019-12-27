@@ -15,7 +15,7 @@ public final class PersonAttributeUtil {
         if (attribute == null) {
             return null;
         }
-        return PersonStatus.valueOf(getValue(attribute));
+        return PersonStatus.valueOf(attribute.getValue());
     }
 
     public static PersonAttribute getPersonStatusAttribute(Person person) {

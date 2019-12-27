@@ -1,3 +1,12 @@
+/* * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+ 
 package org.openmrs.module.messages.api.util;
 
 public final class ConfigConstants {
@@ -48,12 +57,12 @@ public final class ConfigConstants {
     public static final String DAYS_NUMBER_BEFORE_VISIT_REMINDER_DESCRIPTION =
             "Used to determine the how many days before visit reminder should be schedule";
 
-    public static final String RESCHEDULING_STRATEGY_KEY = "message.reschedulingStrategy";
-    public static final String RESCHEDULING_STRATEGY_DEFAULT_VALUE = "message.failedMessageReschedulingStrategy";
+    public static final String RESCHEDULING_STRATEGY_KEY = "messages.reschedulingStrategy";
+    public static final String RESCHEDULING_STRATEGY_DEFAULT_VALUE = "messages.failedMessageReschedulingStrategy";
     public static final String RESCHEDULING_STRATEGY_DESCRIPTION =
             "Used to determine name of the Spring Bean which should be use to handle the reschedule logic.";
 
-    public static final String MAX_NUMBER_OF_RESCHEDULING_KEY = "message.maxNumberOfRescheduling";
+    public static final String MAX_NUMBER_OF_RESCHEDULING_KEY = "messages.maxNumberOfRescheduling";
     public static final String MAX_NUMBER_OF_RESCHEDULING_DEFAULT_VALUE = "3";
     public static final String MAX_NUMBER_OF_RESCHEDULING_DESCRIPTION =
             "Used to determine the number of maximum attempts that can be taken for failing ScheduledServices. After "
@@ -61,7 +70,7 @@ public final class ConfigConstants {
             + "will not influence on tasks which already exceeded the counter. In the primary approach, it is designed "
             + "to be used by the strategy FailedMessageReschedulingStrategy.";
 
-    public static final String TIME_INTERVAL_TO_NEXT_RESCHEDULE_KEY = "message.timeIntervalToNextReschedule";
+    public static final String TIME_INTERVAL_TO_NEXT_RESCHEDULE_KEY = "messages.timeIntervalToNextReschedule";
     public static final String TIME_INTERVAL_TO_NEXT_RESCHEDULE_DEFAULT_VALUE = "900";
     public static final String TIME_INTERVAL_TO_NEXT_RESCHEDULE_DESCRIPTION =
             "Used to determine the time (in seconds) when the task for retry will be scheduled. The retry time will be "

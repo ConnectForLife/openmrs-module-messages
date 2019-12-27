@@ -1,7 +1,13 @@
-package org.openmrs.module.messages.api.execution;
+/* * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 
-import org.apache.commons.lang3.StringUtils;
-import org.openmrs.module.messages.api.model.types.ServiceStatus;
+package org.openmrs.module.messages.api.execution;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -9,6 +15,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
+import org.openmrs.module.messages.api.model.PatientTemplate;
+import org.openmrs.module.messages.api.model.types.ServiceStatus;
+import org.openmrs.module.messages.api.util.DateUtil;
 
 /**
  * Represents a single execution for a service/message.
@@ -44,7 +54,7 @@ public class ServiceResult implements Serializable {
         for (Map.Entry<String, Object> entry : row.entrySet()) {
             switch (entry.getKey()) {
                 case EXEC_DATE_ALIAS:
-                    date = (Date) entry.getValue();
+                    date = DateUtil.toSimpleDate((Date) entry.getValue());
                     break;
                 case MSG_ID_ALIAS:
                     msgId = entry.getValue();
@@ -64,10 +74,11 @@ public class ServiceResult implements Serializable {
         return new ServiceResult(date, msgId, channel, status, params);
     }
 
-    public static List<ServiceResult> parseList(List<Map<String, Object>> list) {
+    public static List<ServiceResult> parseList(List<Map<String, Object>> list, PatientTemplate patientTemplate) {
         List<ServiceResult> resultList = new ArrayList<>();
         for (Map<String, Object> row : list) {
             ServiceResult result = ServiceResult.parse(row);
+            result.patientTemplateId = patientTemplate.getId();
             resultList.add(result);
         }
         return resultList;
