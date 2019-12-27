@@ -15,7 +15,7 @@ public class MessagesDeliveryServiceImpl extends BaseOpenmrsService implements M
 
     @Override
     @Transactional
-    public void schedulerDelivery(ScheduledServicesExecutionContext executionContext) {
+    public void scheduleDelivery(ScheduledServicesExecutionContext executionContext) {
         JobDefinition definition = new ServiceGroupDeliveryJobDefinition(executionContext);
         schedulerService.createNewTask(definition, executionContext.getExecutionDate(), JobRepeatInterval.NEVER);
     }

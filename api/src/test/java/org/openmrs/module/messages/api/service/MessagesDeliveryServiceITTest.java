@@ -15,6 +15,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.openmrs.module.messages.ContextSensitiveTest;
+import org.openmrs.module.messages.api.execution.ActorWithDate;
 import org.openmrs.module.messages.api.execution.ChannelType;
 import org.openmrs.module.messages.api.execution.GroupedServiceResultList;
 import org.openmrs.module.messages.api.execution.ServiceResult;
@@ -92,7 +93,7 @@ public class MessagesDeliveryServiceITTest extends ContextSensitiveTest {
         ServiceResultList resultList = createServiceResults(date);
         ScheduledServicesExecutionContext executionContext = getExecutionContext(date, resultList);
 
-        deliveryService.schedulerDelivery(executionContext);
+        deliveryService.scheduleDelivery(executionContext);
 
         TaskDefinition task = getCreatedTask();
         assertNotNull(task);
@@ -104,12 +105,13 @@ public class MessagesDeliveryServiceITTest extends ContextSensitiveTest {
     }
 
     private ScheduledServicesExecutionContext getExecutionContext(Date date, ServiceResultList resultList) {
-        GroupedServiceResultList groupResults = new GroupedServiceResultList(DEFAULT_PATIENT_ID, date, resultList);
+        GroupedServiceResultList groupResults = new GroupedServiceResultList(
+                new ActorWithDate(DEFAULT_PATIENT_ID, date), resultList);
         ScheduledServiceGroup group = groupMapper.fromDto(groupResults);
         group = messagingGroupService.saveOrUpdate(group);
         return new ScheduledServicesExecutionContext(
                 group.getScheduledServices(),
-                groupResults.getExecutionDate(),
+                groupResults.getActorWithExecutionDate().getDate(),
                 group.getActor());
     }
 

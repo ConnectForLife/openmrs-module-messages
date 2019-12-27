@@ -36,7 +36,7 @@ public class FailedMessageReschedulingStrategyImpl implements ReschedulingStrate
             return;
         }
 
-        deliveryService.schedulerDelivery(new ScheduledServicesExecutionContext(
+        deliveryService.scheduleDelivery(new ScheduledServicesExecutionContext(
                 wrap(service),
                 getRescheduleDate(),
                 service.getPatientTemplate().getActor()

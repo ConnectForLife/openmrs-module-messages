@@ -10,7 +10,25 @@ public final class ServiceResultGroupHelper {
 
     public static List<GroupedServiceResultList> groupByActorAndExecutionDate(List<ServiceResultList> input) {
         List<ActorServiceResultList> groupedByActor = groupByActor(input);
-        return groupByExecutionDate(groupedByActor);
+        List<GroupedServiceResultList> resultGroups = groupByExecutionDate(groupedByActor);
+        return connectTheSameGroups(resultGroups);
+    }
+
+    private static List<GroupedServiceResultList> connectTheSameGroups(List<GroupedServiceResultList> input) {
+        Map<ActorWithDate, GroupedServiceResultList> groupsMap = new HashMap<>();
+
+        for (GroupedServiceResultList group : input) {
+            ActorWithDate actorWithDate = new ActorWithDate(
+                    group.getActorWithExecutionDate().getActorId(),
+                    group.getActorWithExecutionDate().getDate());
+            if (groupsMap.containsKey(actorWithDate)) {
+                groupsMap.get(actorWithDate).getGroup().getResults().addAll(group.getGroup().getResults());
+            } else {
+                groupsMap.put(actorWithDate, group);
+            }
+        }
+
+        return new ArrayList<>(groupsMap.values());
     }
 
     private static List<GroupedServiceResultList> groupByExecutionDate(List<ActorServiceResultList> input) {

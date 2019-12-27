@@ -9,7 +9,6 @@
 
 package org.openmrs.module.messages.api.scheduler.job;
 
-import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Person;
@@ -29,6 +28,8 @@ import org.openmrs.module.messages.api.service.MessagesDeliveryService;
 import org.openmrs.module.messages.api.service.MessagingGroupService;
 import org.openmrs.module.messages.api.service.MessagingService;
 import org.openmrs.module.messages.api.util.DateUtil;
+
+import java.util.List;
 
 public class MessageDeliveriesJobDefinition extends JobDefinition {
 
@@ -71,12 +72,12 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
     }
 
     private void scheduleTaskForActivePerson(GroupedServiceResultList groupedResult) {
-        Person person = getPersonService().getPerson(groupedResult.getActorId());
+        Person person = getPersonService().getPerson(groupedResult.getActorWithExecutionDate().getActorId());
         if (PersonStatus.isActive(person)) {
             ScheduledServiceGroup group = convertAndSave(groupedResult);
-            getDeliveryService().schedulerDelivery(new ScheduledServicesExecutionContext(
+            getDeliveryService().scheduleDelivery(new ScheduledServicesExecutionContext(
                     group.getScheduledServices(),
-                    groupedResult.getExecutionDate(),
+                    groupedResult.getActorWithExecutionDate().getDate(),
                     group.getActor()
             ));
         } else {

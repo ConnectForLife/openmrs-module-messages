@@ -5,5 +5,5 @@ import org.openmrs.module.messages.api.model.ScheduledServicesExecutionContext;
 
 public interface MessagesDeliveryService extends OpenmrsService {
 
-    void schedulerDelivery(ScheduledServicesExecutionContext executionContext);
+    void scheduleDelivery(ScheduledServicesExecutionContext executionContext);
 }

@@ -17,6 +17,8 @@ public class ServiceResultGroupHelperTest {
 
     private static final int ACTOR_1_ID = 1;
     private static final int ACTOR_2_ID = 2;
+    private static final int PATIENT_TEMPLATE_1_ID = 1;
+    private static final int PATIENT_TEMPLATE_2_ID = 2;
 
     @Test
     public void shouldGroupByActor() {
@@ -41,11 +43,11 @@ public class ServiceResultGroupHelperTest {
         List<ServiceResult> results = new ArrayList<>();
 
         Date date = getDateWithSec(0);
-        results.add(getResultWithDate(date));
-        results.add(getResultWithDate(date));
+        results.add(getResultWithDate(date, PATIENT_TEMPLATE_1_ID));
+        results.add(getResultWithDate(date, PATIENT_TEMPLATE_1_ID));
 
         Date datePlusOneSec = getDateWithSec(1);
-        results.add(getResultWithDate(datePlusOneSec));
+        results.add(getResultWithDate(datePlusOneSec, PATIENT_TEMPLATE_1_ID));
 
         input.add(new ServiceResultListBuilder().withServiceResults(results)
                 .withActorId(ACTOR_1_ID).build());
@@ -63,15 +65,15 @@ public class ServiceResultGroupHelperTest {
         Date datePlusOneSec = getDateWithSec(1);
 
         List<ServiceResult> resultsForActor1 = new ArrayList<>();
-        resultsForActor1.add(getResultWithDate(date));
-        resultsForActor1.add(getResultWithDate(datePlusOneSec));
+        resultsForActor1.add(getResultWithDate(date, PATIENT_TEMPLATE_1_ID));
+        resultsForActor1.add(getResultWithDate(datePlusOneSec, PATIENT_TEMPLATE_1_ID));
         input.add(new ServiceResultListBuilder().withServiceResults(resultsForActor1)
                 .withActorId(ACTOR_1_ID).build());
 
         List<ServiceResult> resultsForActor2 = new ArrayList<>();
-        resultsForActor2.add(getResultWithDate(date));
-        resultsForActor2.add(getResultWithDate(date));
-        resultsForActor2.add(getResultWithDate(datePlusOneSec));
+        resultsForActor2.add(getResultWithDate(date, PATIENT_TEMPLATE_1_ID));
+        resultsForActor2.add(getResultWithDate(date, PATIENT_TEMPLATE_1_ID));
+        resultsForActor2.add(getResultWithDate(datePlusOneSec, PATIENT_TEMPLATE_1_ID));
         input.add(new ServiceResultListBuilder().withServiceResults(resultsForActor2)
                 .withActorId(ACTOR_2_ID).build());
 
@@ -89,11 +91,11 @@ public class ServiceResultGroupHelperTest {
         List<ServiceResult> results = new ArrayList<>();
 
         Date date = getDateWithDay(0);
-        results.add(getResultWithDate(date));
+        results.add(getResultWithDate(date, PATIENT_TEMPLATE_1_ID));
 
         Date datePlusOneDay = getDateWithDay(1);
-        results.add(getResultWithDate(datePlusOneDay));
-        results.add(getResultWithDate(datePlusOneDay));
+        results.add(getResultWithDate(datePlusOneDay, PATIENT_TEMPLATE_1_ID));
+        results.add(getResultWithDate(datePlusOneDay, PATIENT_TEMPLATE_1_ID));
 
         input.add(new ServiceResultListBuilder().withServiceResults(results)
                 .withActorId(ACTOR_1_ID).build());
@@ -150,9 +152,31 @@ public class ServiceResultGroupHelperTest {
         }
     }
 
+    @Test
+    public void shouldGroupDifferentMessagesForTheSameActor() {
+        List<ServiceResultList> input = new ArrayList<>();
+        Date date = getDate();
+
+        input.add(new ServiceResultListBuilder()
+                .withServiceResults(wrap(getResultWithDate(date, PATIENT_TEMPLATE_1_ID)))
+                .withActorId(ACTOR_1_ID)
+                .withServiceName("Health Tip")
+                .build());
+        input.add(new ServiceResultListBuilder()
+                .withServiceResults(wrap(getResultWithDate(date, PATIENT_TEMPLATE_2_ID)))
+                .withActorId(ACTOR_1_ID)
+                .withServiceName("Adherence Daily")
+                .build());
+
+        List<GroupedServiceResultList> result = groupByActorAndExecutionDate(input);
+        assertEquals(1, result.size());
+        assertEquals(2, getResultsFor(result, ACTOR_1_ID, date).size());
+    }
+
     private List<ServiceResult> getResultsFor(List<GroupedServiceResultList> input, int actorId, Date executionDate) {
         for (GroupedServiceResultList entry : input) {
-            if (entry.getActorId().equals(actorId) && entry.getExecutionDate().equals(executionDate)) {
+            if (entry.getActorWithExecutionDate().getActorId().equals(actorId)
+                    && entry.getActorWithExecutionDate().getDate().equals(executionDate)) {
                 return entry.getGroup().getResults();
             }
         }
@@ -171,7 +195,16 @@ public class ServiceResultGroupHelperTest {
         return new DateBuilder().build();
     }
 
-    private ServiceResult getResultWithDate(Date date) {
-        return new ServiceResultBuilder().withExecutionDate(date).build();
+    private ServiceResult getResultWithDate(Date date, Integer patientTemplateId) {
+        return new ServiceResultBuilder()
+                .withExecutionDate(date)
+                .withPatientTemplate(patientTemplateId)
+                .build();
+    }
+
+    private <T> List<T> wrap(T toWrap) {
+        ArrayList<T> list = new ArrayList<>();
+        list.add(toWrap);
+        return list;
     }
 }

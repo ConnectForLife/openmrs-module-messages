@@ -7,15 +7,12 @@ import java.util.List;
 
 public class GroupedServiceResultList {
 
-    private Integer actorId;
-
-    private Date executionDate;
+    private ActorWithDate actorWithExecutionDate;
 
     private ServiceResultList group;
 
-    public GroupedServiceResultList(Integer actorId, Date executionDate, ServiceResultList group) {
-        this.actorId = actorId;
-        this.executionDate = executionDate;
+    public GroupedServiceResultList(ActorWithDate actorWithExecutionDate, ServiceResultList group) {
+        this.actorWithExecutionDate = actorWithExecutionDate;
         this.group = group;
     }
 
@@ -25,7 +22,7 @@ public class GroupedServiceResultList {
         for (ServiceResultList list : input) {
             if (!list.getResults().isEmpty()) {
                 Date date = list.getResults().get(0).getExecutionDate();
-                result.add(new GroupedServiceResultList(list.getActorId(), date, list));
+                result.add(new GroupedServiceResultList(new ActorWithDate(list.getActorId(), date), list));
             }
         }
 
@@ -36,11 +33,7 @@ public class GroupedServiceResultList {
         return group;
     }
 
-    public Integer getActorId() {
-        return actorId;
-    }
-
-    public Date getExecutionDate() {
-        return executionDate;
+    public ActorWithDate getActorWithExecutionDate() {
+        return actorWithExecutionDate;
     }
 }

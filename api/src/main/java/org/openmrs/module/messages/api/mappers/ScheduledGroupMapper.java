@@ -24,10 +24,10 @@ public class ScheduledGroupMapper extends AbstractMapper<GroupedServiceResultLis
     public ScheduledServiceGroup fromDto(GroupedServiceResultList dto) {
         ScheduledServiceGroup result = new ScheduledServiceGroup();
         result.setPatient(new Patient(dto.getGroup().getPatientId()));
-        result.setActor(new Person(dto.getActorId()));
+        result.setActor(new Person(dto.getActorWithExecutionDate().getActorId()));
         result.setStatus(ServiceStatus.PENDING);
         result.setScheduledServices(getScheduledServices(dto.getGroup()));
-        result.setMsgSendTime(dto.getExecutionDate());
+        result.setMsgSendTime(dto.getActorWithExecutionDate().getDate());
         return result;
     }
 
