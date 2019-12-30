@@ -91,6 +91,5 @@ public final class ActorScheduleBuildingUtil {
     }
 
     private ActorScheduleBuildingUtil() {
-
     }
 }

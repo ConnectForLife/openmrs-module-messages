@@ -1,5 +1,6 @@
 package org.openmrs.module.messages.api.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MessageDetailsDTO {
@@ -8,7 +9,9 @@ public class MessageDetailsDTO {
 
     private List<MessageDTO> messages;
 
-    public MessageDetailsDTO() { }
+    public MessageDetailsDTO() {
+        messages = new ArrayList<>();
+    }
 
     public MessageDetailsDTO(List<MessageDTO> messages) {
         this.messages = messages;

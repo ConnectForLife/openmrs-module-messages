@@ -10,6 +10,8 @@ import org.openmrs.module.messages.api.model.ErrorMessage;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.service.MessagingService;
 import org.openmrs.module.messages.api.service.PatientTemplateService;
+import org.openmrs.module.messages.api.service.TemplateService;
+import org.openmrs.module.messages.api.util.MessageDetailsUtil;
 import org.openmrs.module.messages.domain.PagingInfo;
 import org.openmrs.module.messages.domain.criteria.PatientTemplateCriteria;
 import org.openmrs.module.messages.web.model.MessagingParams;
@@ -39,6 +41,10 @@ public class MessagingController extends BaseRestController {
     private PatientTemplateService patientTemplateService;
 
     @Autowired
+    @Qualifier("messages.templateService")
+    private TemplateService templateService;
+
+    @Autowired
     @Qualifier("messages.MessageDetailsMapper")
     private MessageDetailsMapper messageDetailsMapper;
 
@@ -51,12 +57,17 @@ public class MessagingController extends BaseRestController {
     public PageDTO<MessageDetailsDTO> getMessageDetails(MessagingParams messagingParams) {
         PatientTemplateCriteria criteria = messagingParams.getCriteria();
         PagingInfo paging = messagingParams.getPagingInfo();
-        List<PatientTemplate> templates = patientTemplateService.findAllByCriteria(
+        List<PatientTemplate> patientTemplates = patientTemplateService.findAllByCriteria(
                 criteria, paging);
 
         // the response is wrapped in a page because the collection inside is paginated
         List<MessageDetailsDTO> details = new ArrayList<>();
-        details.add(messageDetailsMapper.toDto(templates).withPatientId(criteria.getPatientId()));
+        MessageDetailsDTO messageDetailsDTO =
+            messageDetailsMapper.toDto(patientTemplates).withPatientId(criteria.getPatientId());
+        messageDetailsDTO = MessageDetailsUtil.attachDefaultTemplates(messageDetailsDTO,
+            templateService.getAll(false));
+
+        details.add(messageDetailsDTO);
         return new PageDTO<>(details, paging);
     }
 

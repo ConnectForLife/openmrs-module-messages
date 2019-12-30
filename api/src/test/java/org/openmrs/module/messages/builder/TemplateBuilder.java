@@ -46,7 +46,7 @@ public final class TemplateBuilder extends AbstractBuilder<Template> {
         return this;
     }
 
-    public TemplateBuilder setName(String name) {
+    public TemplateBuilder withName(String name) {
         this.name = name;
         return this;
     }
