@@ -15,6 +15,7 @@ import { IFormField } from './form-field';
 import { TemplateUI } from './template-ui';
 import { TemplateFieldUI } from './template-field-ui';
 import { TemplateFieldType } from './template-field-type';
+import prepareDefaultValue from '../utils/default-field-values-provider';
 
 export class TemplateFieldValueUI extends ObjectUI<ITemplateFieldValue> implements ITemplateFieldValue, IFormField {
   id: number | null;
@@ -71,7 +72,7 @@ export class TemplateFieldValueUI extends ObjectUI<ITemplateFieldValue> implemen
     return new TemplateFieldValueUI({
       ...getDefaultValue(),
       templateFieldId: templateField.id!,
-      value: templateField.defaultValue,
+      value: prepareDefaultValue(templateField.defaultValue, templateField.type),
     });
   }
 }

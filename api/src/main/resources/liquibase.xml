@@ -840,4 +840,21 @@
             <column name="service" type="varchar(255)" />
         </addColumn>
     </changeSet>
+
+    <changeSet id="messages-25" author="Oskar Hinc">
+        <preConditions>
+            <tableExists tableName="messages_template_field"/>
+            <columnExists tableName="messages_template_field" columnName="default_value"/>
+            <columnExists tableName="messages_template_field" columnName="template_field_type"/>
+        </preConditions>
+
+        <comment>Changed default values for start of messages fields to empty string</comment>
+
+        <sql>
+            UPDATE messages_template_field
+            SET default_value=''
+            WHERE template_field_type='START_OF_MESSAGES';
+        </sql>
+
+    </changeSet>
 </databaseChangeLog>
