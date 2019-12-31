@@ -8,31 +8,34 @@
  */
 
 import React from 'react';
-import { FormGroup, FormControl } from 'react-bootstrap';
-
+import { FormGroup, Radio } from 'react-bootstrap';
 import FormLabel from '@bit/soldevelo-omrs.cfl-components.form-label';
 
 interface IProps {
+  options: ReadonlyArray<string>
+  selectedOption: string;
   label: string;
   key: string;
-  value: string;
-  fieldName: string
   mandatory: boolean;
-  handleChange: (value: string) => void;
+  onSelectChange: (valueSelected: string) => void;
 }
 
-export default class InputField extends React.Component<IProps> {
+export default class EndDateField extends React.Component<IProps> {
   render = () => {
-    let { label, key, value } = this.props;
     return (
-      <FormGroup controlId={key} key={key}>
+      <FormGroup controlId={this.props.key} key={this.props.key}>
         <FormLabel label={this.props.label} mandatory={this.props.mandatory} />
-        <FormControl
-          type="text"
-          name={label}
-          value={value}
-          onChange={e => this.props.handleChange((e.target as HTMLInputElement).value)} />
+        {this.props.options.map(option => (
+          <Radio
+            name={`${option}`}
+            inline
+            checked={option === this.props.selectedOption}
+            className="u-mt-8"
+            onChange={() => this.props.onSelectChange(option)}>
+            {option}
+          </Radio>
+        ))}
       </FormGroup>
-    );
-  };
+    )
+  }
 }

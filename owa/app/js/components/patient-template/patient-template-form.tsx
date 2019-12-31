@@ -11,6 +11,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { updatePatientTemplate } from '../../reducers/patient-template.reducer';
 import { Form, FormGroup } from 'react-bootstrap';
+import { startOfDay, format } from 'date-fns';
 import _ from 'lodash';
 
 import { PatientTemplateUI } from '../../shared/model/patient-template-ui';
@@ -21,10 +22,20 @@ import DynamicRadioButton from './form/dynamic-radio-button';
 import DynamicMultiselect from './form/dynamic-multiselect';
 import DynamicCheckboxButton from './form/dynamic-checbox-button';
 import InputField from './form/input-field';
-import OpenMrsDatePicker from  '@bit/soldevelo-omrs.cfl-components.openmrs-date-picker';
+import OpenMrsDatePicker from '@bit/soldevelo-omrs.cfl-components.openmrs-date-picker';
+import { ISO_DATE_FORMAT } from '@bit/soldevelo-omrs.cfl-components.date-util/constants';
 import FormLabel from '@bit/soldevelo-omrs.cfl-components.form-label';
-import { PATIENT_TEMPLATE_START_DATE } from '../../shared/utils/messages';
 import { CATEGORIES_MAP } from './form/dynamic-multiselect.constants';
+import RadioWrappedContainer, { InputType } from './form/radio-wrapper-container';
+import {
+  PATIENT_TEMPLATE_START_DATE,
+  PATIENT_TEMPLATE_END_DATE,
+  NO_END_DATE_LABEL,
+  DATE_PICKER_END_DATE_LABEL,
+  AFTER_DAYS_BEFORE,
+  AFTER_DAYS_AFTER
+} from '../../shared/utils/messages';
+import InputAfterDays from './form/input-after-days';
 
 interface IReactProps {
   patientTemplate: PatientTemplateUI | undefined;
@@ -39,6 +50,27 @@ interface IProps extends IReactProps, DispatchProps {
 interface IState {
   defaultPatientTemplate: PatientTemplateUI;
 }
+
+// ToDo CFLM-459: Connect init values with backend
+const elements: InputType[] = [{
+  id: 'no_date',
+  initChecked: true,
+  initValue: '',
+  labelBefore: NO_END_DATE_LABEL
+},
+{
+  id: 'date_picker',
+  initValue: format(startOfDay(Date.now()), ISO_DATE_FORMAT),
+  labelBefore: DATE_PICKER_END_DATE_LABEL,
+  element: <OpenMrsDatePicker value='' />
+},
+{
+  id: 'after_days',
+  initValue: '21',
+  labelBefore: AFTER_DAYS_BEFORE,
+  element: <InputAfterDays />,
+  labelAfter: AFTER_DAYS_AFTER
+}];
 
 class PatientTemplateForm extends React.Component<IProps, IState> {
 
@@ -77,7 +109,15 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
       case TemplateFieldType.START_OF_MESSAGES:
         return this.renderDatePicker(tfv, PATIENT_TEMPLATE_START_DATE, isMandatory);
       case TemplateFieldType.END_OF_MESSAGES:
-        return this.renderDatePicker(tfv, fieldName, isMandatory);
+        return (
+          <RadioWrappedContainer
+            id={tfv.localId}
+            isMandatory={isMandatory}
+            label={PATIENT_TEMPLATE_END_DATE}
+            fieldName={fieldName}
+            initElements={elements}
+            fieldValueChange={this.onTemplateFieldValueChange} />
+        );
       default:
         return this.renderInputField(tfv, fieldName, isMandatory);
     };
@@ -106,7 +146,7 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
         options={options}
         selectedOption={tfv.value}
         label={fieldName}
-        key={tfv.localId}
+        id={tfv.localId}
         mandatory={isMandatory}
         onSelectChange={(value: string) => this.onTemplateFieldValueChange(tfv.localId, value)}
       />
@@ -123,7 +163,8 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
         options={options}
         selectedOptions={value}
         label={fieldName}
-        key={tfv.localId}
+        fieldName={fieldName}
+        id={tfv.localId}
         mandatory={isMandatory}
         onSelectChange={(value: string) => this.onTemplateFieldValueChange(tfv.localId, value)} />
     );

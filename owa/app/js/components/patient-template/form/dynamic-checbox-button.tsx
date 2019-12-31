@@ -17,7 +17,8 @@ interface IProps {
   options: ReadonlyArray<string>
   selectedOptions: string[];
   label: string;
-  key: string;
+  fieldName: string;
+  id: string;
   mandatory: boolean;
   onSelectChange: (valueSelected: string) => void;
 }
@@ -39,13 +40,14 @@ export default class DynamicCheckboxButton extends React.Component<IProps> {
   };
 
   render = () => {
-    let { label, key, options } = this.props;
-
+    let { label, fieldName, options } = this.props;
+    const id = `${this.props.id}-${fieldName}`;
     return (
-      <FormGroup controlId={key} key={key}>
+      <FormGroup controlId={this.props.id}>
         <FormLabel label={label} mandatory={this.props.mandatory} />
         {options.map(option => (
           <Checkbox
+            key={`${id}-${option}`}
             name={`${option}`}
             inline
             checked={this.isChecked(option)}

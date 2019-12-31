@@ -29,7 +29,14 @@ export const EDIT_PATIENT_TEMPLATE_BREADCRUMB = 'Edit';
 export const SYSTEM_ADMINITRATION_BREADCRUMB = 'System Administration';
 
 // Best contact time
+export const NO_END_DATE_LABEL = 'No end date';
+export const DATE_PICKER_END_DATE_LABEL = 'On';
+export const AFTER_DAYS_BEFORE = 'After';
+export const AFTER_DAYS_AFTER = 'times';
 export const BEST_CONTACT_TIME_LABEL = 'Best Contact Time';
 export const CALENDAR_OVERVIEW_LABEL = 'Calendar Overview';
 
 export const PATIENT_TEMPLATE_START_DATE = 'Start of daily messages';
+export const PATIENT_TEMPLATE_END_DATE = 'End of daily messages';
+export const ISO_DATE_FORMAT = 'YYYY-MM-DD';
+export const DATE_FORMAT = 'dd MMM yyyy';

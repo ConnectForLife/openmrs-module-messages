@@ -1,0 +1,35 @@
+.radio-wrapper-container {
+  display: flex;
+  justify-content: flex-start;
+
+  .radio-button {
+    align-items: center;
+  }
+
+  .wrapped-aligned {
+    display: flex;
+    align-items: center;
+    vertical-align: middle;
+
+    .disabled {
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
+    .text {
+      margin-bottom: 0px;
+      margin-top: 0px;
+      margin-left: 0px;
+    }
+
+    .left-text {
+      @extend .text;
+      margin-right: 5px;
+    }
+
+    .right-text {
+      @extend .text;
+      margin-left: 5px;
+    }
+  }
+}
