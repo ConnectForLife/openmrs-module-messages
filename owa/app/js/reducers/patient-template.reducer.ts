@@ -8,7 +8,7 @@ import { toModel, mergeWithObjectUIs } from '../shared/model/object-ui';
 import { handleRequest } from '@bit/soldevelo-omrs.cfl-components.request-toast-handler';
 import * as Msg from '../shared/utils/messages';
 import { history } from '../config/redux-store';
-import axiosInstance from '../config/axios';
+import axiosInstance, { ALL_RECORDS_PAGE } from '../config/axios';
 import MessageDetails from '../shared/model/message-details';
 
 export const ACTION_TYPES = {
@@ -157,7 +157,9 @@ export const getPatientTemplates = (patientId: number) => async (dispatch) => {
   const requestUrl = `${patientTemplatesUrl}/patient/${patientId}`
   await dispatch({
     type: ACTION_TYPES.GET_PATIENT_TEMPLATES,
-    payload: axiosInstance.get(requestUrl)
+    payload: axiosInstance.get(requestUrl, {
+      params: { page: ALL_RECORDS_PAGE }
+    })
   });
 };
 

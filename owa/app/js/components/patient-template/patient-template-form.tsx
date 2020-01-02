@@ -113,6 +113,7 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
       case TemplateFieldType.END_OF_MESSAGES:
         return (
           <RadioWrappedContainer
+            key={tfv.localId}
             id={tfv.localId}
             isMandatory={isMandatory}
             label={PATIENT_TEMPLATE_END_DATE}
@@ -148,6 +149,7 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
         options={options}
         selectedOption={tfv.value}
         label={fieldName}
+        key={tfv.localId}
         id={tfv.localId}
         mandatory={isMandatory}
         onSelectChange={(value: string) => this.onTemplateFieldValueChange(tfv.localId, value)}
@@ -166,6 +168,7 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
         selectedOptions={value}
         label={fieldName}
         fieldName={fieldName}
+        key={tfv.localId}
         id={tfv.localId}
         mandatory={isMandatory}
         onSelectChange={(value: string) => this.onTemplateFieldValueChange(tfv.localId, value)} />

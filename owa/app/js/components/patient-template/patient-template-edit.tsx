@@ -17,7 +17,10 @@ import FormEntry from '@bit/soldevelo-omrs.cfl-components.form-entry';
 import './patient-template.scss';
 import PatientTemplateForm from './patient-template-form';
 import { TemplateUI } from '../../shared/model/template-ui';
-import { getPatientTemplateWithTemplateId } from '../../selectors/patient-template-selector';
+import {
+  getPatientTemplateWithTemplateId,
+  getPatientTemplateWithActorId
+} from '../../selectors/patient-template-selector';
 import { PatientTemplateUI } from '../../shared/model/patient-template-ui';
 import _ from 'lodash';
 import { IActor } from '../../shared/model/actor.model';
@@ -79,22 +82,19 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
     }
   }
 
-  buildActorTemplate = (actor: IActor): ReactFragment =>
-    <>
-      {/* TODO in CFLM-447: handle multiple forms for multiple patient templates */}
-    </>
-
-  buildPatientTemplate = (patientTemplates: ReadonlyArray<PatientTemplateUI>, template: TemplateUI): ReactFragment =>
-    <PatientTemplateForm
+  buildActorTemplate = (patientTemplates: ReadonlyArray<PatientTemplateUI>, template: TemplateUI, actor?: IActor): ReactFragment =>
+    <PatientTemplateForm key={`template-form-${actor ? actor.actorId : parseInt(this.props.match.params.patientId)}}`}
       patientTemplate={patientTemplates.length ? patientTemplates[0] : undefined}
       template={template}
       patientId={parseInt(this.props.match.params.patientId)}
-      actorId={parseInt(this.props.match.params.patientId)}
+      actorId={actor ? actor.actorId : parseInt(this.props.match.params.patientId)}
+      actorName={actor ? actor.actorName : undefined}
     />
 
   mapTemplatesToSections = (): Array<FormSection> => {
     const sections = [] as Array<FormSection>;
     const subsections = [] as Array<FormSubSection>;
+    const patientId = parseInt(this.props.match.params.patientId);
 
     this.props.templates.forEach((template: TemplateUI) => {
       const name = template.name ? template.name : `Template ${template.localId}`;
@@ -104,8 +104,15 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
 
       const fragment =
         <>
-          {this.buildPatientTemplate(patientTemplates, template)}
-          {this.props.relatedActors.map((actor) => this.buildActorTemplate(actor))}
+          {
+            this.buildActorTemplate(
+              getPatientTemplateWithActorId(patientTemplates, patientId), template)
+          }
+          {
+            this.props.relatedActors.map((actor) =>
+              this.buildActorTemplate(
+                getPatientTemplateWithActorId(patientTemplates, actor.actorId), template, actor))
+          }
         </>
 
       const isValid = !_.some(patientTemplates, pt => pt.hasErrors());
