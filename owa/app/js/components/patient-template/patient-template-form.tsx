@@ -10,7 +10,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { updatePatientTemplate } from '../../reducers/patient-template.reducer';
-import { Form, FormGroup } from 'react-bootstrap';
+import { Form, FormGroup, ControlLabel } from 'react-bootstrap';
 import { startOfDay, format } from 'date-fns';
 import _ from 'lodash';
 
@@ -33,7 +33,8 @@ import {
   NO_END_DATE_LABEL,
   DATE_PICKER_END_DATE_LABEL,
   AFTER_DAYS_BEFORE,
-  AFTER_DAYS_AFTER
+  AFTER_DAYS_AFTER,
+  PATIENT_ROLE
 } from '../../shared/utils/messages';
 import InputAfterDays from './form/input-after-days';
 
@@ -42,6 +43,7 @@ interface IReactProps {
   template: TemplateUI;
   patientId: number;
   actorId: number;
+  actorName?: string;
 }
 
 interface IProps extends IReactProps, DispatchProps {
@@ -200,9 +202,15 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
 
   render = () => {
     const patientTemplate = this.getPatientTemplate();
+    const templateName = this.props.template ? this.props.template.name : '';
+    const { actorName } = this.props;
+
     return (
       <div>
-        <Form>
+        <Form className="fields-form">
+          <ControlLabel className="fields-form-title">
+            <h4>{`${templateName} - ${actorName ? actorName : PATIENT_ROLE}`}</h4>
+          </ControlLabel>
           {patientTemplate.templateFieldValues.map(tfv => this.renderField(tfv))}
         </Form>
       </div>

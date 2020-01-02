@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactFragment } from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
 import {
@@ -7,6 +7,7 @@ import {
   putPatientTemplates,
   selectTemplate
 } from '../../reducers/patient-template.reducer'
+import { getActorList } from '../../reducers/actor.reducer';
 import { IRootState } from '../../reducers';
 import { Button, SelectCallback } from 'react-bootstrap';
 import * as Msg from '../../shared/utils/messages';
@@ -19,6 +20,7 @@ import { TemplateUI } from '../../shared/model/template-ui';
 import { getPatientTemplateWithTemplateId } from '../../selectors/patient-template-selector';
 import { PatientTemplateUI } from '../../shared/model/patient-template-ui';
 import _ from 'lodash';
+import { IActor } from '../../shared/model/actor.model';
 
 interface IPatientTemplateEditProps extends DispatchProps, StateProps, RouteComponentProps<{
   patientId: string,
@@ -26,6 +28,7 @@ interface IPatientTemplateEditProps extends DispatchProps, StateProps, RouteComp
   activeSection: string
 }> {
   isNew: boolean
+  relatedActors: Array<IActor>
 };
 
 interface IPatientTemplateEditState {
@@ -39,6 +42,7 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
 
   componentDidMount() {
     this.props.getTemplates();
+    this.props.getActorList(parseInt(this.props.match.params.patientId));
     this.props.getPatientTemplates(parseInt(this.props.match.params.patientId));
   }
 
@@ -75,6 +79,19 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
     }
   }
 
+  buildActorTemplate = (actor: IActor): ReactFragment =>
+    <>
+      {/* TODO in CFLM-447: handle multiple forms for multiple patient templates */}
+    </>
+
+  buildPatientTemplate = (patientTemplates: ReadonlyArray<PatientTemplateUI>, template: TemplateUI): ReactFragment =>
+    <PatientTemplateForm
+      patientTemplate={patientTemplates.length ? patientTemplates[0] : undefined}
+      template={template}
+      patientId={parseInt(this.props.match.params.patientId)}
+      actorId={parseInt(this.props.match.params.patientId)}
+    />
+
   mapTemplatesToSections = (): Array<FormSection> => {
     const sections = [] as Array<FormSection>;
     const subsections = [] as Array<FormSubSection>;
@@ -85,13 +102,11 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
       const patientTemplates: ReadonlyArray<PatientTemplateUI> =
         getPatientTemplateWithTemplateId(this.props.patientTemplates, template.id!);
 
-      // TODO CFLM-447 handle multiple forms for multiple patient templates
-      const fragment = <PatientTemplateForm
-        patientTemplate={patientTemplates.length ? patientTemplates[0] : undefined}
-        template={template}
-        patientId={parseInt(this.props.match.params.patientId)}
-        actorId={parseInt(this.props.match.params.patientId)}
-      />
+      const fragment =
+        <>
+          {this.buildPatientTemplate(patientTemplates, template)}
+          {this.props.relatedActors.map((actor) => this.buildActorTemplate(actor))}
+        </>
 
       const isValid = !_.some(patientTemplates, pt => pt.hasErrors());
       const isPersisted = patientTemplates.length > 0;
@@ -126,18 +141,20 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
   }
 }
 
-const mapStateToProps = ({ patientTemplate }: IRootState) => ({
+const mapStateToProps = ({ actor, patientTemplate }: IRootState) => ({
   templates: patientTemplate.templates,
   patientTemplates: patientTemplate.patientTemplates,
   selectedTemplate: patientTemplate.selectedTemplate,
-  loading: patientTemplate.patientTemplatesLoading || patientTemplate.templatesLoading
+  loading: patientTemplate.patientTemplatesLoading || patientTemplate.templatesLoading,
+  relatedActors: actor.actorResultList
 });
 
 const mapDispatchToProps = ({
   getTemplates,
   getPatientTemplates,
   putPatientTemplates,
-  selectTemplate
+  selectTemplate,
+  getActorList
 });
 
 type StateProps = ReturnType<typeof mapStateToProps>;
