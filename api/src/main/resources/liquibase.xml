@@ -857,4 +857,28 @@
         </sql>
 
     </changeSet>
+
+    <changeSet id="messages-26" author="Daniel Serkowski">
+        <preConditions>
+            <tableExists tableName="messages_scheduled_service"/>
+            <tableExists tableName="messages_template"/>
+            <not><columnExists tableName="messages_scheduled_service" columnName="channel_type"/></not>
+            <not><columnExists tableName="messages_scheduled_service" columnName="service"/></not>
+            <columnExists tableName="messages_template" columnName="channel_type"/>
+            <columnExists tableName="messages_template" columnName="service"/>
+        </preConditions>
+
+        <comment>Fixed the issue with defining channel_type and service in messages_template instead in
+            messages_scheduled_service (issue of the changeSet 'messages-24')</comment>
+
+        <dropColumn tableName="messages_template" columnName="channel_type"/>
+        <dropColumn tableName="messages_template" columnName="service"/>
+
+        <addColumn tableName="messages_scheduled_service">
+            <column name="channel_type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="service" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
