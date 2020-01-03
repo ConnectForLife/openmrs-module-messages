@@ -9,11 +9,10 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import { updatePatientTemplate } from '../../reducers/patient-template.reducer';
 import { Form, FormGroup, ControlLabel } from 'react-bootstrap';
-import { startOfDay, format } from 'date-fns';
 import _ from 'lodash';
 
+import { updatePatientTemplate } from '../../reducers/patient-template.reducer';
 import { PatientTemplateUI } from '../../shared/model/patient-template-ui';
 import { TemplateUI } from '../../shared/model/template-ui';
 import { TemplateFieldValueUI } from '../../shared/model/template-field-value-ui';
@@ -23,20 +22,16 @@ import DynamicMultiselect from './form/dynamic-multiselect';
 import DynamicCheckboxButton from './form/dynamic-checbox-button';
 import InputField from './form/input-field';
 import OpenMrsDatePicker from '@bit/soldevelo-omrs.cfl-components.openmrs-date-picker';
-import { ISO_DATE_FORMAT } from '@bit/soldevelo-omrs.cfl-components.date-util/constants';
 import FormLabel from '@bit/soldevelo-omrs.cfl-components.form-label';
 import { CATEGORIES_MAP } from './form/dynamic-multiselect.constants';
-import RadioWrappedContainer, { InputType } from './form/radio-wrapper-container';
+import RadioWrappedContainer, { InitInput } from './form/radio-wrapper';
 import {
   PATIENT_TEMPLATE_START_DATE,
   PATIENT_TEMPLATE_END_DATE,
-  NO_END_DATE_LABEL,
-  DATE_PICKER_END_DATE_LABEL,
-  AFTER_DAYS_BEFORE,
-  AFTER_DAYS_AFTER,
   PATIENT_ROLE
 } from '../../shared/utils/messages';
-import InputAfterDays from './form/input-after-days';
+import { factory } from './form/type-factory';
+import { InputTypeEnum } from './form/radio-wrapper/parsable-input';
 
 interface IReactProps {
   patientTemplate: PatientTemplateUI | undefined;
@@ -54,26 +49,11 @@ interface IState {
   defaultPatientTemplate: PatientTemplateUI;
 }
 
-// ToDo CFLM-459: Connect init values with backend
-const elements: InputType[] = [{
-  id: 'no_date',
-  initChecked: true,
-  initValue: '',
-  labelBefore: NO_END_DATE_LABEL
-},
-{
-  id: 'date_picker',
-  initValue: format(startOfDay(Date.now()), ISO_DATE_FORMAT),
-  labelBefore: DATE_PICKER_END_DATE_LABEL,
-  element: <OpenMrsDatePicker value='' />
-},
-{
-  id: 'after_days',
-  initValue: '21',
-  labelBefore: AFTER_DAYS_BEFORE,
-  element: <InputAfterDays />,
-  labelAfter: AFTER_DAYS_AFTER
-}];
+const elements: InitInput[] = [
+  factory(InputTypeEnum.NO_DATE),
+  factory(InputTypeEnum.DATE_PICKER),
+  factory(InputTypeEnum.AFTER_TIMES)
+];
 
 class PatientTemplateForm extends React.Component<IProps, IState> {
 
@@ -116,6 +96,7 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
           <RadioWrappedContainer
             key={tfv.localId}
             id={tfv.localId}
+            initValue={tfv.value}
             isMandatory={isMandatory}
             label={PATIENT_TEMPLATE_END_DATE}
             fieldName={fieldName}
