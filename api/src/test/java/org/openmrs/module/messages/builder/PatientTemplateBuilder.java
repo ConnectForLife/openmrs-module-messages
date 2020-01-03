@@ -1,16 +1,23 @@
 package org.openmrs.module.messages.builder;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.Relationship;
+import org.openmrs.User;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.Template;
 import org.openmrs.module.messages.api.model.TemplateFieldValue;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public final class PatientTemplateBuilder extends AbstractBuilder<PatientTemplate> {
-    
+
+    private static final int DEFAULT_ACTOR_ID = 1;
+    private static final int DEFAULT_PATIENT_ID = 2;
+    private static final String DEFAULT_SERVICE_QUERY = "SELECT * FROM SERVICE";
+    private static final String DEFAULT_SERVICE_QUERY_TYPE = "SQL";
+
     private Integer id;
     private Person actor;
     private Relationship actorType;
@@ -19,16 +26,18 @@ public final class PatientTemplateBuilder extends AbstractBuilder<PatientTemplat
     private Patient patient;
     private Template template;
     private List<TemplateFieldValue> templateFieldValues = new ArrayList<>();
+    private User creator;
 
     public PatientTemplateBuilder() {
         super();
         id = getInstanceNumber();
-        actor = new Person(1);
+        actor = new PersonBuilder().withId(DEFAULT_ACTOR_ID).build();
         actorType = new RelationshipBuilder().build();
-        serviceQuery = "SELECT * FROM SERVICE";
-        serviceQueryType = "SQL";
-        patient = new Patient(new Person(1)); //TODO:CFLM-248:Consider adding Patient/Person builder
+        serviceQuery = DEFAULT_SERVICE_QUERY;
+        serviceQueryType = DEFAULT_SERVICE_QUERY_TYPE;
+        patient = new PatientBuilder().withId(DEFAULT_PATIENT_ID).build();
         template = new TemplateBuilder().build();
+        creator = new User();
     }
     
     @Override
@@ -42,6 +51,7 @@ public final class PatientTemplateBuilder extends AbstractBuilder<PatientTemplat
         patientTemplate.setPatient(patient);
         patientTemplate.setTemplate(template);
         patientTemplate.setTemplateFieldValues(templateFieldValues);
+        patientTemplate.setCreator(creator);
         return patientTemplate;
     }
     

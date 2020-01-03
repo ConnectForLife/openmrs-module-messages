@@ -3,8 +3,11 @@ package org.openmrs.module.messages.api.mappers;
 import org.apache.commons.lang.NotImplementedException;
 import org.openmrs.module.messages.api.dto.MessageDTO;
 import org.openmrs.module.messages.api.model.PatientTemplate;
+import org.openmrs.module.messages.api.model.Template;
 
-public class MessageMapper extends AbstractMapper<MessageDTO, PatientTemplate> {
+import java.util.List;
+
+public class MessageMapper implements ListMapper<MessageDTO, PatientTemplate> {
 
     private UserMapper userMapper;
 
@@ -19,17 +22,40 @@ public class MessageMapper extends AbstractMapper<MessageDTO, PatientTemplate> {
     }
 
     @Override
-    public MessageDTO toDto(PatientTemplate dao) {
+    public MessageDTO toDto(List<PatientTemplate> daos) {
+        Template sharedTemplate = getSharedTemplate(daos);
         return new MessageDTO(
-                dao.getTemplate().getName(),
-                dao.getDateCreated(),
-                userMapper.toDto(dao.getCreator()),
-                actorScheduleMapper.toDto(dao)
+                sharedTemplate.getName(),
+                sharedTemplate.getDateCreated(),
+                userMapper.toDto(sharedTemplate.getCreator()),
+                actorScheduleMapper.toDtos(daos)
         );
     }
 
     @Override
-    public PatientTemplate fromDto(MessageDTO dto) {
-        throw new NotImplementedException("mapping from MessageDTO to PatientTemplate is not implemented yet");
+    public List<PatientTemplate> fromDto(MessageDTO dto) {
+        throw new NotImplementedException("mapping from MessageDTO to List<PatientTemplate> is not implemented yet");
+    }
+
+    private Template getSharedTemplate(List<PatientTemplate> daos) {
+        validateNotEmpty(daos);
+        validateTemplateIsShared(daos);
+        return daos.get(0).getTemplate();
+    }
+
+    private void validateNotEmpty(List<PatientTemplate> daos) {
+        if (daos.isEmpty()) {
+            throw new IllegalArgumentException("To create one MessageDTO from list of Patient Templates," +
+                    " the list can't be empty!");
+        }
+    }
+
+    private void validateTemplateIsShared(List<PatientTemplate> daos) {
+        for (PatientTemplate patientTemplate : daos) {
+            if (!patientTemplate.getTemplate().equals(daos.get(0).getTemplate())) {
+                throw new IllegalArgumentException("To create one MessageDTO from list of Patient Templates," +
+                        " all of those should be relates dto the same template!");
+            }
+        }
     }
 }

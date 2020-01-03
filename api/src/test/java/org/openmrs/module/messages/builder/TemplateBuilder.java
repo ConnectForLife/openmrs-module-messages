@@ -1,5 +1,6 @@
 package org.openmrs.module.messages.builder;
 
+import org.openmrs.User;
 import org.openmrs.module.messages.api.model.Template;
 
 public final class TemplateBuilder extends AbstractBuilder<Template> {
@@ -8,12 +9,14 @@ public final class TemplateBuilder extends AbstractBuilder<Template> {
     private String serviceQuery;
     private String serviceQueryType;
     private String name;
+    private User creator;
 
     public TemplateBuilder() {
         id = getInstanceNumber();
         serviceQuery = "SELECT * FROM template";
         serviceQueryType = "SQL";
         name = "Example service";
+        creator = new User();
     }
 
     @Override
@@ -23,6 +26,7 @@ public final class TemplateBuilder extends AbstractBuilder<Template> {
         template.setServiceQuery(serviceQuery);
         template.setServiceQueryType(serviceQueryType);
         template.setName(name);
+        template.setCreator(creator);
         return template;
     }
 
