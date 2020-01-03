@@ -89,6 +89,7 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
       patientId={parseInt(this.props.match.params.patientId)}
       actorId={actor ? actor.actorId : parseInt(this.props.match.params.patientId)}
       actorName={actor ? actor.actorName : undefined}
+      actorTypeId={actor ? actor.actorTypeId : undefined}
     />
 
   mapTemplatesToSections = (): Array<FormSection> => {

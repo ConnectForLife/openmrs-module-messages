@@ -44,6 +44,7 @@ interface IReactProps {
   patientId: number;
   actorId: number;
   actorName?: string;
+  actorTypeId?: number;
 }
 
 interface IProps extends IReactProps, DispatchProps {
@@ -79,7 +80,7 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.state = {
-      defaultPatientTemplate: PatientTemplateUI.getNew(props.patientId, props.actorId, props.template)
+      defaultPatientTemplate: PatientTemplateUI.getNew(props.patientId, props.actorId, props.template, props.actorTypeId)
     }
   }
 
