@@ -6,6 +6,7 @@ import org.openmrs.module.messages.Constant;
 import org.openmrs.module.messages.api.dto.PatientTemplateDTO;
 import org.openmrs.module.messages.api.dto.TemplateFieldValueDTO;
 import org.openmrs.module.messages.api.mappers.PatientTemplateMapper;
+import org.openmrs.module.messages.api.model.ChannelType;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 
 import org.openmrs.module.messages.api.service.PatientTemplateService;
@@ -69,12 +70,12 @@ public class PatientTemplateControllerITTest extends BaseModuleWebContextSensiti
     private static final String PATIENT_3_QUERY = "SELECT (*) FROM messages_scheduled_service;";
     private static final String PATIENT_2_QUERY = "SELECT (*) FROM messages_scheduled_service;";
 
-    private static final String PATIENT_3_TEMPLATE_FIELD_VALUE_1_VALUE = "expectedValue";
+    private static final String PATIENT_3_TEMPLATE_FIELD_VALUE_1_VALUE = ChannelType.DEACTIVATED.getName();
     private static final int PATIENT_2_TEMPLATE_FIELD_VALUE_1_ID = 4;
-    private static final String PATIENT_2_TEMPLATE_FIELD_VALUE_1_VALUE = "test value";
+    private static final String PATIENT_2_TEMPLATE_FIELD_VALUE_1_VALUE = ChannelType.CALL.getName();
     private static final String PATIENT_2_TEMPLATE_FIELD_VALUE_1_UUID = "e8f09dc3-0655-486f-af1e-b3c39f39f101";
     private static final int PATIENT_2_TEMPLATE_FIELD_VALUE_2_ID = 5;
-    private static final String PATIENT_2_TEMPLATE_FIELD_VALUE_2_VALUE = "test value 2";
+    private static final String PATIENT_2_TEMPLATE_FIELD_VALUE_2_VALUE = ChannelType.SMS.getName();
     private static final String PATIENT_2_TEMPLATE_FIELD_VALUE_2_UUID = "1c0055b3-b323-4f23-bad6-e75e0362af46";
 
     private static final int NON_EXISTING_PATIENT_ID = 999999;
@@ -287,7 +288,7 @@ public class PatientTemplateControllerITTest extends BaseModuleWebContextSensiti
 
     @Test
     public void shouldBeSavedTogetherWithNestedTemplateFieldValues() throws Exception {
-        final String expectedValue = "expectedValue";
+        final String expectedValue = ChannelType.CALL.getName();
 
         TemplateFieldValueDTO valueDTO = new TemplateFieldValueDTO()
                 .withValue(expectedValue)

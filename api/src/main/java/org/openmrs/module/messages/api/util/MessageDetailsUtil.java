@@ -1,5 +1,7 @@
 package org.openmrs.module.messages.api.util;
 
+import static org.openmrs.module.messages.api.util.ConfigConstants.DEACTIVATED_SCHEDULE_MESSAGE;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -12,7 +14,6 @@ import org.openmrs.module.messages.api.model.Template;
 public final class MessageDetailsUtil {
 
     private static final String DEFAULT_ACTOR_TYPE = "";
-    private static final String DEFAULT_SCHEDULE_STATE = "DEACTIVATED";
 
     public static MessageDetailsDTO attachDefaultTemplates(MessageDetailsDTO messageDetailsDTO,
                                                            List<Template> templates) {
@@ -25,7 +26,8 @@ public final class MessageDetailsUtil {
         for (Template template : templates) {
             if (shouldTemplateBeAdded(messages, template)) {
                 messages.add(new MessageDTO(template.getName(), null, null,
-                    Collections.singletonList(new ActorScheduleDTO(DEFAULT_ACTOR_TYPE, DEFAULT_SCHEDULE_STATE))));
+                    Collections.singletonList(new ActorScheduleDTO(DEFAULT_ACTOR_TYPE,
+                        DEACTIVATED_SCHEDULE_MESSAGE))));
             }
         }
         return new MessageDetailsDTO(messages)

@@ -8,7 +8,7 @@ import org.openmrs.PatientIdentifierType;
 import org.openmrs.PersonName;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.PatientService;
-import org.openmrs.module.messages.api.execution.ChannelType;
+import org.openmrs.module.messages.api.model.ChannelType;
 import org.openmrs.module.messages.api.execution.ExecutionException;
 import org.openmrs.module.messages.api.execution.ServiceExecutor;
 import org.openmrs.module.messages.api.execution.ServiceResult;

@@ -9,11 +9,16 @@ import org.openmrs.api.PatientService;
 import org.openmrs.module.messages.api.dto.ErrorResponseDTO;
 import org.openmrs.module.messages.api.dto.PageDTO;
 import org.openmrs.module.messages.api.dto.PatientTemplateDTO;
+import org.openmrs.module.messages.api.dto.TemplateFieldValueDTO;
 import org.openmrs.module.messages.api.exception.ValidationException;
+import org.openmrs.module.messages.api.model.ChannelType;
 import org.openmrs.module.messages.api.mappers.PatientTemplateMapper;
 import org.openmrs.module.messages.api.model.ErrorMessage;
 import org.openmrs.module.messages.api.model.PatientTemplate;
+import org.openmrs.module.messages.api.model.Template;
+import org.openmrs.module.messages.api.model.TemplateField;
 import org.openmrs.module.messages.api.service.PatientTemplateService;
+import org.openmrs.module.messages.api.service.TemplateService;
 import org.openmrs.module.messages.domain.PagingInfo;
 import org.openmrs.module.messages.domain.criteria.PatientTemplateCriteria;
 import org.openmrs.module.messages.web.model.PageableParams;
@@ -33,6 +38,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import java.util.List;
 
 import static org.openmrs.module.messages.api.model.ErrorMessageEnum.ERR_SYSTEM;
+import static org.openmrs.module.messages.api.model.TemplateFieldType.SERVICE_TYPE;
 
 @Controller
 @RequestMapping("/messages/patient-templates")
@@ -51,6 +57,10 @@ public class PatientTemplateController extends BaseRestController {
     @Autowired
     @Qualifier("messages.patientTemplateMapper")
     private PatientTemplateMapper mapper;
+
+    @Autowired
+    @Qualifier("messages.templateService")
+    private TemplateService templateService;
 
     @RequestMapping(value = "/patient/{id}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
@@ -74,8 +84,9 @@ public class PatientTemplateController extends BaseRestController {
                                                           @RequestBody PatientTemplatesWrapper wrapper)
             throws ValidationException, APIException, StaleStateException {
         validateConsistency(id, wrapper.getPatientTemplates());
+        validatePatientTemplates(wrapper.getPatientTemplates());
         List<PatientTemplate> saved = patientTemplateService.batchSave(
-                mapper.fromDtos(wrapper.getPatientTemplates()), id);
+            mapper.fromDtos(wrapper.getPatientTemplates()), id);
         return new PatientTemplatesWrapper(mapper.toDtos(saved));
     }
 
@@ -96,7 +107,7 @@ public class PatientTemplateController extends BaseRestController {
     }
 
     private void validateConsistency(Integer id, List<PatientTemplateDTO> templates)
-                                     throws ValidationException {
+            throws ValidationException {
         Patient patient = patientService.getPatient(id);
         if (patient == null || patient.getId() == null) {
             throw new ValidationException(
@@ -111,4 +122,40 @@ public class PatientTemplateController extends BaseRestController {
             }
         }
     }
+
+    private void validatePatientTemplates(List<PatientTemplateDTO> templates)
+            throws ValidationException {
+        for (PatientTemplateDTO patientTemplate : templates) {
+            for (TemplateFieldValueDTO tfv : patientTemplate.getTemplateFieldValues()) {
+                Template template = templateService.getById(patientTemplate.getTemplateId());
+                validateTemplateFieldValue(tfv, template.getTemplateFields());
+            }
+        }
+    }
+
+    private void validateTemplateFieldValue(TemplateFieldValueDTO tfv,
+                                            List<TemplateField> templateFields) {
+        for (TemplateField tf : templateFields) {
+            if (tf.getId().equals(tfv.getTemplateFieldId()) && SERVICE_TYPE.equals(tf.getTemplateFieldType())) {
+                validateServiceType(tfv);
+            }
+        }
+    }
+
+    private void validateServiceType(TemplateFieldValueDTO tfv) {
+        boolean isValid;
+        try {
+            ChannelType.fromName(tfv.getValue());
+            isValid = true;
+
+        } catch (Exception ex) {
+            logger.error(ex);
+            isValid = false;
+        }
+        if (!isValid) {
+            throw new ValidationException(String.format("Invalid service type: %s",
+                tfv.getValue()));
+        }
+    }
+
 }

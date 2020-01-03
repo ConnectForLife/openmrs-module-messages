@@ -10,7 +10,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.api.constants.MessagesConstants;
 import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
-import org.openmrs.module.messages.api.execution.ChannelType;
+import org.openmrs.module.messages.api.model.ChannelType;
 import org.openmrs.module.messages.api.model.ScheduledService;
 import org.openmrs.module.messages.api.model.ScheduledServicesExecutionContext;
 import org.openmrs.module.messages.api.service.MessagingService;
@@ -75,10 +75,13 @@ public class ServiceGroupDeliveryJobDefinition extends JobDefinition {
         List<ScheduledService> calls = new ArrayList<>();
 
         for (ScheduledService service : getScheduledServices()) {
-            if (ChannelType.CALL.toString().equals(service.getChannelType())) {
+            if (ChannelType.CALL.getName().equalsIgnoreCase(service.getChannelType())) {
                 calls.add(service);
-            } else if (ChannelType.SMS.toString().equals(service.getChannelType())) {
+            } else if (ChannelType.SMS.getName().equalsIgnoreCase(service.getChannelType())) {
                 smsList.add(service);
+            } else if (ChannelType.DEACTIVATED.getName().equalsIgnoreCase(service.getChannelType())) {
+                LOGGER.info(String.format("Skipped task handling with id %s due to channel " +
+                        "deactivation", taskDefinition.getId()));
             } else {
                 throw new MessagesRuntimeException(
                     String.format("Unsupported channel: %s", service.getChannelType()));

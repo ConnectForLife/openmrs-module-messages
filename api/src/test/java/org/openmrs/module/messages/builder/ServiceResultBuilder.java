@@ -9,7 +9,7 @@
 
 package org.openmrs.module.messages.builder;
 
-import org.openmrs.module.messages.api.execution.ChannelType;
+import org.openmrs.module.messages.api.model.ChannelType;
 import org.openmrs.module.messages.api.execution.ServiceResult;
 
 import java.util.Date;

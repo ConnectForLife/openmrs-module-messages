@@ -1,9 +1,12 @@
 package org.openmrs.module.messages.api.util;
 
+import static org.openmrs.module.messages.api.util.ConfigConstants.DEACTIVATED_SCHEDULE_MESSAGE;
+
 import java.util.Arrays;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.module.messages.api.dto.ActorScheduleDTO;
+import org.openmrs.module.messages.api.model.ChannelType;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.TemplateFieldType;
 import org.openmrs.module.messages.api.model.TemplateFieldValue;
@@ -17,6 +20,7 @@ public class ActorScheduleBuildingUtilTest {
     private static final String TEST_DATE_2 = "2019-12-11";
     private static final String TEST_OUTPUT_DATE_1 = "07 Dec 2019";
     private static final String TEST_OUTPUT_DATE_2 = "11 Dec 2019";
+    public static final String SMS_TYPE = "SMS";
 
     @Test
     public void shouldBuildActorScheduleWithNotNullScheduleString() {
@@ -32,8 +36,10 @@ public class ActorScheduleBuildingUtilTest {
     public void shouldBuildStartDateSchedule() {
         TemplateFieldValue tfv = buildTemplateFieldWithValue(TemplateFieldType.START_OF_MESSAGES,
             TEST_DATE_1);
+        TemplateFieldValue tfv2 = buildTemplateFieldWithValue(TemplateFieldType.SERVICE_TYPE,
+            SMS_TYPE);
         PatientTemplate patientTemplate = new PatientTemplateBuilder()
-            .withTemplateFieldValues(Arrays.asList(tfv))
+            .withTemplateFieldValues(Arrays.asList(tfv, tfv2))
             .build();
 
         ActorScheduleDTO schedule = ActorScheduleBuildingUtil.build(patientTemplate);
@@ -42,11 +48,28 @@ public class ActorScheduleBuildingUtilTest {
     }
 
     @Test
+    public void shouldBuildDeactivated() {
+        TemplateFieldValue tfv = buildTemplateFieldWithValue(TemplateFieldType.START_OF_MESSAGES,
+            TEST_DATE_1);
+        TemplateFieldValue tfv2 = buildTemplateFieldWithValue(TemplateFieldType.SERVICE_TYPE,
+            ChannelType.DEACTIVATED.getName());
+        PatientTemplate patientTemplate = new PatientTemplateBuilder()
+            .withTemplateFieldValues(Arrays.asList(tfv, tfv2))
+            .build();
+
+        ActorScheduleDTO schedule = ActorScheduleBuildingUtil.build(patientTemplate);
+
+        Assert.assertEquals(DEACTIVATED_SCHEDULE_MESSAGE, schedule.getSchedule());
+    }
+
+    @Test
     public void shouldBuildEndDateSchedule() {
         TemplateFieldValue tfv = buildTemplateFieldWithValue(TemplateFieldType.END_OF_MESSAGES,
             TEST_DATE_2);
+        TemplateFieldValue tfv2 = buildTemplateFieldWithValue(TemplateFieldType.SERVICE_TYPE,
+            SMS_TYPE);
         PatientTemplate patientTemplate = new PatientTemplateBuilder()
-            .withTemplateFieldValues(Arrays.asList(tfv))
+            .withTemplateFieldValues(Arrays.asList(tfv, tfv2))
             .build();
 
         ActorScheduleDTO schedule = ActorScheduleBuildingUtil.build(patientTemplate);
@@ -60,8 +83,10 @@ public class ActorScheduleBuildingUtilTest {
             TEST_DATE_1);
         TemplateFieldValue tfv2 = buildTemplateFieldWithValue(TemplateFieldType.END_OF_MESSAGES,
             TEST_DATE_2);
+        TemplateFieldValue tfv3 = buildTemplateFieldWithValue(TemplateFieldType.SERVICE_TYPE,
+            SMS_TYPE);
         PatientTemplate patientTemplate = new PatientTemplateBuilder()
-            .withTemplateFieldValues(Arrays.asList(tfv2, tfv1))
+            .withTemplateFieldValues(Arrays.asList(tfv2, tfv1, tfv3))
             .build();
 
         ActorScheduleDTO schedule = ActorScheduleBuildingUtil.build(patientTemplate);

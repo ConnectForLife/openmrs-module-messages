@@ -1,5 +1,6 @@
 package org.openmrs.module.messages.api.execution;
 
+import org.openmrs.module.messages.api.model.ChannelType;
 import org.openmrs.module.messages.api.model.Range;
 import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Test;

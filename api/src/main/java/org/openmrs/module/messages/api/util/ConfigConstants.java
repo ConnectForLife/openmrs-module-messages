@@ -77,6 +77,8 @@ public final class ConfigConstants {
             + "set according to the time when the system gets registerAttempt response from the service plus the "
             + "number of second expressed in the value of this property.";
 
+    public static final String DEACTIVATED_SCHEDULE_MESSAGE = "DEACTIVATED";
+
     private ConfigConstants() {
     }
 }

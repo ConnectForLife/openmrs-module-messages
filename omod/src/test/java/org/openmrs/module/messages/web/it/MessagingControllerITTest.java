@@ -14,7 +14,7 @@ import org.openmrs.module.messages.api.dao.TemplateDao;
 import org.openmrs.module.messages.api.dto.MessageDTO;
 import org.openmrs.module.messages.api.dto.MessageDetailsDTO;
 import org.openmrs.module.messages.api.dto.PageDTO;
-import org.openmrs.module.messages.api.execution.ChannelType;
+import org.openmrs.module.messages.api.model.ChannelType;
 import org.openmrs.module.messages.api.execution.ServiceResult;
 import org.openmrs.module.messages.api.execution.ServiceResultList;
 import org.openmrs.module.messages.api.model.PatientTemplate;
