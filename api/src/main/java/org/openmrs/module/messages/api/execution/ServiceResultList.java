@@ -113,6 +113,11 @@ public class ServiceResultList implements Serializable {
         return results;
     }
 
+    public ServiceResultList withResults(List<ServiceResult> results) {
+        this.results = results;
+        return this;
+    }
+
     public void setResults(List<ServiceResult> results) {
         this.results = results;
     }

@@ -1,16 +1,16 @@
 package org.openmrs.module.messages.api.execution;
 
-import org.junit.Test;
-import org.openmrs.module.messages.builder.DateBuilder;
-import org.openmrs.module.messages.builder.ServiceResultBuilder;
-import org.openmrs.module.messages.builder.ServiceResultListBuilder;
+import static org.junit.Assert.assertEquals;
+import static org.openmrs.module.messages.api.execution.ServiceResultGroupHelper.groupByActorAndExecutionDate;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.openmrs.module.messages.api.execution.ServiceResultGroupHelper.groupByActorAndExecutionDate;
+import org.junit.Test;
+import org.openmrs.module.messages.api.model.types.ServiceStatus;
+import org.openmrs.module.messages.builder.DateBuilder;
+import org.openmrs.module.messages.builder.ServiceResultBuilder;
+import org.openmrs.module.messages.builder.ServiceResultListBuilder;
 
 @SuppressWarnings("checkstyle:magicnumber")
 public class ServiceResultGroupHelperTest {
@@ -31,10 +31,32 @@ public class ServiceResultGroupHelperTest {
         input.add(new ServiceResultListBuilder().withServiceResults(3, date)
                 .withActorId(ACTOR_2_ID).build());
 
-        List<GroupedServiceResultList> result = groupByActorAndExecutionDate(input);
+        List<GroupedServiceResultList> result = groupByActorAndExecutionDate(input, false);
         assertEquals(2, result.size());
         assertEquals(1, getResultsFor(result, ACTOR_1_ID, date).size());
         assertEquals(3, getResultsFor(result, ACTOR_2_ID, date).size());
+    }
+
+    @Test
+    public void shouldGetOnlyFutureServicesWhenFlagIsSet() {
+        Date date = getDate();
+
+        List<ServiceResultList> input = getServiceResultListsWithOneFutureAndOnePendingStatus(date, ACTOR_1_ID);
+
+        List<GroupedServiceResultList> result = groupByActorAndExecutionDate(input, true);
+        assertEquals(1, result.size());
+        assertEquals(1, getResultsFor(result, ACTOR_1_ID, date).size());
+    }
+
+    @Test
+    public void shouldNotFilterServicesWhenGetOnlyFutureServicesFlagIsNotSet() {
+        Date date = getDate();
+
+        List<ServiceResultList> input = getServiceResultListsWithOneFutureAndOnePendingStatus(date, ACTOR_1_ID);
+
+        List<GroupedServiceResultList> result = groupByActorAndExecutionDate(input, false);
+        assertEquals(1, result.size());
+        assertEquals(2, getResultsFor(result, ACTOR_1_ID, date).size());
     }
 
     @Test
@@ -52,7 +74,7 @@ public class ServiceResultGroupHelperTest {
         input.add(new ServiceResultListBuilder().withServiceResults(results)
                 .withActorId(ACTOR_1_ID).build());
 
-        List<GroupedServiceResultList> result = groupByActorAndExecutionDate(input);
+        List<GroupedServiceResultList> result = groupByActorAndExecutionDate(input, false);
         assertEquals(2, result.size());
         assertEquals(2, getResultsFor(result, ACTOR_1_ID, date).size());
         assertEquals(1, getResultsFor(result, ACTOR_1_ID, datePlusOneSec).size());
@@ -77,7 +99,7 @@ public class ServiceResultGroupHelperTest {
         input.add(new ServiceResultListBuilder().withServiceResults(resultsForActor2)
                 .withActorId(ACTOR_2_ID).build());
 
-        List<GroupedServiceResultList> result = groupByActorAndExecutionDate(input);
+        List<GroupedServiceResultList> result = groupByActorAndExecutionDate(input, false);
         assertEquals(4, result.size());
         assertEquals(1, getResultsFor(result, ACTOR_1_ID, date).size());
         assertEquals(1, getResultsFor(result, ACTOR_1_ID, datePlusOneSec).size());
@@ -100,7 +122,7 @@ public class ServiceResultGroupHelperTest {
         input.add(new ServiceResultListBuilder().withServiceResults(results)
                 .withActorId(ACTOR_1_ID).build());
 
-        List<GroupedServiceResultList> result = groupByActorAndExecutionDate(input);
+        List<GroupedServiceResultList> result = groupByActorAndExecutionDate(input, false);
         assertEquals(2, result.size());
         assertEquals(1, getResultsFor(result, ACTOR_1_ID, date).size());
         assertEquals(2, getResultsFor(result, ACTOR_1_ID, datePlusOneDay).size());
@@ -116,7 +138,7 @@ public class ServiceResultGroupHelperTest {
         input.add(new ServiceResultListBuilder().withServiceResults(emptyResults)
                 .withActorId(ACTOR_2_ID).build());
 
-        List<GroupedServiceResultList> result = groupByActorAndExecutionDate(input);
+        List<GroupedServiceResultList> result = groupByActorAndExecutionDate(input, false);
         assertEquals(0, result.size());
     }
 
@@ -128,7 +150,7 @@ public class ServiceResultGroupHelperTest {
         input.add(new ServiceResultListBuilder().withServiceResults(3, date)
                 .withActorId(ACTOR_1_ID).build());
 
-        List<GroupedServiceResultList> result = groupByActorAndExecutionDate(input);
+        List<GroupedServiceResultList> result = groupByActorAndExecutionDate(input, false);
         assertEquals(1, result.size());
         assertEquals(3, result.get(0).getGroup().getResults().size());
         for (ServiceResult entry : getResultsFor(result, ACTOR_1_ID, date)) {
@@ -144,7 +166,7 @@ public class ServiceResultGroupHelperTest {
         input.add(new ServiceResultListBuilder().withServiceResults(3, date)
                 .withActorId(ACTOR_1_ID).build());
 
-        List<GroupedServiceResultList> result = groupByActorAndExecutionDate(input);
+        List<GroupedServiceResultList> result = groupByActorAndExecutionDate(input, false);
         assertEquals(1, result.size());
         assertEquals(3, result.get(0).getGroup().getResults().size());
         for (GroupedServiceResultList group : result) {
@@ -168,9 +190,20 @@ public class ServiceResultGroupHelperTest {
                 .withServiceName("Adherence Daily")
                 .build());
 
-        List<GroupedServiceResultList> result = groupByActorAndExecutionDate(input);
+        List<GroupedServiceResultList> result = groupByActorAndExecutionDate(input, false);
         assertEquals(1, result.size());
         assertEquals(2, getResultsFor(result, ACTOR_1_ID, date).size());
+    }
+
+    private List<ServiceResultList> getServiceResultListsWithOneFutureAndOnePendingStatus(Date date, int actorId) {
+        List<ServiceResultList> input = new ArrayList<>();
+
+        input.add(new ServiceResultListBuilder().withServiceResults(2, date)
+                .withActorId(actorId).build());
+
+        input.get(0).getResults().get(0).setServiceStatus(ServiceStatus.PENDING);
+        input.get(0).getResults().get(1).setServiceStatus(ServiceStatus.FUTURE);
+        return input;
     }
 
     private List<ServiceResult> getResultsFor(List<GroupedServiceResultList> input, int actorId, Date executionDate) {

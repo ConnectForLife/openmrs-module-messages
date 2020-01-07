@@ -1,10 +1,10 @@
 package org.openmrs.module.messages.api.scheduler.job;
 
+import com.google.gson.Gson;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import com.google.gson.Gson;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
@@ -66,7 +66,7 @@ public class ServiceGroupDeliveryJobDefinition extends JobDefinition {
 
     @Override
     public Map<String, String> getProperties() {
-        return Collections.singletonMap(EXECUTION_CONTEXT, gson.toJson(executionContext));
+        return wrapByMap(EXECUTION_CONTEXT, gson.toJson(executionContext));
     }
 
     private void handleGroupedResults() {
@@ -114,5 +114,11 @@ public class ServiceGroupDeliveryJobDefinition extends JobDefinition {
         return Context.getRegisteredComponent(
                 MessagesConstants.MESSAGING_SERVICE,
                 MessagingService.class);
+    }
+
+    private Map<String, String> wrapByMap(String key, String value) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put(key, value);
+        return map;
     }
 }

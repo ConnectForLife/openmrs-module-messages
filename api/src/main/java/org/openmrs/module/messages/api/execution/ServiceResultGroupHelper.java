@@ -5,13 +5,41 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.openmrs.module.messages.api.model.types.ServiceStatus;
 
 public final class ServiceResultGroupHelper {
 
-    public static List<GroupedServiceResultList> groupByActorAndExecutionDate(List<ServiceResultList> input) {
-        List<ActorServiceResultList> groupedByActor = groupByActor(input);
+    public static List<GroupedServiceResultList> groupByActorAndExecutionDate(List<ServiceResultList> input,
+            boolean getOnlyFutureServices) {
+        List<ServiceResultList> serviceResultLists = input;
+        if (getOnlyFutureServices) {
+            serviceResultLists = filterOnlyFuture(input);
+        }
+        List<ActorServiceResultList> groupedByActor = groupByActor(serviceResultLists);
         List<GroupedServiceResultList> resultGroups = groupByExecutionDate(groupedByActor);
         return connectTheSameGroups(resultGroups);
+    }
+
+    private static List<ServiceResultList> filterOnlyFuture(List<ServiceResultList> input) {
+        List<ServiceResultList> result = new ArrayList<>();
+
+        for (ServiceResultList srl : input) {
+            result.add(ServiceResultList
+                    .withEmptyResults(srl)
+                    .withResults(filterOnlyFutureResults(srl.getResults())));
+        }
+
+        return result;
+    }
+
+    private static List<ServiceResult> filterOnlyFutureResults(List<ServiceResult> serviceResults) {
+        List<ServiceResult> result = new ArrayList<>();
+        for (ServiceResult sr : serviceResults) {
+            if (ServiceStatus.FUTURE.equals(sr.getServiceStatus())) {
+                result.add(sr);
+            }
+        }
+        return result;
     }
 
     private static List<GroupedServiceResultList> connectTheSameGroups(List<GroupedServiceResultList> input) {

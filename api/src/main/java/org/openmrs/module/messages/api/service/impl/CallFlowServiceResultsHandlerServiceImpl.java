@@ -9,17 +9,6 @@
 
 package org.openmrs.module.messages.api.service.impl;
 
-import com.google.gson.Gson;
-import org.openmrs.module.messages.api.event.MessagesEvent;
-import org.openmrs.module.messages.api.model.ScheduledService;
-import org.openmrs.module.messages.api.model.ScheduledServicesExecutionContext;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import static org.openmrs.module.messages.api.constants.MessagesConstants.CALLFLOWS_DEFAULT_CONFIG;
 import static org.openmrs.module.messages.api.constants.MessagesConstants.CALLFLOWS_DEFAULT_FLOW;
 import static org.openmrs.module.messages.api.event.CallFlowParamConstants.ADDITIONAL_PARAMS;
@@ -29,17 +18,36 @@ import static org.openmrs.module.messages.api.event.CallFlowParamConstants.PHONE
 import static org.openmrs.module.messages.api.event.CallFlowParamConstants.SERVICES;
 import static org.openmrs.module.messages.api.event.CallFlowParamConstants.SERVICE_OBJECTS;
 
+import com.google.gson.Gson;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openmrs.module.messages.api.event.MessagesEvent;
+import org.openmrs.module.messages.api.model.ScheduledService;
+import org.openmrs.module.messages.api.model.ScheduledServicesExecutionContext;
+
 public class CallFlowServiceResultsHandlerServiceImpl extends AbstractServiceResultsHandlerService {
     private static final String CALL_FLOW_INITIATE_CALL_EVENT = "callflows-call-initiate";
 
+    private static final Log LOG = LogFactory.getLog(CallFlowServiceResultsHandlerServiceImpl.class);
+
     @Override
-    public void handle(List<ScheduledService> results, ScheduledServicesExecutionContext executionContext) {
-        triggerEvent(results, executionContext);
+    public void handle(List<ScheduledService> callServices, ScheduledServicesExecutionContext executionContext) {
+        triggerEvent(callServices, executionContext);
     }
 
-    private void triggerEvent(List<ScheduledService> results, ScheduledServicesExecutionContext executionContext) {
-        MessagesEvent messagesEvent = buildMessage(results, executionContext);
-        sendEventMessage(messagesEvent);
+    private void triggerEvent(List<ScheduledService> callServices, ScheduledServicesExecutionContext executionContext) {
+        if (callServices.isEmpty()) {
+            LOG.info(String.format("Handling of callflow for actor: %s, executionDate: %s has been skipped because "
+                    + "of empty services list", executionContext.getActorId(), executionContext.getExecutionDate()));
+        } else {
+            MessagesEvent messagesEvent = buildMessage(callServices, executionContext);
+            sendEventMessage(messagesEvent);
+        }
     }
 
     private MessagesEvent buildMessage(List<ScheduledService> callServices,
@@ -55,9 +63,6 @@ public class CallFlowServiceResultsHandlerServiceImpl extends AbstractServiceRes
         additionalParams.put(SERVICE_OBJECTS, new Gson().toJson(services));
         additionalParams.put(SERVICES, extractNameList(services));
         additionalParams.put(PHONE, personPhone);
-
-        // most probably SERVICE_NAME is not needed. It will be provided by SERVICES.
-        // additionalParams.put(SERVICE_NAME, group.getGroup().getServiceName());
 
         params.put(ADDITIONAL_PARAMS, additionalParams);
 

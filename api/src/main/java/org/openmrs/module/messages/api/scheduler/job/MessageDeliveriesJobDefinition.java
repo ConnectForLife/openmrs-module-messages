@@ -45,7 +45,7 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
                 DateUtil.getDatePlusSeconds(getTaskDefinition().getRepeatInterval()));
 
             List<GroupedServiceResultList> groupedResults = ServiceResultGroupHelper
-                .groupByActorAndExecutionDate(results);
+                .groupByActorAndExecutionDate(results, true);
 
             for (GroupedServiceResultList groupedResult : groupedResults) {
                 scheduleTaskForActivePerson(groupedResult);
