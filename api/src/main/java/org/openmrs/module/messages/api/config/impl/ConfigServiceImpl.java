@@ -9,6 +9,7 @@
 
 package org.openmrs.module.messages.api.config.impl;
 
+import org.apache.commons.lang.StringUtils;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.api.config.ConfigService;
 import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
@@ -17,6 +18,8 @@ import org.openmrs.module.messages.api.strategy.ReschedulingStrategy;
 import org.openmrs.module.messages.api.util.ConfigConstants;
 
 public class ConfigServiceImpl implements ConfigService {
+
+    private static final String TRUE = "true";
 
     @Override
     public ReschedulingStrategy getReschedulingStrategy() {
@@ -33,6 +36,13 @@ public class ConfigServiceImpl implements ConfigService {
     @Override
     public int getTimeIntervalToNextReschedule() {
         return getIntGp(ConfigConstants.TIME_INTERVAL_TO_NEXT_RESCHEDULE_KEY);
+    }
+
+    @Override
+    public boolean isConsentControlEnabled() {
+        return StringUtils.equalsIgnoreCase(
+                TRUE,
+                Context.getAdministrationService().getGlobalProperty(ConfigConstants.CONSENT_CONTROL_KEY));
     }
 
     @Override

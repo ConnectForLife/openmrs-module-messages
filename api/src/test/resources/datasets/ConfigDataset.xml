@@ -19,4 +19,9 @@
             property="messages.timeIntervalToNextReschedule"
             property_value="900"
             uuid="33b40777-4c60-483d-8df1-489d22fb6e37"/>
+
+    <global_property
+            property="message.consent.validation"
+            property_value="true"
+            uuid="93b40777-4c60-483d-8df1-489d22fb6e37"/>
 </dataset>

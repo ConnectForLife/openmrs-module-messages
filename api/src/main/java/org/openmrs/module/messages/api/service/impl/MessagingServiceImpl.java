@@ -99,20 +99,6 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
         return scheduledService;
     }
 
-    private List<ServiceResultList> retrieveAllServiceExecutions(List<PatientTemplate> patientTemplates, Date startDate,
-                                                                 Date endDate)
-            throws ExecutionException {
-
-        Range<Date> dateRange = new Range<>(startDate, endDate);
-
-        List<ServiceResultList> results = new ArrayList<>();
-        for (PatientTemplate patientTemplate  : patientTemplates) {
-            results.add(serviceExecutor.execute(patientTemplate, dateRange));
-        }
-
-        return results;
-    }
-
     public void setConceptService(ConceptService conceptService) {
         this.conceptService = conceptService;
     }
@@ -131,5 +117,19 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
 
     public void setConfigService(ConfigService configService) {
         this.configService = configService;
+    }
+
+    private List<ServiceResultList> retrieveAllServiceExecutions(List<PatientTemplate> patientTemplates, Date startDate,
+                                                                 Date endDate)
+            throws ExecutionException {
+
+        Range<Date> dateRange = new Range<>(startDate, endDate);
+
+        List<ServiceResultList> results = new ArrayList<>();
+        for (PatientTemplate patientTemplate  : patientTemplates) {
+            results.add(serviceExecutor.execute(patientTemplate, dateRange));
+        }
+
+        return results;
     }
 }

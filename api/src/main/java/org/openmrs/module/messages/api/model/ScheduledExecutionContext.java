@@ -1,3 +1,12 @@
+/* * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+
 package org.openmrs.module.messages.api.model;
 
 import java.io.Serializable;
@@ -8,12 +17,9 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.openmrs.Person;
 import org.openmrs.module.messages.api.util.OpenmrsObjectUtil;
 
-public class ScheduledServicesExecutionContext implements Serializable {
+public class ScheduledExecutionContext implements Serializable {
 
     private static final long serialVersionUID = 7043667008864304408L;
-
-    private static final int INITIAL_NON_ZERO_ODD_NUMBER = 17;
-    private static final int MULTIPLIER_NON_ZERO_ODD_NUMBER = 37;
 
     private List<Integer> serviceIdsToExecute;
 
@@ -21,8 +27,8 @@ public class ScheduledServicesExecutionContext implements Serializable {
 
     private int actorId;
 
-    public ScheduledServicesExecutionContext(List<ScheduledService> scheduledServices,
-                                             Date executionDate, Person actor) {
+    public ScheduledExecutionContext(List<ScheduledService> scheduledServices,
+                                     Date executionDate, Person actor) {
         this.serviceIdsToExecute = OpenmrsObjectUtil.getIds(scheduledServices);
         this.executionDate = executionDate;
         this.actorId = actor.getId();
@@ -49,21 +55,11 @@ public class ScheduledServicesExecutionContext implements Serializable {
             return false;
         }
 
-        ScheduledServicesExecutionContext that = (ScheduledServicesExecutionContext) o;
-
-        return new EqualsBuilder()
-                .append(actorId, that.actorId)
-                .append(serviceIdsToExecute, that.serviceIdsToExecute)
-                .append(executionDate, that.executionDate)
-                .isEquals();
+        return EqualsBuilder.reflectionEquals(this, o);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(INITIAL_NON_ZERO_ODD_NUMBER, MULTIPLIER_NON_ZERO_ODD_NUMBER)
-                .append(serviceIdsToExecute)
-                .append(executionDate)
-                .append(actorId)
-                .toHashCode();
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 }

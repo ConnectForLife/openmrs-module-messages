@@ -63,7 +63,7 @@
 				<!-- fixes the issue: https://github.com/h2database/h2database/issues/388-->
 				<groupId>com.vividsolutions</groupId>
 				<artifactId>jts-core</artifactId>
-				<version>1.14.0</version>
+				<version>${jtsCoreVersion}</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
@@ -319,5 +319,6 @@
 		<javax.servlet.version>3.0.1</javax.servlet.version>
 		<uiframeworkVersion>3.9</uiframeworkVersion>
 		<eventVersion>2.6.0</eventVersion>
+		<jtsCoreVersion>1.14.0</jtsCoreVersion>
 	</properties>
 </project>

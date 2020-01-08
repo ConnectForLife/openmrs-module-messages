@@ -14,6 +14,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Person;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.messages.api.config.ConfigService;
 import org.openmrs.module.messages.api.constants.MessagesConstants;
 import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
 import org.openmrs.module.messages.api.execution.ExecutionException;
@@ -23,7 +24,7 @@ import org.openmrs.module.messages.api.execution.ServiceResultList;
 import org.openmrs.module.messages.api.mappers.ScheduledGroupMapper;
 import org.openmrs.module.messages.api.model.PersonStatus;
 import org.openmrs.module.messages.api.model.ScheduledServiceGroup;
-import org.openmrs.module.messages.api.model.ScheduledServicesExecutionContext;
+import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
 import org.openmrs.module.messages.api.service.MessagesDeliveryService;
 import org.openmrs.module.messages.api.service.MessagingGroupService;
 import org.openmrs.module.messages.api.service.MessagingService;
@@ -73,22 +74,36 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
 
     private void scheduleTaskForActivePerson(GroupedServiceResultList groupedResult) {
         Person person = getPersonService().getPerson(groupedResult.getActorWithExecutionDate().getActorId());
-        if (PersonStatus.isActive(person)) {
+        if (isConsentControlDisabled() || isActive(person)) {
             ScheduledServiceGroup group = convertAndSave(groupedResult);
-            getDeliveryService().scheduleDelivery(new ScheduledServicesExecutionContext(
+            getDeliveryService().scheduleDelivery(new ScheduledExecutionContext(
                     group.getScheduledServices(),
                     groupedResult.getActorWithExecutionDate().getDate(),
                     group.getActor()
             ));
-        } else {
-            LOGGER.warn("Status of a person with id=" + person.getId() + " is not active, " +
-                    "so no service execution events will be sent");
         }
     }
 
     private ScheduledServiceGroup convertAndSave(GroupedServiceResultList groupedResult) {
         ScheduledServiceGroup group = getGroupMapper().fromDto(groupedResult);
         return getGroupService().saveOrUpdate(group);
+    }
+
+    private boolean isActive(Person person) {
+        boolean isActive =  PersonStatus.isActive(person);
+        if (!isActive) {
+            LOGGER.warn(String.format("Status of a person with id=%d is not active, "
+                    + "so no service execution events will be sent", person.getId()));
+        }
+        return isActive;
+    }
+
+    private boolean isConsentControlDisabled() {
+        boolean isControl = getConfigService().isConsentControlEnabled();
+        if (!isControl) {
+            LOGGER.debug("Consent control is not enabled. Skipping validation...");
+        }
+        return !isControl;
     }
 
     private MessagingService getMessagingService() {
@@ -114,5 +129,10 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
     private PersonService getPersonService() {
         return Context.getRegisteredComponent(
                 MessagesConstants.PERSON_SERVICE, PersonService.class);
+    }
+
+    private ConfigService getConfigService() {
+        return Context.getRegisteredComponent(
+                MessagesConstants.CONFIG_SERVICE, ConfigService.class);
     }
 }

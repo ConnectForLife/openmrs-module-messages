@@ -1,3 +1,12 @@
+/* * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+
 package org.openmrs.module.messages.api.scheduler.job;
 
 import com.google.gson.Gson;
@@ -12,7 +21,7 @@ import org.openmrs.module.messages.api.constants.MessagesConstants;
 import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
 import org.openmrs.module.messages.api.model.ChannelType;
 import org.openmrs.module.messages.api.model.ScheduledService;
-import org.openmrs.module.messages.api.model.ScheduledServicesExecutionContext;
+import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
 import org.openmrs.module.messages.api.service.MessagingService;
 import org.openmrs.module.messages.api.service.ServiceResultsHandlerService;
 import org.openmrs.module.messages.api.util.MapperUtil;
@@ -27,13 +36,13 @@ public class ServiceGroupDeliveryJobDefinition extends JobDefinition {
 
     private final Gson gson = MapperUtil.getGson();
 
-    private ScheduledServicesExecutionContext executionContext;
+    private ScheduledExecutionContext executionContext;
 
     public ServiceGroupDeliveryJobDefinition() {
         // initiated by scheduler
     }
 
-    public ServiceGroupDeliveryJobDefinition(ScheduledServicesExecutionContext executionContext) {
+    public ServiceGroupDeliveryJobDefinition(ScheduledExecutionContext executionContext) {
         this.executionContext = executionContext;
     }
 
@@ -41,7 +50,7 @@ public class ServiceGroupDeliveryJobDefinition extends JobDefinition {
     public void execute() {
         // Firstly, we need to initialize object fields basing on the saved properties
         executionContext = gson.fromJson(taskDefinition.getProperties().get(EXECUTION_CONTEXT),
-                ScheduledServicesExecutionContext.class);
+                ScheduledExecutionContext.class);
         LOGGER.info(String.format("Started task with id %s", taskDefinition.getId()));
         handleGroupedResults();
     }
@@ -70,7 +79,6 @@ public class ServiceGroupDeliveryJobDefinition extends JobDefinition {
     }
 
     private void handleGroupedResults() {
-
         List<ScheduledService> smsList = new ArrayList<>();
         List<ScheduledService> calls = new ArrayList<>();
 

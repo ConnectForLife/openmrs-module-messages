@@ -20,25 +20,25 @@ import java.util.List;
 import java.util.Map;
 import org.openmrs.module.messages.api.event.MessagesEvent;
 import org.openmrs.module.messages.api.model.ScheduledService;
-import org.openmrs.module.messages.api.model.ScheduledServicesExecutionContext;
+import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
 
 public class SmsServiceResultsHandlerServiceImpl extends AbstractServiceResultsHandlerService {
 
     private static final String SMS_INITIATE_EVENT = "send_sms";
 
     @Override
-    public void handle(List<ScheduledService> smsServices, ScheduledServicesExecutionContext executionContext) {
+    public void handle(List<ScheduledService> smsServices, ScheduledExecutionContext executionContext) {
         for (ScheduledService service : smsServices) {
             triggerEvent(service, executionContext);
         }
     }
 
-    private void triggerEvent(ScheduledService smsService, ScheduledServicesExecutionContext executionContext) {
+    private void triggerEvent(ScheduledService smsService, ScheduledExecutionContext executionContext) {
         MessagesEvent messagesEvent = buildMessage(smsService, executionContext);
         sendEventMessage(messagesEvent);
     }
 
-    private MessagesEvent buildMessage(ScheduledService smsService, ScheduledServicesExecutionContext executionContext) {
+    private MessagesEvent buildMessage(ScheduledService smsService, ScheduledExecutionContext executionContext) {
         Map<String, Object> params = new HashMap<>();
         params.put(MESSAGE_ID, smsService.getId());
         params.put(RECIPIENTS, getPersonPhone(executionContext.getActorId()));

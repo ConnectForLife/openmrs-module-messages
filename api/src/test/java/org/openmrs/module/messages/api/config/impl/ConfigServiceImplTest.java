@@ -1,4 +1,16 @@
+/* * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+
 package org.openmrs.module.messages.api.config.impl;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -7,9 +19,6 @@ import org.openmrs.module.messages.api.config.ConfigService;
 import org.openmrs.module.messages.api.strategy.ReschedulingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 
 public class ConfigServiceImplTest extends ContextSensitiveTest {
 
@@ -25,6 +34,7 @@ public class ConfigServiceImplTest extends ContextSensitiveTest {
     private static final int EXPECTED_MAX_NUMBER_OF_RESCHEDULING = 3;
 
     private static final int EXPECTED_TIME_INTERVAL_TO_NEXT_RESCHEDULE = 900;
+    public static final boolean EXPECTED_IS_CONSENT_CONTROL_ENABLED = true;
 
     @Autowired(required = false)
     @Qualifier(EXPECTED_RESCHEDULING_STRATEGY)
@@ -56,6 +66,12 @@ public class ConfigServiceImplTest extends ContextSensitiveTest {
     public void shouldReturnExpectedTimeIntervalToNextReschedule() {
         int actual = configService.getTimeIntervalToNextReschedule();
         assertThat(actual, is(EXPECTED_TIME_INTERVAL_TO_NEXT_RESCHEDULE));
+    }
+
+    @Test
+    public void shouldReturnIfConsentControlIsEnabledWhenSetGpToTrue() {
+        boolean actual = configService.isConsentControlEnabled();
+        assertThat(actual, is(EXPECTED_IS_CONSENT_CONTROL_ENABLED));
     }
 
     @Test

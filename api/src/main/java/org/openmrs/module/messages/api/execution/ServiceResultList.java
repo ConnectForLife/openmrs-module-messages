@@ -57,13 +57,13 @@ public class ServiceResultList implements Serializable {
 
         resultList.setPatientId(patientTemplate.getPatient().getPatientId());
         resultList.setActorId(patientTemplate.getActor().getPersonId());
-        // at this moment is is always set to 0 - it should not be in ServiceResultList
+        // TODO: at this moment is is always set to 0 - it should not be in ServiceResultList
         resultList.setServiceId(patientTemplate.getServiceId());
 
         resultList.setStartDate(dateRange.getStart());
         resultList.setEndDate(dateRange.getEnd());
 
-        // most probably it does point to incorrect value - it should not be in ServiceResultList
+        // TODO: most probably it does point to incorrect value - it should not be in ServiceResultList
         resultList.setServiceName(patientTemplate.getTemplate().getName());
 
         return resultList;

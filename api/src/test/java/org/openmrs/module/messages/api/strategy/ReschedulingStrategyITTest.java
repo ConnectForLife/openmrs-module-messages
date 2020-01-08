@@ -17,7 +17,7 @@ import org.mockito.Captor;
 import org.openmrs.module.messages.ContextSensitiveTest;
 import org.openmrs.module.messages.api.model.DeliveryAttempt;
 import org.openmrs.module.messages.api.model.ScheduledService;
-import org.openmrs.module.messages.api.model.ScheduledServicesExecutionContext;
+import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
 import org.openmrs.module.messages.api.service.MessagingService;
 import org.openmrs.module.messages.api.util.MapperUtil;
 import org.openmrs.module.messages.builder.DateBuilder;
@@ -91,7 +91,7 @@ public class ReschedulingStrategyITTest extends ContextSensitiveTest {
         assertNotNull(task);
         assertEquals(NEVER_REPEAT, task.getRepeatInterval());
 
-        ScheduledServicesExecutionContext executionContext = getExecutionContext(task);
+        ScheduledExecutionContext executionContext = getExecutionContext(task);
         assertEquals(failedScheduledService.getGroup().getActor().getId().intValue(), executionContext.getActorId());
         assertEquals(executionContext.getServiceIdsToExecute(), wrap(failedScheduledService.getId()));
     }
@@ -117,10 +117,10 @@ public class ReschedulingStrategyITTest extends ContextSensitiveTest {
         return taskCaptor.getValue();
     }
 
-    private ScheduledServicesExecutionContext getExecutionContext(TaskDefinition task) {
+    private ScheduledExecutionContext getExecutionContext(TaskDefinition task) {
         return gson.fromJson(
                 task.getProperty(EXECUTION_CONTEXT),
-                ScheduledServicesExecutionContext.class);
+                ScheduledExecutionContext.class);
     }
 
     private void addDeliveryAttempts(ScheduledService failedScheduledService, int numberOfAttempts) {

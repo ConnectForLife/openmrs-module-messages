@@ -22,7 +22,7 @@ import org.openmrs.module.messages.api.execution.ServiceResult;
 import org.openmrs.module.messages.api.execution.ServiceResultList;
 import org.openmrs.module.messages.api.mappers.ScheduledGroupMapper;
 import org.openmrs.module.messages.api.model.ScheduledServiceGroup;
-import org.openmrs.module.messages.api.model.ScheduledServicesExecutionContext;
+import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
 import org.openmrs.module.messages.api.util.MapperUtil;
 import org.openmrs.module.messages.builder.DateBuilder;
 import org.openmrs.module.messages.builder.ServiceResultBuilder;
@@ -91,7 +91,7 @@ public class MessagesDeliveryServiceITTest extends ContextSensitiveTest {
         Date date = new DateBuilder().build();
 
         ServiceResultList resultList = createServiceResults(date);
-        ScheduledServicesExecutionContext executionContext = getExecutionContext(date, resultList);
+        ScheduledExecutionContext executionContext = getExecutionContext(date, resultList);
 
         deliveryService.scheduleDelivery(executionContext);
 
@@ -100,16 +100,16 @@ public class MessagesDeliveryServiceITTest extends ContextSensitiveTest {
         assertEquals(NEVER_REPEAT, task.getRepeatInterval());
         assertEquals(date, task.getNextExecutionTime());
 
-        ScheduledServicesExecutionContext savedExecutionContext = getExecutionContext(task);
+        ScheduledExecutionContext savedExecutionContext = getExecutionContext(task);
         assertEquals(executionContext, savedExecutionContext);
     }
 
-    private ScheduledServicesExecutionContext getExecutionContext(Date date, ServiceResultList resultList) {
+    private ScheduledExecutionContext getExecutionContext(Date date, ServiceResultList resultList) {
         GroupedServiceResultList groupResults = new GroupedServiceResultList(
                 new ActorWithDate(DEFAULT_PATIENT_ID, date), resultList);
         ScheduledServiceGroup group = groupMapper.fromDto(groupResults);
         group = messagingGroupService.saveOrUpdate(group);
-        return new ScheduledServicesExecutionContext(
+        return new ScheduledExecutionContext(
                 group.getScheduledServices(),
                 groupResults.getActorWithExecutionDate().getDate(),
                 group.getActor());
@@ -120,10 +120,10 @@ public class MessagesDeliveryServiceITTest extends ContextSensitiveTest {
         return taskCaptor.getValue();
     }
 
-    private ScheduledServicesExecutionContext getExecutionContext(TaskDefinition task) {
+    private ScheduledExecutionContext getExecutionContext(TaskDefinition task) {
         return gson.fromJson(
                 task.getProperty(EXECUTION_CONTEXT),
-                ScheduledServicesExecutionContext.class);
+                ScheduledExecutionContext.class);
     }
 
     private ServiceResultList createServiceResults(Date date) {

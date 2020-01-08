@@ -16,7 +16,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.messages.api.config.ConfigService;
 import org.openmrs.module.messages.api.model.ScheduledService;
-import org.openmrs.module.messages.api.model.ScheduledServicesExecutionContext;
+import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
 import org.openmrs.module.messages.api.service.MessagesDeliveryService;
 import org.openmrs.module.messages.api.strategy.ReschedulingStrategy;
@@ -36,17 +36,29 @@ public class FailedMessageReschedulingStrategyImpl implements ReschedulingStrate
             return;
         }
 
-        deliveryService.scheduleDelivery(new ScheduledServicesExecutionContext(
+        deliveryService.scheduleDelivery(new ScheduledExecutionContext(
                 wrap(service),
                 getRescheduleDate(),
                 service.getPatientTemplate().getActor()
         ));
     }
 
+    public void setConfigService(ConfigService configService) {
+        this.configService = configService;
+    }
+
+    public MessagesDeliveryService getDeliveryService() {
+        return deliveryService;
+    }
+
+    public void setDeliveryService(MessagesDeliveryService deliveryService) {
+        this.deliveryService = deliveryService;
+    }
+
     private boolean shouldReschedule(ScheduledService service) {
         boolean shouldReschedule = true;
         if (service.getStatus() != ServiceStatus.FAILED) {
-            LOGGER.info(String.format(
+            LOGGER.debug(String.format(
                     "ScheduledService %d will be not rescheduled due to no failed status: %s",
                     service.getId(),
                     service.getStatus()));
@@ -79,17 +91,5 @@ public class FailedMessageReschedulingStrategyImpl implements ReschedulingStrate
         ArrayList<ScheduledService> services = new ArrayList<>();
         services.add(service);
         return services;
-    }
-
-    public void setConfigService(ConfigService configService) {
-        this.configService = configService;
-    }
-
-    public MessagesDeliveryService getDeliveryService() {
-        return deliveryService;
-    }
-
-    public void setDeliveryService(MessagesDeliveryService deliveryService) {
-        this.deliveryService = deliveryService;
     }
 }

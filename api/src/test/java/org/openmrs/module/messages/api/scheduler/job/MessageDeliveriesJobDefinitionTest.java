@@ -1,5 +1,30 @@
+/* * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+
 package org.openmrs.module.messages.api.scheduler.job;
 
+import static org.hamcrest.Matchers.greaterThan;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_CAREGIVER_ID;
+import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_CAREGIVER_PATIENT_TEMPLATE_ID;
+import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_NO_CONSENT_CAREGIVER_ID;
+import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_PATIENT_ID;
+import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_PATIENT_TEMPLATE_ID;
+import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_TEMPLATE;
+import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_TEMPLATE_NAME;
+import static org.openmrs.module.messages.api.service.DatasetConstants.XML_DATA_SET_PATH;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.messages.ContextSensitiveTest;
@@ -7,10 +32,10 @@ import org.openmrs.module.messages.api.execution.ActorWithDate;
 import org.openmrs.module.messages.api.execution.GroupedServiceResultList;
 import org.openmrs.module.messages.api.execution.ServiceResultList;
 import org.openmrs.module.messages.api.mappers.ScheduledGroupMapper;
+import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
 import org.openmrs.module.messages.api.model.ScheduledService;
 import org.openmrs.module.messages.api.model.ScheduledServiceGroup;
 import org.openmrs.module.messages.api.model.ScheduledServiceParameter;
-import org.openmrs.module.messages.api.model.ScheduledServicesExecutionContext;
 import org.openmrs.module.messages.api.model.Template;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
 import org.openmrs.module.messages.api.service.MessagingGroupService;
@@ -24,21 +49,6 @@ import org.openmrs.module.messages.domain.criteria.ScheduledServiceCriteria;
 import org.openmrs.scheduler.TaskDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_CAREGIVER_ID;
-import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_CAREGIVER_PATIENT_TEMPLATE_ID;
-import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_NO_CONSENT_CAREGIVER_ID;
-import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_PATIENT_ID;
-import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_PATIENT_TEMPLATE_ID;
-import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_TEMPLATE;
-import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_TEMPLATE_NAME;
-import static org.openmrs.module.messages.api.service.DatasetConstants.XML_DATA_SET_PATH;
 
 @SuppressWarnings("checkstyle:magicnumber")
 public class MessageDeliveriesJobDefinitionTest extends ContextSensitiveTest {
@@ -123,7 +133,19 @@ public class MessageDeliveriesJobDefinitionTest extends ContextSensitiveTest {
     }
 
     @Test
-    public void shouldNotSaveScheduledServicesGroupForActorWithNoConsent() {
+    public void shouldSaveScheduledServicesGroupForActorWithNoConsentWhenConsentControlNotEnabled() {
+        List<ScheduledService> listBeforeSave = findScheduledServicesByActorId(DEFAULT_NO_CONSENT_CAREGIVER_ID);
+        job.execute();
+        List<ScheduledService> newlySaved = getNewlyAddedObjects(
+                listBeforeSave, findScheduledServicesByActorId(DEFAULT_NO_CONSENT_CAREGIVER_ID));
+
+        assertThat(newlySaved.size(), greaterThan(0));
+    }
+
+    @Test
+    public void shouldNotSaveScheduledServicesGroupForActorWithNoConsentWhenConsentControlIsEnabled() throws Exception {
+        executeDataSet(XML_DATA_SET_PATH + "ConfigDataset.xml"); // loading GP which enables consent control
+
         List<ScheduledService> listBeforeSave = findScheduledServicesByActorId(DEFAULT_NO_CONSENT_CAREGIVER_ID);
         job.execute();
         List<ScheduledService> newlySaved = getNewlyAddedObjects(
@@ -156,28 +178,25 @@ public class MessageDeliveriesJobDefinitionTest extends ContextSensitiveTest {
 
         List<ScheduledServiceParameter> listBeforeSave = messagingParameterService.getAll(false);
         job.execute();
-        List<ScheduledServiceParameter> newlySaved = getNewlyAddedObjects(
-                listBeforeSave, messagingParameterService.getAll(false));
+        List<ScheduledServiceParameter> newlySaved  = filterByDefaultPatientTemplate(
+                getNewlyAddedObjects(listBeforeSave, messagingParameterService.getAll(false)));
 
-        assertEquals(6, newlySaved.size()); // for 2 active actors
+        assertEquals(3, newlySaved.size());
         assertParameterIsCorrect(expectedParam1, newlySaved.get(0));
         assertParameterIsCorrect(expectedParam2, newlySaved.get(1));
         assertParameterIsCorrect(expectedParam3, newlySaved.get(2));
-        assertParameterIsCorrect(expectedParam1, newlySaved.get(3));
-        assertParameterIsCorrect(expectedParam2, newlySaved.get(4));
-        assertParameterIsCorrect(expectedParam3, newlySaved.get(5));
     }
 
     private List<ScheduledService> findScheduledServicesByActorId(int actorId) {
         return messagingService.findAllByCriteria(ScheduledServiceCriteria.forActorId(actorId));
     }
 
-    private ScheduledServicesExecutionContext getExecutionContext(Date date, ServiceResultList resultList) {
+    private ScheduledExecutionContext getExecutionContext(Date date, ServiceResultList resultList) {
         GroupedServiceResultList groupResults = new GroupedServiceResultList(
                 new ActorWithDate(DEFAULT_PATIENT_ID, date), resultList);
         ScheduledServiceGroup group = groupMapper.fromDto(groupResults);
         group = messagingGroupService.saveOrUpdate(group);
-        return new ScheduledServicesExecutionContext(
+        return new ScheduledExecutionContext(
                 group.getScheduledServices(),
                 groupResults.getActorWithExecutionDate().getDate(),
                 group.getActor());
@@ -196,6 +215,18 @@ public class MessageDeliveriesJobDefinitionTest extends ContextSensitiveTest {
         for (T object : listAfterSave) {
             if (!listBeforeSave.contains(object)) {
                 result.add(object);
+            }
+        }
+
+        return result;
+    }
+
+    private List<ScheduledServiceParameter> filterByDefaultPatientTemplate(List<ScheduledServiceParameter> params) {
+        List<ScheduledServiceParameter> result = new ArrayList<>();
+
+        for (ScheduledServiceParameter param : params) {
+            if (param.getScheduledMessage().getPatientTemplate().getId().equals(DEFAULT_PATIENT_TEMPLATE_ID)) {
+                result.add(param);
             }
         }
 
