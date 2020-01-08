@@ -1,4 +1,4 @@
-package org.openmrs.module.messages.api.actor.impl;
+package org.openmrs.module.messages.api.service;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
@@ -7,7 +7,6 @@ import org.openmrs.Patient;
 import org.openmrs.RelationshipType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.ContextSensitiveTest;
-import org.openmrs.module.messages.api.actor.ActorService;
 import org.openmrs.module.messages.api.dto.ContactTimeDTO;
 import org.openmrs.module.messages.api.exception.ValidationException;
 import org.openmrs.module.messages.api.model.Actor;

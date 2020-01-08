@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.module.messages.api.config.ConfigService;
+import org.openmrs.module.messages.api.service.ConfigService;
 import org.openmrs.module.messages.api.model.ScheduledService;
 import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;

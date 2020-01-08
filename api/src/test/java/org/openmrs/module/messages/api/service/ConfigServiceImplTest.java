@@ -7,18 +7,17 @@
  * graphic logo is a trademark of OpenMRS Inc.
  */
 
-package org.openmrs.module.messages.api.config.impl;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+package org.openmrs.module.messages.api.service;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.messages.ContextSensitiveTest;
-import org.openmrs.module.messages.api.config.ConfigService;
 import org.openmrs.module.messages.api.strategy.ReschedulingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 public class ConfigServiceImplTest extends ContextSensitiveTest {
 

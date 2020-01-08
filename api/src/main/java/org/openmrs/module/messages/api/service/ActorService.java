@@ -1,4 +1,4 @@
-package org.openmrs.module.messages.api.actor;
+package org.openmrs.module.messages.api.service;
 
 import org.openmrs.Patient;
 import org.openmrs.module.messages.api.dto.ContactTimeDTO;

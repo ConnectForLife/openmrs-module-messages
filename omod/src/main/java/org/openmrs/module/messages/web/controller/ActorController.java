@@ -5,7 +5,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.openmrs.Patient;
 import org.openmrs.api.PatientService;
-import org.openmrs.module.messages.api.actor.ActorService;
+import org.openmrs.module.messages.api.service.ActorService;
 import org.openmrs.module.messages.api.dto.ActorDTO;
 import org.openmrs.module.messages.api.dto.ContactTimeDTO;
 import org.openmrs.module.messages.api.exception.ValidationException;

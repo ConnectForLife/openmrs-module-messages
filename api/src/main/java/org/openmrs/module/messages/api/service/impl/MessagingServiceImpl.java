@@ -9,14 +9,9 @@
  
 package org.openmrs.module.messages.api.service.impl;
 
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import org.hibernate.PropertyValueException;
 import org.openmrs.Concept;
 import org.openmrs.api.ConceptService;
-import org.openmrs.module.messages.api.config.ConfigService;
 import org.openmrs.module.messages.api.dao.ActorResponseDao;
 import org.openmrs.module.messages.api.execution.ExecutionException;
 import org.openmrs.module.messages.api.execution.ServiceExecutor;
@@ -27,9 +22,15 @@ import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.Range;
 import org.openmrs.module.messages.api.model.ScheduledService;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
+import org.openmrs.module.messages.api.service.ConfigService;
 import org.openmrs.module.messages.api.service.MessagingService;
 import org.openmrs.module.messages.api.service.PatientTemplateService;
 import org.openmrs.module.messages.domain.criteria.PatientTemplateCriteria;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import javax.transaction.Transactional;
 
 @Transactional
 public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledService> implements MessagingService {

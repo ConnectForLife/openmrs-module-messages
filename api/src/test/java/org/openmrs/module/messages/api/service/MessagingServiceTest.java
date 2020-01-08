@@ -18,7 +18,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.openmrs.module.messages.BaseTest;
-import org.openmrs.module.messages.api.config.ConfigService;
 import org.openmrs.module.messages.api.dao.MessagingDao;
 import org.openmrs.module.messages.api.model.DeliveryAttempt;
 import org.openmrs.module.messages.api.model.ScheduledService;

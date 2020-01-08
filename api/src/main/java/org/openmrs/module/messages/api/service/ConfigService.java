@@ -7,7 +7,7 @@
  * graphic logo is a trademark of OpenMRS Inc.
  */
 
-package org.openmrs.module.messages.api.config;
+package org.openmrs.module.messages.api.service;
 
 import org.openmrs.module.messages.api.strategy.ReschedulingStrategy;
 

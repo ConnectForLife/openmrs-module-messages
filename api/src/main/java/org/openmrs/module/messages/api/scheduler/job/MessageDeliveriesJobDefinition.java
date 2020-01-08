@@ -14,7 +14,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Person;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.messages.api.config.ConfigService;
+import org.openmrs.module.messages.api.service.ConfigService;
 import org.openmrs.module.messages.api.constants.MessagesConstants;
 import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
 import org.openmrs.module.messages.api.execution.ExecutionException;

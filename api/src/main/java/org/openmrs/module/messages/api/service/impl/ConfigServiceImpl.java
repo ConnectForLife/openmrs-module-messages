@@ -7,11 +7,11 @@
  * graphic logo is a trademark of OpenMRS Inc.
  */
 
-package org.openmrs.module.messages.api.config.impl;
+package org.openmrs.module.messages.api.service.impl;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.messages.api.config.ConfigService;
+import org.openmrs.module.messages.api.service.ConfigService;
 import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
 import org.openmrs.module.messages.api.model.RelationshipTypeDirection;
 import org.openmrs.module.messages.api.strategy.ReschedulingStrategy;
