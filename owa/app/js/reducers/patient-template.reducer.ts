@@ -18,14 +18,12 @@ export const ACTION_TYPES = {
   RESET: 'patientTemplateReducer/RESET',
   UPDATE_PATIENT_TEMPLATE: 'patientTemplateReducer/UPDATE_PATIENT_TEMPLATE',
   UPDATE_PATIENT_TEMPLATES: 'patientTemplateReducer/UPDATE_PATIENT_TEMPLATES',
-  SELECT_TEMPLATE: 'patientTemplateReducer/SELECT_TEMPLATE',
   GET_MESSAGE_DETAILS: 'patientTemplateReducer/GET_MESSAGE_DETAILS'
 };
 
 const initialState = {
   templates: [] as Array<TemplateUI>,
   templatesLoading: false,
-  selectedTemplate: null as unknown as TemplateUI,
   patientTemplates: [] as Array<PatientTemplateUI>,
   patientTemplatesLoading: false,
   messageDetails: null as unknown as MessageDetails,
@@ -120,11 +118,6 @@ export default (state = initialState, action) => {
         patientTemplates: action.payload
       };
     }
-    case ACTION_TYPES.SELECT_TEMPLATE:
-      return {
-        ...state,
-        selectedTemplate: action.payload
-      };
     default:
       return state;
   }
@@ -162,11 +155,6 @@ export const getPatientTemplates = (patientId: number) => async (dispatch) => {
     })
   });
 };
-
-export const selectTemplate = (template: TemplateUI) => ({
-  type: ACTION_TYPES.SELECT_TEMPLATE,
-  payload: template
-});
 
 export const reset = () => ({
   type: ACTION_TYPES.RESET

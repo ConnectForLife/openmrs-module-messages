@@ -4,8 +4,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import {
   getTemplates,
   getPatientTemplates,
-  putPatientTemplates,
-  selectTemplate
+  putPatientTemplates
 } from '../../reducers/patient-template.reducer'
 import { getActorList } from '../../reducers/actor.reducer';
 import { IRootState } from '../../reducers';
@@ -49,13 +48,33 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
     this.props.getPatientTemplates(parseInt(this.props.match.params.patientId));
   }
 
-  componentWillUpdate(nextProps: IPatientTemplateEditProps, nextState: IPatientTemplateEditState) {
-  }
-
   handleSave = () => {
     const { patientId, patientUuid } = this.props.match.params;
     this.props.putPatientTemplates(this.props.patientTemplates, this.props.templates, parseInt(patientId), patientUuid);
   }
+
+  handleCancel = () => this.props.history.goBack();
+
+  handleNext = () => {
+    const nextSubsection = this.getNextSubsection();
+    return !!nextSubsection && this.changeLocation(this.getTemplateName(nextSubsection));
+  };
+
+  resolveSubsectionUrl = (subsectionName: string) => {
+    const { patientId, patientUuid } = this.props.match.params;
+    return `/messages/${patientId}&patientuuid=${patientUuid}/patient-template/edit/${subsectionName}`;
+  };
+
+  getNextSubsection = () => {
+    const { templates } = this.props;
+    const currentTemplateName = this.props.match.params.activeSection;
+    const nextTemplateIndex = templates.findIndex(template => template.name === currentTemplateName) + 1;
+    return nextTemplateIndex < templates.length ? templates[nextTemplateIndex] : null;
+  };
+
+  getTemplateName = (template: TemplateUI) => template.name ? template.name : `Template ${template.localId}`;
+  
+  changeLocation = (activeSection: string) => this.props.history.replace(this.resolveSubsectionUrl(activeSection));
 
   renderTemplateState = () => {
     const sections = this.mapTemplatesToSections();
@@ -98,7 +117,7 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
     const patientId = parseInt(this.props.match.params.patientId);
 
     this.props.templates.forEach((template: TemplateUI) => {
-      const name = template.name ? template.name : `Template ${template.localId}`;
+      const name = this.getTemplateName(template);
 
       const patientTemplates: ReadonlyArray<PatientTemplateUI> =
         getPatientTemplateWithTemplateId(this.props.patientTemplates, template.id!);
@@ -119,9 +138,7 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
       const isValid = !_.some(patientTemplates, pt => pt.hasErrors());
       const isPersisted = patientTemplates.length > 0;
 
-      const onSelectCallback: SelectCallback = () => {
-        this.props.selectTemplate(template);
-      }
+      const onSelectCallback: SelectCallback = () => this.changeLocation(name);
 
       subsections.push(new FormSubSection(name, isValid, isPersisted, fragment, onSelectCallback));
     });
@@ -139,10 +156,23 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
         </div>
         <div className="panel-body">
           <Button
-            className="btn btn-success btn-md pull-right"
-            onClick={this.handleSave}>
-            {Msg.SAVE_BUTTON_LABEL}
+            className="btn btn-danger btn-md"
+            onClick={this.handleCancel}>
+            {Msg.CANCEL_BUTTON_LABEL}
           </Button>
+          <div className="pull-right">
+            <Button
+              className="btn btn-default btn-md"
+              disabled={!this.getNextSubsection()}
+              onClick={this.handleNext}>
+              {Msg.NEXT_BUTTON_LABEL}
+            </Button>
+            <Button
+              className="btn btn-success btn-md"
+              onClick={this.handleSave}>
+              {Msg.SAVE_BUTTON_LABEL}
+            </Button>
+          </div>
         </div>
       </>
     );
@@ -152,7 +182,6 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
 const mapStateToProps = ({ actor, patientTemplate }: IRootState) => ({
   templates: patientTemplate.templates,
   patientTemplates: patientTemplate.patientTemplates,
-  selectedTemplate: patientTemplate.selectedTemplate,
   loading: patientTemplate.patientTemplatesLoading || patientTemplate.templatesLoading,
   relatedActors: actor.actorResultList
 });
@@ -161,7 +190,6 @@ const mapDispatchToProps = ({
   getTemplates,
   getPatientTemplates,
   putPatientTemplates,
-  selectTemplate,
   getActorList
 });
 

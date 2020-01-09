@@ -12,6 +12,8 @@
 export const MODULE_NAME = 'Messages';
 export const FIELD_REQUIRED = 'This field is required';
 export const SAVE_BUTTON_LABEL = 'Save';
+export const NEXT_BUTTON_LABEL = 'Next';
+export const CANCEL_BUTTON_LABEL = 'Cancel';
 
 // Generic messages
 export const GENERIC_FAILURE = 'An error occurred.';
