@@ -27,7 +27,7 @@ public final class MessagesConstants {
 
     public static final String EVENT_SERVICE = "messages.messagesEventService";
 
-    public static final String CALLFLOWS_DEFAULT_CONFIG = "voxeo"; //TODO: CFLM-473: Use global properties
+    public static final String CALLFLOWS_DEFAULT_CONFIG = "voxeo-mobile"; //TODO: CFLM-473: Use global properties
 
     public static final String CALLFLOWS_DEFAULT_FLOW = "MainFlow"; //TODO: CFLM-473: Use global properties
 
