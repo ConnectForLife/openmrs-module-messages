@@ -73,7 +73,7 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
   };
 
   getTemplateName = (template: TemplateUI) => template.name ? template.name : `Template ${template.localId}`;
-  
+
   changeLocation = (activeSection: string) => this.props.history.replace(this.resolveSubsectionUrl(activeSection));
 
   renderTemplateState = () => {

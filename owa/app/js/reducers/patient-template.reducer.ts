@@ -199,8 +199,6 @@ const validatePatientTemplates = (patientTemplates: Array<PatientTemplateUI>,
 };
 
 const isValid = (patientTemplates: Array<PatientTemplateUI>): boolean => {
-  // CFLM-404: Temporarily disabled - it should be reverted after 2019.12.09
-  // return !_(patientTemplates)
-  //   .some(patientTemplate => !_.isEmpty(patientTemplate.errors));
-  return true;
+  return !_(patientTemplates)
+    .some(patientTemplate => !_.isEmpty(patientTemplate.errors));
 };

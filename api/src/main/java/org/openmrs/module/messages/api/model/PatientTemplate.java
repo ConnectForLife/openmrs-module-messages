@@ -1,5 +1,11 @@
 package org.openmrs.module.messages.api.model;
 
+import org.apache.commons.lang.StringUtils;
+import org.openmrs.Patient;
+import org.openmrs.Person;
+import org.openmrs.Relationship;
+import validate.annotation.ValidPatientTemplate;
+
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -13,13 +19,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import org.apache.commons.lang.StringUtils;
-import org.openmrs.Patient;
-import org.openmrs.Person;
-import org.openmrs.Relationship;
 
 @Entity(name = "messages.PatientTemplate")
 @Table(name = "messages_patient_template")
+@ValidPatientTemplate
 public class PatientTemplate extends AbstractBaseOpenmrsData {
     
     private static final long serialVersionUID = 4808798852617376186L;

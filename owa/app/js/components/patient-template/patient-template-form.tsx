@@ -32,6 +32,7 @@ import {
 } from '../../shared/utils/messages';
 import { factory } from './form/type-factory';
 import { InputTypeEnum } from './form/radio-wrapper/parsable-input';
+import ErrorDesc from '@bit/soldevelo-omrs.cfl-components.error-description';
 
 interface IReactProps {
   patientTemplate: PatientTemplateUI | undefined;
@@ -107,6 +108,13 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
         return this.renderInputField(tfv, fieldName, isMandatory);
     };
   };
+
+  addErrorDesc = (el: JSX.Element, error: string | null) => {
+    return <>
+      {el}
+      {error && <ErrorDesc field={error} />}
+    </>
+  }
 
   renderDynamicMultiselect = (tfv: TemplateFieldValueUI,
     options: ReadonlyArray<string>,
@@ -196,7 +204,8 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
           <ControlLabel className="fields-form-title">
             <h4>{`${templateName} - ${actorName ? actorName : PATIENT_ROLE}`}</h4>
           </ControlLabel>
-          {patientTemplate.templateFieldValues.map(tfv => this.renderField(tfv))}
+          {patientTemplate.templateFieldValues.map(tfv => this.addErrorDesc(
+            this.renderField(tfv), tfv.templateFieldId ? this.getPatientTemplate().errors[tfv.templateFieldId] : null))}
         </Form>
       </div>
     );

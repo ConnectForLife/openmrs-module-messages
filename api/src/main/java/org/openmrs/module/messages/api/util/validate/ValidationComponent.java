@@ -15,6 +15,20 @@ public class ValidationComponent {
     private LocalValidatorFactoryBean factory;
 
     /**
+     * Generic method which validates objects list according its annotations.
+     *
+     * @param objectsToValidate objects list to validate
+     * @param clazz            class of the object. If not passed automatically inferred from objectToValidate.
+
+     * @throws ValidationException if validation error found
+     */
+    public <T> void validateList(List<T> objectsToValidate, Class<?>... clazz) {
+        for (T objectToValidate : objectsToValidate) {
+            this.validate(objectToValidate, clazz);
+        }
+    }
+
+    /**
      * Generic method which validates objects according its annotations.
      *
      * @param objectToValidate object to validate
