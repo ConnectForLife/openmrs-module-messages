@@ -30,6 +30,7 @@ import org.openmrs.module.messages.builder.ScheduledServiceBuilder;
 import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -54,7 +55,7 @@ public class MessagingServiceTest extends BaseTest {
 
     @Before
     public void setUp() {
-        when(configService.getReschedulingStrategy()).thenReturn(reschedulingStrategy);
+        when(configService.getReschedulingStrategy(any())).thenReturn(reschedulingStrategy);
     }
 
     @Test
@@ -68,6 +69,7 @@ public class MessagingServiceTest extends BaseTest {
         final Date timestamp = new Date();
 
         when(dao.getById(eq(scheduledService.getId()))).thenReturn(scheduledService);
+        when(dao.saveOrUpdate(eq(scheduledService))).thenReturn(scheduledService);
 
         messagingService.registerAttempt(scheduledService.getId(), newStatus, timestamp, serviceExecution);
 
@@ -101,6 +103,7 @@ public class MessagingServiceTest extends BaseTest {
         final Date timestamp = new Date();
 
         when(dao.getById(eq(scheduledService.getId()))).thenReturn(scheduledService);
+        when(dao.saveOrUpdate(eq(scheduledService))).thenReturn(scheduledService);
 
         messagingService.registerAttempt(scheduledService.getId(), newStatus, timestamp, serviceExecution);
 

@@ -881,4 +881,19 @@
             <column name="service" type="varchar(255)"/>
         </addColumn>
     </changeSet>
+
+    <changeSet id="messages-27" author="Daniel Serkowski">
+        <preConditions>
+            <tableExists tableName="global_property"/>
+        </preConditions>
+
+        <comment>Resets messages.reschedulingStrategy to the default value (the property structure and its description
+            have been changed). It is in order to apply the new changes to all already existing environments. The
+            migration can be removed if the liquibase refactor will be conducted (eg. replacing all changes by one
+            changeSet).</comment>
+
+        <delete tableName="global_property">
+            <where>property='messages.reschedulingStrategy'</where>
+        </delete>
+    </changeSet>
 </databaseChangeLog>

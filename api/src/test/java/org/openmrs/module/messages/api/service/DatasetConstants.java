@@ -32,6 +32,8 @@ public final class DatasetConstants {
     public static final String DEFAULT_TEMPLATE_NAME = "Dummy Visit Reminder";
 
     public static final int DELIVERED_SCHEDULED_SERVICE = 101;
+    public static final int PENDING_SCHEDULED_SERVICE = 103;
+    public static final int PENDING_SCHEDULED_SERVICE_IN_ANOTHER_CHANNEL = 104;
     public static final int FAILED_SCHEDULED_SERVICE = 102;
 
     private DatasetConstants() {

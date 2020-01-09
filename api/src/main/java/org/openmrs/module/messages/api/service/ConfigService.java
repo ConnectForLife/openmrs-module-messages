@@ -13,7 +13,7 @@ import org.openmrs.module.messages.api.strategy.ReschedulingStrategy;
 
 public interface ConfigService {
 
-    ReschedulingStrategy getReschedulingStrategy();
+    ReschedulingStrategy getReschedulingStrategy(String channelType);
 
     int getMaxNumberOfRescheduling();
 

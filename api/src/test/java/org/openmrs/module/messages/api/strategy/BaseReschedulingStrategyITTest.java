@@ -9,31 +9,10 @@
 
 package org.openmrs.module.messages.api.strategy;
 
-import com.google.gson.Gson;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.openmrs.module.messages.ContextSensitiveTest;
-import org.openmrs.module.messages.api.model.DeliveryAttempt;
-import org.openmrs.module.messages.api.model.ScheduledService;
-import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
-import org.openmrs.module.messages.api.service.MessagingService;
-import org.openmrs.module.messages.api.util.MapperUtil;
-import org.openmrs.module.messages.builder.DateBuilder;
-import org.openmrs.module.messages.builder.DeliveryAttemptBuilder;
-import org.openmrs.scheduler.SchedulerException;
-import org.openmrs.scheduler.SchedulerService;
-import org.openmrs.scheduler.TaskDefinition;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
+import static org.hamcrest.Matchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
@@ -41,33 +20,52 @@ import static org.mockito.Mockito.verify;
 import static org.openmrs.module.messages.api.scheduler.job.ServiceGroupDeliveryJobDefinition.EXECUTION_CONTEXT;
 import static org.openmrs.module.messages.api.service.DatasetConstants.DELIVERED_SCHEDULED_SERVICE;
 import static org.openmrs.module.messages.api.service.DatasetConstants.FAILED_SCHEDULED_SERVICE;
+import static org.openmrs.module.messages.api.service.DatasetConstants.PENDING_SCHEDULED_SERVICE;
+import static org.openmrs.module.messages.api.service.DatasetConstants.PENDING_SCHEDULED_SERVICE_IN_ANOTHER_CHANNEL;
 import static org.openmrs.module.messages.api.service.DatasetConstants.XML_DATA_SET_PATH;
 
-public class ReschedulingStrategyITTest extends ContextSensitiveTest {
+import com.google.gson.Gson;
+import java.util.List;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.openmrs.module.messages.ContextSensitiveTest;
+import org.openmrs.module.messages.api.model.DeliveryAttempt;
+import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
+import org.openmrs.module.messages.api.model.ScheduledService;
+import org.openmrs.module.messages.api.service.MessagingService;
+import org.openmrs.module.messages.api.util.MapperUtil;
+import org.openmrs.module.messages.builder.DeliveryAttemptBuilder;
+import org.openmrs.scheduler.SchedulerException;
+import org.openmrs.scheduler.SchedulerService;
+import org.openmrs.scheduler.TaskDefinition;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
-    private static final Long NEVER_REPEAT = 0L;
-    private static final int MAX_ATTEMPTS = 3;
+@SuppressWarnings("VisibilityModifier")
+public abstract class BaseReschedulingStrategyITTest extends ContextSensitiveTest {
 
-    @Autowired
-    @Qualifier("messages.failedMessageReschedulingStrategy")
-    private ReschedulingStrategy reschedulingStrategy;
+    protected static final Long NEVER_REPEAT = 0L;
+    protected static final int MAX_ATTEMPTS = 3;
 
     @Autowired
     @Qualifier("schedulerService")
-    private SchedulerService schedulerService; // this is mocked in xml - in does not work in testing env
+    protected SchedulerService schedulerService; // this is mocked in xml - in does not work in testing env
 
     @Autowired
     @Qualifier("messages.messagingService")
-    private MessagingService messagingService;
+    protected MessagingService messagingService;
 
     @Captor
     private ArgumentCaptor<TaskDefinition> taskCaptor;
 
     private final Gson gson = MapperUtil.getGson();
-    private final Date date = new DateBuilder().build();
 
-    private ScheduledService deliveredScheduledService;
-    private ScheduledService failedScheduledService;
+    protected ScheduledService deliveredScheduledService;
+    protected ScheduledService pendingScheduledService;
+    protected ScheduledService pendingScheduledServiceInAnotherChannel;
+    protected ScheduledService failedScheduledService;
 
     @Before
     public void setUp() throws Exception {
@@ -76,16 +74,18 @@ public class ReschedulingStrategyITTest extends ContextSensitiveTest {
         executeDataSet(XML_DATA_SET_PATH + "MessageDataSet.xml");
 
         deliveredScheduledService = messagingService.getById(DELIVERED_SCHEDULED_SERVICE);
+        pendingScheduledService = messagingService.getById(PENDING_SCHEDULED_SERVICE);
+        pendingScheduledServiceInAnotherChannel = messagingService.getById(PENDING_SCHEDULED_SERVICE_IN_ANOTHER_CHANNEL);
         failedScheduledService = messagingService.getById(FAILED_SCHEDULED_SERVICE);
 
         reset(schedulerService);
     }
 
     @Test
-    public void shouldRescheduleFailedDeliveryWithCorrectTime() throws Exception {
+    public void shouldRescheduleFailedDelivery() throws Exception {
         addDeliveryAttempts(failedScheduledService, MAX_ATTEMPTS - 1);
 
-        reschedulingStrategy.execute(failedScheduledService);
+        getStrategy().execute(failedScheduledService);
 
         TaskDefinition task = getCreatedTask();
         assertNotNull(task);
@@ -93,12 +93,12 @@ public class ReschedulingStrategyITTest extends ContextSensitiveTest {
 
         ScheduledExecutionContext executionContext = getExecutionContext(task);
         assertEquals(failedScheduledService.getGroup().getActor().getId().intValue(), executionContext.getActorId());
-        assertEquals(executionContext.getServiceIdsToExecute(), wrap(failedScheduledService.getId()));
+        assertThat(executionContext.getServiceIdsToExecute(), hasItem(failedScheduledService.getId()));
     }
 
     @Test
     public void shouldNotRescheduleNotFailedDelivery() throws Exception {
-        reschedulingStrategy.execute(deliveredScheduledService);
+        getStrategy().execute(deliveredScheduledService);
 
         verify(schedulerService, times(0)).scheduleTask(any());
     }
@@ -107,23 +107,25 @@ public class ReschedulingStrategyITTest extends ContextSensitiveTest {
     public void shouldNotRescheduleAfterExceedingMaxNumberOfAttempts() throws Exception {
         addDeliveryAttempts(failedScheduledService, MAX_ATTEMPTS);
 
-        reschedulingStrategy.execute(failedScheduledService);
+        getStrategy().execute(failedScheduledService);
 
         verify(schedulerService, times(0)).scheduleTask(any());
     }
 
-    private TaskDefinition getCreatedTask() throws SchedulerException {
+    protected abstract ReschedulingStrategy getStrategy();
+
+    protected TaskDefinition getCreatedTask() throws SchedulerException {
         verify(schedulerService, times(1)).scheduleTask(taskCaptor.capture());
         return taskCaptor.getValue();
     }
 
-    private ScheduledExecutionContext getExecutionContext(TaskDefinition task) {
+    protected ScheduledExecutionContext getExecutionContext(TaskDefinition task) {
         return gson.fromJson(
                 task.getProperty(EXECUTION_CONTEXT),
                 ScheduledExecutionContext.class);
     }
 
-    private void addDeliveryAttempts(ScheduledService failedScheduledService, int numberOfAttempts) {
+    protected void addDeliveryAttempts(ScheduledService failedScheduledService, int numberOfAttempts) {
         DeliveryAttemptBuilder deliveryAttemptBuilder = new DeliveryAttemptBuilder();
         List<DeliveryAttempt> deliveryAttempts = failedScheduledService.getDeliveryAttempts();
         for (int i = 0; i < numberOfAttempts; ++i) {
@@ -131,11 +133,5 @@ public class ReschedulingStrategyITTest extends ContextSensitiveTest {
                     .withScheduledService(failedScheduledService)
                     .buildAsNew());
         }
-    }
-
-    private List<Integer> wrap(Integer id) {
-        ArrayList<Integer> ids = new ArrayList<>();
-        ids.add(id);
-        return ids;
     }
 }

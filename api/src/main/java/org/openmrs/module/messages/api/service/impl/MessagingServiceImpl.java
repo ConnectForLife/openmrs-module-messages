@@ -80,24 +80,25 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
     @Override
     public ScheduledService registerAttempt(int scheduledServiceId, ServiceStatus status, Date timestamp,
                                             String executionId) {
-        ScheduledService scheduledService = getById(scheduledServiceId);
+        ScheduledService service = getById(scheduledServiceId);
 
         DeliveryAttempt deliveryAttempt = new DeliveryAttempt();
         deliveryAttempt.setServiceExecution(executionId);
-        deliveryAttempt.setAttemptNumber(scheduledService.getNumberOfAttempts() + 1);
+        deliveryAttempt.setAttemptNumber(service.getNumberOfAttempts() + 1);
         deliveryAttempt.setStatus(status);
         deliveryAttempt.setTimestamp(timestamp);
-        deliveryAttempt.setScheduledService(scheduledService);
+        deliveryAttempt.setScheduledService(service);
 
-        scheduledService.setStatus(status);
-        scheduledService.setLastServiceExecution(executionId);
+        service.setStatus(status);
+        service.setLastServiceExecution(executionId);
 
-        scheduledService.getDeliveryAttempts().add(deliveryAttempt);
-        scheduledService = saveOrUpdate(scheduledService);
+        service.getDeliveryAttempts().add(deliveryAttempt);
+        service = saveOrUpdate(service);
 
-        configService.getReschedulingStrategy().execute(scheduledService);
+        configService.getReschedulingStrategy(service.getChannelType())
+                .execute(service);
 
-        return scheduledService;
+        return service;
     }
 
     public void setConceptService(ConceptService conceptService) {

@@ -1,5 +1,12 @@
 package org.openmrs.module.messages.api.dao.impl;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.is;
+
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.Before;
@@ -15,14 +22,6 @@ import org.openmrs.module.messages.api.model.types.ServiceStatus;
 import org.openmrs.module.messages.api.util.TestConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasProperty;
-import static org.hamcrest.Matchers.is;
 
 public class ScheduledServiceGroupITTest extends ContextSensitiveTest {
 
@@ -142,7 +141,8 @@ public class ScheduledServiceGroupITTest extends ContextSensitiveTest {
         List<ScheduledService> scheduledServices = scheduledServiceGroup.getScheduledServices();
 
         Assert.assertNotNull(scheduledServices);
-        Assert.assertThat(scheduledServices, containsInAnyOrder(scheduledService1, scheduledService2));
+        Assert.assertThat(scheduledServices, hasItem(scheduledService1));
+        Assert.assertThat(scheduledServices, hasItem(scheduledService2));
     }
 
     private void executeMessageDataSet() throws Exception {

@@ -57,10 +57,18 @@ public final class ConfigConstants {
     public static final String DAYS_NUMBER_BEFORE_VISIT_REMINDER_DESCRIPTION =
             "Used to determine the how many days before visit reminder should be schedule";
 
+    public static final String DEFAULT_RESCHEDULING_STRATEGY = "messages.failedMessageReschedulingStrategy";
+
     public static final String RESCHEDULING_STRATEGY_KEY = "messages.reschedulingStrategy";
-    public static final String RESCHEDULING_STRATEGY_DEFAULT_VALUE = "messages.failedMessageReschedulingStrategy";
+    public static final String RESCHEDULING_STRATEGY_DEFAULT_VALUE =
+            "SMS:messages.failedMessageReschedulingStrategy,"
+            + "Call:messages.failedAndItsPendingMessagesReschedulingStrategy";
     public static final String RESCHEDULING_STRATEGY_DESCRIPTION =
-            "Used to determine name of the Spring Bean which should be use to handle the reschedule logic.";
+            "Used to determine the name of the Spring Bean which should be used to handle the reschedule logic. The "
+            + "value could represent multiple strategies. Each of them is dedicated to a specific channel type. The "
+            + "particular bean is represented by channel name and bean name separated by a colon. If the system "
+            + "supports multiple channels next entries must be separated by a comma. Example of usage: "
+            + "'channelType1:beanName1,channelType2:beanName2'.";
 
     public static final String MAX_NUMBER_OF_RESCHEDULING_KEY = "messages.maxNumberOfRescheduling";
     public static final String MAX_NUMBER_OF_RESCHEDULING_DEFAULT_VALUE = "3";

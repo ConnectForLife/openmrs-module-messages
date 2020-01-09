@@ -9,45 +9,55 @@
 
 package org.openmrs.module.messages.api.service.impl;
 
+import java.util.Map;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.messages.api.service.ConfigService;
-import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
 import org.openmrs.module.messages.api.model.RelationshipTypeDirection;
+import org.openmrs.module.messages.api.service.ConfigService;
 import org.openmrs.module.messages.api.strategy.ReschedulingStrategy;
 import org.openmrs.module.messages.api.util.ConfigConstants;
+import org.openmrs.module.messages.api.util.GlobalPropertyUtil;
 
 public class ConfigServiceImpl implements ConfigService {
 
-    private static final String TRUE = "true";
+    private static final Log LOGGER = LogFactory.getLog(ConfigServiceImpl.class);
 
     @Override
-    public ReschedulingStrategy getReschedulingStrategy() {
-        String beanName = Context.getAdministrationService().getGlobalProperty(
-                ConfigConstants.RESCHEDULING_STRATEGY_KEY);
+    public ReschedulingStrategy getReschedulingStrategy(String channelType) {
+        String gpName = ConfigConstants.RESCHEDULING_STRATEGY_KEY;
+        Map<String, String> strategyByChannel = GlobalPropertyUtil.parseMap(gpName, getGp(gpName));
+
+        String beanName = strategyByChannel.get(channelType);
+        if (StringUtils.isBlank(beanName)) {
+            LOGGER.warn(String.format("Rescheduling strategy for channelType=%s is not defined in GP. " +
+                    "The default strategy will be used: %s", channelType, gpName));
+            beanName = ConfigConstants.DEFAULT_RESCHEDULING_STRATEGY;
+        }
         return Context.getRegisteredComponent(beanName, ReschedulingStrategy.class);
     }
 
     @Override
     public int getMaxNumberOfRescheduling() {
-        return getIntGp(ConfigConstants.MAX_NUMBER_OF_RESCHEDULING_KEY);
+        String gpName = ConfigConstants.MAX_NUMBER_OF_RESCHEDULING_KEY;
+        return GlobalPropertyUtil.parseInt(gpName, getGp(gpName));
     }
 
     @Override
     public int getTimeIntervalToNextReschedule() {
-        return getIntGp(ConfigConstants.TIME_INTERVAL_TO_NEXT_RESCHEDULE_KEY);
+        String gpName = ConfigConstants.TIME_INTERVAL_TO_NEXT_RESCHEDULE_KEY;
+        return GlobalPropertyUtil.parseInt(gpName, getGp(gpName));
     }
 
     @Override
     public boolean isConsentControlEnabled() {
-        return StringUtils.equalsIgnoreCase(
-                TRUE,
-                Context.getAdministrationService().getGlobalProperty(ConfigConstants.CONSENT_CONTROL_KEY));
+        return GlobalPropertyUtil.parseBool(getGp(ConfigConstants.CONSENT_CONTROL_KEY));
     }
 
     @Override
     public String getActorTypesConfiguration() {
-        return Context.getAdministrationService().getGlobalProperty(ConfigConstants.ACTOR_TYPES_KEY);
+        return getGp(ConfigConstants.ACTOR_TYPES_KEY);
     }
 
     @Override
@@ -55,15 +65,7 @@ public class ConfigServiceImpl implements ConfigService {
         return RelationshipTypeDirection.A.name();
     }
 
-    private int getIntGp(String propertyName) {
-        String value = Context.getAdministrationService().getGlobalProperty(propertyName);
-        try {
-            return Integer.parseInt(value);
-        } catch (NumberFormatException ex) {
-            throw new MessagesRuntimeException(
-                    String.format("Cannot parse the global property %s=%s. Expected int value.", propertyName, value),
-                    ex
-            );
-        }
+    private String getGp(String propertyName) {
+        return Context.getAdministrationService().getGlobalProperty(propertyName);
     }
 }

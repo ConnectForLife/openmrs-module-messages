@@ -9,15 +9,17 @@
 
 package org.openmrs.module.messages.api.service;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.messages.ContextSensitiveTest;
+import org.openmrs.module.messages.api.model.ChannelType;
 import org.openmrs.module.messages.api.strategy.ReschedulingStrategy;
+import org.openmrs.module.messages.api.util.ConfigConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 
 public class ConfigServiceImplTest extends ContextSensitiveTest {
 
@@ -28,16 +30,30 @@ public class ConfigServiceImplTest extends ContextSensitiveTest {
     private static final String EXPECTED_ACTOR_CONFIGURATION =
             "1286b4bc-2d35-46d6-b645-a1b563aaf62a:A,5b82938d-5cab-43b7-a8f1-e4d6fbb484cc:B";
 
-    private static final String EXPECTED_RESCHEDULING_STRATEGY = "messages.failedMessageReschedulingStrategy";
+    private static final String SMS_CHANNEL_RESCHEDULING_STRATEGY = "messages.failedMessageReschedulingStrategy";
+    private static final String CALL_CHANNEL_RESCHEDULING_STRATEGY =
+            "messages.failedAndItsPendingMessagesReschedulingStrategy";
+    private static final String SMS_CHANNEL_NAME = ChannelType.SMS.getName();
+    private static final String CALL_CHANNEL_NAME = ChannelType.CALL.getName();
+    private static final String CHANNEL_NAME_WITHOUT_RESCHEDULING_STRATEGY = "channelNameWithoutReschedulingStrategy";
 
     private static final int EXPECTED_MAX_NUMBER_OF_RESCHEDULING = 3;
 
     private static final int EXPECTED_TIME_INTERVAL_TO_NEXT_RESCHEDULE = 900;
-    public static final boolean EXPECTED_IS_CONSENT_CONTROL_ENABLED = true;
 
-    @Autowired(required = false)
-    @Qualifier(EXPECTED_RESCHEDULING_STRATEGY)
-    private ReschedulingStrategy reschedulingStrategy;
+    private static final boolean EXPECTED_IS_CONSENT_CONTROL_ENABLED = true;
+
+    @Autowired
+    @Qualifier(ConfigConstants.DEFAULT_RESCHEDULING_STRATEGY)
+    private ReschedulingStrategy defaultReschedulingStrategy;
+
+    @Autowired
+    @Qualifier(CALL_CHANNEL_RESCHEDULING_STRATEGY)
+    private ReschedulingStrategy callChannelReschedulingStrategy;
+
+    @Autowired
+    @Qualifier(SMS_CHANNEL_RESCHEDULING_STRATEGY)
+    private ReschedulingStrategy smsChannelReschedulingStrategy;
 
     @Autowired
     @Qualifier("messages.configService")
@@ -49,10 +65,24 @@ public class ConfigServiceImplTest extends ContextSensitiveTest {
     }
 
     @Test
-    public void shouldReturnExpectedReschedulingStrategy() {
-        ReschedulingStrategy actual = configService.getReschedulingStrategy();
+    public void shouldReturnReschedulingStrategyForCallChannel() {
+        ReschedulingStrategy actual = configService.getReschedulingStrategy(CALL_CHANNEL_NAME);
 
-        assertThat(actual, is(reschedulingStrategy));
+        assertThat(actual, is(callChannelReschedulingStrategy));
+    }
+
+    @Test
+    public void shouldReturnReschedulingStrategyForSmsChannel() {
+        ReschedulingStrategy actual = configService.getReschedulingStrategy(SMS_CHANNEL_NAME);
+
+        assertThat(actual, is(smsChannelReschedulingStrategy));
+    }
+
+    @Test
+    public void shouldReturnDefaultReschedulingStrategyIfNotDefinedInGp() {
+        ReschedulingStrategy actual = configService.getReschedulingStrategy(CHANNEL_NAME_WITHOUT_RESCHEDULING_STRATEGY);
+
+        assertThat(actual, is(defaultReschedulingStrategy));
     }
 
     @Test

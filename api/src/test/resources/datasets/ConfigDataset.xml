@@ -7,7 +7,7 @@
 
     <global_property
             property="messages.reschedulingStrategy"
-            property_value="messages.failedMessageReschedulingStrategy"
+            property_value="SMS:messages.failedMessageReschedulingStrategy,Call:messages.failedAndItsPendingMessagesReschedulingStrategy"
             uuid="13b40777-4c60-483d-8df1-489d22fb6e37"/>
 
     <global_property
