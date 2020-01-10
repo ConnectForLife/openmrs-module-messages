@@ -9,6 +9,21 @@
 
 package org.openmrs.module.messages.api.service;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.openmrs.module.messages.api.service.DatasetConstants.XML_DATA_SET_PATH;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.UUID;
 import org.hamcrest.Matchers;
 import org.hibernate.PropertyValueException;
 import org.junit.Assume;
@@ -27,22 +42,6 @@ import org.openmrs.module.messages.builder.ActorResponseBuilder;
 import org.openmrs.scheduler.SchedulerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-import java.util.UUID;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.openmrs.module.messages.api.service.DatasetConstants.XML_DATA_SET_PATH;
 
 public class MessagingServiceITTest extends ContextSensitiveTest {
 
@@ -130,7 +129,7 @@ public class MessagingServiceITTest extends ContextSensitiveTest {
 
     @Test(expected = PropertyValueException.class)
     public void shouldThrowExceptionWhenScheduledServiceIsNotSaved() throws PropertyValueException {
-        ActorResponse actual = messagingService.registerResponse(-1,
+        messagingService.registerResponse(-1,
                 question.getId(),
                 response.getId(),
                 scheduledService.getPatientTemplate().getTemplateFieldValues().get(0).getValue(),
@@ -162,6 +161,8 @@ public class MessagingServiceITTest extends ContextSensitiveTest {
         scheduledService = messagingService.registerAttempt(scheduledService.getId(), ServiceStatus.PENDING,
                 new Date(), UUID.randomUUID().toString());
         assertEquals(1, scheduledService.getNumberOfAttempts());
+        assertEquals(ServiceStatus.PENDING, scheduledService.getStatus());
+        assertEquals(ServiceStatus.PENDING, scheduledService.getDeliveryAttempts().get(0).getStatus());
 
         final ServiceStatus newStatus = ServiceStatus.DELIVERED;
         final String serviceExecution = "321";
@@ -177,6 +178,36 @@ public class MessagingServiceITTest extends ContextSensitiveTest {
         assertEquals(newStatus, actualAttempt.getStatus());
         assertEquals(TIMESTAMP, actualAttempt.getTimestamp());
         assertEquals(serviceExecution, actualAttempt.getServiceExecution());
+    }
+
+    @Test
+    public void registerAttemptShouldParseStringStatusAddNextAttemptAndUpdateScheduledService() {
+        scheduledService = messagingService.registerAttempt(scheduledService.getId(), "PENDING",
+                new Date(), UUID.randomUUID().toString());
+        assertEquals(1, scheduledService.getNumberOfAttempts());
+        assertEquals(ServiceStatus.PENDING, scheduledService.getStatus());
+        assertEquals(ServiceStatus.PENDING, scheduledService.getDeliveryAttempts().get(0).getStatus());
+
+        final String newStatus = "DELIVERED";
+        final String serviceExecution = "321";
+
+        ScheduledService actualScheduledService = messagingService
+                .registerAttempt(scheduledService.getId(), newStatus, TIMESTAMP, serviceExecution);
+        DeliveryAttempt actualAttempt = actualScheduledService.getDeliveryAttempts().get(1);
+
+        assertEquals(ServiceStatus.DELIVERED, actualScheduledService.getStatus());
+        assertEquals(serviceExecution, actualScheduledService.getLastServiceExecution());
+        assertEquals(2, actualScheduledService.getNumberOfAttempts());
+        assertEquals(scheduledService.getId(), actualAttempt.getScheduledService().getId());
+        assertEquals(ServiceStatus.DELIVERED, actualAttempt.getStatus());
+        assertEquals(TIMESTAMP, actualAttempt.getTimestamp());
+        assertEquals(serviceExecution, actualAttempt.getServiceExecution());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void registerAttemptShouldThrowExceptionIfCannotParseStringStatus() {
+        scheduledService = messagingService.registerAttempt(scheduledService.getId(), "notValidStatus",
+                new Date(), UUID.randomUUID().toString());
     }
 
     @Test

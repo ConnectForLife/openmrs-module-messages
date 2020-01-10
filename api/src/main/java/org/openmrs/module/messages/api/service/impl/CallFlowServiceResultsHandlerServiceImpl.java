@@ -14,11 +14,9 @@ import static org.openmrs.module.messages.api.constants.MessagesConstants.CALLFL
 import static org.openmrs.module.messages.api.event.CallFlowParamConstants.ADDITIONAL_PARAMS;
 import static org.openmrs.module.messages.api.event.CallFlowParamConstants.CONFIG;
 import static org.openmrs.module.messages.api.event.CallFlowParamConstants.FLOW_NAME;
-import static org.openmrs.module.messages.api.event.CallFlowParamConstants.PHONE;
 import static org.openmrs.module.messages.api.event.CallFlowParamConstants.MESSAGES;
-import static org.openmrs.module.messages.api.event.CallFlowParamConstants.MESSAGES_OBJECTS;
+import static org.openmrs.module.messages.api.event.CallFlowParamConstants.PHONE;
 
-import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,8 +25,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.messages.api.event.MessagesEvent;
 import org.openmrs.module.messages.api.model.Message;
-import org.openmrs.module.messages.api.model.ScheduledService;
 import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
+import org.openmrs.module.messages.api.model.ScheduledService;
 
 public class CallFlowServiceResultsHandlerServiceImpl extends AbstractServiceResultsHandlerService {
     private static final String CALL_FLOW_INITIATE_CALL_EVENT = "callflows-call-initiate";
@@ -60,8 +58,7 @@ public class CallFlowServiceResultsHandlerServiceImpl extends AbstractServiceRes
 
         Map<String, Object> additionalParams = new HashMap<>();
         List<Message> messages = getMessages(callServices);
-        additionalParams.put(MESSAGES_OBJECTS, new Gson().toJson(messages));
-        additionalParams.put(MESSAGES, extractNameList(messages));
+        additionalParams.put(MESSAGES, toPrimitivesList(messages));
         additionalParams.put(PHONE, personPhone);
 
         params.put(ADDITIONAL_PARAMS, additionalParams);
@@ -81,11 +78,11 @@ public class CallFlowServiceResultsHandlerServiceImpl extends AbstractServiceRes
         return messages;
     }
 
-    private List<String> extractNameList(List<Message> messages) {
-        List<String> names = new ArrayList<>();
-        for (Message service : messages) {
-            names.add(service.getName());
+    private List<Map<String, Object>> toPrimitivesList(List<Message> messages) {
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (Message message : messages) {
+            result.add(message.toPrimitivesMap());
         }
-        return names;
+        return result;
     }
 }

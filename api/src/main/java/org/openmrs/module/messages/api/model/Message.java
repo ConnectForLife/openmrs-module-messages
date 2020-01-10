@@ -10,6 +10,7 @@
 package org.openmrs.module.messages.api.model;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 public class Message implements Serializable {
@@ -36,5 +37,13 @@ public class Message implements Serializable {
 
     public Map<String, String> getParams() {
         return params;
+    }
+
+    public Map<String, Object> toPrimitivesMap() {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("name", name);
+        map.put("messageId", messageId);
+        map.put("params", params);
+        return map;
     }
 }

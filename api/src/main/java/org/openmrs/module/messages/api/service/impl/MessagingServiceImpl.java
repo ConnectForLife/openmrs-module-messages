@@ -9,6 +9,10 @@
  
 package org.openmrs.module.messages.api.service.impl;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import javax.transaction.Transactional;
 import org.hibernate.PropertyValueException;
 import org.openmrs.Concept;
 import org.openmrs.api.ConceptService;
@@ -26,11 +30,6 @@ import org.openmrs.module.messages.api.service.ConfigService;
 import org.openmrs.module.messages.api.service.MessagingService;
 import org.openmrs.module.messages.api.service.PatientTemplateService;
 import org.openmrs.module.messages.domain.criteria.PatientTemplateCriteria;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import javax.transaction.Transactional;
 
 @Transactional
 public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledService> implements MessagingService {
@@ -75,6 +74,11 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
     public List<ServiceResultList> retrieveAllServiceExecutions(Date startDate, Date endDate)
             throws ExecutionException {
         return retrieveAllServiceExecutions(patientTemplateService.getAll(false), startDate, endDate);
+    }
+
+    @Override
+    public ScheduledService registerAttempt(int scheduledServiceId, String status, Date timestamp, String executionId) {
+        return registerAttempt(scheduledServiceId, ServiceStatus.valueOf(status), timestamp, executionId);
     }
 
     @Override
