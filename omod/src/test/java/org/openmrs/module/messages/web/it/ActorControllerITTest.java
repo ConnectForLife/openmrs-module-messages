@@ -25,6 +25,7 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
+import static org.openmrs.module.messages.Constant.CAREGIVER_RELATIONSHIP;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -66,8 +67,6 @@ public class ActorControllerITTest extends BaseModuleWebContextSensitiveTest {
 
     private static final Integer EXPECTED_NUMBER_OF_VALUES = 2;
 
-    private static final String CAREGIVER_NAME = "Caregiver";
-
     private static final String FATHER_NAME = "Father";
 
     private static final String EXPECTED_ERROR = String.format("Patient with %d id doesn't exist.",
@@ -103,7 +102,7 @@ public class ActorControllerITTest extends BaseModuleWebContextSensitiveTest {
                 .andExpect(status().is(HttpStatus.OK.value()))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.length()").value(EXPECTED_NUMBER_OF_VALUES))
-                .andExpect(jsonPath("$.[*].actorTypeName").value(hasItem(CAREGIVER_NAME)))
+                .andExpect(jsonPath("$.[*].actorTypeName").value(hasItem(CAREGIVER_RELATIONSHIP)))
                 .andExpect(jsonPath("$.[*].actorTypeName").value(hasItem(FATHER_NAME)));
     }
 

@@ -13,5 +13,7 @@ public final class Constant {
 
     public static final String PAGE_PARAM = "page";
 
+    public static final String CAREGIVER_RELATIONSHIP = "Caregiver";
+
     private Constant() { }
 }

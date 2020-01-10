@@ -3,6 +3,9 @@ package org.openmrs.module.messages.api.util;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.openmrs.module.messages.Constant.CAREGIVER_RELATIONSHIP;
+import static org.openmrs.module.messages.Constant.DEACTIVATED_SCHEDULE_MESSAGE;
+import static org.openmrs.module.messages.Constant.PATIENT_RELATIONSHIP;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,11 +23,8 @@ import org.openmrs.module.messages.builder.TemplateBuilder;
 
 public class MessageDetailsUtilTest {
 
-    private static final String EXPECTED_DEACTIVATED_STATE = "DEACTIVATED";
-    private static final String PATIENT_ACTOR_TYPE = "Patient";
-    private static final String CAREGIVER_ACTOR_TYPE = "Caregiver";
-    public static final int ACTOR_ONE_ID = 1;
-    public static final int ACTOR_TWO_ID = 2;
+    private static final int ACTOR_ONE_ID = 1;
+    private static final int ACTOR_TWO_ID = 2;
 
     @Test
     public void shouldAddDefaultTemplate() {
@@ -37,7 +37,8 @@ public class MessageDetailsUtilTest {
         Assert.assertEquals(1, messageDetailsDTO.getMessages().size());
         Assert.assertThat(messageDetailsDTO.getMessages().get(0).getActorSchedules(),
             contains(
-                new ActorScheduleDTO(null, PATIENT_ACTOR_TYPE, EXPECTED_DEACTIVATED_STATE)
+                new ActorScheduleDTO(null, PATIENT_RELATIONSHIP,
+                    DEACTIVATED_SCHEDULE_MESSAGE)
         ));
     }
 
@@ -61,7 +62,7 @@ public class MessageDetailsUtilTest {
         Assert.assertThat(messageDetailsDTO.getMessages().get(0).getAuthor(), equalTo(user));
         Assert.assertThat(messageDetailsDTO.getMessages().get(0).getActorSchedules(),
             contains(
-                new ActorScheduleDTO(null, PATIENT_ACTOR_TYPE, EXPECTED_DEACTIVATED_STATE)
+                new ActorScheduleDTO(null, PATIENT_RELATIONSHIP, DEACTIVATED_SCHEDULE_MESSAGE)
         ));
     }
 
@@ -80,9 +81,9 @@ public class MessageDetailsUtilTest {
         Assert.assertThat(messageDetailsDTO.getMessages(), hasSize(1));
         Assert.assertThat(messageDetailsDTO.getMessages().get(0).getActorSchedules(),
             contains(
-                new ActorScheduleDTO(null, PATIENT_ACTOR_TYPE, EXPECTED_DEACTIVATED_STATE),
-                new ActorScheduleDTO(ACTOR_ONE_ID, CAREGIVER_ACTOR_TYPE, EXPECTED_DEACTIVATED_STATE),
-                new ActorScheduleDTO(ACTOR_TWO_ID, CAREGIVER_ACTOR_TYPE, EXPECTED_DEACTIVATED_STATE))
+                new ActorScheduleDTO(null, PATIENT_RELATIONSHIP, DEACTIVATED_SCHEDULE_MESSAGE),
+                new ActorScheduleDTO(ACTOR_ONE_ID, CAREGIVER_RELATIONSHIP, DEACTIVATED_SCHEDULE_MESSAGE),
+                new ActorScheduleDTO(ACTOR_TWO_ID, CAREGIVER_RELATIONSHIP, DEACTIVATED_SCHEDULE_MESSAGE))
         );
     }
 
@@ -108,9 +109,9 @@ public class MessageDetailsUtilTest {
         Assert.assertThat(messageDetailsDTO.getMessages(), hasSize(1));
         Assert.assertThat(messageDetailsDTO.getMessages().get(0).getActorSchedules(),
             contains(
-                new ActorScheduleDTO(null, PATIENT_ACTOR_TYPE, EXPECTED_DEACTIVATED_STATE),
-                new ActorScheduleDTO(ACTOR_ONE_ID, CAREGIVER_ACTOR_TYPE, sampleExistingSchedule),
-                new ActorScheduleDTO(ACTOR_TWO_ID, CAREGIVER_ACTOR_TYPE, EXPECTED_DEACTIVATED_STATE))
+                new ActorScheduleDTO(null, PATIENT_RELATIONSHIP, DEACTIVATED_SCHEDULE_MESSAGE),
+                new ActorScheduleDTO(ACTOR_ONE_ID, CAREGIVER_RELATIONSHIP, sampleExistingSchedule),
+                new ActorScheduleDTO(ACTOR_TWO_ID, CAREGIVER_RELATIONSHIP, DEACTIVATED_SCHEDULE_MESSAGE))
         );
     }
 

@@ -1,5 +1,6 @@
 package org.openmrs.module.messages.api.util;
 
+import static org.openmrs.module.messages.Constant.CAREGIVER_RELATIONSHIP;
 import static org.openmrs.module.messages.api.util.ConfigConstants.DEACTIVATED_SCHEDULE_MESSAGE;
 
 import java.util.Arrays;
@@ -42,7 +43,7 @@ public class ActorScheduleBuildingUtilTest {
         ActorScheduleDTO schedule = ActorScheduleBuildingUtil.build(patientTemplate);
 
         Assert.assertEquals(new Integer(personId), schedule.getActorId());
-        Assert.assertEquals("Caregiver", schedule.getActorType());
+        Assert.assertEquals(CAREGIVER_RELATIONSHIP, schedule.getActorType());
     }
 
     @Test

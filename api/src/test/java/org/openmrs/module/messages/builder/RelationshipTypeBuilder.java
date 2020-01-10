@@ -1,5 +1,8 @@
 package org.openmrs.module.messages.builder;
 
+import static org.openmrs.module.messages.Constant.CAREGIVER_RELATIONSHIP;
+import static org.openmrs.module.messages.Constant.CARETAKER_RELATIONSHIP;
+
 import org.openmrs.RelationshipType;
 
 public class RelationshipTypeBuilder extends AbstractBuilder<RelationshipType> {
@@ -14,8 +17,8 @@ public class RelationshipTypeBuilder extends AbstractBuilder<RelationshipType> {
     public RelationshipTypeBuilder() {
         this.id = getInstanceNumber();
         this.relationshipTypeId = id;
-        this.aIsToB = "Caregiver";
-        this.bIsToA = "Caretaker";
+        this.aIsToB = CAREGIVER_RELATIONSHIP;
+        this.bIsToA = CARETAKER_RELATIONSHIP;
         this.weight = 0;
         this.preferred = false;
     }

@@ -28,6 +28,7 @@ import { TemplateUI } from '../../shared/model/template-ui';
 import _ from 'lodash';
 import { RouteComponentProps } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { getActorList } from '../../reducers/actor.reducer'
 
 interface ICalendarViewProps extends DispatchProps, StateProps, RouteComponentProps<{ patientId: string }> {
 };
@@ -37,6 +38,7 @@ interface ICalendarViewState {
   endDate?: Moment;
   activeTabKey?: string;
   filters: Object;
+  patientId: number;
 }
 
 interface ICalendarMessageEvent {
@@ -47,7 +49,7 @@ interface ICalendarMessageEvent {
 }
 
 interface IActorIdWithEvents {
-  actorId: string;
+  actorId: number;
   actorDisplayName: string;
   events: Array<ICalendarMessageEvent>;
 }
@@ -60,16 +62,18 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
       startDate: undefined,
       endDate: undefined,
       activeTabKey: 'Patient',
-      filters: {}
+      filters: {},
+      patientId: parseInt(this.props.match.params.patientId, 10)
     };
   }
 
   componentDidMount() {
     this.props.getTemplates();
+    this.props.getActorList(this.state.patientId);
   }
 
   componentWillUpdate(nextProps: ICalendarViewProps, nextState: ICalendarViewState) {
-    if (nextProps.templatesLoading === false && this.props.templatesLoading === true) {
+    if (nextProps.loading === false && this.props.loading === true) {
       let initialFilters = {};
       nextProps.templates.forEach((template) => initialFilters[template.name as string] = true);
       this.setState({ filters: initialFilters });
@@ -77,34 +81,31 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
   }
 
   private dateRangeChanged = (start: Date, end: Date, tabKey: string) => {
-    const patientId = parseInt(this.props.match.params.patientId, 10);
-    if (patientId && tabKey === this.state.activeTabKey &&
+    if (this.state.patientId && tabKey === this.state.activeTabKey &&
       ((this.state.startDate && this.state.startDate.day()) !== start.getDay()
         || (this.state.endDate && this.state.endDate.day()) !== end.getDay())) {
       this.setState({
         startDate: moment(start),
         endDate: moment(end)
-      }, () => this.props.getServiceResultLists(start, end, patientId));
+      }, () => this.props.getServiceResultLists(start, end, this.state.patientId));
     }
   }
 
   private prepareActorsData = () => {
     const actorsResults = [] as Array<IActorIdWithEvents>;
-    const patientId = this.props.match.params.patientId;
     // We always want calendar for a patient, and it needs to be first
     actorsResults.push({
-      actorId: patientId as string,
+      actorId: this.state.patientId,
       actorDisplayName: 'Patient',
       events: []
     })
     this.props.serviceResultLists.forEach((resultList) => {
-      var existingIndex = actorsResults.findIndex(a => a.actorId === (resultList.actorId as number).toString());
-      // Temporary naming until endpoint for retrieving them is exposed
-      var actorDisplayName = resultList.actorId === resultList.patientId ? 'Patient' : 'Caregiver-';
+      var existingIndex = actorsResults.findIndex(a => a.actorId === resultList.actorId);
+      var actorDisplayName = this.getActorDisplayName(resultList.actorId, resultList.patientId);
       var actorWithEvents = existingIndex !== -1
         ? actorsResults[existingIndex]
         : {
-          actorId: (resultList.actorId as number).toString(),
+          actorId: resultList.actorId,
           actorDisplayName: actorDisplayName,
           events: []
         } as IActorIdWithEvents;
@@ -113,7 +114,43 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
       }
       existingIndex !== -1 ? actorsResults[existingIndex] = actorWithEvents : actorsResults.push(actorWithEvents);
     });
-    return actorsResults;
+
+    return this.appendDefaultDummyActorsIfNeeded(actorsResults);
+  }
+
+  private getActorDisplayName(actorId: number | null, patientId: number | null): string {
+    let displayName = '';
+    if (actorId === patientId) {
+      return 'Patient';
+    }
+
+    if (actorId) {
+      const actor = _.find(this.props.actorResultList, actor => actor.actorId === actorId);
+      const role = actor && actor.actorTypeName ? actor.actorTypeName! : '';
+      const name = actor && actor.actorName ? actor.actorName! : '';
+      displayName = this.buildDisplayName(role, name);
+    } else {
+      console.error('Actor id is not specified');
+    }
+    return displayName;
+  }
+
+  private getDefaultDummyActorResults(): Array<IActorIdWithEvents> {
+    return this.props.actorResultList.map(result => {
+      return {
+        actorId: result.actorId,
+        actorDisplayName: this.buildDisplayName(result.actorTypeName, result.actorName),
+        events: []
+      } as IActorIdWithEvents
+    });
+  }
+
+  private buildDisplayName(role: string | null, name: string | null): string {
+    return _.filter([role, name]).join(' - ');
+  }
+
+  private appendDefaultDummyActorsIfNeeded(actorsResults: IActorIdWithEvents[]): Array<IActorIdWithEvents> {  
+    return _.unionBy(actorsResults, this.getDefaultDummyActorResults(), 'actorId');
   }
 
   private parseEvents(resultList: ServiceResultListUI, actorEvents: Array<ICalendarMessageEvent>) {
@@ -187,7 +224,7 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
             <h3>Calendar Overview</h3>
             <Tabs activeKey={this.state.activeTabKey} onSelect={this.tabSelected} >
               {actorsResults.map((actorWithResults, index) => {
-                const tabName = actorWithResults.actorDisplayName === 'Patient' ? actorWithResults.actorDisplayName : actorWithResults.actorDisplayName + index.toString();
+                const tabName = actorWithResults.actorDisplayName;
                 return (
                   <Tab title={tabName} key={tabName} eventKey={tabName}>
                     <Row className="u-pl-1em">
@@ -221,15 +258,17 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
   }
 }
 
-const mapStateToProps = ({ calendar, patientTemplate }: IRootState) => ({
+const mapStateToProps = ({ calendar, patientTemplate, actor }: IRootState) => ({
   serviceResultLists: calendar.serviceResultLists,
   templates: patientTemplate.templates,
-  templatesLoading: patientTemplate.templatesLoading
+  loading: patientTemplate.templatesLoading || actor.actorResultListLoading,
+  actorResultList: actor.actorResultList
 });
 
 const mapDispatchToProps = ({
   getServiceResultLists,
-  getTemplates
+  getTemplates,
+  getActorList
 });
 
 type StateProps = ReturnType<typeof mapStateToProps>;
