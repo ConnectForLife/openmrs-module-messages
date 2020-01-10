@@ -1,5 +1,6 @@
 package org.openmrs.module.messages.web.controller;
 
+import org.openmrs.module.messages.api.service.ActorService;
 import org.openmrs.module.messages.api.dto.ErrorResponseDTO;
 import org.openmrs.module.messages.api.dto.MessageDetailsDTO;
 import org.openmrs.module.messages.api.dto.PageDTO;
@@ -52,6 +53,10 @@ public class MessagingController extends BaseRestController {
     @Qualifier("messages.messagingService")
     private MessagingService messagingService;
 
+    @Autowired
+    @Qualifier("messages.actorService")
+    private ActorService actorService;
+
     @RequestMapping(value = "/details", method = RequestMethod.GET)
     @ResponseBody
     public PageDTO<MessageDetailsDTO> getMessageDetails(MessagingParams messagingParams) {
@@ -65,7 +70,8 @@ public class MessagingController extends BaseRestController {
         MessageDetailsDTO messageDetailsDTO =
             messageDetailsMapper.toDto(patientTemplates).withPatientId(criteria.getPatientId());
         messageDetailsDTO = MessageDetailsUtil.attachDefaultTemplates(messageDetailsDTO,
-            templateService.getAll(false));
+            templateService.getAll(false),
+            actorService.getAllActorsForPatientId(criteria.getPatientId()));
 
         details.add(messageDetailsDTO);
         return new PageDTO<>(details, paging);

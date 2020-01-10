@@ -35,6 +35,7 @@
             <ref local="messages.configService"/>
         </property>
         <property name="personService" ref="personService"/>
+        <property name="patientService" ref="patientService"/>
     </bean>
 
     <bean id="messages.TemplateDao" class="org.openmrs.module.messages.api.dao.impl.TemplateDaoImpl">

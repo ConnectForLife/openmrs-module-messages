@@ -1,5 +1,6 @@
 package org.openmrs.module.messages.api.dto;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -22,6 +23,11 @@ public class MessageDTO {
 
     public MessageDTO() { }
 
+    public MessageDTO(String type) {
+        this.type = type;
+        this.actorSchedules = new ArrayList<>();
+    }
+
     public String getType() {
         return type;
     }
@@ -36,5 +42,10 @@ public class MessageDTO {
 
     public List<ActorScheduleDTO> getActorSchedules() {
         return actorSchedules;
+    }
+
+    public MessageDTO setActorSchedules(List<ActorScheduleDTO> actorSchedules) {
+        this.actorSchedules = actorSchedules;
+        return this;
     }
 }

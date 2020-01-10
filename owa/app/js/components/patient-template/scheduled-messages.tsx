@@ -29,7 +29,8 @@ class ScheduledMessages extends React.PureComponent<IScheduledMessagesProps, ISc
   mapActorSchedules = (actorSchedules: Array<ActorSchedule>) => {
     const result = {};
     actorSchedules.forEach((actorSchedule) => {
-      result[actorSchedule.actorType] = actorSchedule.schedule
+      const id = actorSchedule.actorId ? actorSchedule.actorId : this.props.patientId;
+      result[id] = actorSchedule.schedule;
     });
     return result;
   }
@@ -91,15 +92,19 @@ class ScheduledMessages extends React.PureComponent<IScheduledMessagesProps, ISc
       };
     }
 
-    const actorTypes = _.flatten(this.props.messageDetails.messages
-      .map((msg) => msg.actorSchedules
-        .map((s) => s.actorType)));
+    const actorSchedules = _.uniq(_.flatten(this.props.messageDetails.messages
+      .map((msg) => msg.actorSchedules)));
 
-    return _.uniq(actorTypes).map((type) => ({
-      Header: `${type ? type : 'Patient'} ID`,
-      accessor: `schedules[${type}]`,
-      getProps: wrapedTextProps
-    }));
+    const columns = actorSchedules.map((actorSchedule: ActorSchedule) => {
+      const id = actorSchedule.actorId ? actorSchedule.actorId : this.props.patientId;
+      const type = actorSchedule.actorType;
+      return {
+        Header: `${type} (id: ${id})`,
+        accessor: `schedules[${id}]`,
+        getProps: wrapedTextProps
+      };
+    });
+    return _.uniqBy(columns, 'Header');
   };
 
   getActionsColumnDefinition = () => ({
@@ -140,7 +145,7 @@ class ScheduledMessages extends React.PureComponent<IScheduledMessagesProps, ISc
 const mapStateToProps = ({ patientTemplate }: IRootState) => ({
   pages: patientTemplate.messageDetailsPages,
   messageDetails: patientTemplate.messageDetails,
-  loading: patientTemplate.messageDetailsLoading
+  loading: patientTemplate.messageDetailsLoading,
 });
 
 const mapDispatchToProps = ({

@@ -9,6 +9,7 @@ import org.openmrs.PersonAttribute;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.Relationship;
 import org.openmrs.RelationshipType;
+import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.api.service.ActorService;
@@ -48,6 +49,8 @@ public class ActorServiceImpl implements ActorService {
 
     private PersonService personService;
 
+    private PatientService patientService;
+
     @Override
     public List<Actor> getAllActorsForPatient(Patient patient) {
         List<ActorType> actorTypes = getAllActorTypes();
@@ -58,6 +61,15 @@ public class ActorServiceImpl implements ActorService {
             }
         }
         return new LinkedList<>(results);
+    }
+
+    @Override
+    public List<Actor> getAllActorsForPatientId(Integer patientId) {
+        Patient patient = patientService.getPatient(patientId);
+        if (patient == null) {
+            throw new ValidationException(String.format("Patient with %s id doesn't exist.", patientId));
+        }
+        return getAllActorsForPatient(patient);
     }
 
     @Override
@@ -109,6 +121,11 @@ public class ActorServiceImpl implements ActorService {
 
     public ActorServiceImpl setPersonService(PersonService personService) {
         this.personService = personService;
+        return this;
+    }
+
+    public ActorServiceImpl setPatientService(PatientService patientService) {
+        this.patientService = patientService;
         return this;
     }
 

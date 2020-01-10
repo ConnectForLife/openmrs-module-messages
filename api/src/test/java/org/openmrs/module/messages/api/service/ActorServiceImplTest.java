@@ -246,6 +246,22 @@ public class ActorServiceImplTest extends ContextSensitiveTest {
         fail();
     }
 
+    @Test
+    public void shouldSuccessfullyReturnActorsForPatientId() {
+        List<Actor> actual = actorService.getAllActorsForPatientId(patient.getPatientId());
+        assertThat(actual, hasItems(caregiverPerson, fatherPerson));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowExceptionForEmptyPatientId() {
+        actorService.getAllActorsForPatientId(null);
+    }
+
+    @Test(expected = ValidationException.class)
+    public void shouldThrowExceptionForNotExistingPatientId() {
+        actorService.getAllActorsForPatientId(NOT_EXIST_PERSON_ID);
+    }
+
     private ActorType createActorType(RelationshipType relationshipType, RelationshipTypeDirection direction) {
         return new ActorType(relationshipType, direction);
     }

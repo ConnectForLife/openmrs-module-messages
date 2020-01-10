@@ -33,6 +33,19 @@ public class ActorScheduleBuildingUtilTest {
     }
 
     @Test
+    public void shouldBuildActorScheduleWithActorTypeAndId() {
+        int personId = 0;
+        PatientTemplate patientTemplate = new PatientTemplateBuilder().build();
+        patientTemplate.getActorType().getPersonB().setId(patientTemplate.getPatient().getId());
+        patientTemplate.getActorType().getPersonA().setId(personId);
+
+        ActorScheduleDTO schedule = ActorScheduleBuildingUtil.build(patientTemplate);
+
+        Assert.assertEquals(new Integer(personId), schedule.getActorId());
+        Assert.assertEquals("Caregiver", schedule.getActorType());
+    }
+
+    @Test
     public void shouldBuildStartDateSchedule() {
         TemplateFieldValue tfv = buildTemplateFieldWithValue(TemplateFieldType.START_OF_MESSAGES,
             TEST_DATE_1);

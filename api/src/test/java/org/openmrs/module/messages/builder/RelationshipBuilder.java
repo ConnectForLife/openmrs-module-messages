@@ -19,7 +19,7 @@ public class RelationshipBuilder extends AbstractBuilder<Relationship> {
         super();
         relationshipId = getInstanceNumber();
         personA = new Person(1);
-        relationshipType = new RelationshipType(1);
+        relationshipType = new RelationshipTypeBuilder().build();
         personB = new Person(2);
         startDate = DateUtil.getDatePlusSeconds(1);
         endDate = DateUtil.getDatePlusSeconds(2);

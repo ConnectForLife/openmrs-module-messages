@@ -11,6 +11,8 @@ public interface ActorService {
 
     List<Actor> getAllActorsForPatient(Patient patient);
 
+    List<Actor> getAllActorsForPatientId(Integer patientId);
+
     List<ActorType> getAllActorTypes();
 
     String getContactTime(Integer personId);

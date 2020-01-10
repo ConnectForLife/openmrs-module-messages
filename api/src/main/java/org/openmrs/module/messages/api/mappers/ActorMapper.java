@@ -1,11 +1,11 @@
 package org.openmrs.module.messages.api.mappers;
 
-import org.openmrs.RelationshipType;
 import org.openmrs.module.messages.api.dto.ActorDTO;
 import org.openmrs.module.messages.api.model.Actor;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.openmrs.module.messages.api.util.ActorUtil;
 
 public class ActorMapper {
 
@@ -18,10 +18,8 @@ public class ActorMapper {
     }
 
     public ActorDTO toDto(Actor dao) {
-        RelationshipType relationshipType = dao.getRelationship().getRelationshipType();
-        String typeName = dao.getRelationship().getPersonA().getId().equals(dao.getTarget().getId()) ?
-                relationshipType.getaIsToB() :
-                relationshipType.getbIsToA();
+
+        String typeName = ActorUtil.getActorTypeName(dao);
         return new ActorDTO()
                 .setActorId(dao.getTarget().getPersonId())
                 .setActorName(dao.getTarget().getPersonName().getFullName())

@@ -42,6 +42,8 @@ public final class MessagesConstants {
 
     public static final String SCHEDULED_GROUP_MAPPER = "messages.scheduledGroupMapper";
 
+    public static final String PATIENT_DEFAULT_ACTOR_TYPE = "Patient";
+
     private MessagesConstants() {
         // private. So can't be initialized
     }

@@ -11,6 +11,7 @@ import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
 import org.openmrs.module.messages.api.dao.PatientTemplateDao;
 import org.openmrs.module.messages.api.dao.TemplateDao;
+import org.openmrs.module.messages.api.dto.ActorScheduleDTO;
 import org.openmrs.module.messages.api.dto.MessageDTO;
 import org.openmrs.module.messages.api.dto.MessageDetailsDTO;
 import org.openmrs.module.messages.api.dto.PageDTO;
@@ -37,10 +38,14 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
+import static org.openmrs.module.messages.api.constants.MessagesConstants.PATIENT_DEFAULT_ACTOR_TYPE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -51,7 +56,7 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
     private static final String QUERY_TYPE_1 = "query_type1";
     private static final String QUERY_2 = "query2";
     private static final String QUERY_TYPE_2 = "query_type2";
-    private static final int THREE_ROWS = 3;
+    private static final int THREE = 3;
     private static final int FIRST_PAGE = 1;
     private static final int SECOND_PAGE = 2;
     private static final String ROWS_PARAM = "rows";
@@ -60,6 +65,7 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
     public static final String START_DATE_PARAM = "startDate";
     public static final String END_DATE_PARAM = "endDate";
     private static final String MESSAGE_TEMPLATE_NAME = "Template Name";
+    private static final String EXPECTED_DEACTIVATED_STATE = "DEACTIVATED";
 
     private MockMvc mockMvc;
 
@@ -93,19 +99,19 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
         Relationship relationship = personService.getAllRelationships().get(0);
         Relationship otherRelationship = personService.getAllRelationships().get(1);
         PatientTemplate template1 = createPatientTemplate(patient1, relationship.getPersonA(),
-                relationship, QUERY_1, QUERY_TYPE_1);
+                relationship, QUERY_1, QUERY_TYPE_1, MESSAGE_TEMPLATE_NAME + "1");
 
         createPatientTemplate(patient2, otherRelationship.getPersonA(),
-                otherRelationship, QUERY_1, QUERY_TYPE_2);
+                otherRelationship, QUERY_1, QUERY_TYPE_2, MESSAGE_TEMPLATE_NAME + "2");
 
         PatientTemplate template2 = createPatientTemplate(patient1, relationship.getPersonA(),
-                relationship, QUERY_2, QUERY_TYPE_2);
+                relationship, QUERY_2, QUERY_TYPE_2, MESSAGE_TEMPLATE_NAME + "3");
 
         Patient patientWithId = new Patient();
         patientWithId.setId(patient1.getId());
 
         MvcResult result = mockMvc.perform(get("/messages/details")
-                .param(ROWS_PARAM, String.valueOf(THREE_ROWS))
+                .param(ROWS_PARAM, String.valueOf(THREE))
                 .param(PAGE_PARAM, String.valueOf(FIRST_PAGE))
                 .param(PATIENT_ID_PARAM, patient1.getId().toString()))
                 .andExpect(status().is(HttpStatus.OK.value())).andReturn();
@@ -114,17 +120,35 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
         MessageDetailsDTO dto = getDtoFromMvcResult(result);
 
         assertThat(dto.getPatientId(), is(equalTo(patientWithId.getId())));
-        assertThat(dto.getMessages().size(), is(equalTo(2)));
+        assertThat(dto.getMessages().size(), is(equalTo(THREE)));
 
-        for (MessageDTO messageDTO : dto.getMessages()) {
-            assertThat(messageDTO.getType(), is(MESSAGE_TEMPLATE_NAME));
+        for (int i = 0; i < 2; i++) {
+            MessageDTO messageDTO = dto.getMessages().get(i);
+            assertThat(messageDTO.getType(), containsString(MESSAGE_TEMPLATE_NAME));
             assertThat(messageDTO.getAuthor().getUsername(), is(equalTo("admin")));
-            assertThat(messageDTO.getActorSchedules().get(0).getActorType(),
-                    is(equalTo(relationship.getRelationshipType().getaIsToB())));
             assertThat(messageDTO.getCreatedAt(), anyOf(
                     is(equalTo(template1.getDateCreated())),
                     is(equalTo(template2.getDateCreated()))));
+            assertThat(dto.getMessages().get(0).getActorSchedules(),
+                contains(
+                    new ActorScheduleDTO(null, PATIENT_DEFAULT_ACTOR_TYPE,
+                        EXPECTED_DEACTIVATED_STATE),
+                    new ActorScheduleDTO(relationship.getPersonA().getId(),
+                        relationship.getRelationshipType().getaIsToB(),
+                        EXPECTED_DEACTIVATED_STATE)
+                ));
         }
+
+        MessageDTO messageDTO = dto.getMessages().get(2);
+        assertThat(messageDTO.getType(), containsString(MESSAGE_TEMPLATE_NAME));
+        assertThat(messageDTO.getAuthor(), is(nullValue()));
+        assertThat(messageDTO.getCreatedAt(), is(nullValue()));
+        assertThat(dto.getMessages().get(2).getActorSchedules(),
+            contains(
+                new ActorScheduleDTO(null, PATIENT_DEFAULT_ACTOR_TYPE,
+                    EXPECTED_DEACTIVATED_STATE)
+            ));
+
     }
 
     @Test
@@ -156,7 +180,7 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
 
         // Fetch page 1
         MvcResult result = mockMvc.perform(get("/messages/details")
-                .param(ROWS_PARAM, String.valueOf(THREE_ROWS))
+                .param(ROWS_PARAM, String.valueOf(THREE))
                 .param(PAGE_PARAM, String.valueOf(FIRST_PAGE))
                 .param(PATIENT_ID_PARAM, patient1.getId().toString()))
                 .andExpect(status().is(HttpStatus.OK.value())).andReturn();
@@ -167,7 +191,7 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
 
         // Fetch page 2
         result = mockMvc.perform(get("/messages/details")
-                .param(ROWS_PARAM, String.valueOf(THREE_ROWS))
+                .param(ROWS_PARAM, String.valueOf(THREE))
                 .param(PAGE_PARAM, String.valueOf(SECOND_PAGE))
                 .param(PATIENT_ID_PARAM, patient1.getId().toString()))
                 .andExpect(status().is(HttpStatus.OK.value())).andReturn();
@@ -215,7 +239,7 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
 
     private void assertMessageDetailsDTO(MessageDetailsDTO dto, String queryType, Integer patientId) {
         assertThat(dto.getPatientId(), is(equalTo(patientId)));
-        assertThat(dto.getMessages().size(), is(equalTo(THREE_ROWS)));
+        assertThat(dto.getMessages().size(), is(equalTo(THREE)));
 
         for (MessageDTO messageDTO : dto.getMessages()) {
             assertThat(messageDTO.getType(), is(MESSAGE_TEMPLATE_NAME));
@@ -248,22 +272,30 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
 
     private PatientTemplate createPatientTemplate(Patient patient, Person person,
                                                   Relationship relationship,
-                                                  String query, String queryType) {
+                                                  String query, String queryType,
+                                                  String templateName) {
         return patientTemplateDao.saveOrUpdate(new PatientTemplateBuilder()
                 .withActor(person)
                 .withActorType(relationship)
                 .withPatient(patient)
                 .withServiceQuery(query)
                 .withServiceQueryType(queryType)
-                .withTemplate(createTemplate())
+                .withTemplate(createTemplate(templateName))
                 .buildAsNew());
     }
 
-    private Template createTemplate() {
+    private PatientTemplate createPatientTemplate(Patient patient, Person person,
+                                                  Relationship relationship,
+                                                  String query, String queryType) {
+        return createPatientTemplate(patient, person, relationship, query, queryType,
+            MESSAGE_TEMPLATE_NAME);
+    }
+
+    private Template createTemplate(String templateName) {
         Template template = new TemplateBuilder()
                 .withServiceQuery("SELECT now() AS EXECUTION_DATE, 1 AS MESSAGE_ID, 'Call' AS CHANNEL_ID;")
                 .withServiceQueryType("SQL")
-                .setName(MESSAGE_TEMPLATE_NAME)
+                .setName(templateName)
                 .buildAsNew();
         return templateDao.saveOrUpdate(template);
     }

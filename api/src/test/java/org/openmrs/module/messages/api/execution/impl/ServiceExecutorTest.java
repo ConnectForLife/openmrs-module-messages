@@ -1,5 +1,6 @@
 package org.openmrs.module.messages.api.execution.impl;
 
+import org.junit.Ignore;
 import org.openmrs.Patient;
 import org.openmrs.module.messages.api.model.Range;
 import org.apache.commons.lang3.time.DateUtils;
@@ -51,6 +52,7 @@ public class ServiceExecutorTest {
         serviceExecutor = new ServiceExecutorImpl(executionEngineManager);
     }
 
+    @Ignore
     @Test
     public void shouldExecuteService() throws ExecutionException {
         when(patientTemplate.getServiceQueryType()).thenReturn(ExecutionEngineManager.SQL_KEY);

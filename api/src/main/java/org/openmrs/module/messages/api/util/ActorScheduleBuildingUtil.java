@@ -1,5 +1,6 @@
 package org.openmrs.module.messages.api.util;
 
+import static org.openmrs.module.messages.api.constants.MessagesConstants.PATIENT_DEFAULT_ACTOR_TYPE;
 import static org.openmrs.module.messages.api.model.ChannelType.DEACTIVATED;
 import static org.openmrs.module.messages.api.util.ConfigConstants.DEACTIVATED_SCHEDULE_MESSAGE;
 
@@ -8,6 +9,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Relationship;
 import org.openmrs.module.messages.api.dto.ActorScheduleDTO;
 import org.openmrs.module.messages.api.model.ChannelType;
 import org.openmrs.module.messages.api.model.PatientTemplate;
@@ -23,15 +25,32 @@ public final class ActorScheduleBuildingUtil {
     private static final String DEFAULT_INFORMATION = "Schedule data not specified";
 
     public static ActorScheduleDTO build(PatientTemplate patientTemplate) {
+        Integer actorId = buildActorId(patientTemplate);
         String actorType = buildActorType(patientTemplate);
         String schedule = buildSchedule(patientTemplate);
-        return new ActorScheduleDTO(actorType, schedule);
+        return new ActorScheduleDTO(actorId, actorType, schedule);
+    }
+
+    private static Integer buildActorId(PatientTemplate patientTemplate) {
+        return patientTemplate.getActorType() == null ? null :
+            getActorId(patientTemplate.getActorType(), patientTemplate.getPatient().getId());
     }
 
     private static String buildActorType(PatientTemplate patientTemplate) {
-        String actorType = patientTemplate.getActorType() == null ? null :
-            patientTemplate.getActorType().getRelationshipType().getaIsToB();
-        return StringUtils.defaultIfEmpty(actorType, StringUtils.EMPTY);
+        return patientTemplate.getActorType() == null ? PATIENT_DEFAULT_ACTOR_TYPE :
+            getActorType(patientTemplate.getActorType(), patientTemplate.getPatient().getId());
+    }
+
+    private static Integer getActorId(Relationship actorType, Integer patientId) {
+        return patientId.equals(actorType.getPersonA().getId()) ?
+            actorType.getPersonB().getId() :
+            actorType.getPersonA().getId();
+    }
+
+    private static String getActorType(Relationship actorType, Integer patientId) {
+        return patientId.equals(actorType.getPersonA().getId()) ?
+            actorType.getRelationshipType().getbIsToA() :
+            actorType.getRelationshipType().getaIsToB();
     }
 
     private static String buildSchedule(PatientTemplate patientTemplate) {
