@@ -12,6 +12,8 @@ package org.openmrs.module.messages.api.model;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -38,6 +40,7 @@ public class DeliveryAttempt extends AbstractBaseOpenmrsData {
     private Date timestamp;
     
     @Column(name = "new_status", nullable = false)
+    @Enumerated(EnumType.STRING)
     private ServiceStatus status;
     
     @Column(name = "attempt_number", nullable = false)
