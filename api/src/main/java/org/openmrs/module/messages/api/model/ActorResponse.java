@@ -1,6 +1,7 @@
 package org.openmrs.module.messages.api.model;
 
-import java.util.Date;
+import org.openmrs.Concept;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,8 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import org.openmrs.Concept;
+import java.util.Date;
 
 @Entity(name = "messages.ActorResponse")
 @Table(name = "messages_actor_response")
@@ -23,7 +23,8 @@ public class ActorResponse extends AbstractBaseOpenmrsData {
     @Column(name = "messages_actor_response_id")
     private Integer id;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
+    @JoinColumn(name = "scheduled_service_id", nullable = false)
     private ScheduledService scheduledService;
 
     @OneToOne
