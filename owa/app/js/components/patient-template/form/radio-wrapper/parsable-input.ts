@@ -8,7 +8,6 @@
  */
 
 export const SEPARATOR = '|';
-
 export const EMPTY = 'EMPTY';
 
 export enum InputTypeEnum {

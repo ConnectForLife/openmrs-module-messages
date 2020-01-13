@@ -22,7 +22,7 @@ import java.util.Map;
  * and is responsible for preparing the params that will be passed to the execution.
  */
 public class ExecutionContext {
-    
+
     public static final String START_DATE_PARAM = "startDate";
     public static final String END_DATE_PARAM = "endDate";
     public static final String PATIENT_ID_PARAM = "patientId";
@@ -38,29 +38,32 @@ public class ExecutionContext {
         this.patientTemplate = patientTemplate;
         this.dateRange = dateRange;
         this.bestContactTime = bestContactTime;
-        
+
         params = new HashMap<>();
-        
+
         params.put(START_DATE_PARAM, dateRange.getStart());
-        params.put(END_DATE_PARAM, dateRange.getEnd());
-        
+        Date endDate = patientTemplate.getEndOfMessages() != null
+                ? patientTemplate.getEndOfMessages()
+                : dateRange.getEnd();
+        params.put(END_DATE_PARAM, endDate);
+
         params.put(PATIENT_ID_PARAM, patientTemplate.getPatient().getPatientId());
         params.put(ACTOR_ID_PARAM, patientTemplate.getActor().getPersonId());
         params.put(BEST_CONTACT_TIME_PARAM, bestContactTime);
-        
+
         for (TemplateFieldValue param : patientTemplate.getTemplateFieldValues()) {
             params.put(param.getTemplateField().getName().replace(' ', '_'), param.getValue());
         }
     }
-    
+
     public Map<String, Object> getParams() {
         return params;
     }
-    
+
     public PatientTemplate getPatientTemplate() {
         return patientTemplate;
     }
-    
+
     public Range<Date> getDateRange() {
         return dateRange;
     }

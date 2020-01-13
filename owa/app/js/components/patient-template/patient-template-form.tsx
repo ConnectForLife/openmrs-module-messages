@@ -11,6 +11,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Form, FormGroup, ControlLabel } from 'react-bootstrap';
 import _ from 'lodash';
+import OpenMrsDatePicker from '@bit/soldevelo-omrs.cfl-components.openmrs-date-picker';
+import FormLabel from '@bit/soldevelo-omrs.cfl-components.form-label';
+import ErrorDesc from '@bit/soldevelo-omrs.cfl-components.error-description';
 
 import { updatePatientTemplate } from '../../reducers/patient-template.reducer';
 import { PatientTemplateUI } from '../../shared/model/patient-template-ui';
@@ -21,8 +24,6 @@ import DynamicRadioButton from './form/dynamic-radio-button';
 import DynamicMultiselect from './form/dynamic-multiselect';
 import DynamicCheckboxButton from './form/dynamic-checbox-button';
 import InputField from './form/input-field';
-import OpenMrsDatePicker from '@bit/soldevelo-omrs.cfl-components.openmrs-date-picker';
-import FormLabel from '@bit/soldevelo-omrs.cfl-components.form-label';
 import { CATEGORIES_MAP } from './form/dynamic-multiselect.constants';
 import RadioWrappedContainer, { InitInput } from './form/radio-wrapper';
 import {
@@ -32,7 +33,7 @@ import {
 } from '../../shared/utils/messages';
 import { factory } from './form/type-factory';
 import { InputTypeEnum } from './form/radio-wrapper/parsable-input';
-import ErrorDesc from '@bit/soldevelo-omrs.cfl-components.error-description';
+
 
 interface IReactProps {
   patientTemplate: PatientTemplateUI | undefined;

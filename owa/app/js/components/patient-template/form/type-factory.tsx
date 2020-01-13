@@ -10,6 +10,7 @@
 import React from 'react';
 import { startOfDay, format } from 'date-fns';
 import { ISO_DATE_FORMAT } from '@bit/soldevelo-omrs.cfl-components.date-util/constants';
+import OpenMrsDatePicker from '@bit/soldevelo-omrs.cfl-components.openmrs-date-picker';
 
 import { ValueType, InputTypeEnum, SEPARATOR, EMPTY } from './radio-wrapper/parsable-input';
 import _ from 'lodash';
@@ -20,11 +21,10 @@ import {
   AFTER_DAYS_BEFORE,
   AFTER_DAYS_AFTER
 } from '../../../shared/utils/messages';
-import OpenMrsDatePicker from '@bit/soldevelo-omrs.cfl-components.openmrs-date-picker';
 import AfterTimesInput from './after-times-input';
 
 export const parseType = (inputValue: string): ValueType => {
-  let result: ValueType = {
+  const result: ValueType = {
     name: InputTypeEnum.NO_DATE,
     value: EMPTY
   };

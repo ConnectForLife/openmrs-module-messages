@@ -4,9 +4,11 @@ import org.apache.commons.lang.StringUtils;
 import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.Relationship;
+import org.openmrs.module.messages.api.util.EndDateUtil;
 import validate.annotation.ValidPatientTemplate;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -126,5 +128,10 @@ public class PatientTemplate extends AbstractBaseOpenmrsData {
     @Transient
     public Integer getServiceId() {
         return 0; // TODO
+    }
+
+    @Transient
+    public Date getEndOfMessages() {
+        return EndDateUtil.getEndDate(getTemplateFieldValues());
     }
 }

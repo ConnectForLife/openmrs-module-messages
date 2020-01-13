@@ -1,10 +1,13 @@
 package org.openmrs.module.messages.api.util;
 
 import static org.openmrs.module.messages.api.constants.MessagesConstants.PATIENT_DEFAULT_ACTOR_TYPE;
+import static org.openmrs.module.messages.api.constants.MessagesConstants.DEFAULT_FRONT_END_DATE_FORMAT;
 import static org.openmrs.module.messages.api.model.ChannelType.DEACTIVATED;
 import static org.openmrs.module.messages.api.util.ConfigConstants.DEACTIVATED_SCHEDULE_MESSAGE;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -99,11 +102,11 @@ public final class ActorScheduleBuildingUtil {
 
     private static void addEndDateElement(List<String> scheduleElements,
                                           PatientTemplate patientTemplate) {
-        String endDate = getTemplateFieldValue(patientTemplate, TemplateFieldType.END_OF_MESSAGES,
-            true);
-        endDate = getFormattedDateString(endDate);
+        Date endDate = patientTemplate.getEndOfMessages();
+
         if (endDate != null) {
-            scheduleElements.add(String.format("Ends: %s", endDate));
+            SimpleDateFormat newDateFormat = new SimpleDateFormat(DEFAULT_FRONT_END_DATE_FORMAT);
+            scheduleElements.add(String.format("Ends: %s", newDateFormat.format(endDate)));
         }
     }
 

@@ -57,6 +57,16 @@ interface IState {
 }
 
 export default class RadioWrappedContainer extends React.Component<IProps, IState> {
+  constructor(props) {
+    super(props);
+    const withType: ValueType = parseType(props.initValue);
+    const values: RadioValueContainer[] = this.props.initElements.map(
+      init => this.mapInits(init, withType));
+
+    this.state = {
+      values
+    };
+  }
 
   mapInits = (init: InitInput, fetched: ValueType) => {
     if (init.type == fetched.name) {
@@ -82,12 +92,12 @@ export default class RadioWrappedContainer extends React.Component<IProps, IStat
 
   mapUpdates = (el: RadioValueContainer, radio: RadioValue) => {
     if (el.radioValue.id === radio.id) {
-      let updated = _.cloneDeep(el);
+      const updated = _.cloneDeep(el);
       updated.radioValue.value = radio.value;
       updated.radioValue.checked = true;
       return updated;
     } else {
-      let updated = _.cloneDeep(el);
+      const updated = _.cloneDeep(el);
       updated.radioValue.checked = false;
       return updated;
     }
@@ -95,23 +105,12 @@ export default class RadioWrappedContainer extends React.Component<IProps, IStat
 
   serializeValue = (values: RadioValueContainer[]) => {
     let value: string = EMPTY;
-    values.map(({ input, radioValue }) => {
+    values.forEach(({ input, radioValue }) => {
       if (radioValue.checked) {
         value = input.parser.serialize(radioValue.value);
       }
     });
     return value;
-  }
-
-  constructor(props) {
-    super(props);
-    const withType: ValueType = parseType(props.initValue);
-    const values: RadioValueContainer[] = this.props.initElements.map(
-      init => this.mapInits(init, withType));
-
-    this.state = {
-      values
-    };
   }
 
   update = (radio: RadioValue) => {

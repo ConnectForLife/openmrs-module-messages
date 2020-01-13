@@ -18,7 +18,7 @@ import org.openmrs.module.messages.builder.TemplateFieldValueBuilder;
 public class ActorScheduleBuildingUtilTest {
 
     private static final String TEST_DATE_1 = "2019-12-07";
-    private static final String TEST_DATE_2 = "2019-12-11";
+    private static final String TEST_DATE_2 = EndDateType.DATE_PICKER.getName() + "|2019-12-11";
     private static final String TEST_OUTPUT_DATE_1 = "07 Dec 2019";
     private static final String TEST_OUTPUT_DATE_2 = "11 Dec 2019";
     public static final String SMS_TYPE = "SMS";
