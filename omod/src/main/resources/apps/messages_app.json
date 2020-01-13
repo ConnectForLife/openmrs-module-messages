@@ -15,15 +15,6 @@
         "requiredPrivilege": "Messages schedule privilege"
       },
       {
-        "id": "messagesapp.basicMessages.homepageLink",
-        "extensionPointId": "org.openmrs.referenceapplication.homepageLink",
-        "type": "link",
-        "label": "messages.title",
-        "icon": "icon-comment",
-        "order": 1,
-        "url": "owa/messages/index.html#/messages"
-      },
-      {
         "id": "messagesapp.basicMessages.patientDashboardLink",
         "extensionPointId": "patientDashboard.overallActions",
         "type": "link",
