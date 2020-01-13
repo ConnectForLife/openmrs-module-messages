@@ -7,13 +7,16 @@
  * graphic logo is a trademark of OpenMRS Inc.
  */
 import React from 'react';
+import DefaultSettingsTable from './default-settings/default-settings-table';
 
 export default class AppManagement extends React.Component {
+    
     render() {
         return (
             <div>
                 <h1>Hello, world - Management</h1>
+                <DefaultSettingsTable />
             </div>
         );
     };
-}
+};

@@ -11,6 +11,7 @@ import org.openmrs.module.messages.api.util.validate.ValidationComponent;
 import org.openmrs.module.messages.domain.PagingInfo;
 import org.openmrs.module.messages.domain.criteria.TemplateCriteria;
 import org.openmrs.module.messages.web.model.PageableParams;
+import org.openmrs.module.messages.web.model.TemplateWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -22,11 +23,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Templates Controller to manage Templates resource
  */
+// TODO: 09.01.2020 tests for new endpoint
 @Controller
 @RequestMapping(value = "/messages/templates")
 public class TemplateController extends BaseRestController {
@@ -67,14 +70,35 @@ public class TemplateController extends BaseRestController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public TemplateDTO updateTemplate(@PathVariable Integer templateId,
-            @RequestBody TemplateDTO templateDTO) {
+                                      @RequestBody TemplateDTO templateDTO) {
+        Template updatedTemplate = validateAndUpdateTemplate(templateDTO, templateId);
+        return templateMapper.toDto(templateService.saveOrUpdateTemplate(updatedTemplate));
+    }
+
+    @RequestMapping(method = RequestMethod.PUT)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public TemplateWrapper updateTemplates(@RequestBody TemplateWrapper templateWrapper) {
+        List<Template> updatedTemplates = validateAndUpdateTemplates(templateWrapper.getTemplates());
+        return new TemplateWrapper(templateMapper.toDtos(templateService.saveOrUpdate(updatedTemplates)));
+    }
+
+    private List<Template> validateAndUpdateTemplates(List<TemplateDTO> templateDTOS) {
+        List<Template> templates = new ArrayList<>();
+        for (TemplateDTO dto : templateDTOS) {
+            templates.add(validateAndUpdateTemplate(dto, dto.getId()));
+        }
+        return templates;
+    }
+
+    // TODO: 10.01.2020 update to match validation in PatientTemplateController
+    private Template validateAndUpdateTemplate(TemplateDTO templateDTO, Integer templateId) {
         validateTemplateId(templateId);
         validationComponent.validate(templateDTO);
         Template oldTemplate = templateService.getById(templateId);
         validateOldTemplate(templateId, oldTemplate);
         Template newTemplate = templateMapper.fromDto(templateDTO);
-        oldTemplate = templateMapper.update(oldTemplate, newTemplate);
-        return templateMapper.toDto(templateService.saveOrUpdateTemplate(oldTemplate));
+        return templateMapper.update(oldTemplate, newTemplate);
     }
 
     private void validateIfNewTemplate(TemplateDTO templateDTO) {

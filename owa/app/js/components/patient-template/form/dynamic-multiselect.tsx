@@ -11,7 +11,7 @@ interface IProps {
   selectedOptions: string;
   label: string;
   key: string;
-  mandatory: boolean;
+  mandatory?: boolean;
   onSelectChange: (valueSelected: string) => void;
 }
 
@@ -51,7 +51,6 @@ export default class DynamicMultiselect extends React.Component<IProps, IState> 
 
   render = () => {
     const selectedOptions = this.mapOptionsToMultiselectOptionsArray(this.props.selectedOptions);
-
     return (
       <FormGroup
         className="multiselect"

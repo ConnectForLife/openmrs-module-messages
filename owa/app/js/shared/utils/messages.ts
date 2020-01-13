@@ -38,6 +38,9 @@ export const AFTER_DAYS_AFTER = 'times';
 export const BEST_CONTACT_TIME_LABEL = 'Best Contact Time';
 export const CALENDAR_OVERVIEW_LABEL = 'Calendar Overview';
 
+// Admin settings 
+export const DEFAULT_SETTINGS_POSTFIX = ' - default settings';
+
 export const PATIENT_TEMPLATE_START_DATE = 'Start of daily messages';
 export const PATIENT_TEMPLATE_END_DATE = 'End of daily messages';
 export const PATIENT_ROLE = 'Patient';

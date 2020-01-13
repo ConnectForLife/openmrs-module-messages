@@ -17,7 +17,7 @@ interface IProps {
   key: string;
   value: string;
   fieldName: string
-  mandatory: boolean;
+  mandatory?: boolean;
   handleChange: (value: string) => void;
 }
 

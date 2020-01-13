@@ -45,7 +45,7 @@ type RadioValueContainer = {
 interface IProps {
   id: string,
   fieldName: string,
-  isMandatory: boolean;
+  isMandatory?: boolean;
   label: string;
   initValue: string;
   initElements: InitInput[];

@@ -48,7 +48,7 @@ export class TemplateUI extends ObjectUI<ITemplate> implements ITemplate {
     return new TemplateUI(getDefaultValue());
   }
 
-  static fromModel(modal: ITemplate) {
-    return new TemplateUI(modal);
+  static fromModel(model: ITemplate) {
+    return new TemplateUI(model);
   }
 }

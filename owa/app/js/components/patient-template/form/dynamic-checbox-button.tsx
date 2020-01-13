@@ -19,7 +19,7 @@ interface IProps {
   label: string;
   fieldName: string;
   id: string;
-  mandatory: boolean;
+  mandatory?: boolean;
   onSelectChange: (valueSelected: string) => void;
 }
 
