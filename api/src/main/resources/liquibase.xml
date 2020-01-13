@@ -896,4 +896,20 @@
             <where>property='messages.reschedulingStrategy'</where>
         </delete>
     </changeSet>
+
+    <changeSet id="messages-28" author="Arkadiusz Lalo">
+        <preConditions>
+            <tableExists tableName="global_property"/>
+        </preConditions>
+
+        <comment>
+            Resets message.consent.validation to the default value. It is in order to apply the new changes to all
+            already existing environments. The migration can be removed if the liquibase refactor will be
+            conducted (eg. replacing all changes by one changeSet).
+        </comment>
+
+        <delete tableName="global_property">
+            <where>property='message.consent.validation'</where>
+        </delete>
+    </changeSet>
 </databaseChangeLog>

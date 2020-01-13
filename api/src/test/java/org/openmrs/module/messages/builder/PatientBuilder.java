@@ -10,21 +10,29 @@
 package org.openmrs.module.messages.builder;
 
 import org.openmrs.Patient;
+import org.openmrs.PatientIdentifier;
+import org.openmrs.Person;
 
 public final class PatientBuilder extends AbstractBuilder<Patient> {
 
     private Integer id;
 
+    private Person person;
+
+    private PatientIdentifier identifier;
+
     public PatientBuilder() {
         super();
         id = getInstanceNumber();
+        person = new PersonBuilder().build();
+        identifier = new PatientIdentifierBuilder().build();
     }
 
     @Override
     public Patient build() {
-        Patient patient = new Patient();
+        Patient patient = new Patient(person);
         patient.setId(id);
-
+        patient.addIdentifier(identifier);
         return patient;
     }
 
@@ -35,6 +43,16 @@ public final class PatientBuilder extends AbstractBuilder<Patient> {
 
     public PatientBuilder withId(Integer id) {
         this.id = id;
+        return this;
+    }
+
+    public PatientBuilder withPerson(Person person) {
+        this.person = person;
+        return this;
+    }
+
+    public PatientBuilder withIdentifier(PatientIdentifier identifier) {
+        this.identifier = identifier;
         return this;
     }
 }

@@ -13,36 +13,38 @@ import org.openmrs.Person;
 import org.openmrs.PersonAttribute;
 import org.openmrs.module.messages.api.model.PersonStatus;
 
+/**
+ * Provides the useful set of method which can be used during work with person attributes
+ */
 public final class PersonAttributeUtil {
 
+    /**
+     * Returns the actual person's contact time attribute if it exists
+     * @param person - related person
+     * @return - the actual contact time or null if not exists
+     */
     public static PersonAttribute getBestContactTimeAttribute(Person person) {
-        return person.getAttribute(ConfigConstants.PERSON_CONTACT_TIME_ATTRIBUTE_TYPE_NAME);
-    }
-
-    public static PersonStatus getPersonStatus(Person person) {
-        PersonAttribute attribute = getPersonStatusAttribute(person);
-        if (attribute == null) {
-            return null;
-        }
-        return PersonStatus.valueOf(attribute.getValue());
-    }
-
-    public static PersonAttribute getPersonStatusAttribute(Person person) {
         if (person != null) {
-            return person.getAttribute(ConfigConstants.PATIENT_STATUS_ATTRIBUTE_TYPE_NAME);
+            return person.getAttribute(ConfigConstants.PERSON_CONTACT_TIME_ATTRIBUTE_TYPE_NAME);
         }
         return null;
     }
 
-    public static String getValue(PersonAttribute attribute) {
-        String result;
-        try {
-            PersonStatus status = PersonStatus.valueOf(attribute.getValue());
-            result = status.getTitleKey();
-        } catch (IllegalArgumentException ex) {
-            result = attribute.getValue();
+    /**
+     * Returns the actual person's status if it exists
+     * @param person - related person
+     * @return - the actual person status
+     */
+    public static PersonStatus getPersonStatus(Person person) {
+        PersonAttribute attribute = getPersonStatusAttribute(person);
+        return attribute == null ? null : PersonStatus.valueOf(attribute.getValue());
+    }
+
+    private static PersonAttribute getPersonStatusAttribute(Person person) {
+        if (person != null) {
+            return person.getAttribute(ConfigConstants.PATIENT_STATUS_ATTRIBUTE_TYPE_NAME);
         }
-        return result;
+        return null;
     }
 
     private PersonAttributeUtil() {

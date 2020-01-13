@@ -9,50 +9,49 @@
 
 package org.openmrs.module.messages.builder;
 
-import org.openmrs.Person;
 import org.openmrs.PersonName;
 
-public final class PersonBuilder extends AbstractBuilder<Person> {
+public final class PersonNameBuilder extends AbstractBuilder< PersonName> {
 
     private Integer id;
 
-    private PersonName name;
+    private String given;
 
-    private String gender;
+    private String family;
 
-    public PersonBuilder() {
+    public PersonNameBuilder() {
         super();
         id = getInstanceNumber();
-        name = new PersonNameBuilder().build();
-        gender = "M";
+        given = "John";
+        family = "Smith";
     }
 
     @Override
-    public Person build() {
-        Person person = new Person();
-        person.setId(id);
-        person.addName(name);
-        person.setGender(gender);
-        return person;
+    public  PersonName build() {
+        PersonName personName = new PersonName();
+        personName.setId(id);
+        personName.setGivenName(given);
+        personName.setFamilyName(family);
+        return personName;
     }
 
     @Override
-    public Person buildAsNew() {
-        return withId(null).withName(new PersonNameBuilder().buildAsNew()).build();
+    public PersonName buildAsNew() {
+        return withId(null).build();
     }
 
-    public PersonBuilder withId(Integer id) {
+    public PersonNameBuilder withId(Integer id) {
         this.id = id;
         return this;
     }
 
-    public PersonBuilder withName(PersonName name) {
-        this.name = name;
+    public PersonNameBuilder withGiven(String given) {
+        this.given = given;
         return this;
     }
 
-    public PersonBuilder withGender(String gender) {
-        this.gender = gender;
+    public PersonNameBuilder withFamily(String family) {
+        this.family = family;
         return this;
     }
 }

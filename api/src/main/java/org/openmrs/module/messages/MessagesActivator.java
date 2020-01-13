@@ -23,11 +23,14 @@ import org.openmrs.module.DaemonTokenAware;
 import org.openmrs.module.Module;
 import org.openmrs.module.ModuleFactory;
 import org.openmrs.module.messages.api.constants.MessagesConstants;
+import org.openmrs.module.messages.api.event.listener.PeopleActionListener;
 import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
 import org.openmrs.module.messages.api.scheduler.job.JobRepeatInterval;
 import org.openmrs.module.messages.api.scheduler.job.MessageDeliveriesJobDefinition;
 import org.openmrs.module.messages.api.service.MessagesSchedulerService;
 import org.openmrs.module.messages.api.util.ConfigConstants;
+
+import java.util.List;
 
 /**
  * This class contains the logic that is run every time this module is either started or shutdown
@@ -78,6 +81,10 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
     @Override
     public void setDaemonToken(DaemonToken token) {
         getSchedulerService().setDaemonToken(token);
+        List<PeopleActionListener> listeners = Context.getRegisteredComponents(PeopleActionListener.class);
+        for (PeopleActionListener peopleActionListener : listeners) {
+            peopleActionListener.setDaemonToken(token);
+        }
     }
 
     private void scheduleMessageDeliveries() {
