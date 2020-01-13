@@ -1,5 +1,7 @@
 package org.openmrs.module.messages.api.model;
 
+import org.apache.commons.lang.StringUtils;
+
 public enum ChannelType {
     CALL("Call"),
     SMS("SMS"),
@@ -7,8 +9,8 @@ public enum ChannelType {
 
     private String name;
 
-    ChannelType(String value) {
-        this.name = value;
+    ChannelType(String name) {
+        this.name = name;
     }
 
     public String getName() {
@@ -17,7 +19,7 @@ public enum ChannelType {
 
     public static ChannelType fromName(String name) {
         for (ChannelType type : ChannelType.values()) {
-            if (type.name.equals(name)) {
+            if (StringUtils.equalsIgnoreCase(type.name, name)) {
                 return type;
             }
         }

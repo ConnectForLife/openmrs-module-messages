@@ -61,7 +61,7 @@ public class ServiceResult implements Serializable {
                     msgId = entry.getValue();
                     break;
                 case CHANNEL_NAME_ALIAS:
-                    channel = ChannelType.valueOf(String.valueOf(entry.getValue()).toUpperCase());
+                    channel = ChannelType.fromName(String.valueOf(entry.getValue()));
                     break;
                 case STATUS_COL_ALIAS:
                     status = parseStatus((String) entry.getValue());

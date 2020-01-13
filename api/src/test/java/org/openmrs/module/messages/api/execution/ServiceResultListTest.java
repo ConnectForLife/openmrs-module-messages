@@ -40,7 +40,8 @@ public class ServiceResultListTest {
     );
 
     private static final List<String> MSG_IDS = Arrays.asList("ID_1", "ID 2", "abcdef");
-    private static final List<String> CHANNEL_NAMES = Arrays.asList("Call", "Sms", "Call");
+    private static final List<String> CHANNEL_NAMES = Arrays.asList("Call", "Sms",
+        "Deactivate service");
     private static final List<ServiceStatus> SERVICE_STATUSES = Arrays.asList(
             ServiceStatus.DELIVERED,
             ServiceStatus.PENDING,
@@ -84,7 +85,8 @@ public class ServiceResultListTest {
 
             assertEquals(EXEC_DATES.get(i), result.getExecutionDate());
             assertEquals(MSG_IDS.get(i), result.getMessageId());
-            assertEquals(ChannelType.valueOf(CHANNEL_NAMES.get(i).toUpperCase()), result.getChannelType());
+            assertEquals(ChannelType.fromName(CHANNEL_NAMES.get(i).toUpperCase()),
+                result.getChannelType());
         }
     }
 
