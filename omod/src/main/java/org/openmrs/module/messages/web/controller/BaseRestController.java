@@ -3,6 +3,7 @@ package org.openmrs.module.messages.web.controller;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.messages.api.dto.ErrorResponseDTO;
+import org.openmrs.module.messages.api.exception.MessagesObjectNotFound;
 import org.openmrs.module.messages.api.exception.ValidationException;
 import org.openmrs.module.messages.api.model.ErrorMessage;
 import org.springframework.http.HttpStatus;
@@ -61,6 +62,20 @@ public abstract class BaseRestController {
     public ErrorResponseDTO handleValidationException(ValidationException ex) {
         logger.error(ex.getMessage(), ex);
         return ex.getErrorResponse();
+    }
+
+    /**
+     * Exception handler for not found - Http status code of 404
+     *
+     * @param ex the exception throw
+     * @return a error response
+     */
+    @ExceptionHandler(MessagesObjectNotFound.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public ErrorResponseDTO handleMessagesObjectNotFound(MessagesObjectNotFound ex) {
+        logger.error(ex.getMessage(), ex);
+        return new ErrorResponseDTO(ex.getMessage());
     }
 
     protected Log getLogger() {

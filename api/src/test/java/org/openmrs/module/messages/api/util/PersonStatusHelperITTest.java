@@ -49,7 +49,7 @@ public class PersonStatusHelperITTest extends ContextSensitiveWithActivatorTest 
 
     private static final String PERSON_WITHOUT_ATTRIBUTE = "8c8169be-94f0-42ba-81de-cf3f2c12a7ec";
 
-    public static final String TEST_REASON = "The status was changed for test reason";
+    private static final String TEST_REASON = "The status was changed for test reason";
 
     private Person person;
 
