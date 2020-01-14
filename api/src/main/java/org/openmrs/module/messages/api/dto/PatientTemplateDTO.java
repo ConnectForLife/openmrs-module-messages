@@ -20,10 +20,6 @@ public class PatientTemplateDTO implements Serializable {
 
     private Integer actorTypeId;
 
-    private String serviceQuery;
-
-    private String serviceQueryType;
-
     private String uuid;
 
     public PatientTemplateDTO() {
@@ -80,24 +76,6 @@ public class PatientTemplateDTO implements Serializable {
 
     public PatientTemplateDTO withActorTypeId(Integer actorTypeId) {
         this.actorTypeId = actorTypeId;
-        return this;
-    }
-
-    public String getServiceQuery() {
-        return serviceQuery;
-    }
-
-    public PatientTemplateDTO withServiceQuery(String serviceQuery) {
-        this.serviceQuery = serviceQuery;
-        return this;
-    }
-
-    public String getServiceQueryType() {
-        return serviceQueryType;
-    }
-
-    public PatientTemplateDTO withServiceQueryType(String serviceQueryType) {
-        this.serviceQueryType = serviceQueryType;
         return this;
     }
 

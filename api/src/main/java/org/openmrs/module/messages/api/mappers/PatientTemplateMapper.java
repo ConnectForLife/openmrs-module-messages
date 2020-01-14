@@ -28,8 +28,6 @@ public final class PatientTemplateMapper extends AbstractMapper<PatientTemplateD
             .withTemplateFieldValues(valueMapper.toDtos(dao.getTemplateFieldValues()))
             .withPatientId(dao.getPatient().getId())
             .withTemplateId(dao.getTemplate().getId())
-            .withServiceQuery(dao.getServiceQuery())
-            .withServiceQueryType(dao.getServiceQueryType())
             .withActorId(dao.getActor().getId())
             .withUuid(dao.getUuid());
 
@@ -66,8 +64,9 @@ public final class PatientTemplateMapper extends AbstractMapper<PatientTemplateD
         template.setId(dto.getTemplateId());
         dao.setTemplate(template);
 
-        dao.setServiceQuery(dto.getServiceQuery());
-        dao.setServiceQueryType(dto.getServiceQueryType());
+        // TODO: at this moment, it is safer to not update these fields by DTO - default values are used
+        dao.setServiceQuery("");
+        dao.setServiceQueryType("");
 
         return dao;
     }

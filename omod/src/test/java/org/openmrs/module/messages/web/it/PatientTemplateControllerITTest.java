@@ -1,5 +1,20 @@
 package org.openmrs.module.messages.web.it;
 
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.openmrs.module.messages.Constant.PAGE_PARAM;
+import static org.openmrs.module.messages.Constant.ROWS_PARAM;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.messages.Constant;
@@ -8,7 +23,6 @@ import org.openmrs.module.messages.api.dto.TemplateFieldValueDTO;
 import org.openmrs.module.messages.api.mappers.PatientTemplateMapper;
 import org.openmrs.module.messages.api.model.ChannelType;
 import org.openmrs.module.messages.api.model.PatientTemplate;
-
 import org.openmrs.module.messages.api.service.PatientTemplateService;
 import org.openmrs.module.messages.domain.criteria.PatientTemplateCriteria;
 import org.openmrs.module.messages.util.TestUtil;
@@ -22,22 +36,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.openmrs.module.messages.Constant.PAGE_PARAM;
-import static org.openmrs.module.messages.Constant.ROWS_PARAM;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebAppConfiguration
 public class PatientTemplateControllerITTest extends BaseModuleWebContextSensitiveTest {
@@ -63,12 +61,6 @@ public class PatientTemplateControllerITTest extends BaseModuleWebContextSensiti
 
     private static final int PATIENT_3_ACTOR_TYPE_ID = 103;
     private static final int PATIENT_2_ACTOR_TYPE_ID = 102;
-
-    private static final String PATIENT_3_QUERY_TYPE = "SQL";
-    private static final String PATIENT_2_QUERY_TYPE = "SQL";
-
-    private static final String PATIENT_3_QUERY = "SELECT (*) FROM messages_scheduled_service;";
-    private static final String PATIENT_2_QUERY = "SELECT (*) FROM messages_scheduled_service;";
 
     private static final String PATIENT_3_TEMPLATE_FIELD_VALUE_1_VALUE = ChannelType.DEACTIVATED.getName();
     private static final int PATIENT_2_TEMPLATE_FIELD_VALUE_1_ID = 4;
@@ -198,8 +190,6 @@ public class PatientTemplateControllerITTest extends BaseModuleWebContextSensiti
                 .andExpect(status().is(HttpStatus.OK.value()))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.patientTemplates.[0].patientId").value(PATIENT_3_ID))
-                .andExpect(jsonPath("$.patientTemplates.[0].serviceQuery").value(PATIENT_3_QUERY))
-                .andExpect(jsonPath("$.patientTemplates.[0].serviceQueryType").value(PATIENT_3_QUERY_TYPE))
                 .andExpect(jsonPath("$.patientTemplates.[0].actorTypeId").value(PATIENT_3_ACTOR_TYPE_ID))
                 .andExpect(jsonPath("$.patientTemplates.[0].actorId").value(PATIENT_3_ACTOR_ID))
                 .andExpect(jsonPath("$.patientTemplates.[0].templateId").value(TEMPLATE_1_ID))
@@ -248,8 +238,6 @@ public class PatientTemplateControllerITTest extends BaseModuleWebContextSensiti
                 .withActorId(PATIENT_2_ACTOR_ID)
                 .withActorTypeId(PATIENT_2_ACTOR_TYPE_ID)
                 .withPatientId(PATIENT_2_ID)
-                .withServiceQuery(PATIENT_2_QUERY)
-                .withServiceQueryType(PATIENT_2_QUERY_TYPE)
                 .withTemplateId(TEMPLATE_1_ID)
                 .withUuid(null)); // new values from DE will have both ids set to null
         body = new PatientTemplatesWrapper(dtos);
@@ -354,8 +342,6 @@ public class PatientTemplateControllerITTest extends BaseModuleWebContextSensiti
                 .withActorId(PATIENT_3_ACTOR_ID)
                 .withActorTypeId(PATIENT_3_ACTOR_TYPE_ID)
                 .withPatientId(PATIENT_3_ID)
-                .withServiceQuery(PATIENT_3_QUERY)
-                .withServiceQueryType(PATIENT_3_QUERY_TYPE)
                 .withTemplateId(TEMPLATE_1_ID);
     }
 
@@ -374,8 +360,6 @@ public class PatientTemplateControllerITTest extends BaseModuleWebContextSensiti
                 .withActorId(PATIENT_2_ACTOR_ID)
                 .withActorTypeId(PATIENT_2_ACTOR_TYPE_ID)
                 .withPatientId(PATIENT_2_ID)
-                .withServiceQuery(PATIENT_2_QUERY)
-                .withServiceQueryType(PATIENT_2_QUERY_TYPE)
                 .withTemplateId(TEMPLATE_1_ID)
                 .withUuid(PATIENT_2_TEMPLATE_1_UUID);
 
@@ -391,8 +375,6 @@ public class PatientTemplateControllerITTest extends BaseModuleWebContextSensiti
                 .withActorId(PATIENT_2_ACTOR_ID)
                 .withActorTypeId(PATIENT_2_ACTOR_TYPE_ID)
                 .withPatientId(PATIENT_2_ID)
-                .withServiceQuery(PATIENT_2_QUERY)
-                .withServiceQueryType(PATIENT_2_QUERY_TYPE)
                 .withTemplateId(TEMPLATE_1_ID)
                 .withUuid(PATIENT_2_TEMPLATE_2_UUID);
 

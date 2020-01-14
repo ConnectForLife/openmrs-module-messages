@@ -15,8 +15,6 @@ export class PatientTemplateUI extends ObjectUI<IPatientTemplate> implements IPa
   templateId: number;
   actorId: number;
   actorTypeId: number;
-  serviceQuery: string;
-  serviceQueryType: string;
 
   errors: {[key: string]: string};
 

@@ -8,8 +8,6 @@ export interface IPatientTemplate {
   templateId: number | undefined;
   actorId: number | undefined;
   actorTypeId: number | undefined;
-  serviceQuery: string;
-  serviceQueryType: string;
 }
 
 export const getDefaultValue = (): IPatientTemplate => ({
@@ -19,7 +17,5 @@ export const getDefaultValue = (): IPatientTemplate => ({
   patientId: undefined,
   templateId: undefined,
   actorId: undefined,
-  actorTypeId: undefined,
-  serviceQuery: '',
-  serviceQueryType: ''
+  actorTypeId: undefined
 });
