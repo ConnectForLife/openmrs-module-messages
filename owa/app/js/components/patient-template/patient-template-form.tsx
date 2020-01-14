@@ -72,6 +72,7 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
     const patientTemplate = this.getPatientTemplate();
     const tfvToUpdate = patientTemplate.templateFieldValues.find(tfv => tfv.localId === templateFieldLocalId)!;
     tfvToUpdate.value = value;
+    tfvToUpdate.isTouched = true;
     this.props.updatePatientTemplate(patientTemplate, [this.props.template]);
   };
 
@@ -92,7 +93,8 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
       case TemplateFieldType.CATEGORY_OF_MESSAGE:
         return this.renderDynamicMultiselect(tfv, Object.keys(CATEGORIES_MAP), fieldName, isMandatory);
       case TemplateFieldType.START_OF_MESSAGES:
-        return this.renderDatePicker(tfv, PATIENT_TEMPLATE_START_DATE, isMandatory);
+        return this.renderDatePicker(tfv, PATIENT_TEMPLATE_START_DATE, isMandatory,
+          ['Start of daily messages', 'Start of messages'].includes(fieldName));
       case TemplateFieldType.END_OF_MESSAGES:
         return (
           <RadioWrappedContainer
@@ -182,7 +184,7 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
     );
   };
 
-  renderDatePicker = (tfv: TemplateFieldValueUI, fieldName: string, isMandatory: boolean) => (
+  renderDatePicker = (tfv: TemplateFieldValueUI, fieldName: string, isMandatory: boolean, isStartDate: boolean) => (
     <FormGroup controlId={tfv.localId} key={tfv.localId}>
       <FormLabel
         label={fieldName}
@@ -190,6 +192,7 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
       <OpenMrsDatePicker
         value={tfv.value}
         onChange={isoDate => this.onTemplateFieldValueChange(tfv.localId, isoDate)}
+        minDate={isStartDate ? new Date() : undefined}
       />
     </FormGroup>
   );

@@ -82,8 +82,9 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
 
   private dateRangeChanged = (start: Date, end: Date, tabKey: string) => {
     if (this.state.patientId && tabKey === this.state.activeTabKey &&
-      ((this.state.startDate && this.state.startDate.day()) !== start.getDay()
-        || (this.state.endDate && this.state.endDate.day()) !== end.getDay())) {
+      ((this.state.startDate && !moment(this.state.startDate).isSame(moment(start)))
+        || (this.state.endDate && !moment(this.state.endDate).isSame(moment(end)))
+        || (this.state.startDate == null && this.state.endDate == null))) {
       this.setState({
         startDate: moment(start),
         endDate: moment(end)
