@@ -928,7 +928,7 @@
             <where>property='message.bestContactTime.default'</where>
         </delete>
     </changeSet>
-    
+
     <changeSet id="messages-30" author="Arkadiusz Lalo">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="person_attribute_type" />
@@ -949,5 +949,90 @@
             <column name="description" value="Person status attribute" />
             <where>uuid = 'dda246c6-c806-402a-9b7c-e2c1574a6441'</where>
         </update>
+    </changeSet>
+
+    <changeSet id="messages-31" author="Michał Lewandowski">
+        <preConditions>
+            <tableExists tableName="messages_template"/>
+            <tableExists tableName="messages_template_field"/>
+            <tableExists tableName="messages_scheduled_service"/>
+        </preConditions>
+
+        <comment>Added view for dates, function with if for query, update Query to adjust to edge cases</comment>
+
+        <sql>
+            CREATE VIEW DIGITS_0 as SELECT 0 t0 union select 1 union select 2 union select 3 union select 4
+            union  select 5 union select 6 union select 7 union select 8 union select 9;
+
+            CREATE VIEW DIGITS_1 as SELECT 0 t1 union select 1 union select 2 union select 3 union select 4
+            union  select 5 union select 6 union select 7 union select 8 union select 9;
+
+            CREATE VIEW DIGITS_2 as SELECT 0 t2 union select 1 union select 2 union select 3 union select 4
+            union  select 5 union select 6 union select 7 union select 8 union select 9;
+
+            CREATE VIEW DIGITS_3 as SELECT 0 t3 union select 1 union select 2 union select 3 union select 4
+            union  select 5 union select 6 union select 7 union select 8 union select 9;
+
+            CREATE VIEW DIGITS_4 as SELECT 0 t4 union select 1 union select 2 union select 3 union select 4
+            union  select 5 union select 6 union select 7 union select 8 union select 9;
+
+            CREATE VIEW DATES_LIST as select adddate(CURRENT_DATE(),t4*10000 + t3*1000 + t2*100 + t1*10 + t0) selected_date
+            from  DIGITS_0 as t0, DIGITS_1 as t1, DIGITS_2 as t2, DIGITS_3 as t3, DIGITS_4 as t4;
+        </sql>
+
+        <sql splitStatements="false" stripComments="false">
+            <![CDATA[
+                CREATE FUNCTION `GET_PREDICTION_START_DATE_FOR_ADHERENCE_DAILY`(patient_id long)
+                RETURNS DATE
+                BEGIN
+                DECLARE mssg_date DATE;
+                SET mssg_date =
+                    (SELECT EXECUTION_DATE FROM
+                        (SELECT
+                            mssg.msg_send_time AS EXECUTION_DATE,
+                            1 AS MESSAGE_ID,
+                            mss.channel_type AS CHANNEL_ID,
+                            mss.status AS STATUS_ID
+                        FROM messages_scheduled_service mss
+                            JOIN messages_patient_template mpt on mpt.messages_patient_template_id = mss.patient_template_id
+                            JOIN messages_template mt on mt.messages_template_id = mpt.template_id
+                            JOIN messages_scheduled_service_group mssg on mssg.messages_scheduled_service_group_id = mss.group_id
+                        WHERE
+                            mt.name = 'Adherence report daily'
+                            AND mpt.patient_id = patient_id
+                        ORDER BY 1 DESC)
+                    a LIMIT 1);
+                RETURN if(mssg_date > CURRENT_DATE(), mssg_date, CURRENT_DATE());
+                END
+            ]]>
+        </sql>
+
+        <sql>
+            Update messages_template set service_query =
+            'select EXECUTION_DATE, MESSAGE_ID, CHANNEL_ID, null as STATUS_ID from
+            (select TIMESTAMP(selected_date, :bestContactTime) AS EXECUTION_DATE, 1 AS MESSAGE_ID, :Service_type AS CHANNEL_ID
+            from (select * from (select * from DATES_LIST) v where selected_date >= :Start_of_daily_messages and selected_date &lt;= :End_of_daily_messages
+            and selected_date &lt; :endDate  and :Week_day_of_delivering_message
+            like concat(\'%\',DAYNAME(selected_date),\'%\') and selected_date > GET_PREDICTION_START_DATE_FOR_ADHERENCE_DAILY(:patientId) ) dates ) temp
+            where CHANNEL_ID != \'Deactivate service\'
+            UNION
+            Select mssg.msg_send_time as EXECUTION_DATE, 1 as MESSAGE_ID, mss.channel_type as CHANNEL_ID, mss.status as STATUS_ID from messages_scheduled_service mss
+            join messages_patient_template mpt on mpt.messages_patient_template_id = mss.patient_template_id
+            join messages_template mt on mt.messages_template_id = mpt.template_id
+            join messages_scheduled_service_group mssg on mssg.messages_scheduled_service_group_id = mss.group_id
+            where mt.name = \'Adherence report daily\' and mpt.patient_id = :patientId and \'PENDING, DELIVERED, FAILED\' like concat(\'%\',mss.status,\'%\') and mssg.msg_send_time > :startDate
+            order by 1 desc;'
+            where name = 'Adherence report daily';
+        </sql>
+
+        <sql>
+            Update messages_patient_template set service_query = ''
+            where template_id = (select messages_template_id from messages_template where name = 'Adherence report daily') ;
+        </sql>
+        <sql>
+            ALTER TABLE messages_scheduled_service
+            ADD CHECK (status != 'FUTURE');
+        </sql>
+
     </changeSet>
 </databaseChangeLog>
