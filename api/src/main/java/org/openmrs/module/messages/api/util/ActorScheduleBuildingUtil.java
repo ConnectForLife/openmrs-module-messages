@@ -1,12 +1,9 @@
 package org.openmrs.module.messages.api.util;
 
 import static org.openmrs.module.messages.api.constants.MessagesConstants.PATIENT_DEFAULT_ACTOR_TYPE;
-import static org.openmrs.module.messages.api.constants.MessagesConstants.DEFAULT_FRONT_END_DATE_FORMAT;
 import static org.openmrs.module.messages.api.model.ChannelType.DEACTIVATED;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -25,6 +22,7 @@ public final class ActorScheduleBuildingUtil {
     private static final Log LOGGER = LogFactory.getLog(MessagesSchedulerServiceImpl.class);
 
     private static final String SCHEDULE_ELEMENTS_SEPARATOR = ", ";
+    private static final String FIELD_CONTENT_SEPARATOR = ",";
     private static final String DEFAULT_INFORMATION = "Schedule data not specified";
 
     public static ActorScheduleDTO build(PatientTemplate patientTemplate) {
@@ -44,33 +42,24 @@ public final class ActorScheduleBuildingUtil {
             getActorType(patientTemplate.getActorType(), patientTemplate.getPatient().getId());
     }
 
-    private static Integer getActorId(Relationship actorType, Integer patientId) {
-        return patientId.equals(actorType.getPersonA().getId()) ?
-            actorType.getPersonB().getId() :
-            actorType.getPersonA().getId();
-    }
-
-    private static String getActorType(Relationship actorType, Integer patientId) {
-        return patientId.equals(actorType.getPersonA().getId()) ?
-            actorType.getRelationshipType().getbIsToA() :
-            actorType.getRelationshipType().getaIsToB();
-    }
-
     private static String buildSchedule(PatientTemplate patientTemplate) {
         String serviceType = getTemplateFieldValue(patientTemplate,
             TemplateFieldType.SERVICE_TYPE, true);
 
         List<String> scheduleElements = new ArrayList<>();
 
-        if (StringUtils.isBlank(serviceType)
-            || DEACTIVATED.equals(ChannelType.fromName(serviceType))) {
+        if (isDeactivated(serviceType)) {
             addDeactivatedElement(scheduleElements);
         } else {
             addFrequencyElement(scheduleElements, patientTemplate);
 
+            addDayOfWeekElement(scheduleElements, patientTemplate);
+
             addStartDateElement(scheduleElements, patientTemplate);
 
             addEndDateElement(scheduleElements, patientTemplate);
+
+            addCategoriesElement(scheduleElements, patientTemplate);
         }
 
         String schedule = StringUtils.join(scheduleElements, SCHEDULE_ELEMENTS_SEPARATOR);
@@ -90,6 +79,16 @@ public final class ActorScheduleBuildingUtil {
         }
     }
 
+    private static void addDayOfWeekElement(List<String> scheduleElements,
+                                            PatientTemplate patientTemplate) {
+        String dayOfWeek = getTemplateFieldValue(patientTemplate,
+            TemplateFieldType.DAY_OF_WEEK, false);
+        if (dayOfWeek != null && dayOfWeek.split(FIELD_CONTENT_SEPARATOR).length > 0) {
+            String days = DaysOfWeekUtil.generateDayOfWeekText(dayOfWeek.split(FIELD_CONTENT_SEPARATOR));
+            scheduleElements.add(String.format("%s", days));
+        }
+    }
+
     private static void addStartDateElement(List<String> scheduleElements,
                                               PatientTemplate patientTemplate) {
         String startDate = getTemplateFieldValue(patientTemplate,
@@ -102,11 +101,21 @@ public final class ActorScheduleBuildingUtil {
 
     private static void addEndDateElement(List<String> scheduleElements,
                                           PatientTemplate patientTemplate) {
-        Date endDate = patientTemplate.getEndOfMessages();
+        String endDate = getTemplateFieldValue(patientTemplate,
+            TemplateFieldType.END_OF_MESSAGES, true);
 
         if (endDate != null) {
-            SimpleDateFormat newDateFormat = new SimpleDateFormat(DEFAULT_FRONT_END_DATE_FORMAT);
-            scheduleElements.add(String.format("Ends: %s", newDateFormat.format(endDate)));
+            scheduleElements.add(String.format("Ends: %s", EndDateUtil.getEndDateText(endDate)));
+        }
+    }
+
+    private static void addCategoriesElement(List<String> scheduleElements,
+                                             PatientTemplate patientTemplate) {
+        String categories = getTemplateFieldValue(patientTemplate,
+            TemplateFieldType.CATEGORY_OF_MESSAGE, false);
+
+        if (categories != null) {
+            scheduleElements.add(String.format("Categories: %s", getCategoriesText(categories)));
         }
     }
 
@@ -133,6 +142,27 @@ public final class ActorScheduleBuildingUtil {
             LOGGER.debug(e);
             return date;
         }
+    }
+
+    private static Integer getActorId(Relationship actorType, Integer patientId) {
+        return patientId.equals(actorType.getPersonA().getId()) ?
+            actorType.getPersonB().getId() :
+            actorType.getPersonA().getId();
+    }
+
+    private static String getActorType(Relationship actorType, Integer patientId) {
+        return patientId.equals(actorType.getPersonA().getId()) ?
+            actorType.getRelationshipType().getbIsToA() :
+            actorType.getRelationshipType().getaIsToB();
+    }
+
+    private static boolean isDeactivated(String serviceType) {
+        return StringUtils.isBlank(serviceType)
+            || DEACTIVATED.equals(ChannelType.fromName(serviceType));
+    }
+
+    private static String getCategoriesText(String categories) {
+        return StringUtils.replace(categories, FIELD_CONTENT_SEPARATOR, SCHEDULE_ELEMENTS_SEPARATOR);
     }
 
     private ActorScheduleBuildingUtil() {

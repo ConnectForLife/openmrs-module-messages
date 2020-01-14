@@ -144,6 +144,46 @@ public class EndDateUtilTest {
         Assert.assertNull(result);
     }
 
+    @Test
+    public void shouldBuildEndDateTextForDate() {
+        String dateString = "2020-01-08";
+        String result = EndDateUtil.getEndDateText(dateString);
+
+        Assert.assertEquals(dateString, result);
+    }
+
+    @Test
+    public void shouldBuildEndDateTextForNonDateText() {
+        String dateString = "tomorrow";
+        String result = EndDateUtil.getEndDateText(dateString);
+
+        Assert.assertEquals(dateString, result);
+    }
+
+    @Test
+    public void shouldBuildEndDateTextForAfterTimesPhraseText() {
+        String dateString = "AFTER_TIMES|5";
+        String result = EndDateUtil.getEndDateText(dateString);
+
+        Assert.assertEquals("after 5 time(s)", result);
+    }
+
+    @Test
+    public void shouldBuildEndDateTextForNoDatePhraseText() {
+        String dateString = "NO_DATE|EMPTY";
+        String result = EndDateUtil.getEndDateText(dateString);
+
+        Assert.assertEquals("never", result);
+    }
+
+    @Test
+    public void shouldBuildBlankEndDateTextForNull() {
+        String dateString = null;
+        String result = EndDateUtil.getEndDateText(dateString);
+
+        Assert.assertEquals("", result);
+    }
+
     private List<TemplateFieldValue> getValidAfterTimesValues() {
         List<TemplateFieldValue> values = new ArrayList<>();
 

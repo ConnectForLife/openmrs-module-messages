@@ -9,12 +9,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import static org.openmrs.module.messages.api.constants.MessagesConstants.DEFAULT_FRONT_END_DATE_FORMAT;
 import static org.openmrs.module.messages.api.constants.MessagesConstants.DEFAULT_SERVER_SIDE_DATE_FORMAT;
 import static org.openmrs.module.messages.api.model.TemplateFieldType.END_OF_MESSAGES;
 
 public final class EndDateUtil {
 
     private static final String SEPARATOR = "|";
+    private static final String AFTER_TIMES_TEXT = "after %s time(s)";
+    private static final String NEVER_TEXT = "never";
+    private static final String EMPTY_TEXT = "";
 
     public static Date getEndDate(List<TemplateFieldValue> templateFieldValues) {
 
@@ -23,6 +27,21 @@ public final class EndDateUtil {
             result = parseEndDate(getDefaultEndDateValue(templateFieldValues));
         }
         return result;
+    }
+
+    public static String getEndDateText(String endDate) {
+        if (isSpecialPhraseFormat(endDate, EndDateType.AFTER_TIMES)) {
+            String value = StringUtils.split(endDate, SEPARATOR)[1];
+            return String.format(AFTER_TIMES_TEXT, value);
+        } else if (isSpecialPhraseFormat(endDate, EndDateType.NO_DATE)) {
+            return NEVER_TEXT;
+        } else if (isDateParsable(endDate)) {
+            Date result = parseEndDate(endDate);
+            SimpleDateFormat newDateFormat = new SimpleDateFormat(DEFAULT_FRONT_END_DATE_FORMAT);
+            return newDateFormat.format(result);
+        } else {
+            return StringUtils.defaultString(endDate, EMPTY_TEXT);
+        }
     }
 
     public static Date parseEndDate(String dbValue) {
@@ -84,6 +103,24 @@ public final class EndDateUtil {
         } catch (ParseException | NullPointerException e) {
             return null;
         }
+    }
+
+    private static boolean isDateParsable(String endDate) {
+        try {
+            Date result = parseEndDate(endDate);
+            SimpleDateFormat newDateFormat = new SimpleDateFormat(DEFAULT_FRONT_END_DATE_FORMAT);
+            String text = newDateFormat.format(result);
+            return StringUtils.isNotBlank(text);
+        } catch (Exception ex) {
+            return false;
+        }
+    }
+
+    private static boolean isSpecialPhraseFormat(String endDate, EndDateType specialPhrase) {
+        String[] chain = StringUtils.split(endDate, SEPARATOR);
+        return chain != null
+            && chain.length > 1
+            && StringUtils.equals(chain[0], specialPhrase.getName());
     }
 
     private EndDateUtil() {
