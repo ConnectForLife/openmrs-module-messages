@@ -24,7 +24,7 @@ import org.openmrs.module.messages.Constant;
 import org.openmrs.module.messages.ContextSensitiveWithActivatorTest;
 import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
 import org.openmrs.module.messages.api.model.PersonStatus;
-import org.openmrs.module.messages.api.util.ConfigConstants;
+import org.openmrs.module.messages.api.constants.ConfigConstants;
 import org.openmrs.module.messages.builder.PatientBuilder;
 import org.openmrs.module.messages.builder.PatientIdentifierBuilder;
 import org.openmrs.module.messages.builder.PersonBuilder;

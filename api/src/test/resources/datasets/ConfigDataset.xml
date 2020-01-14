@@ -24,4 +24,25 @@
             property="message.consent.validation"
             property_value="true"
             uuid="93b40777-4c60-483d-8df1-489d22fb6e37"/>
+
+    <global_property
+            property="message.personStatus.configuration"
+            property_value='[
+              {
+                "name": "NO_CONSENT",
+                "backgroundColor": "#EEA616",
+                "textColor": "#f5f5f5"
+              },
+              {
+                "name": "ACTIVE",
+                "backgroundColor": "#51a351",
+                "textColor": "#f5f5f5"
+              },
+              {
+                "name": "MISSING_VALUE",
+                "backgroundColor": "#EEA616",
+                "textColor": "#f5f5f5"
+              }
+            ]'
+            uuid="82fe3664-08d5-429d-bbce-2e738d789b8c"/>
 </dataset>

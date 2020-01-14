@@ -1,76 +1,25 @@
 [
   {
-    "id": "messages.patientStatus.form",
+    "id": "messages.patientStatus",
     "label": "patient status",
-    "description": "Used only to provide patient status section",
+    "description": "Used to provide patient status UI functionality",
     "extensions": [
-      {
-        "id": "messages.patientStatus.form.link",
-        "extensionPointId": "patientHeader.editPatientDemographics",
-        "type": "link",
-        "label": "patient.status.title.edit",
-        "order": 2,
-        "url": "registrationapp/editSection.page?patientId={{patient.patientId}}&sectionId=statusInfo&appId=messages.patientStatus.form"
-      },
       {
         "id": "messages.patientHeader.secondLineFragments.patientStatus",
         "extensionPointId": "patientHeader.secondLineFragments",
         "extensionParams": {
           "provider": "messages",
-          "fragment": "patientStatusHeader",
-          "config": {
-            "attributeTypeName": "Patient status"
-          }
+          "fragment": "patientheader/personStatus"
+        }
+      },
+      {
+        "id": "messages.patientDashboard.includeFragments",
+        "extensionPointId": "patientDashboard.includeFragments",
+        "extensionParams": {
+          "provider": "messages",
+          "fragment": "patientdashboard/changeStatus"
         }
       }
-    ],
-    "config": {
-      "afterCreatedUrl": "/coreapps/clinicianfacing/patient.page?patientId={{patientId}}",
-      "allowUnknownPatients": false,
-      "sections": [
-        {
-          "id": "statusInfo",
-          "label": "patient.status.title",
-          "questions": [
-            {
-              "legend": "Patient status",
-              "id": "patient status",
-              "fields": [
-                {
-                  "type": "personAttribute",
-                  "label": "Patient status",
-                  "formFieldName": "patientStatus",
-                  "uuid": "dda246c6-c806-402a-9b7c-e2c1574a6441",
-                  "widget": {
-                    "providerName": "uicommons",
-                    "fragmentId": "field/dropDown",
-                    "config": {
-                      "initialValue": "NO_CONSENT",
-                      "options": [
-                        {
-                          "label": "No consent",
-                          "value": "NO_CONSENT"
-                        },
-                        {
-                          "label": "Active",
-                          "value": "ACTIVE"
-                        },
-                        {
-                          "label": "Deactivate",
-                          "value": "DEACTIVATE"
-                        }
-                      ]
-                    }
-                  },
-                  "cssClasses": [
-                    "required"
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    }
+    ]
   }
 ]

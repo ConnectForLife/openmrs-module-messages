@@ -9,25 +9,11 @@
 
 package org.openmrs.module.messages.api.scheduler.job;
 
-import static org.hamcrest.Matchers.greaterThan;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_CAREGIVER_ID;
-import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_CAREGIVER_PATIENT_TEMPLATE_ID;
-import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_NO_CONSENT_CAREGIVER_ID;
-import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_PATIENT_ID;
-import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_PATIENT_TEMPLATE_ID;
-import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_TEMPLATE;
-import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_TEMPLATE_NAME;
-import static org.openmrs.module.messages.api.service.DatasetConstants.XML_DATA_SET_PATH;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.ContextSensitiveTest;
+import org.openmrs.module.messages.api.constants.ConfigConstants;
 import org.openmrs.module.messages.api.execution.ActorWithDate;
 import org.openmrs.module.messages.api.execution.GroupedServiceResultList;
 import org.openmrs.module.messages.api.execution.ServiceResultList;
@@ -49,6 +35,23 @@ import org.openmrs.module.messages.domain.criteria.ScheduledServiceCriteria;
 import org.openmrs.scheduler.TaskDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.hamcrest.Matchers.greaterThan;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_CAREGIVER_ID;
+import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_CAREGIVER_PATIENT_TEMPLATE_ID;
+import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_NO_CONSENT_CAREGIVER_ID;
+import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_PATIENT_ID;
+import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_PATIENT_TEMPLATE_ID;
+import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_TEMPLATE;
+import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_TEMPLATE_NAME;
+import static org.openmrs.module.messages.api.service.DatasetConstants.XML_DATA_SET_PATH;
 
 @SuppressWarnings("checkstyle:magicnumber")
 public class MessageDeliveriesJobDefinitionTest extends ContextSensitiveTest {
@@ -134,6 +137,7 @@ public class MessageDeliveriesJobDefinitionTest extends ContextSensitiveTest {
 
     @Test
     public void shouldSaveScheduledServicesGroupForActorWithNoConsentWhenConsentControlNotEnabled() {
+        Context.getAdministrationService().setGlobalProperty(ConfigConstants.CONSENT_CONTROL_KEY, "false");
         List<ScheduledService> listBeforeSave = findScheduledServicesByActorId(DEFAULT_NO_CONSENT_CAREGIVER_ID);
         job.execute();
         List<ScheduledService> newlySaved = getNewlyAddedObjects(

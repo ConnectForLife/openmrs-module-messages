@@ -1,11 +1,8 @@
 package org.openmrs.module.messages.api.util;
 
-import static org.openmrs.module.messages.Constant.CAREGIVER_RELATIONSHIP;
-import static org.openmrs.module.messages.api.util.ConfigConstants.DEACTIVATED_SCHEDULE_MESSAGE;
-
-import java.util.Arrays;
 import org.junit.Assert;
 import org.junit.Test;
+import org.openmrs.module.messages.api.constants.MessagesConstants;
 import org.openmrs.module.messages.api.dto.ActorScheduleDTO;
 import org.openmrs.module.messages.api.model.ChannelType;
 import org.openmrs.module.messages.api.model.PatientTemplate;
@@ -14,6 +11,10 @@ import org.openmrs.module.messages.api.model.TemplateFieldValue;
 import org.openmrs.module.messages.builder.PatientTemplateBuilder;
 import org.openmrs.module.messages.builder.TemplateFieldBuilder;
 import org.openmrs.module.messages.builder.TemplateFieldValueBuilder;
+
+import java.util.Arrays;
+
+import static org.openmrs.module.messages.Constant.CAREGIVER_RELATIONSHIP;
 
 public class ActorScheduleBuildingUtilTest {
 
@@ -73,7 +74,7 @@ public class ActorScheduleBuildingUtilTest {
 
         ActorScheduleDTO schedule = ActorScheduleBuildingUtil.build(patientTemplate);
 
-        Assert.assertEquals(DEACTIVATED_SCHEDULE_MESSAGE, schedule.getSchedule());
+        Assert.assertEquals(MessagesConstants.DEACTIVATED_SCHEDULE_MESSAGE, schedule.getSchedule());
     }
 
     @Test

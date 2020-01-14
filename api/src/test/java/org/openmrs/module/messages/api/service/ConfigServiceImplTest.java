@@ -9,23 +9,30 @@
 
 package org.openmrs.module.messages.api.service;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.messages.ContextSensitiveTest;
+import org.openmrs.module.messages.api.dto.PersonStatusConfigDTO;
 import org.openmrs.module.messages.api.model.ChannelType;
+import org.openmrs.module.messages.api.model.PersonStatus;
+import org.openmrs.module.messages.api.model.RelationshipTypeDirection;
 import org.openmrs.module.messages.api.strategy.ReschedulingStrategy;
-import org.openmrs.module.messages.api.util.ConfigConstants;
+import org.openmrs.module.messages.api.constants.ConfigConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 public class ConfigServiceImplTest extends ContextSensitiveTest {
 
     private static final String XML_DATASET_PATH = "datasets/";
 
-    private static final String XML_ACTOR_TYPES_DATASET = "ConfigDataset.xml";
+    private static final String XML_CONFIG_DATASET = "ConfigDataset.xml";
 
     private static final String EXPECTED_ACTOR_CONFIGURATION =
             "1286b4bc-2d35-46d6-b645-a1b563aaf62a:A,5b82938d-5cab-43b7-a8f1-e4d6fbb484cc:B";
@@ -42,6 +49,20 @@ public class ConfigServiceImplTest extends ContextSensitiveTest {
     private static final int EXPECTED_TIME_INTERVAL_TO_NEXT_RESCHEDULE = 900;
 
     private static final boolean EXPECTED_IS_CONSENT_CONTROL_ENABLED = true;
+
+    private static final String EXPECTED_DEFAULT_RELATIONSHIP_DIRECTION = RelationshipTypeDirection.A.name();
+
+    private static final String TEXT_COLOR = "#f5f5f5";
+
+    private static final String NO_CONSENT_BACKGROUND_COLOR = "#EEA616";
+
+    private static final String ACTIVE_BACKGROUND_COLOR = "#51a351";
+
+    private static final String MISSING_VALUE_BACKGROUND_COLOR = "#EEA616";
+
+    private PersonStatusConfigDTO noConsentConfig;
+
+    private List<PersonStatusConfigDTO> personStatusConfigDTOS = new ArrayList<>();
 
     @Autowired
     @Qualifier(ConfigConstants.DEFAULT_RESCHEDULING_STRATEGY)
@@ -61,7 +82,8 @@ public class ConfigServiceImplTest extends ContextSensitiveTest {
 
     @Before
     public void setUp() throws Exception {
-        executeDataSet(XML_DATASET_PATH + XML_ACTOR_TYPES_DATASET);
+        executeDataSet(XML_DATASET_PATH + XML_CONFIG_DATASET);
+        buildExpectedStatusConfig();
     }
 
     @Test
@@ -107,5 +129,48 @@ public class ConfigServiceImplTest extends ContextSensitiveTest {
     public void shouldReturnExpectedActorConfiguration() {
         String actual = configService.getActorTypesConfiguration();
         assertThat(actual, is(EXPECTED_ACTOR_CONFIGURATION));
+    }
+
+    @Test
+    public void shouldReturnExpectedDefaultRelationshipDirection() {
+        String actual = configService.getDefaultActorRelationDirection();
+        assertThat(actual, is(EXPECTED_DEFAULT_RELATIONSHIP_DIRECTION));
+    }
+
+    @Test
+    public void shouldReturnExpectedPersonStatusConfigurations() {
+        List<PersonStatusConfigDTO> actual = configService.getPersonStatusConfigurations();
+        assertThat(actual, is(personStatusConfigDTOS));
+    }
+
+    @Test
+    public void shouldReturnExpectedPersonStatusConfiguration() {
+        PersonStatusConfigDTO actual = configService.getPersonStatusConfiguration(PersonStatus.NO_CONSENT);
+        assertThat(actual, is(noConsentConfig));
+    }
+
+    @Test
+    public void shouldReturnNullPersonStatusConfigurationIfMissing() {
+        PersonStatusConfigDTO actual = configService.getPersonStatusConfiguration(PersonStatus.DEACTIVATE);
+        assertThat(actual, is(nullValue()));
+    }
+
+    private void buildExpectedStatusConfig() {
+        personStatusConfigDTOS = new ArrayList<>();
+        noConsentConfig = new PersonStatusConfigDTO()
+                .setName(PersonStatus.NO_CONSENT.name())
+                .setBackgroundColor(NO_CONSENT_BACKGROUND_COLOR)
+                .setTextColor(TEXT_COLOR);
+        personStatusConfigDTOS.add(noConsentConfig);
+        personStatusConfigDTOS.add(
+                new PersonStatusConfigDTO()
+                        .setName(PersonStatus.ACTIVE.name())
+                        .setBackgroundColor(ACTIVE_BACKGROUND_COLOR)
+                        .setTextColor(TEXT_COLOR));
+        personStatusConfigDTOS.add(
+                new PersonStatusConfigDTO()
+                        .setName(PersonStatus.MISSING_VALUE.name())
+                        .setBackgroundColor(MISSING_VALUE_BACKGROUND_COLOR)
+                        .setTextColor(TEXT_COLOR));
     }
 }

@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.Constant;
 import org.openmrs.module.messages.api.dto.ContactTimeDTO;
-import org.openmrs.module.messages.api.util.ConfigConstants;
+import org.openmrs.module.messages.api.constants.ConfigConstants;
 import org.openmrs.module.messages.util.TestUtil;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -2,8 +2,8 @@
 <dataset>
     <person_attribute_type
             person_attribute_type_id="710"
-            name="Patient status"
-            description="Patient status attribute"
+            name="Person status"
+            description="Person status attribute"
             format="java.lang.String"
             creator="1"
             sort_weight="1"

@@ -9,7 +9,7 @@
 
 package org.openmrs.module.messages.api.constants;
 
-import static org.openmrs.module.messages.api.util.ConfigConstants.MODULE_ID;
+import static org.openmrs.module.messages.api.constants.ConfigConstants.MODULE_ID;
 
 public final class MessagesConstants {
 
@@ -43,6 +43,10 @@ public final class MessagesConstants {
     public static final String SCHEDULED_GROUP_MAPPER = "messages.scheduledGroupMapper";
 
     public static final String PATIENT_DEFAULT_ACTOR_TYPE = "Patient";
+
+    public static final String DEACTIVATED_SCHEDULE_MESSAGE = "DEACTIVATED";
+
+    public static final String UUID_KEY = "uuid";
 
     private MessagesConstants() {
         // private. So can't be initialized

@@ -28,7 +28,7 @@ import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
 import org.openmrs.module.messages.api.scheduler.job.JobRepeatInterval;
 import org.openmrs.module.messages.api.scheduler.job.MessageDeliveriesJobDefinition;
 import org.openmrs.module.messages.api.service.MessagesSchedulerService;
-import org.openmrs.module.messages.api.util.ConfigConstants;
+import org.openmrs.module.messages.api.constants.ConfigConstants;
 
 import java.util.List;
 
@@ -121,6 +121,9 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
                 ConfigConstants.ACTOR_BEST_CONTACT_TIME_DEFAULT_VALUE, ConfigConstants.ACTOR_BEST_CONTACT_TIME_DESCRIPTION);
         createGlobalSettingIfNotExists(ConfigConstants.CONSENT_CONTROL_KEY,
                 ConfigConstants.CONSENT_CONTROL_DEFAULT_VALUE, ConfigConstants.CONSENT_CONTROL_DESCRIPTION);
+        createGlobalSettingIfNotExists(ConfigConstants.PERSON_STATUS_CONFIGURATION_KEY,
+                ConfigConstants.PERSON_STATUS_CONFIGURATION_DEFAULT_VALUE,
+                ConfigConstants.PERSON_STATUS_CONFIGURATION_DESCRIPTION);
     }
 
     private void createReschedulingStrategyConfig() {
@@ -141,7 +144,7 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
         attributeType.setFormat(ConfigConstants.PERSON_CONTACT_TIME_TYPE_FORMAT);
         attributeType.setDescription(ConfigConstants.PERSON_CONTACT_TIME_TYPE_DESCRIPTION);
         attributeType.setUuid(ConfigConstants.PERSON_CONTACT_TIME_TYPE_UUID);
-        createPersonAttributeTypeIfNotExists(ConfigConstants.PERSON_CONTACT_TIME_TYPE_UUID, attributeType);
+        createPersonAttributeTypeIfNotExists(attributeType);
     }
 
     private void createPatientStatusAttributeType() {
@@ -150,12 +153,12 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
         attributeType.setFormat(ConfigConstants.PATIENT_STATUS_ATTRIBUTE_TYPE_FORMAT);
         attributeType.setDescription(ConfigConstants.PATIENT_STATUS_ATTRIBUTE_TYPE_DESCRIPTION);
         attributeType.setUuid(ConfigConstants.PATIENT_STATUS_ATTRIBUTE_TYPE_UUID);
-        createPersonAttributeTypeIfNotExists(ConfigConstants.PATIENT_STATUS_ATTRIBUTE_TYPE_UUID, attributeType);
+        createPersonAttributeTypeIfNotExists(attributeType);
     }
 
-    private void createPersonAttributeTypeIfNotExists(String attributeTypeUUID, PersonAttributeType attributeType) {
+    private void createPersonAttributeTypeIfNotExists(PersonAttributeType attributeType) {
         PersonService personService = Context.getPersonService();
-        PersonAttributeType actual = personService.getPersonAttributeTypeByUuid(attributeTypeUUID);
+        PersonAttributeType actual = personService.getPersonAttributeTypeByUuid(attributeType.getUuid());
         if (actual == null) {
             personService.savePersonAttributeType(attributeType);
         }

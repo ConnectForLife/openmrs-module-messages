@@ -20,7 +20,7 @@ import org.openmrs.module.messages.api.model.Actor;
 import org.openmrs.module.messages.api.model.ActorType;
 import org.openmrs.module.messages.api.model.ErrorMessage;
 import org.openmrs.module.messages.api.model.RelationshipTypeDirection;
-import org.openmrs.module.messages.api.util.ConfigConstants;
+import org.openmrs.module.messages.api.constants.ConfigConstants;
 import org.openmrs.module.messages.api.util.PersonAttributeUtil;
 
 import java.util.Collections;

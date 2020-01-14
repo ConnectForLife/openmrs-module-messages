@@ -7,7 +7,7 @@
  * graphic logo is a trademark of OpenMRS Inc.
  */
 
-package org.openmrs.module.messages.api.util;
+package org.openmrs.module.messages.api.constants;
 
 public final class ConfigConstants {
 
@@ -20,18 +20,66 @@ public final class ConfigConstants {
             + "'relationshipTypeUuid:directionOfRelationship,secondRelationshipTypeUuid:directionOfRelationship'";
 
     public static final String PERSON_CONTACT_TIME_ATTRIBUTE_TYPE_NAME = "Best contact time";
-    public static final String PERSON_CONTACT_TIME_TYPE_DESCRIPTION = "Person Best contact time";
+    public static final String PERSON_CONTACT_TIME_TYPE_DESCRIPTION = "Attribute stores the value of time which best "
+            + "suitable for person to perform the contact";
     public static final String PERSON_CONTACT_TIME_TYPE_FORMAT = "java.util.Date";
     public static final String PERSON_CONTACT_TIME_TYPE_UUID = "7a8ad9aa-bd0e-48c0-826d-fa628f1db644";
 
-    public static final String PATIENT_STATUS_ATTRIBUTE_TYPE_NAME = "Patient status";
-    public static final String PATIENT_STATUS_ATTRIBUTE_TYPE_DESCRIPTION = "Patient status attribute";
+    public static final String PATIENT_STATUS_ATTRIBUTE_TYPE_NAME = "Person status";
+    public static final String PATIENT_STATUS_ATTRIBUTE_TYPE_DESCRIPTION = "Person status attribute";
     public static final String PATIENT_STATUS_ATTRIBUTE_TYPE_FORMAT = "java.lang.String";
     public static final String PATIENT_STATUS_ATTRIBUTE_TYPE_UUID = "dda246c6-c806-402a-9b7c-e2c1574a6441";
 
+    public static final String PERSON_STATUS_CONFIGURATION_KEY = "message.personStatus.configuration";
+    public static final String PERSON_STATUS_CONFIGURATION_DEFAULT_VALUE = "[\n"
+            + "  {\n"
+            + "    \"name\": \"NO_CONSENT\",\n"
+            + "    \"backgroundColor\": \"#EEA616\",\n"
+            + "    \"textColor\": \"#f5f5f5\"\n"
+            + "  },\n"
+            + "  {\n"
+            + "    \"name\": \"ACTIVE\",\n"
+            + "    \"backgroundColor\": \"#51a351\",\n"
+            + "    \"textColor\": \"#f5f5f5\"\n"
+            + "  },\n"
+            + "  {\n"
+            + "    \"name\": \"DEACTIVATE\",\n"
+            + "    \"backgroundColor\": \"#f23722\",\n"
+            + "    \"textColor\": \"#f5f5f5\"\n"
+            + "  },\n"
+            + "  {\n"
+            + "    \"name\": \"MISSING_VALUE\",\n"
+            + "    \"backgroundColor\": \"#EEA616\",\n"
+            + "    \"textColor\": \"#f5f5f5\"\n"
+            + "  }\n"
+            + "]";
+    public static final String PERSON_STATUS_CONFIGURATION_DESCRIPTION = "Person status configuration in JSON-like format."
+            + "Example: [\n"
+            + "  {\n"
+            + "    \"name\": \"NO_CONSENT\",\n"
+            + "    \"backgroundColor\": \"#EEA616\",\n"
+            + "    \"textColor\": \"#f5f5f5\"\n"
+            + "  },\n"
+            + "  {\n"
+            + "    \"name\": \"ACTIVE\",\n"
+            + "    \"backgroundColor\": \"#51a351\",\n"
+            + "    \"textColor\": \"#f5f5f5\"\n"
+            + "  },\n"
+            + "  {\n"
+            + "    \"name\": \"DEACTIVATE\",\n"
+            + "    \"backgroundColor\": \"#f23722\",\n"
+            + "    \"textColor\": \"#f5f5f5\"\n"
+            + "  },\n"
+            + "  {\n"
+            + "    \"name\": \"MISSING_VALUE\",\n"
+            + "    \"backgroundColor\": \"#EEA616\",\n"
+            + "    \"textColor\": \"#f5f5f5\"\n"
+            + "  }\n"
+            + "]";
+
     public static final String CONSENT_CONTROL_KEY = "message.consent.validation";
     public static final String CONSENT_CONTROL_DEFAULT_VALUE = "true";
-    public static final String CONSENT_CONTROL_DESCRIPTION = "Used to determine if Patient Consent (Patient Status) "
+    public static final String CONSENT_CONTROL_DESCRIPTION = "Used to determine if Person Consent (Person Status) "
             + "should be used or not. Possible values: true / false.";
 
     public static final String GLOBAL_BEST_CONTACT_TIME_KEY = "global";
@@ -86,10 +134,6 @@ public final class ConfigConstants {
             "Used to determine the time (in seconds) when the task for retry will be scheduled. The retry time will be "
             + "set according to the time when the system gets registerAttempt response from the service plus the "
             + "number of second expressed in the value of this property.";
-
-    public static final String UUID_KEY = "uuid";
-
-    public static final String DEACTIVATED_SCHEDULE_MESSAGE = "DEACTIVATED";
 
     private ConfigConstants() {
     }

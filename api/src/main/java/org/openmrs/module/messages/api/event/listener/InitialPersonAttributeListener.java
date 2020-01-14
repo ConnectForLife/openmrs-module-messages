@@ -15,7 +15,7 @@ import org.openmrs.PersonAttributeType;
 import org.openmrs.event.Event;
 import org.openmrs.module.messages.api.model.PersonStatus;
 import org.openmrs.module.messages.api.service.ConfigService;
-import org.openmrs.module.messages.api.util.ConfigConstants;
+import org.openmrs.module.messages.api.constants.ConfigConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

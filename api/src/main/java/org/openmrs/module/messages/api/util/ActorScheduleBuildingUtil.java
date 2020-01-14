@@ -3,7 +3,6 @@ package org.openmrs.module.messages.api.util;
 import static org.openmrs.module.messages.api.constants.MessagesConstants.PATIENT_DEFAULT_ACTOR_TYPE;
 import static org.openmrs.module.messages.api.constants.MessagesConstants.DEFAULT_FRONT_END_DATE_FORMAT;
 import static org.openmrs.module.messages.api.model.ChannelType.DEACTIVATED;
-import static org.openmrs.module.messages.api.util.ConfigConstants.DEACTIVATED_SCHEDULE_MESSAGE;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,6 +12,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Relationship;
+import org.openmrs.module.messages.api.constants.MessagesConstants;
 import org.openmrs.module.messages.api.dto.ActorScheduleDTO;
 import org.openmrs.module.messages.api.model.ChannelType;
 import org.openmrs.module.messages.api.model.PatientTemplate;
@@ -78,7 +78,7 @@ public final class ActorScheduleBuildingUtil {
     }
 
     private static void addDeactivatedElement(List<String> scheduleElements) {
-        scheduleElements.add(DEACTIVATED_SCHEDULE_MESSAGE);
+        scheduleElements.add(MessagesConstants.DEACTIVATED_SCHEDULE_MESSAGE);
     }
 
     private static void addFrequencyElement(List<String> scheduleElements,

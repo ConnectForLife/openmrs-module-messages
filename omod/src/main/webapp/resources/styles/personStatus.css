@@ -1,0 +1,11 @@
+.person-status {
+    @extend .colored-message;
+    display: inline-block;
+    vertical-align: top !important;
+    background: #666666;
+    border: 1px solid #666666;
+    color: white;
+    padding: 2px 4px;
+    margin-top: 4px;
+    font-size: 0.8em;
+}

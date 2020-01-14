@@ -7,6 +7,7 @@ import org.openmrs.Person;
 import org.openmrs.PersonAttribute;
 import org.openmrs.Relationship;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.messages.api.constants.ConfigConstants;
 
 import java.util.Map;
 

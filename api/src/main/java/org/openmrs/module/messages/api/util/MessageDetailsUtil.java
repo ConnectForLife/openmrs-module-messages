@@ -1,7 +1,13 @@
 package org.openmrs.module.messages.api.util;
 
-import static org.openmrs.module.messages.api.constants.MessagesConstants.PATIENT_DEFAULT_ACTOR_TYPE;
-import static org.openmrs.module.messages.api.util.ConfigConstants.DEACTIVATED_SCHEDULE_MESSAGE;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.builder.CompareToBuilder;
+import org.openmrs.module.messages.api.constants.MessagesConstants;
+import org.openmrs.module.messages.api.dto.ActorScheduleDTO;
+import org.openmrs.module.messages.api.dto.MessageDTO;
+import org.openmrs.module.messages.api.dto.MessageDetailsDTO;
+import org.openmrs.module.messages.api.model.Actor;
+import org.openmrs.module.messages.api.model.Template;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,13 +15,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.builder.CompareToBuilder;
-import org.openmrs.module.messages.api.dto.ActorScheduleDTO;
-import org.openmrs.module.messages.api.dto.MessageDTO;
-import org.openmrs.module.messages.api.dto.MessageDetailsDTO;
-import org.openmrs.module.messages.api.model.Actor;
-import org.openmrs.module.messages.api.model.Template;
 
 public final class MessageDetailsUtil {
 
@@ -60,8 +59,8 @@ public final class MessageDetailsUtil {
     private static List<ActorScheduleDTO> attachPatientScheduleIfNeeded(List<ActorScheduleDTO> actorSchedules) {
         List<ActorScheduleDTO> schedules = new ArrayList<ActorScheduleDTO>(actorSchedules);
         if (!containsScheduleForPatient(actorSchedules)) {
-            schedules.add(new ActorScheduleDTO(PATIENT_DEFAULT_ACTOR_TYPE,
-                DEACTIVATED_SCHEDULE_MESSAGE));
+            schedules.add(new ActorScheduleDTO(MessagesConstants.PATIENT_DEFAULT_ACTOR_TYPE,
+                    MessagesConstants.DEACTIVATED_SCHEDULE_MESSAGE));
         }
         return schedules;
     }
@@ -85,7 +84,7 @@ public final class MessageDetailsUtil {
 
     private static boolean containsScheduleForPatient(List<ActorScheduleDTO> schedules) {
         for (ActorScheduleDTO schedule : schedules) {
-            if (PATIENT_DEFAULT_ACTOR_TYPE.equals(schedule.getActorType())) {
+            if (MessagesConstants.PATIENT_DEFAULT_ACTOR_TYPE.equals(schedule.getActorType())) {
                return true;
             }
         }
@@ -98,7 +97,7 @@ public final class MessageDetailsUtil {
         if (actors != null) {
             for (Actor actor : actors) {
                 expectedSchedules.add(new ActorScheduleDTO(actor.getTarget().getId(),
-                    ActorUtil.getActorTypeName(actor), DEACTIVATED_SCHEDULE_MESSAGE));
+                    ActorUtil.getActorTypeName(actor), MessagesConstants.DEACTIVATED_SCHEDULE_MESSAGE));
             }
         }
         return expectedSchedules;

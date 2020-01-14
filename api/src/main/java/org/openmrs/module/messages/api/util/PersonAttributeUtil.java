@@ -11,6 +11,7 @@ package org.openmrs.module.messages.api.util;
 
 import org.openmrs.Person;
 import org.openmrs.PersonAttribute;
+import org.openmrs.module.messages.api.constants.ConfigConstants;
 import org.openmrs.module.messages.api.model.PersonStatus;
 
 /**
@@ -37,10 +38,15 @@ public final class PersonAttributeUtil {
      */
     public static PersonStatus getPersonStatus(Person person) {
         PersonAttribute attribute = getPersonStatusAttribute(person);
-        return attribute == null ? null : PersonStatus.valueOf(attribute.getValue());
+        return attribute == null ? PersonStatus.MISSING_VALUE : PersonStatus.valueOf(attribute.getValue());
     }
 
-    private static PersonAttribute getPersonStatusAttribute(Person person) {
+    /**
+     * Returns the actual reason of change the person status if it exists
+     * @param person - related person
+     * @return - the actual reason of change the person status
+     */
+    public static PersonAttribute getPersonStatusAttribute(Person person) {
         if (person != null) {
             return person.getAttribute(ConfigConstants.PATIENT_STATUS_ATTRIBUTE_TYPE_NAME);
         }

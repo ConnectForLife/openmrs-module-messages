@@ -7,7 +7,8 @@ import static org.openmrs.module.messages.api.util.PersonAttributeUtil.getPerson
 public enum PersonStatus {
     NO_CONSENT("person.status.no_consent.title"),
     ACTIVE("person.status.active.title"),
-    DEACTIVATE("person.status.deactivate.title");
+    DEACTIVATE("person.status.deactivate.title"),
+    MISSING_VALUE("person.status.missing.title");
 
     private String titleKey;
 

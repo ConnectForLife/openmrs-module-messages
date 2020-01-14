@@ -17,8 +17,8 @@ import org.openmrs.api.context.Daemon;
 import org.openmrs.event.Event;
 import org.openmrs.event.SubscribableEventListener;
 import org.openmrs.module.DaemonToken;
+import org.openmrs.module.messages.api.constants.MessagesConstants;
 import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
-import org.openmrs.module.messages.api.util.ConfigConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -107,7 +107,7 @@ public abstract class PeopleActionListener implements SubscribableEventListener 
      */
     protected Person extractPerson(Message message) {
         LOGGER.trace("Handle extractPerson");
-        String personUuid = getMessagePropertyValue(message, ConfigConstants.UUID_KEY);
+        String personUuid = getMessagePropertyValue(message, MessagesConstants.UUID_KEY);
         return getPerson(personUuid);
     }
 

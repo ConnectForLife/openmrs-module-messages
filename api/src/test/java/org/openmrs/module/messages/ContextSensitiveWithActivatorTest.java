@@ -14,7 +14,7 @@ import org.junit.Before;
 import org.openmrs.module.DaemonToken;
 import org.openmrs.module.Module;
 import org.openmrs.module.ModuleFactory;
-import org.openmrs.module.messages.api.util.ConfigConstants;
+import org.openmrs.module.messages.api.constants.ConfigConstants;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
