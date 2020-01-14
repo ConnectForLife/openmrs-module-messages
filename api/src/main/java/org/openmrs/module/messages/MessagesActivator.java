@@ -48,14 +48,8 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
     public void started() {
         LOGGER.info("Started Messages");
         try {
-            createGlobalSettingIfNotExists(ConfigConstants.ACTOR_TYPES_KEY,
-                    ConfigConstants.ACTOR_TYPES_DEFAULT_VALUE, ConfigConstants.ACTOR_TYPES_DESCRIPTION);
-            createGlobalSettingIfNotExists(ConfigConstants.DAYS_NUMBER_BEFORE_VISIT_REMINDER_KEY,
-                    ConfigConstants.DAYS_NUMBER_BEFORE_VISIT_REMINDER_DEFAULT_VALUE,
-                    ConfigConstants.DAYS_NUMBER_BEFORE_VISIT_REMINDER_DESCRIPTION);
-            createReschedulingStrategyConfig();
+            createConfig();
             scheduleMessageDeliveries();
-            createConsentConfig();
         } catch (APIException e) {
             safeShutdownModule();
             LOGGER.error("Failed to setup the required modules");
@@ -100,11 +94,31 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
         return schedulerService;
     }
 
+    private void createConfig() {
+        createActorTypeConfig();
+        createDaysBeforeVisitReminderConfig();
+        createReschedulingStrategyConfig();
+        createConsentConfig();
+    }
+
+    private void createActorTypeConfig() {
+        createGlobalSettingIfNotExists(ConfigConstants.ACTOR_TYPES_KEY,
+                ConfigConstants.ACTOR_TYPES_DEFAULT_VALUE, ConfigConstants.ACTOR_TYPES_DESCRIPTION);
+    }
+
+    private void createDaysBeforeVisitReminderConfig() {
+        createGlobalSettingIfNotExists(ConfigConstants.DAYS_NUMBER_BEFORE_VISIT_REMINDER_KEY,
+                ConfigConstants.DAYS_NUMBER_BEFORE_VISIT_REMINDER_DEFAULT_VALUE,
+                ConfigConstants.DAYS_NUMBER_BEFORE_VISIT_REMINDER_DESCRIPTION);
+    }
+
     private void createConsentConfig() {
         createPatientStatusAttributeType();
         createBestContactTimeAttributeType();
         createGlobalSettingIfNotExists(ConfigConstants.BEST_CONTACT_TIME_KEY,
                 ConfigConstants.BEST_CONTACT_TIME_DEFAULT_VALUE, ConfigConstants.BEST_CONTACT_TIME_DESCRIPTION);
+        createGlobalSettingIfNotExists(ConfigConstants.ACTOR_BEST_CONTACT_TIME_KEY,
+                ConfigConstants.ACTOR_BEST_CONTACT_TIME_DEFAULT_VALUE, ConfigConstants.ACTOR_BEST_CONTACT_TIME_DESCRIPTION);
         createGlobalSettingIfNotExists(ConfigConstants.CONSENT_CONTROL_KEY,
                 ConfigConstants.CONSENT_CONTROL_DEFAULT_VALUE, ConfigConstants.CONSENT_CONTROL_DESCRIPTION);
     }

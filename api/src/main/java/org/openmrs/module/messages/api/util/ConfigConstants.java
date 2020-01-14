@@ -6,7 +6,7 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
- 
+
 package org.openmrs.module.messages.api.util;
 
 public final class ConfigConstants {
@@ -34,9 +34,25 @@ public final class ConfigConstants {
     public static final String CONSENT_CONTROL_DESCRIPTION = "Used to determine if Patient Consent (Patient Status) "
             + "should be used or not. Possible values: true / false.";
 
+    public static final String GLOBAL_BEST_CONTACT_TIME_KEY = "global";
+    public static final String GLOBAL_BEST_CONTACT_TIME_VALUE = "10:00";
     public static final String BEST_CONTACT_TIME_KEY = "message.bestContactTime.default";
-    public static final String BEST_CONTACT_TIME_DEFAULT_VALUE = "10:00";
-    public static final String BEST_CONTACT_TIME_DESCRIPTION = "Used to determine the default contact time for services.";
+    public static final String BEST_CONTACT_TIME_DEFAULT_VALUE =
+            "{\n"
+            + "  \"" + GLOBAL_BEST_CONTACT_TIME_KEY + "\": \"" + GLOBAL_BEST_CONTACT_TIME_VALUE + "\",\n"
+            + "  \"acec590b-825e-45d2-876a-0028f174903d\": \"10:00\"\n"
+            + "}";
+    public static final String BEST_CONTACT_TIME_DESCRIPTION = "Map of actor types and their default contact times" +
+            " for services for different actor types. Example of usage: " + BEST_CONTACT_TIME_DEFAULT_VALUE;
+
+    public static final String ACTOR_BEST_CONTACT_TIME_KEY = "message.bestContactTime.actor";
+
+    public static final String ACTOR_BEST_CONTACT_TIME_DEFAULT_VALUE =
+            "{\"acec590b-825e-45d2-876a-0028f174903d\": \"10:00\"}";
+
+    public static final String ACTOR_BEST_CONTACT_TIME_DESCRIPTION = "Map of actor types and their default contact times" +
+            " for services for different actor types. Example of usage: "
+            + "{\"relationshipTypeUuid\": \"10:00\", \"secondRelationshipTypeUuid\": \"12:20\"}";
 
     public static final String DAYS_NUMBER_BEFORE_VISIT_REMINDER_KEY = "message.daysToCallBeforeVisit.default";
     public static final String DAYS_NUMBER_BEFORE_VISIT_REMINDER_DEFAULT_VALUE = "1,7";
