@@ -17,11 +17,16 @@ interface IProps {
   selectedOption: string;
   label: string;
   id: string;
-  mandatory?: boolean;
+  mandatory: boolean;
   onSelectChange: (valueSelected: string) => void;
 }
 
 export default class DynamicRadioButton extends React.Component<IProps> {
+
+  public static defaultProps = {
+    mandatory: false
+  };
+
   render = () => {
     return (
       <FormGroup controlId={this.props.id}>

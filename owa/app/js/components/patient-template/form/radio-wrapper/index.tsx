@@ -45,7 +45,7 @@ type RadioValueContainer = {
 interface IProps {
   id: string,
   fieldName: string,
-  isMandatory?: boolean;
+  isMandatory: boolean;
   label: string;
   initValue: string;
   initElements: InitInput[];
@@ -57,6 +57,11 @@ interface IState {
 }
 
 export default class RadioWrappedContainer extends React.Component<IProps, IState> {
+
+  public static defaultProps = {
+    isMandatory: false
+  };
+
   constructor(props) {
     super(props);
     const withType: ValueType = parseType(props.initValue);

@@ -11,7 +11,7 @@ interface IProps {
   selectedOptions: string;
   label: string;
   key: string;
-  mandatory?: boolean;
+  mandatory: boolean;
   onSelectChange: (valueSelected: string) => void;
 }
 
@@ -20,6 +20,10 @@ interface IState {
 }
 
 export default class DynamicMultiselect extends React.Component<IProps, IState> {
+
+  public static defaultProps = {
+    mandatory: false
+  };
 
   constructor(props: IProps) {
     super(props);

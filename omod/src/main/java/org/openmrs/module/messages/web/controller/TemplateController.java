@@ -91,7 +91,6 @@ public class TemplateController extends BaseRestController {
         return templates;
     }
 
-    // TODO: 10.01.2020 update to match validation in PatientTemplateController
     private Template validateAndUpdateTemplate(TemplateDTO templateDTO, Integer templateId) {
         validateTemplateId(templateId);
         validationComponent.validate(templateDTO);

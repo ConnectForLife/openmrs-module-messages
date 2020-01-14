@@ -40,6 +40,7 @@ export const CALENDAR_OVERVIEW_LABEL = 'Calendar Overview';
 
 // Admin settings 
 export const DEFAULT_SETTINGS_POSTFIX = ' - default settings';
+export const DEFAULT_SETTINGS_TABLE_TITLE = 'Default message details';
 
 export const PATIENT_TEMPLATE_START_DATE = 'Start of daily messages';
 export const PATIENT_TEMPLATE_END_DATE = 'End of daily messages';

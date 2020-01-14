@@ -1,29 +1,35 @@
 .fragment-table {
-  border-top: 1px solid black;
-  border-left: 1px solid black;
+  border-left: 1px solid rgba(0, 0, 0, 0.06);
   border-collapse: separate;
   border-spacing: 0;
 
+  display: flex;
+  overflow-x: auto;
+
+  .fragment-column {
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    // Override bootstrap col padding which disrupts borders for cells
+    padding: 0;
+  }
+
   .fragment-row {
-    border-bottom: 1px solid black;
-    border-right: 1px solid black; 
-    padding-top: 2px;
-    padding-left: 2px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    border-right: 1px solid rgba(0, 0, 0, 0.06); 
+    padding-top: 10px;
+    padding-left: 10px;
+
+    background-color: white;
+
+    &.even {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+    
+    &.header {
+      border-radius: 0;
+    }
   }
 }
 
-.fragment-column {
-
-}
-
-.fragment-row {
-  
-}
-
-.fragment-row.odd {
-
-}
-
-.fragment-row.even {
-  
+.u-ta-center {
+  text-align: center;
 }

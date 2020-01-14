@@ -19,11 +19,15 @@ interface IProps {
   label: string;
   fieldName: string;
   id: string;
-  mandatory?: boolean;
+  mandatory: boolean;
   onSelectChange: (valueSelected: string) => void;
 }
 
 export default class DynamicCheckboxButton extends React.Component<IProps> {
+
+  public static defaultProps = {
+    mandatory: false
+  };
 
   isChecked = (option: string) => {
     return _.includes(this.props.selectedOptions, option);

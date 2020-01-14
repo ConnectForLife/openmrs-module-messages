@@ -1,10 +1,9 @@
 import React from 'react';
-import { Form, FormGroup, ControlLabel } from 'react-bootstrap';
+import { Form, FormGroup } from 'react-bootstrap';
 import _ from 'lodash';
-import { TemplateUI } from '../../shared/model/template-ui';
-import { TemplateFieldType } from '../../shared/model/template-field-type';
 import OpenMrsDatePicker from '@bit/soldevelo-omrs.cfl-components.openmrs-date-picker';
 import FormLabel from '@bit/soldevelo-omrs.cfl-components.form-label';
+
 import {
   PATIENT_TEMPLATE_START_DATE,
   PATIENT_TEMPLATE_END_DATE
@@ -18,6 +17,8 @@ import DynamicMultiselect from '../patient-template/form/dynamic-multiselect';
 import DynamicRadioButton from '../patient-template/form/dynamic-radio-button';
 import DynamicCheckboxButton from '../patient-template/form/dynamic-checbox-button';
 import InputField from '../patient-template/form/input-field';
+import { TemplateUI } from '../../shared/model/template-ui';
+import { TemplateFieldType } from '../../shared/model/template-field-type';
 
 interface IProps {
   template: TemplateUI;

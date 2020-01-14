@@ -1,10 +1,11 @@
 import { REQUEST, SUCCESS, FAILURE } from './action-type.util';
+import { handleRequest } from '@bit/soldevelo-omrs.cfl-components.request-toast-handler';
+import _ from 'lodash';
+
 import 'react-toastify/dist/ReactToastify.css';
 import { TemplateUI } from '../shared/model/template-ui';
 import axiosInstance from '../config/axios';
-import _ from 'lodash';
 import { toModel, mergeWithObjectUIs } from '../shared/model/object-ui';
-import { handleRequest } from '@bit/soldevelo-omrs.cfl-components.request-toast-handler';
 import * as Msg from '../shared/utils/messages';
 
 export const ACTION_TYPES = {

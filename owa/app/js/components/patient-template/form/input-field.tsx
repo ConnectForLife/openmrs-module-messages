@@ -17,11 +17,16 @@ interface IProps {
   key: string;
   value: string;
   fieldName: string
-  mandatory?: boolean;
+  mandatory: boolean;
   handleChange: (value: string) => void;
 }
 
 export default class InputField extends React.Component<IProps> {
+
+  public static defaultProps = {
+    mandatory: false
+  };
+
   render = () => {
     let { label, key, value } = this.props;
     return (
