@@ -928,4 +928,26 @@
             <where>property='message.bestContactTime.default'</where>
         </delete>
     </changeSet>
+    
+    <changeSet id="messages-30" author="Arkadiusz Lalo">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="person_attribute_type" />
+            <sqlCheck expectedResult="1">
+                select count(*) from person_attribute_type
+                    where uuid = 'dda246c6-c806-402a-9b7c-e2c1574a6441' and name like 'Patient status'
+            </sqlCheck>
+        </preConditions>
+
+        <comment>
+            Change the name and description for the person status attribute. It is in order to apply the new changes to all
+            already existing environments. The migration can be removed if the liquibase refactor will be
+            conducted (eg. replacing all changes by one changeSet).
+        </comment>
+
+        <update tableName="person_attribute_type">
+            <column name="name" value="Person status" />
+            <column name="description" value="Person status attribute" />
+            <where>uuid = 'dda246c6-c806-402a-9b7c-e2c1574a6441'</where>
+        </update>
+    </changeSet>
 </databaseChangeLog>
