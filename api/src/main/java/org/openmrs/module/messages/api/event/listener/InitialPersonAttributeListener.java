@@ -69,7 +69,7 @@ public class InitialPersonAttributeListener extends PeopleActionListener {
     }
 
     private PersonStatus getInitialValue() {
-        PersonStatus status = PersonStatus.DEACTIVATE;
+        PersonStatus status = PersonStatus.ACTIVE;
         if (configService.isConsentControlEnabled()) {
             status = PersonStatus.NO_CONSENT;
         }

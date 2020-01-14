@@ -68,7 +68,7 @@ public class InitialPersonAttributeListenerITTest extends ContextSensitiveWithAc
     private InitialPersonAttributeListener listener;
 
     @Test
-    public void shouldAddStatusNoConsentAfterCreatingPerson() throws JMSException {
+    public void shouldAddNoConsentStatusAfterCreatingPerson() throws JMSException {
         Person person = new PersonBuilder().buildAsNew();
 
         personService.savePerson(person);
@@ -82,7 +82,7 @@ public class InitialPersonAttributeListenerITTest extends ContextSensitiveWithAc
     }
 
     @Test
-    public void shouldAddStatusNoConsentAfterCreatingPatient() throws JMSException {
+    public void shouldAddNoConsentStatusAfterCreatingPatient() throws JMSException {
         Patient patient = preparePatient();
 
         patientService.savePatient(patient);
@@ -96,7 +96,7 @@ public class InitialPersonAttributeListenerITTest extends ContextSensitiveWithAc
     }
 
     @Test
-    public void shouldAddStatusDeactivateAfterCreatingPerson() throws JMSException {
+    public void shouldAddActivateStatusAfterCreatingPerson() throws JMSException {
         disableConsentControl();
         Person person = new PersonBuilder().buildAsNew();
 
@@ -107,11 +107,11 @@ public class InitialPersonAttributeListenerITTest extends ContextSensitiveWithAc
         assertThat(person.getAttributes().size(), is(EXPECTED_SIZE));
         PersonAttribute attribute = getFirstAttribute(person);
         assertThat(attribute, hasProperty(Constant.UUID_KEY, notNullValue()));
-        assertThat(attribute, hasProperty(Constant.VALUE_KEY, is(PersonStatus.DEACTIVATE.name())));
+        assertThat(attribute, hasProperty(Constant.VALUE_KEY, is(PersonStatus.ACTIVE.name())));
     }
 
     @Test
-    public void shouldAddStatusDeactivateAfterCreatingPatient() throws JMSException {
+    public void shouldAddActivateStatusAfterCreatingPatient() throws JMSException {
         disableConsentControl();
         Patient patient = preparePatient();
 
@@ -122,7 +122,7 @@ public class InitialPersonAttributeListenerITTest extends ContextSensitiveWithAc
         assertThat(patient.getAttributes().size(), is(EXPECTED_SIZE));
         PersonAttribute attribute = getFirstAttribute(patient);
         assertThat(attribute, hasProperty(Constant.UUID_KEY, notNullValue()));
-        assertThat(attribute, hasProperty(Constant.VALUE_KEY, is(PersonStatus.DEACTIVATE.name())));
+        assertThat(attribute, hasProperty(Constant.VALUE_KEY, is(PersonStatus.ACTIVE.name())));
     }
 
     @Test(expected = MessagesRuntimeException.class)

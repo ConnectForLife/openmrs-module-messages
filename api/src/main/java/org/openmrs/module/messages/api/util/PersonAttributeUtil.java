@@ -38,7 +38,7 @@ public final class PersonAttributeUtil {
      */
     public static PersonStatus getPersonStatus(Person person) {
         PersonAttribute attribute = getPersonStatusAttribute(person);
-        return attribute == null ? PersonStatus.MISSING_VALUE : PersonStatus.valueOf(attribute.getValue());
+        return attribute == null ? PersonStatus.MISSING_VALUE : getPersonStatusValue(attribute);
     }
 
     /**
@@ -51,6 +51,16 @@ public final class PersonAttributeUtil {
             return person.getAttribute(ConfigConstants.PATIENT_STATUS_ATTRIBUTE_TYPE_NAME);
         }
         return null;
+    }
+
+    private static PersonStatus getPersonStatusValue(PersonAttribute attribute) {
+        PersonStatus result;
+        try {
+            result = PersonStatus.valueOf(attribute.getValue());
+        } catch (IllegalArgumentException e) {
+            result = PersonStatus.MISSING_VALUE;
+        }
+        return result;
     }
 
     private PersonAttributeUtil() {

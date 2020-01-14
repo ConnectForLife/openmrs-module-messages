@@ -43,4 +43,26 @@
             voided="false"
             void_reason=""
             uuid="5c8cbd1d-e9b2-4b5d-addc-23ae753f908e"/>
+
+    <person
+            person_id="235923"
+            gender="M"
+            dead="false"
+            creator="1"
+            date_created="2010-11-16 15:57:09.0"
+            voided="false"
+            void_reason=""
+            uuid="69962c4a-ad29-4e9b-951b-2a27079f2b25"/>
+    <person_name
+            person_name_id="9225211"
+            preferred="true"
+            person_id="235923"
+            given_name="Greg"
+            middle_name=""
+            family_name="Smith"
+            creator="1"
+            date_created="2019-11-16 15:57:09.0"
+            voided="false"
+            void_reason=""
+            uuid="73f1af8b-016e-4ae4-b4e9-c3354740ccbc"/>
 </dataset>
