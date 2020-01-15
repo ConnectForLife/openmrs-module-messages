@@ -28,7 +28,7 @@
             name="testField2"
             mandatory="0"
             default_value="test_value2"
-            template_field_type="MESSAGING_FREQUENCY"
+            template_field_type="MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY"
             template_id="2231"
             uuid="afdffb6f-8e54-42e7-97a1-2b759bc543bc"
             creator="1"

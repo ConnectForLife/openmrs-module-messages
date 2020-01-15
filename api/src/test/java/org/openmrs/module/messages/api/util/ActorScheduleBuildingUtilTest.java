@@ -23,7 +23,6 @@ public class ActorScheduleBuildingUtilTest {
     private static final String TEST_DATE_3 = EndDateType.AFTER_TIMES.getName() + "|8";
     private static final String TEST_CATEGORIES = "category 1,category 2,category 3";
     private static final String TEST_EVERY_WEEK_DAYS = "Monday,Tuesday,Wednesday,Thursday,Friday";
-    private static final String TEST_BADLY_FORMATTED_WEEK_DAYS = ",Tuesday,Monday,Other,null,,";
 
     private static final String TEST_OUTPUT_DATE_1 = "07 Dec 2019";
     private static final String TEST_OUTPUT_DATE_2 = "11 Dec 2019";
@@ -31,6 +30,7 @@ public class ActorScheduleBuildingUtilTest {
     private static final String TEST_OUTPUT_CATEGORIES = "category 1, category 2, category 3";
     private static final String SMS_TYPE = "SMS";
     private static final String DAILY_FREQUENCY = "Daily";
+    private static final String MONTHLY_FREQUENCY = "Monthly";
 
     @Test
     public void shouldBuildActorScheduleWithNotNullScheduleString() {
@@ -67,8 +67,7 @@ public class ActorScheduleBuildingUtilTest {
 
         ActorScheduleDTO schedule = ActorScheduleBuildingUtil.build(patientTemplate);
 
-        Assert.assertEquals(String.format("Starts: %s", TEST_OUTPUT_DATE_1),
-            schedule.getSchedule());
+        Assert.assertEquals(String.format("Starts: %s", TEST_OUTPUT_DATE_1), schedule.getSchedule());
     }
 
     @Test
@@ -102,36 +101,6 @@ public class ActorScheduleBuildingUtilTest {
     }
 
     @Test
-    public void shouldBuildEndDateForAfterTimesSchedule() {
-        TemplateFieldValue tfv = buildTemplateFieldWithValue(TemplateFieldType.END_OF_MESSAGES,
-            TEST_DATE_3);
-        TemplateFieldValue tfv2 = buildTemplateFieldWithValue(TemplateFieldType.SERVICE_TYPE,
-            SMS_TYPE);
-        PatientTemplate patientTemplate = new PatientTemplateBuilder()
-            .withTemplateFieldValues(Arrays.asList(tfv, tfv2))
-            .build();
-
-        ActorScheduleDTO schedule = ActorScheduleBuildingUtil.build(patientTemplate);
-
-        Assert.assertEquals(String.format("Ends: %s", TEST_OUTPUT_DATE_3), schedule.getSchedule());
-    }
-
-    @Test
-    public void shouldBuildDefaultEndDateScheduleForNull() {
-        TemplateFieldValue tfv = buildTemplateFieldWithValue(TemplateFieldType.END_OF_MESSAGES,
-            null);
-        TemplateFieldValue tfv2 = buildTemplateFieldWithValue(TemplateFieldType.SERVICE_TYPE,
-            SMS_TYPE);
-        PatientTemplate patientTemplate = new PatientTemplateBuilder()
-            .withTemplateFieldValues(Arrays.asList(tfv, tfv2))
-            .build();
-
-        ActorScheduleDTO schedule = ActorScheduleBuildingUtil.build(patientTemplate);
-
-        Assert.assertEquals("Ends: default value", schedule.getSchedule());
-    }
-
-    @Test
     public void shouldBuildBothDatesSchedule() {
         TemplateFieldValue tfv1 = buildTemplateFieldWithValue(TemplateFieldType.START_OF_MESSAGES,
             TEST_DATE_1);
@@ -151,7 +120,7 @@ public class ActorScheduleBuildingUtilTest {
     }
 
     @Test
-    public void shouldBuildFrequencyProperly() {
+    public void shouldBuildDailyFrequencyProperly() {
 
         TemplateFieldValue tfv1 = buildTemplateFieldWithValue(TemplateFieldType.START_OF_MESSAGES,
             TEST_DATE_1);
@@ -159,7 +128,8 @@ public class ActorScheduleBuildingUtilTest {
             TEST_DATE_2);
         TemplateFieldValue tfv3 = buildTemplateFieldWithValue(TemplateFieldType.SERVICE_TYPE,
             SMS_TYPE);
-        TemplateFieldValue tfv4 = buildTemplateFieldWithValue(TemplateFieldType.MESSAGING_FREQUENCY,
+        TemplateFieldValue tfv4 = buildTemplateFieldWithValue(
+            TemplateFieldType.MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY,
             DAILY_FREQUENCY);
 
         PatientTemplate patientTemplate = new PatientTemplateBuilder()
@@ -170,6 +140,30 @@ public class ActorScheduleBuildingUtilTest {
 
         Assert.assertEquals(String.format("%s, Starts: %s, Ends: %s",
             DAILY_FREQUENCY, TEST_OUTPUT_DATE_1, TEST_OUTPUT_DATE_2),
+            schedule.getSchedule());
+    }
+
+    @Test
+    public void shouldBuildMonthlyFrequencyProperly() {
+
+        TemplateFieldValue tfv1 = buildTemplateFieldWithValue(TemplateFieldType.START_OF_MESSAGES,
+            TEST_DATE_1);
+        TemplateFieldValue tfv2 = buildTemplateFieldWithValue(TemplateFieldType.END_OF_MESSAGES,
+            TEST_DATE_2);
+        TemplateFieldValue tfv3 = buildTemplateFieldWithValue(TemplateFieldType.SERVICE_TYPE,
+            SMS_TYPE);
+        TemplateFieldValue tfv4 = buildTemplateFieldWithValue(
+            TemplateFieldType.MESSAGING_FREQUENCY_WEEKLY_OR_MONTHLY,
+            MONTHLY_FREQUENCY);
+
+        PatientTemplate patientTemplate = new PatientTemplateBuilder()
+            .withTemplateFieldValues(Arrays.asList(tfv1, tfv2, tfv3, tfv4))
+            .build();
+
+        ActorScheduleDTO schedule = ActorScheduleBuildingUtil.build(patientTemplate);
+
+        Assert.assertEquals(String.format("%s, Starts: %s, Ends: %s",
+            MONTHLY_FREQUENCY, TEST_OUTPUT_DATE_1, TEST_OUTPUT_DATE_2),
             schedule.getSchedule());
     }
 
@@ -214,16 +208,17 @@ public class ActorScheduleBuildingUtilTest {
     }
 
     @Test
-    public void shouldBuildDayOfWeekForBadlyFormattedString() {
+    public void shouldNotThrowExceptionButReturnErrorInformation() {
 
-        TemplateFieldValue tfv1 = buildTemplateFieldWithValue(TemplateFieldType.START_OF_MESSAGES,
-            TEST_DATE_1);
-        TemplateFieldValue tfv2 = buildTemplateFieldWithValue(TemplateFieldType.END_OF_MESSAGES,
-            TEST_DATE_2);
-        TemplateFieldValue tfv3 = buildTemplateFieldWithValue(TemplateFieldType.SERVICE_TYPE,
-            SMS_TYPE);
-        TemplateFieldValue tfv4 = buildTemplateFieldWithValue(TemplateFieldType.DAY_OF_WEEK,
-            TEST_BADLY_FORMATTED_WEEK_DAYS);
+        TemplateFieldValue tfv1 = buildTemplateFieldWithValue(TemplateFieldType.CATEGORY_OF_MESSAGE,
+            null);
+        TemplateFieldValue tfv2 = buildTemplateFieldWithValue(TemplateFieldType.SERVICE_TYPE,
+            null);
+
+        TemplateFieldValue tfv3 = buildTemplateFieldWithValue(TemplateFieldType.START_OF_MESSAGES,
+            null);
+        TemplateFieldValue tfv4 = buildTemplateFieldWithValue(TemplateFieldType.END_OF_MESSAGES,
+            null);
 
         PatientTemplate patientTemplate = new PatientTemplateBuilder()
             .withTemplateFieldValues(Arrays.asList(tfv1, tfv2, tfv3, tfv4))
@@ -231,9 +226,7 @@ public class ActorScheduleBuildingUtilTest {
 
         ActorScheduleDTO schedule = ActorScheduleBuildingUtil.build(patientTemplate);
 
-        Assert.assertEquals(String.format("Monday, Tuesday, Starts: %s, Ends: %s",
-            TEST_OUTPUT_DATE_1, TEST_OUTPUT_DATE_2),
-            schedule.getSchedule());
+        Assert.assertEquals(ActorScheduleBuildingUtil.ERROR_INFORMATION, schedule.getSchedule());
     }
 
     private TemplateFieldValue buildTemplateFieldWithValue(TemplateFieldType type, String value) {

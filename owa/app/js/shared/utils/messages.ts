@@ -48,3 +48,17 @@ export const PATIENT_TEMPLATE_END_DATE = 'End of daily messages';
 export const PATIENT_ROLE = 'Patient';
 export const ISO_DATE_FORMAT = 'YYYY-MM-DD';
 export const DATE_FORMAT = 'dd MMM yyyy';
+
+// Patient template values
+export const SERVICE_TYPE_VALUES = ['Call', 'SMS', 'Deactivate service'];
+export const DAY_OF_WEEK_VALUES = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+export const MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY_VALUES = ['Daily', 'Weekly', 'Monthly'];
+export const MESSAGING_FREQUENCY_WEEKLY_OR_MONTHLY_VALUES = ['Weekly', 'Monthly'];
+export const CATEGORIES_MAP = {
+  'HT_CONTACT_TRACING': 'Contact Tracing',
+  'HT_CAREGIVER': 'Caregiver',
+  'HT_SIDE_EFFECTS': 'Side Effects',
+  'HT_TREATMENT': 'Treatment',
+  'HT_PREVENTION': 'Prevention',
+  'HT_SPREAD': 'Spread'
+};

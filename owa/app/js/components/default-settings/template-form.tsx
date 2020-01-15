@@ -6,13 +6,17 @@ import FormLabel from '@bit/soldevelo-omrs.cfl-components.form-label';
 
 import {
   PATIENT_TEMPLATE_START_DATE,
-  PATIENT_TEMPLATE_END_DATE
+  PATIENT_TEMPLATE_END_DATE,
+  SERVICE_TYPE_VALUES,
+  DAY_OF_WEEK_VALUES,
+  MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY_VALUES,
+  MESSAGING_FREQUENCY_WEEKLY_OR_MONTHLY_VALUES,
+  CATEGORIES_MAP
 } from '../../shared/utils/messages';
 import { TemplateFieldUI } from '../../shared/model/template-field-ui';
 import RadioWrappedContainer, { InitInput } from '../patient-template/form/radio-wrapper';
 import { factory } from '../patient-template/form/type-factory';
 import { InputTypeEnum } from '../patient-template/form/radio-wrapper/parsable-input';
-import { CATEGORIES_MAP } from '../patient-template/form/dynamic-multiselect.constants';
 import DynamicMultiselect from '../patient-template/form/dynamic-multiselect';
 import DynamicRadioButton from '../patient-template/form/dynamic-radio-button';
 import DynamicCheckboxButton from '../patient-template/form/dynamic-checbox-button';
@@ -52,17 +56,18 @@ export class TemplateForm extends React.Component<IProps> {
   renderField = (templateField: TemplateFieldUI) => {
     const fieldType: TemplateFieldType = templateField.type;
     const fieldName: string = templateField.name;
-    
+
     switch (fieldType) {
       case TemplateFieldType.SERVICE_TYPE:
-        return this.renderDynamicRadioButton(templateField, ['Call', 'SMS', 'Deactivate service'],
-          fieldName);
+        return this.renderDynamicRadioButton(templateField, SERVICE_TYPE_VALUES, fieldName);
       case TemplateFieldType.DAY_OF_WEEK:
-        return this.renderDynamicCheckboxButton(templateField,
-          ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-          fieldName);
-      case TemplateFieldType.MESSAGING_FREQUENCY:
-        return this.renderDynamicRadioButton(templateField, ['Daily', 'Weekly', 'Monthly'], fieldName);
+        return this.renderDynamicDayOfWeekButton(templateField, DAY_OF_WEEK_VALUES, fieldName);
+      case TemplateFieldType.MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY:
+        return this.renderDynamicRadioButton(templateField,
+          MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY_VALUES, fieldName);
+      case TemplateFieldType.MESSAGING_FREQUENCY_WEEKLY_OR_MONTHLY:
+        return this.renderDynamicRadioButton(templateField,
+          MESSAGING_FREQUENCY_WEEKLY_OR_MONTHLY_VALUES, fieldName);
       case TemplateFieldType.CATEGORY_OF_MESSAGE:
         return this.renderDynamicMultiselect(templateField, Object.keys(CATEGORIES_MAP), fieldName);
       case TemplateFieldType.START_OF_MESSAGES:
@@ -94,6 +99,16 @@ export class TemplateForm extends React.Component<IProps> {
         onSelectChange={(value: string) => this.onTemplateFieldValueChange(field.localId, value)}
       />
     )
+
+  renderDynamicDayOfWeekButton = (field: TemplateFieldUI,
+    options: ReadonlyArray<string>,
+    fieldName: string) => {
+    if (this.isDayOfWeekMultiple()) {
+      return this.renderDynamicCheckboxButton(field, options, fieldName);
+    } else {
+      return this.renderDynamicRadioButton(field, options, fieldName);
+    }
+  }
 
   renderDynamicRadioButton = (field: TemplateFieldUI,
     options: ReadonlyArray<string>,
@@ -149,6 +164,27 @@ export class TemplateForm extends React.Component<IProps> {
       />
     </FormGroup>
   );
+
+  private isDayOfWeekMultiple = () => {
+    const weeklyMonthlyFrequency = this.props
+      .template
+      .templateFields
+      .find(f => f.type === TemplateFieldType.MESSAGING_FREQUENCY_WEEKLY_OR_MONTHLY);
+    if (!!weeklyMonthlyFrequency) {
+      return false;
+    }
+
+    const dailyWeeklyMonthlyFrequency = this.props
+      .template
+      .templateFields
+      .find(f => f.type === TemplateFieldType.MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY);
+    if (!!dailyWeeklyMonthlyFrequency) {
+      const daily = MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY_VALUES[0];
+      return dailyWeeklyMonthlyFrequency.defaultValue === daily;
+    }
+
+    return true;
+  }
 
   render = () => {
     const { template } = this.props;

@@ -2,7 +2,8 @@ package org.openmrs.module.messages.api.model;
 
 public enum TemplateFieldType {
     SERVICE_TYPE,
-    MESSAGING_FREQUENCY,
+    MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY,
+    MESSAGING_FREQUENCY_WEEKLY_OR_MONTHLY,
     DAY_OF_WEEK,
     START_OF_MESSAGES,
     END_OF_MESSAGES,

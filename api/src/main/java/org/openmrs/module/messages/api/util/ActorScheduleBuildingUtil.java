@@ -19,8 +19,9 @@ import org.openmrs.module.messages.api.service.impl.MessagesSchedulerServiceImpl
 
 public final class ActorScheduleBuildingUtil {
 
-    private static final Log LOGGER = LogFactory.getLog(MessagesSchedulerServiceImpl.class);
+    public static final String ERROR_INFORMATION = "Unable to display schedule";
 
+    private static final Log LOGGER = LogFactory.getLog(MessagesSchedulerServiceImpl.class);
     private static final String SCHEDULE_ELEMENTS_SEPARATOR = ", ";
     private static final String FIELD_CONTENT_SEPARATOR = ",";
     private static final String DEFAULT_INFORMATION = "Schedule data not specified";
@@ -43,27 +44,32 @@ public final class ActorScheduleBuildingUtil {
     }
 
     private static String buildSchedule(PatientTemplate patientTemplate) {
-        String serviceType = getTemplateFieldValue(patientTemplate,
-            TemplateFieldType.SERVICE_TYPE, true);
+        try {
+            String serviceType = getTemplateFieldValue(patientTemplate,
+                TemplateFieldType.SERVICE_TYPE, true);
 
-        List<String> scheduleElements = new ArrayList<>();
+            List<String> scheduleElements = new ArrayList<>();
 
-        if (isDeactivated(serviceType)) {
-            addDeactivatedElement(scheduleElements);
-        } else {
-            addFrequencyElement(scheduleElements, patientTemplate);
+            if (isDeactivated(serviceType)) {
+                addDeactivatedElement(scheduleElements);
+            } else {
+                addFrequencyElement(scheduleElements, patientTemplate);
 
-            addDayOfWeekElement(scheduleElements, patientTemplate);
+                addDayOfWeekElement(scheduleElements, patientTemplate);
 
-            addStartDateElement(scheduleElements, patientTemplate);
+                addStartDateElement(scheduleElements, patientTemplate);
 
-            addEndDateElement(scheduleElements, patientTemplate);
+                addEndDateElement(scheduleElements, patientTemplate);
 
-            addCategoriesElement(scheduleElements, patientTemplate);
+                addCategoriesElement(scheduleElements, patientTemplate);
+            }
+
+            String schedule = StringUtils.join(scheduleElements, SCHEDULE_ELEMENTS_SEPARATOR);
+            return StringUtils.defaultIfEmpty(schedule, DEFAULT_INFORMATION);
+        } catch (Exception ex) {
+            LOGGER.error(ERROR_INFORMATION, ex);
+            return ERROR_INFORMATION;
         }
-
-        String schedule = StringUtils.join(scheduleElements, SCHEDULE_ELEMENTS_SEPARATOR);
-        return StringUtils.defaultIfEmpty(schedule, DEFAULT_INFORMATION);
     }
 
     private static void addDeactivatedElement(List<String> scheduleElements) {
@@ -72,9 +78,15 @@ public final class ActorScheduleBuildingUtil {
 
     private static void addFrequencyElement(List<String> scheduleElements,
                                               PatientTemplate patientTemplate) {
-        String frequency = getTemplateFieldValue(patientTemplate,
-            TemplateFieldType.MESSAGING_FREQUENCY, false);
-        if (frequency != null) {
+        String frequencyDailyWeeklyMonthly = getTemplateFieldValue(patientTemplate,
+            TemplateFieldType.MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY, false);
+        String frequencyWeeklyMonthly = getTemplateFieldValue(patientTemplate,
+            TemplateFieldType.MESSAGING_FREQUENCY_WEEKLY_OR_MONTHLY, false);
+
+        String frequency = StringUtils.defaultIfEmpty(frequencyDailyWeeklyMonthly,
+            frequencyWeeklyMonthly);
+
+        if (StringUtils.isNotBlank(frequency)) {
             scheduleElements.add(String.format("%s", StringUtils.capitalize(frequency)));
         }
     }

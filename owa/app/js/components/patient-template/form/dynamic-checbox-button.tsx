@@ -40,7 +40,11 @@ export default class DynamicCheckboxButton extends React.Component<IProps> {
     } else {
       options.push(option);
     }
-    this.props.onSelectChange(_.join(options, ','));
+
+    const selectedOptionsInDefaultOrder = this.props
+      .options
+      .filter(o => _.find(options, selected => selected === o));
+    this.props.onSelectChange(_.join(selectedOptionsInDefaultOrder, ','));
   };
 
   render = () => {

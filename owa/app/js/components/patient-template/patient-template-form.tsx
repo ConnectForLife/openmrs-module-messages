@@ -24,12 +24,16 @@ import DynamicRadioButton from './form/dynamic-radio-button';
 import DynamicMultiselect from './form/dynamic-multiselect';
 import DynamicCheckboxButton from './form/dynamic-checbox-button';
 import InputField from './form/input-field';
-import { CATEGORIES_MAP } from './form/dynamic-multiselect.constants';
 import RadioWrappedContainer, { InitInput } from './form/radio-wrapper';
 import {
   PATIENT_TEMPLATE_START_DATE,
   PATIENT_TEMPLATE_END_DATE,
-  PATIENT_ROLE
+  PATIENT_ROLE,
+  SERVICE_TYPE_VALUES,
+  DAY_OF_WEEK_VALUES,
+  MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY_VALUES,
+  MESSAGING_FREQUENCY_WEEKLY_OR_MONTHLY_VALUES,
+  CATEGORIES_MAP
 } from '../../shared/utils/messages';
 import { factory } from './form/type-factory';
 import { InputTypeEnum } from './form/radio-wrapper/parsable-input';
@@ -82,14 +86,15 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
     const isMandatory: boolean = tfv.isMandatory(this.props.template);
     switch (fieldType) {
       case TemplateFieldType.SERVICE_TYPE:
-        return this.renderDynamicRadioButton(tfv, ['Call', 'SMS', 'Deactivate service'],
-          fieldName, isMandatory);
+        return this.renderDynamicRadioButton(tfv, SERVICE_TYPE_VALUES, fieldName, isMandatory);
       case TemplateFieldType.DAY_OF_WEEK:
-        return this.renderDynamicCheckboxButton(tfv,
-          ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+        return this.renderDynamicDayOfWeekButton(tfv, DAY_OF_WEEK_VALUES, fieldName, isMandatory);
+      case TemplateFieldType.MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY:
+        return this.renderDynamicRadioButton(tfv, MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY_VALUES,
           fieldName, isMandatory);
-      case TemplateFieldType.MESSAGING_FREQUENCY:
-        return this.renderDynamicRadioButton(tfv, ['Daily', 'Weekly', 'Monthly'], fieldName, isMandatory);
+      case TemplateFieldType.MESSAGING_FREQUENCY_WEEKLY_OR_MONTHLY:
+        return this.renderDynamicRadioButton(tfv, MESSAGING_FREQUENCY_WEEKLY_OR_MONTHLY_VALUES,
+          fieldName, isMandatory);
       case TemplateFieldType.CATEGORY_OF_MESSAGE:
         return this.renderDynamicMultiselect(tfv, Object.keys(CATEGORIES_MAP), fieldName, isMandatory);
       case TemplateFieldType.START_OF_MESSAGES:
@@ -132,6 +137,21 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
         onSelectChange={(value: string) => this.onTemplateFieldValueChange(tfv.localId, value)}
       />
     )
+
+  renderDynamicDayOfWeekButton = (tfv: TemplateFieldValueUI,
+    options: ReadonlyArray<string>,
+    fieldName: string,
+    isMandatory: boolean) => {
+    if (this.isDayOfWeekMultiple()) {
+      return this.renderDynamicCheckboxButton(tfv, options, fieldName, isMandatory);
+    } else {
+      const isMultipleValueProvided = tfv.value.indexOf(',') !== -1;
+      if (isMultipleValueProvided) {
+        tfv.value = '';
+      }
+      return this.renderDynamicRadioButton(tfv, options, fieldName, isMandatory);
+    }
+  }
 
   renderDynamicRadioButton = (tfv: TemplateFieldValueUI,
     options: ReadonlyArray<string>,
@@ -196,6 +216,30 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
       />
     </FormGroup>
   );
+
+  private isDayOfWeekMultiple = () => {
+    if (!this.props.patientTemplate) {
+      return true;
+    }
+
+    const weeklyMonthlyFrequency = this.props
+      .patientTemplate
+      .templateFieldValues
+      .find(f => f.getFieldType(this.props.template) === TemplateFieldType.MESSAGING_FREQUENCY_WEEKLY_OR_MONTHLY);
+    if (!!weeklyMonthlyFrequency) {
+      return false;
+    }
+
+    const dailyWeeklyMonthlyFrequency = this.props
+      .patientTemplate.templateFieldValues
+      .find(f => f.getFieldType(this.props.template) === TemplateFieldType.MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY);
+    if (!!dailyWeeklyMonthlyFrequency) {
+      const daily = MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY_VALUES[0];
+      return dailyWeeklyMonthlyFrequency.value === daily;
+    }
+
+    return true;
+  }
 
   render = () => {
     const patientTemplate = this.getPatientTemplate();
