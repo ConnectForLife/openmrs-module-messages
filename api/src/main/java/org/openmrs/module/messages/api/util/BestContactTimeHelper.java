@@ -8,12 +8,26 @@ import org.openmrs.PersonAttribute;
 import org.openmrs.Relationship;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.api.constants.ConfigConstants;
+import org.openmrs.module.messages.api.dto.DefaultContactTimeDTO;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public final class BestContactTimeHelper {
 
     private static final Log LOG = LogFactory.getLog(BestContactTimeHelper.class);
+
+    public static List<DefaultContactTimeDTO> getDefaultContactTimes() {
+        List<DefaultContactTimeDTO> result = new ArrayList<>();
+        Map<String, String> config = getBestContactTimeConfig();
+
+        for (String actor : config.keySet()) {
+            result.add(new DefaultContactTimeDTO(actor, config.get(actor)));
+        }
+
+        return result;
+    }
 
     public static String getBestContactTime(Person person, Relationship relationship) {
         PersonAttribute contactTime = PersonAttributeUtil.getBestContactTimeAttribute(person);
@@ -46,5 +60,6 @@ public final class BestContactTimeHelper {
         return Context.getAdministrationService().getGlobalProperty(ConfigConstants.BEST_CONTACT_TIME_KEY);
     }
 
-    private BestContactTimeHelper() { }
+    private BestContactTimeHelper() {
+    }
 }

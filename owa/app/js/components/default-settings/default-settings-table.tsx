@@ -43,7 +43,7 @@ class DefaultSettingsTable extends React.Component<IProps> {
 
   render = () => (
     <div>
-      <h3>{Msg.DEFAULT_SETTINGS_TABLE_TITLE}</h3>
+      <h4>{Msg.DEFAULT_SETTINGS_TABLE_TITLE}</h4>
       <FragmentTable 
         columns={this.getColumns()}
         fragments={this.getTemplateFragmentRows()}

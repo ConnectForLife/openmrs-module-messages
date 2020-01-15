@@ -4,10 +4,8 @@ import { REQUEST, SUCCESS, FAILURE } from './action-type.util'
 import 'react-toastify/dist/ReactToastify.css';
 import { handleRequest } from '@bit/soldevelo-omrs.cfl-components.request-toast-handler';
 import * as Msg from '../shared/utils/messages';
-import { 
-  IBestContactTime, 
-  mapUtcStringTimetoLocalTime, 
-  mapLocalTimetoUtcStringTime } from '../shared/model/best-contact-time.model'
+import { IBestContactTime } from '../shared/model/best-contact-time.model';
+import { mapFromRequest, mapToRequest } from '../shared/model/contact-time.model';
 import axiosInstance from '../config/axios';
 
 export const ACTION_TYPES = {
@@ -39,7 +37,7 @@ export default (state = initialState, action) => {
     case SUCCESS(ACTION_TYPES.GET_BEST_CONTACT_TIME):
       return {
         ...state,
-        bestContactTimes: _.map(action.payload.data, mapUtcStringTimetoLocalTime),
+        bestContactTimes: _.map(action.payload.data, mapFromRequest),
         bestContactTimesLoading: false
       };
 
@@ -86,7 +84,7 @@ export const getBestContactTime = (personIds: Array<number>) => async (dispatch)
 export const postBestContactTime = (bestContactTimes: Array<IBestContactTime>) => async (dispatch) => {
   const body = {
     type: ACTION_TYPES.POST_BEST_CONTACT_TIME,
-    payload: axiosInstance.post(contactTimeUrl, _.map(bestContactTimes, mapLocalTimetoUtcStringTime))
+    payload: axiosInstance.post(contactTimeUrl, _.map(bestContactTimes, mapToRequest))
   }
   await handleRequest(dispatch, body, Msg.GENERIC_SUCCESS, Msg.GENERIC_FAILURE);
 };

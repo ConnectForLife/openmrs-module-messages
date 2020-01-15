@@ -10,7 +10,7 @@ import { TimePicker } from 'antd';
 import 'antd/dist/antd.css';
 import { IBestContactTime } from '../../shared/model/best-contact-time.model';
 import _ from 'lodash';
-import moment, { Moment } from 'moment';
+import { Moment } from 'moment';
 import { IActor } from '../../shared/model/actor.model';
 
 interface IBestContactTimeProps extends DispatchProps, StateProps {

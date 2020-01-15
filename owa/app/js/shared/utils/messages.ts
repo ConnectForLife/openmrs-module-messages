@@ -39,6 +39,7 @@ export const BEST_CONTACT_TIME_LABEL = 'Best Contact Time';
 export const CALENDAR_OVERVIEW_LABEL = 'Calendar Overview';
 
 // Admin settings 
+export const DEFAULT_SETTINGS = 'Default settings';
 export const DEFAULT_SETTINGS_POSTFIX = ' - default settings';
 export const DEFAULT_SETTINGS_TABLE_TITLE = 'Default message details';
 

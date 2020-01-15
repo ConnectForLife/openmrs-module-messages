@@ -5,11 +5,15 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.openmrs.Patient;
 import org.openmrs.api.PatientService;
-import org.openmrs.module.messages.api.service.ActorService;
 import org.openmrs.module.messages.api.dto.ActorDTO;
+import org.openmrs.module.messages.api.dto.ActorTypeDTO;
 import org.openmrs.module.messages.api.dto.ContactTimeDTO;
+import org.openmrs.module.messages.api.dto.DefaultContactTimeDTO;
 import org.openmrs.module.messages.api.exception.ValidationException;
 import org.openmrs.module.messages.api.mappers.ActorMapper;
+import org.openmrs.module.messages.api.mappers.ActorTypeMapper;
+import org.openmrs.module.messages.api.service.ActorService;
+import org.openmrs.module.messages.api.util.BestContactTimeHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -35,6 +39,10 @@ public class ActorController extends BaseRestController {
     @Autowired
     @Qualifier("messages.actorMapper")
     private ActorMapper actorMapper;
+
+    @Autowired
+    @Qualifier("messages.actorTypeMapper")
+    private ActorTypeMapper actorTypeMapper;
 
     @Autowired
     @Qualifier("patientService")
@@ -65,6 +73,20 @@ public class ActorController extends BaseRestController {
     @ResponseBody
     public List<ContactTimeDTO> getBestContactTimes(@RequestParam(value = "personIds[]") List<Integer> personIds) {
         return actorService.getContactTimes(personIds);
+    }
+
+    @RequestMapping(value = "/actor-types", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public List<ActorTypeDTO> getAllActorTypes() {
+        return actorTypeMapper.toDtos(actorService.getAllActorTypes());
+    }
+
+    @RequestMapping(value = "/contact-times/default", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public List<DefaultContactTimeDTO> getBestContactTimes() {
+        return BestContactTimeHelper.getDefaultContactTimes();
     }
 
     @RequestMapping(value = "/contact-time", method = RequestMethod.POST)
