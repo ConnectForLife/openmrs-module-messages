@@ -91,7 +91,7 @@ const baseUrl = "ws/messages";
 const templatesUrl = `${baseUrl}/templates`;
 const actorUrl = `${baseUrl}/actor`;
 const defaultContactTimesUrl = `${actorUrl}/contact-times/default`;
-const actorTypesUrl = `${actorUrl}/actor-types`;
+const actorTypesUrl = `${actorUrl}/types`;
 
 export const getTemplates = () => ({
   type: ACTION_TYPES.GET_TEMPLATES,

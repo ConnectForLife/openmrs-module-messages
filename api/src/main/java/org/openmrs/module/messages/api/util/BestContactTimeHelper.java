@@ -48,11 +48,11 @@ public final class BestContactTimeHelper {
 
     private static Map<String, String> getBestContactTimeConfig() {
         try {
-            return MapperUtil.getAsStringToStringMap(getBestContactTimeProperty());
+            return JsonUtil.toMap(getBestContactTimeProperty(), JsonUtil.STRING_TO_STRING_MAP);
         } catch (JsonSyntaxException exception) {
             LOG.warn("Configuration of " + ConfigConstants.BEST_CONTACT_TIME_KEY +
                     " is incorrect. Using default value: " + ConfigConstants.BEST_CONTACT_TIME_DEFAULT_VALUE);
-            return MapperUtil.getAsStringToStringMap(ConfigConstants.BEST_CONTACT_TIME_DEFAULT_VALUE);
+            return JsonUtil.toMap(ConfigConstants.BEST_CONTACT_TIME_DEFAULT_VALUE, JsonUtil.STRING_TO_STRING_MAP);
         }
     }
 

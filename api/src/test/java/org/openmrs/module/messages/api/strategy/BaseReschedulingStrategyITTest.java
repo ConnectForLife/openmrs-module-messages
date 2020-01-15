@@ -9,6 +9,26 @@
 
 package org.openmrs.module.messages.api.strategy;
 
+import com.google.gson.Gson;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.openmrs.module.messages.ContextSensitiveTest;
+import org.openmrs.module.messages.api.model.DeliveryAttempt;
+import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
+import org.openmrs.module.messages.api.model.ScheduledService;
+import org.openmrs.module.messages.api.service.MessagingService;
+import org.openmrs.module.messages.api.util.JsonUtil;
+import org.openmrs.module.messages.builder.DeliveryAttemptBuilder;
+import org.openmrs.scheduler.SchedulerException;
+import org.openmrs.scheduler.SchedulerService;
+import org.openmrs.scheduler.TaskDefinition;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+
+import java.util.List;
+
 import static org.hamcrest.Matchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -23,25 +43,6 @@ import static org.openmrs.module.messages.api.service.DatasetConstants.FAILED_SC
 import static org.openmrs.module.messages.api.service.DatasetConstants.PENDING_SCHEDULED_SERVICE;
 import static org.openmrs.module.messages.api.service.DatasetConstants.PENDING_SCHEDULED_SERVICE_IN_ANOTHER_CHANNEL;
 import static org.openmrs.module.messages.api.service.DatasetConstants.XML_DATA_SET_PATH;
-
-import com.google.gson.Gson;
-import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.openmrs.module.messages.ContextSensitiveTest;
-import org.openmrs.module.messages.api.model.DeliveryAttempt;
-import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
-import org.openmrs.module.messages.api.model.ScheduledService;
-import org.openmrs.module.messages.api.service.MessagingService;
-import org.openmrs.module.messages.api.util.MapperUtil;
-import org.openmrs.module.messages.builder.DeliveryAttemptBuilder;
-import org.openmrs.scheduler.SchedulerException;
-import org.openmrs.scheduler.SchedulerService;
-import org.openmrs.scheduler.TaskDefinition;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 @SuppressWarnings("VisibilityModifier")
 public abstract class BaseReschedulingStrategyITTest extends ContextSensitiveTest {
@@ -60,7 +61,7 @@ public abstract class BaseReschedulingStrategyITTest extends ContextSensitiveTes
     @Captor
     private ArgumentCaptor<TaskDefinition> taskCaptor;
 
-    private final Gson gson = MapperUtil.getGson();
+    private final Gson gson = JsonUtil.getGson();
 
     protected ScheduledService deliveredScheduledService;
     protected ScheduledService pendingScheduledService;

@@ -1,6 +1,7 @@
 package org.openmrs.module.messages.api.util;
 
 import org.openmrs.module.messages.api.mappers.ActorScheduleMapper;
+import org.openmrs.module.messages.api.mappers.ActorTypeMapper;
 import org.openmrs.module.messages.api.mappers.MessageDetailsMapper;
 import org.openmrs.module.messages.api.mappers.MessageMapper;
 import org.openmrs.module.messages.api.mappers.UserMapper;
@@ -18,6 +19,10 @@ public final class StaticMappersProvider {
         result.setActorScheduleMapper(getActorScheduleMapper());
         result.setUserMapper(getUserMapper());
         return result;
+    }
+
+    public static ActorTypeMapper getActorTypeMapper() {
+        return new ActorTypeMapper();
     }
 
     public static ActorScheduleMapper getActorScheduleMapper() {

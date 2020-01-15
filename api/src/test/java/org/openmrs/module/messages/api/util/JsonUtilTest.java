@@ -7,10 +7,13 @@ import org.openmrs.module.messages.api.dto.PersonStatusConfigDTO;
 import org.openmrs.module.messages.api.model.PersonStatus;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertTrue;
 
 public class JsonUtilTest {
 
@@ -37,7 +40,15 @@ public class JsonUtilTest {
             + "  }\n"
             + "]";
 
-    private static final List<PersonStatusConfigDTO> EXPECTED_LIST = new ArrayList<>();
+    private static final String STRING_MAP = ""
+            + "  {\n"
+            + "    \"property1\": \"String\",\n"
+            + "    \"prop2\": \"20-02-2020\",\n"
+            + "    \"\": \"#f5f5f5\"\n"
+            + "  }";
+
+    private static final List<PersonStatusConfigDTO> EXPECTED_LIST = new ArrayList<PersonStatusConfigDTO>();
+    private static final Map<String, String> EXPECTED_MAP = new HashMap<String, String>();
 
     private static final String TEXT_COLOR = "#f5f5f5";
 
@@ -52,13 +63,44 @@ public class JsonUtilTest {
     @Before
     public void setUp() {
         buildExpectedList();
+        buildExpectedMap();
     }
 
     @Test
-    public void listFromJson() {
-        List<PersonStatusConfigDTO> actual = JsonUtil.listFromJson(STRING_LIST,
+    public void shouldMapJsonToList() {
+        List<PersonStatusConfigDTO> actual = JsonUtil.toList(STRING_LIST,
                 new TypeToken<ArrayList<PersonStatusConfigDTO>>() { });
         assertThat(actual, is(EXPECTED_LIST));
+    }
+
+    @Test
+    public void shouldReturnEmptyMapForBlankString() {
+        Map<String, String> actual = JsonUtil.toMap(" \t \n   ", JsonUtil.STRING_TO_STRING_MAP);
+        assertTrue(actual.isEmpty());
+    }
+
+    @Test
+    public void shouldReturnEmptyMapForEmptyString() {
+        Map<String, String> actual = JsonUtil.toMap("", JsonUtil.STRING_TO_STRING_MAP);
+        assertTrue(actual.isEmpty());
+    }
+
+    @Test
+    public void shouldReturnEmptyMapForNull() {
+        Map<String, String> actual = JsonUtil.toMap(null, JsonUtil.STRING_TO_STRING_MAP);
+        assertTrue(actual.isEmpty());
+    }
+
+    @Test
+    public void shouldMapJsonToMap() {
+        Map<String, String> actual = JsonUtil.toMap(STRING_MAP, JsonUtil.STRING_TO_STRING_MAP);
+        assertThat(actual, is(EXPECTED_MAP));
+    }
+
+    private void buildExpectedMap() {
+        EXPECTED_MAP.put("property1", "String");
+        EXPECTED_MAP.put("prop2", "20-02-2020");
+        EXPECTED_MAP.put("", "#f5f5f5");
     }
 
     private void buildExpectedList() {

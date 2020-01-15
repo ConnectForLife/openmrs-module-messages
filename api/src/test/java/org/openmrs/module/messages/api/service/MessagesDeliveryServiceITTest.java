@@ -23,7 +23,7 @@ import org.openmrs.module.messages.api.execution.ServiceResultList;
 import org.openmrs.module.messages.api.mappers.ScheduledGroupMapper;
 import org.openmrs.module.messages.api.model.ScheduledServiceGroup;
 import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
-import org.openmrs.module.messages.api.util.MapperUtil;
+import org.openmrs.module.messages.api.util.JsonUtil;
 import org.openmrs.module.messages.builder.DateBuilder;
 import org.openmrs.module.messages.builder.ServiceResultBuilder;
 import org.openmrs.module.messages.builder.ServiceResultListBuilder;
@@ -76,7 +76,7 @@ public class MessagesDeliveryServiceITTest extends ContextSensitiveTest {
     @Captor
     private ArgumentCaptor<TaskDefinition> taskCaptor;
 
-    private Gson gson = MapperUtil.getGson();
+    private Gson gson = JsonUtil.getGson();
 
     @Before
     public void setUp() throws Exception {

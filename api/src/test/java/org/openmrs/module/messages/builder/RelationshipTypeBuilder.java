@@ -1,13 +1,14 @@
 package org.openmrs.module.messages.builder;
 
+import org.openmrs.RelationshipType;
+
 import static org.openmrs.module.messages.Constant.CAREGIVER_RELATIONSHIP;
 import static org.openmrs.module.messages.Constant.CARETAKER_RELATIONSHIP;
-
-import org.openmrs.RelationshipType;
 
 public class RelationshipTypeBuilder extends AbstractBuilder<RelationshipType> {
 
     private Integer id;
+    private String uuid;
     private Integer relationshipTypeId;
     private String aIsToB;
     private String bIsToA;
@@ -27,6 +28,7 @@ public class RelationshipTypeBuilder extends AbstractBuilder<RelationshipType> {
     public RelationshipType build() {
         RelationshipType relationshipType = new RelationshipType(relationshipTypeId);
         relationshipType.setId(id);
+        relationshipType.setUuid(uuid);
         relationshipType.setaIsToB(aIsToB);
         relationshipType.setbIsToA(bIsToA);
         relationshipType.setWeight(weight);
@@ -39,5 +41,10 @@ public class RelationshipTypeBuilder extends AbstractBuilder<RelationshipType> {
         RelationshipType type = build();
         type.setId(null);
         return type;
+    }
+
+    public RelationshipTypeBuilder withUuid(String uuid) {
+        this.uuid = uuid;
+        return this;
     }
 }

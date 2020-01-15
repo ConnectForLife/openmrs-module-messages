@@ -10,22 +10,23 @@
 package org.openmrs.module.messages.api.scheduler.job;
 
 import com.google.gson.Gson;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.api.constants.MessagesConstants;
 import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
 import org.openmrs.module.messages.api.model.ChannelType;
-import org.openmrs.module.messages.api.model.ScheduledService;
 import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
+import org.openmrs.module.messages.api.model.ScheduledService;
 import org.openmrs.module.messages.api.service.MessagingService;
 import org.openmrs.module.messages.api.service.ServiceResultsHandlerService;
-import org.openmrs.module.messages.api.util.MapperUtil;
+import org.openmrs.module.messages.api.util.JsonUtil;
 import org.openmrs.module.messages.domain.criteria.ScheduledServiceCriteria;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ServiceGroupDeliveryJobDefinition extends JobDefinition {
 
@@ -34,7 +35,7 @@ public class ServiceGroupDeliveryJobDefinition extends JobDefinition {
     private static final Log LOGGER = LogFactory.getLog(ServiceGroupDeliveryJobDefinition.class);
     private static final String TASK_NAME_PREFIX = "Group";
 
-    private final Gson gson = MapperUtil.getGson();
+    private final Gson gson = JsonUtil.getGson();
 
     private ScheduledExecutionContext executionContext;
 

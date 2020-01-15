@@ -75,7 +75,7 @@ public class ActorController extends BaseRestController {
         return actorService.getContactTimes(personIds);
     }
 
-    @RequestMapping(value = "/actor-types", method = RequestMethod.GET)
+    @RequestMapping(value = "/types", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public List<ActorTypeDTO> getAllActorTypes() {

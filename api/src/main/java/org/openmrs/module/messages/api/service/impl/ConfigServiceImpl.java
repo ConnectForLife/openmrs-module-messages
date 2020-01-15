@@ -113,7 +113,7 @@ public class ConfigServiceImpl implements ConfigService {
     @Override
     public List<PersonStatusConfigDTO> getPersonStatusConfigurations() {
         String statusConfigs = getGp(ConfigConstants.PERSON_STATUS_CONFIGURATION_KEY);
-        return JsonUtil.listFromJson(statusConfigs, new TypeToken<ArrayList<PersonStatusConfigDTO>>() { });
+        return JsonUtil.toList(statusConfigs, new TypeToken<ArrayList<PersonStatusConfigDTO>>() { });
     }
 
     /**
