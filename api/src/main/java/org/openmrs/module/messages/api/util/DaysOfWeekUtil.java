@@ -3,6 +3,7 @@ package org.openmrs.module.messages.api.util;
 import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
@@ -18,10 +19,7 @@ public final class DaysOfWeekUtil {
     public static final List<DayOfWeek> EVERY_WEEKDAY_OF_WEEK = loadWeekDaysOfWeek();
 
     public static String generateDayOfWeekText(String[] days) {
-        List<DayOfWeek> givenDays = new ArrayList<DayOfWeek>();
-        for (String day : days) {
-            givenDays.add(DayOfWeek.valueOf(day.toUpperCase()));
-        }
+        List<DayOfWeek> givenDays = loadDaysOfWeek(days);
         if (isEveryDay(givenDays)) {
             return EVERY_DAY_TEXT;
         }
@@ -29,7 +27,20 @@ public final class DaysOfWeekUtil {
         if (isEveryWeekday(givenDays)) {
             return EVERY_WEEKDAY_TEXT;
         }
-        return StringUtils.join(days, DAY_NAMES_SEPARATOR);
+
+        Collections.sort(givenDays);
+
+        return StringUtils.join(mapToStringArray(givenDays), DAY_NAMES_SEPARATOR);
+    }
+
+    private static List<DayOfWeek> loadDaysOfWeek(String[] days) {
+        List<DayOfWeek> givenDays = new ArrayList<DayOfWeek>();
+        for (String day : days) {
+            if (StringUtils.isNotBlank(day) && isParsable(day)) {
+                givenDays.add(DayOfWeek.valueOf(day.toUpperCase()));
+            }
+        }
+        return givenDays;
     }
 
     private static boolean isEveryDay(List<DayOfWeek> givenDays) {
@@ -65,6 +76,23 @@ public final class DaysOfWeekUtil {
             new ArrayList<DayOfWeek>(loadEveryDaysOfWeek());
         weekdays.removeAll(WEEKEND_DAYS);
         return weekdays;
+    }
+
+    private static String[] mapToStringArray(List<DayOfWeek> givenDays) {
+        String[] result = new String[givenDays.size()];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = StringUtils.capitalize(givenDays.get(i).name().toLowerCase());
+        }
+        return result;
+    }
+
+    private static boolean isParsable(String day) {
+        try {
+            DayOfWeek.valueOf(day.toUpperCase());
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
     }
 
     private DaysOfWeekUtil() {
