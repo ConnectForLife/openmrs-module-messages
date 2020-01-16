@@ -218,20 +218,16 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
   );
 
   private isDayOfWeekMultiple = () => {
-    if (!this.props.patientTemplate) {
-      return true;
-    }
-
-    const weeklyMonthlyFrequency = this.props
-      .patientTemplate
+    const patientTemplate = this.getPatientTemplate();
+    const weeklyMonthlyFrequency = patientTemplate
       .templateFieldValues
       .find(f => f.getFieldType(this.props.template) === TemplateFieldType.MESSAGING_FREQUENCY_WEEKLY_OR_MONTHLY);
     if (!!weeklyMonthlyFrequency) {
       return false;
     }
 
-    const dailyWeeklyMonthlyFrequency = this.props
-      .patientTemplate.templateFieldValues
+    const dailyWeeklyMonthlyFrequency = patientTemplate
+      .templateFieldValues
       .find(f => f.getFieldType(this.props.template) === TemplateFieldType.MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY);
     if (!!dailyWeeklyMonthlyFrequency) {
       const daily = MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY_VALUES[0];
