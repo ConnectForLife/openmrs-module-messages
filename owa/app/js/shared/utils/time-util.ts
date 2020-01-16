@@ -9,8 +9,8 @@
 
 import moment, { Moment } from "moment";
 
-export const getUtcTimeFromString = (time: string): Moment | undefined => {
-  return !!time ? moment.utc(time, 'HH:mm') : undefined;
+export const getUtcTimeToString = (time?: Moment): string | undefined => {
+  return !!time ? moment.utc(time, 'HH:mm').format('HH:mm') : undefined;
 }
 
 export const getLocalTimeFromString = (time: string): Moment | undefined => {
