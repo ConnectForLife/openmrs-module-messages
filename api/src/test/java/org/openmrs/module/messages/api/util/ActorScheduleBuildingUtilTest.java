@@ -23,6 +23,7 @@ public class ActorScheduleBuildingUtilTest {
     private static final String TEST_DATE_3 = EndDateType.AFTER_TIMES.getName() + "|8";
     private static final String TEST_CATEGORIES = "category 1,category 2,category 3";
     private static final String TEST_EVERY_WEEK_DAYS = "Monday,Tuesday,Wednesday,Thursday,Friday";
+    private static final String TEST_ONE_WEEK_DAY = "Monday";
 
     private static final String TEST_OUTPUT_DATE_1 = "07 Dec 2019";
     private static final String TEST_OUTPUT_DATE_2 = "11 Dec 2019";
@@ -187,6 +188,29 @@ public class ActorScheduleBuildingUtilTest {
 
         Assert.assertEquals(String.format("Every weekday, Starts: %s, Ends: %s",
             TEST_OUTPUT_DATE_1, TEST_OUTPUT_DATE_2),
+            schedule.getSchedule());
+    }
+
+    @Test
+    public void shouldBuildFrequencyProperlyWithDayOfWeekSingleDefined() {
+
+        TemplateFieldValue tfv1 = buildTemplateFieldWithValue(TemplateFieldType.START_OF_MESSAGES,
+            TEST_DATE_1);
+        TemplateFieldValue tfv2 = buildTemplateFieldWithValue(TemplateFieldType.END_OF_MESSAGES,
+            TEST_DATE_2);
+        TemplateFieldValue tfv3 = buildTemplateFieldWithValue(TemplateFieldType.SERVICE_TYPE,
+            SMS_TYPE);
+        TemplateFieldValue tfv4 = buildTemplateFieldWithValue(TemplateFieldType.DAY_OF_WEEK_SINGLE,
+            TEST_ONE_WEEK_DAY);
+
+        PatientTemplate patientTemplate = new PatientTemplateBuilder()
+            .withTemplateFieldValues(Arrays.asList(tfv1, tfv2, tfv3, tfv4))
+            .build();
+
+        ActorScheduleDTO schedule = ActorScheduleBuildingUtil.build(patientTemplate);
+
+        Assert.assertEquals(String.format("%s, Starts: %s, Ends: %s",
+            TEST_ONE_WEEK_DAY, TEST_OUTPUT_DATE_1, TEST_OUTPUT_DATE_2),
             schedule.getSchedule());
     }
 

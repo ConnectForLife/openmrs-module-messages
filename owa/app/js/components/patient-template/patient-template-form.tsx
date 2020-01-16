@@ -89,6 +89,8 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
         return this.renderDynamicRadioButton(tfv, SERVICE_TYPE_VALUES, fieldName, isMandatory);
       case TemplateFieldType.DAY_OF_WEEK:
         return this.renderDynamicDayOfWeekButton(tfv, DAY_OF_WEEK_VALUES, fieldName, isMandatory);
+      case TemplateFieldType.DAY_OF_WEEK_SINGLE:
+        return this.renderDynamicRadioButton(tfv, DAY_OF_WEEK_VALUES, fieldName, isMandatory);
       case TemplateFieldType.MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY:
         return this.renderDynamicRadioButton(tfv, MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY_VALUES,
           fieldName, isMandatory);

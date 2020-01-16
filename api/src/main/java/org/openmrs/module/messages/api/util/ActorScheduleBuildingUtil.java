@@ -95,7 +95,12 @@ public final class ActorScheduleBuildingUtil {
                                             PatientTemplate patientTemplate) {
         String dayOfWeek = getTemplateFieldValue(patientTemplate,
             TemplateFieldType.DAY_OF_WEEK, false);
-        if (dayOfWeek != null && dayOfWeek.split(FIELD_CONTENT_SEPARATOR).length > 0) {
+        String dayOfWeekSingle = getTemplateFieldValue(patientTemplate,
+        TemplateFieldType.DAY_OF_WEEK_SINGLE, false);
+
+        dayOfWeek = StringUtils.defaultIfEmpty(dayOfWeekSingle, dayOfWeek);
+
+        if (StringUtils.isNotBlank(dayOfWeek) && dayOfWeek.split(FIELD_CONTENT_SEPARATOR).length > 0) {
             String days = DaysOfWeekUtil.generateDayOfWeekText(dayOfWeek.split(FIELD_CONTENT_SEPARATOR));
             scheduleElements.add(String.format("%s", days));
         }
