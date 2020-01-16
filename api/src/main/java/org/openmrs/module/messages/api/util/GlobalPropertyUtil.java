@@ -43,7 +43,7 @@ public final class GlobalPropertyUtil {
                         name, value
                 ));
             }
-            result.put(keyValue[0], keyValue[1]);
+            result.put(keyValue[0].toUpperCase(), keyValue[1]);
         }
         return result;
     }

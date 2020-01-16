@@ -46,7 +46,7 @@ public class ConfigServiceImpl implements ConfigService {
         String gpName = ConfigConstants.RESCHEDULING_STRATEGY_KEY;
         Map<String, String> strategyByChannel = GlobalPropertyUtil.parseMap(gpName, getGp(gpName));
 
-        String beanName = strategyByChannel.get(channelType);
+        String beanName = strategyByChannel.get(channelType.toUpperCase());
         if (StringUtils.isBlank(beanName)) {
             LOGGER.warn(String.format("Rescheduling strategy for channelType=%s is not defined in GP. " +
                     "The default strategy will be used: %s", channelType, gpName));

@@ -9,24 +9,22 @@
 
 package org.openmrs.module.messages.api.service;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.openmrs.module.messages.ContextSensitiveTest;
-import org.openmrs.module.messages.api.dto.PersonStatusConfigDTO;
-import org.openmrs.module.messages.api.model.ChannelType;
-import org.openmrs.module.messages.api.model.PersonStatus;
-import org.openmrs.module.messages.api.model.RelationshipTypeDirection;
-import org.openmrs.module.messages.api.strategy.ReschedulingStrategy;
-import org.openmrs.module.messages.api.constants.ConfigConstants;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
+
+import java.util.ArrayList;
+import java.util.List;
+import org.junit.Before;
+import org.junit.Test;
+import org.openmrs.module.messages.ContextSensitiveTest;
+import org.openmrs.module.messages.api.constants.ConfigConstants;
+import org.openmrs.module.messages.api.dto.PersonStatusConfigDTO;
+import org.openmrs.module.messages.api.model.PersonStatus;
+import org.openmrs.module.messages.api.model.RelationshipTypeDirection;
+import org.openmrs.module.messages.api.strategy.ReschedulingStrategy;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 public class ConfigServiceImplTest extends ContextSensitiveTest {
 
@@ -40,8 +38,8 @@ public class ConfigServiceImplTest extends ContextSensitiveTest {
     private static final String SMS_CHANNEL_RESCHEDULING_STRATEGY = "messages.failedMessageReschedulingStrategy";
     private static final String CALL_CHANNEL_RESCHEDULING_STRATEGY =
             "messages.failedAndItsPendingMessagesReschedulingStrategy";
-    private static final String SMS_CHANNEL_NAME = ChannelType.SMS.getName();
-    private static final String CALL_CHANNEL_NAME = ChannelType.CALL.getName();
+    private static final String SMS_CHANNEL_NAME = "SMS";
+    private static final String CALL_CHANNEL_NAME = "Call";
     private static final String CHANNEL_NAME_WITHOUT_RESCHEDULING_STRATEGY = "channelNameWithoutReschedulingStrategy";
 
     private static final int EXPECTED_MAX_NUMBER_OF_RESCHEDULING = 3;

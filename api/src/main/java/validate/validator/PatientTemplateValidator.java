@@ -1,5 +1,12 @@
 package validate.validator;
 
+import static org.openmrs.module.messages.ValidationMessagesConstants.PATIENT_TEMPLATE_REQUIRED_FIELD_IS_EMPTY;
+import static org.openmrs.module.messages.api.model.TemplateFieldType.SERVICE_TYPE;
+
+import java.util.ArrayList;
+import java.util.List;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
@@ -13,14 +20,6 @@ import org.openmrs.module.messages.api.service.TemplateFieldService;
 import org.openmrs.module.messages.api.service.TemplateService;
 import org.springframework.util.StringUtils;
 import validate.annotation.ValidPatientTemplate;
-
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.openmrs.module.messages.ValidationMessagesConstants.PATIENT_TEMPLATE_REQUIRED_FIELD_IS_EMPTY;
-import static org.openmrs.module.messages.api.model.TemplateFieldType.SERVICE_TYPE;
 
 public class PatientTemplateValidator implements ConstraintValidator<ValidPatientTemplate, PatientTemplate> {
 

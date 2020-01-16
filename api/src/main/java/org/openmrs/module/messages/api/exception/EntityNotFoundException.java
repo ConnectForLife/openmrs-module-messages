@@ -7,21 +7,21 @@
  * graphic logo is a trademark of OpenMRS Inc.
  */
 
-package org.openmrs.module.messages.api.model;
+package org.openmrs.module.messages.api.exception;
 
-public enum ErrorMessageEnum {
+public class EntityNotFoundException extends MessagesRuntimeException {
 
-    ERR_SYSTEM("system.error"),
-    ERR_BAD_PARAM("system.param"),
-    ERR_ENTITY_NOT_FOUND("system.entity_not_found");
+    private static final long serialVersionUID = -1434211964543042192L;
 
-    private String code;
-
-    ErrorMessageEnum(String code) {
-        this.code = code;
+    public EntityNotFoundException(String message) {
+        super(message);
     }
 
-    public String getCode() {
-        return code;
+    public EntityNotFoundException(String message, Throwable exception) {
+        super(message, exception);
+    }
+
+    public EntityNotFoundException(Throwable throwable) {
+        super(throwable);
     }
 }

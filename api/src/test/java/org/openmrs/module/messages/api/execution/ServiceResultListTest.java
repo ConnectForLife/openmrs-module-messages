@@ -1,17 +1,7 @@
 package org.openmrs.module.messages.api.execution;
 
-import org.openmrs.module.messages.api.model.ChannelType;
-import org.openmrs.module.messages.api.model.Range;
-import org.apache.commons.lang3.time.DateUtils;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.openmrs.Patient;
-import org.openmrs.Person;
-import org.openmrs.module.messages.api.model.PatientTemplate;
-import org.openmrs.module.messages.api.model.Template;
-import org.openmrs.module.messages.api.model.types.ServiceStatus;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,9 +9,18 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
+import org.apache.commons.lang3.time.DateUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.openmrs.Patient;
+import org.openmrs.Person;
+import org.openmrs.module.messages.api.model.ChannelType;
+import org.openmrs.module.messages.api.model.PatientTemplate;
+import org.openmrs.module.messages.api.model.Range;
+import org.openmrs.module.messages.api.model.Template;
+import org.openmrs.module.messages.api.model.types.ServiceStatus;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ServiceResultListTest {
@@ -40,8 +39,7 @@ public class ServiceResultListTest {
     );
 
     private static final List<String> MSG_IDS = Arrays.asList("ID_1", "ID 2", "abcdef");
-    private static final List<String> CHANNEL_NAMES = Arrays.asList("Call", "Sms",
-        "Deactivate service");
+    private static final List<String> CHANNEL_NAMES = Arrays.asList("Call", "Sms", "Deactivate service");
     private static final List<ServiceStatus> SERVICE_STATUSES = Arrays.asList(
             ServiceStatus.DELIVERED,
             ServiceStatus.PENDING,

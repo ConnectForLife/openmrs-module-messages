@@ -162,7 +162,7 @@ public class ServiceResult implements Serializable {
 
     private static ServiceStatus parseStatus(String statusString) {
         if (StringUtils.isNotBlank(statusString)) {
-            return ServiceStatus.valueOf((String) statusString);
+            return ServiceStatus.valueOf(statusString);
         } else {
             return ServiceStatus.FUTURE;
         }

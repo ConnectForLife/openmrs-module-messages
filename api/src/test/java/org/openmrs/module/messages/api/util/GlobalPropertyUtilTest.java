@@ -73,8 +73,8 @@ public class GlobalPropertyUtilTest extends BaseTest {
                 PROPERTY_NAME, "channelType1:beanName1,channelType2:beanName2");
 
         assertEquals(2, map.size());
-        assertThat(map, Matchers.hasEntry("channelType1", "beanName1"));
-        assertThat(map, Matchers.hasEntry("channelType2", "beanName2"));
+        assertThat(map, Matchers.hasEntry("channelType1".toUpperCase(), "beanName1"));
+        assertThat(map, Matchers.hasEntry("channelType2".toUpperCase(), "beanName2"));
     }
 
     @Test

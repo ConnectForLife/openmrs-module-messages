@@ -171,7 +171,7 @@
 
     <messages_template
             messages_template_id="51"
-            service_query="select CAST('2019-12-01' as date) as EXECUTION_DATE, '1' as MESSAGE_ID, 'CALL' as CHANNEL_ID, 'FUTURE' as STATUS_ID, '1' as visitTypeId, '1' as locationId
+            service_query="select CAST('2019-12-01' as date) as EXECUTION_DATE, '1' as MESSAGE_ID, 'Call' as CHANNEL_ID, 'FUTURE' as STATUS_ID, '1' as visitTypeId, '1' as locationId
                 UNION select CAST('2019-12-01' as date) as EXECUTION_DATE, '1' as MESSAGE_ID, 'SMS' as CHANNEL_ID, 'FUTURE' as STATUS_ID, '1' as visitTypeId, '1' as locationId;"
             service_query_type="SQL"
             name="Dummy Visit Reminder"

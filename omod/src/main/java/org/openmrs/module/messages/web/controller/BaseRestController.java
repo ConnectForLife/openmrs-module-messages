@@ -1,18 +1,28 @@
+/* * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+
 package org.openmrs.module.messages.web.controller;
+
+import static org.openmrs.module.messages.api.model.ErrorMessageEnum.ERR_BAD_PARAM;
+import static org.openmrs.module.messages.api.model.ErrorMessageEnum.ERR_ENTITY_NOT_FOUND;
+import static org.openmrs.module.messages.api.model.ErrorMessageEnum.ERR_SYSTEM;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.messages.api.dto.ErrorResponseDTO;
-import org.openmrs.module.messages.api.exception.MessagesObjectNotFound;
+import org.openmrs.module.messages.api.exception.EntityNotFoundException;
 import org.openmrs.module.messages.api.exception.ValidationException;
 import org.openmrs.module.messages.api.model.ErrorMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-
-import static org.openmrs.module.messages.api.model.ErrorMessageEnum.ERR_BAD_PARAM;
-import static org.openmrs.module.messages.api.model.ErrorMessageEnum.ERR_SYSTEM;
 
 /**
  * Base Rest Controller
@@ -47,6 +57,7 @@ public abstract class BaseRestController {
     @ResponseBody
     public ErrorResponseDTO handleException(Exception e) {
         logger.error(e.getMessage(), e);
+        // TODO: 500 error we should return only single error (without wrapping) - UI and backend refactor required
         return new ErrorResponseDTO(new ErrorMessage(ERR_SYSTEM.getCode(), e.getMessage()));
     }
 
@@ -67,15 +78,16 @@ public abstract class BaseRestController {
     /**
      * Exception handler for not found - Http status code of 404
      *
-     * @param ex the exception throw
+     * @param e the exception throw
      * @return a error response
      */
-    @ExceptionHandler(MessagesObjectNotFound.class)
+    @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
-    public ErrorResponseDTO handleMessagesObjectNotFound(MessagesObjectNotFound ex) {
-        logger.error(ex.getMessage(), ex);
-        return new ErrorResponseDTO(ex.getMessage());
+    public ErrorResponseDTO handleEntityNotFoundException(EntityNotFoundException e) {
+        logger.error(e.getMessage(), e);
+        // TODO: 404 error we should return only single error (without wrapping) - UI and backend refactor required
+        return new ErrorResponseDTO(new ErrorMessage(ERR_ENTITY_NOT_FOUND.getCode(), e.getMessage()));
     }
 
     protected Log getLogger() {

@@ -59,7 +59,7 @@ public class MessageDeliveriesJobDefinitionTest extends ContextSensitiveTest {
     private static final long DAILY = 3600L * 24;
     private static final String EMPTY_RESULT_SQL = "SELECT * WHERE 1=0";
     private static final String SERVICE_QUERY_WITH_REQUIRED_PARAMS = "select CAST('2019-12-01' as date) as EXECUTION_DATE"
-            + ", '1' as MESSAGE_ID, 'CALL' as CHANNEL_ID, 'FUTURE' as STATUS_ID";
+            + ", '1' as MESSAGE_ID, 'Call' as CHANNEL_ID, 'FUTURE' as STATUS_ID";
     private static final String SERVICE_QUERY_WITH_ADDITIONAL_PARAMS = SERVICE_QUERY_WITH_REQUIRED_PARAMS
             + ", 1 as intParam"
             + ", 1.23 as floatParam"
@@ -238,7 +238,7 @@ public class MessageDeliveriesJobDefinitionTest extends ContextSensitiveTest {
     }
 
     private ScheduledService getCallService(int patientTemplateId) {
-        return getService("CALL", patientTemplateId);
+        return getService("Call", patientTemplateId);
     }
 
     private ScheduledService getSmsService(int patientTemplateId) {

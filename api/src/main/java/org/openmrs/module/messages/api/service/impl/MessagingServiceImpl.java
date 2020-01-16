@@ -29,6 +29,7 @@ import org.openmrs.module.messages.api.model.types.ServiceStatus;
 import org.openmrs.module.messages.api.service.ConfigService;
 import org.openmrs.module.messages.api.service.MessagingService;
 import org.openmrs.module.messages.api.service.PatientTemplateService;
+import org.openmrs.module.messages.api.util.HibernateUtil;
 import org.openmrs.module.messages.domain.criteria.PatientTemplateCriteria;
 
 @Transactional
@@ -45,9 +46,9 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
                                           Integer questionId,
                                           Integer responseId,
                                           String textResponse,
-                                          Date timestamp) throws PropertyValueException {
+                                          Date timestamp) {
 
-        ScheduledService scheduled = getById(scheduledId);
+        ScheduledService scheduled = HibernateUtil.getNotNull(scheduledId, this);
         Concept question = conceptService.getConcept(questionId);
         Concept response = conceptService.getConcept(responseId);
 
@@ -62,21 +63,6 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
     }
 
     @Override
-    public List<ServiceResultList> retrieveAllServiceExecutions(Integer patientId, Date startDate, Date endDate)
-            throws ExecutionException {
-
-        PatientTemplateCriteria patientTemplateCriteria = PatientTemplateCriteria.forPatientId(patientId);
-        return retrieveAllServiceExecutions(patientTemplateService.findAllByCriteria(patientTemplateCriteria),
-                startDate, endDate);
-    }
-
-    @Override
-    public List<ServiceResultList> retrieveAllServiceExecutions(Date startDate, Date endDate)
-            throws ExecutionException {
-        return retrieveAllServiceExecutions(patientTemplateService.getAll(false), startDate, endDate);
-    }
-
-    @Override
     public ScheduledService registerAttempt(int scheduledServiceId, String status, Date timestamp, String executionId) {
         return registerAttempt(scheduledServiceId, ServiceStatus.valueOf(status), timestamp, executionId);
     }
@@ -84,7 +70,8 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
     @Override
     public ScheduledService registerAttempt(int scheduledServiceId, ServiceStatus status, Date timestamp,
                                             String executionId) {
-        ScheduledService service = getById(scheduledServiceId);
+        checkIfStatusIsNotPendingOrFuture(status);
+        ScheduledService service = HibernateUtil.getNotNull(scheduledServiceId, this);
 
         DeliveryAttempt deliveryAttempt = new DeliveryAttempt();
         deliveryAttempt.setServiceExecution(executionId);
@@ -103,6 +90,45 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
                 .execute(service);
 
         return service;
+    }
+
+    @Override
+    public ScheduledService registerResponseAndAttempt(Integer scheduledId,
+                                                       Integer questionId,
+                                                       Integer responseId,
+                                                       String textResponse,
+                                                       String status,
+                                                       Date timestamp,
+                                                       String executionId) throws PropertyValueException {
+        registerResponse(scheduledId, questionId, responseId, textResponse, timestamp);
+        return registerAttempt(scheduledId, status, timestamp, executionId);
+    }
+
+    @Override
+    public ScheduledService registerResponseAndAttempt(Integer scheduledId,
+                                                       Integer questionId,
+                                                       Integer responseId,
+                                                       String textResponse,
+                                                       ServiceStatus status,
+                                                       Date timestamp,
+                                                       String executionId) throws PropertyValueException {
+        registerResponse(scheduledId, questionId, responseId, textResponse, timestamp);
+        return registerAttempt(scheduledId, status, timestamp, executionId);
+    }
+
+    @Override
+    public List<ServiceResultList> retrieveAllServiceExecutions(Integer patientId, Date startDate, Date endDate)
+            throws ExecutionException {
+
+        PatientTemplateCriteria patientTemplateCriteria = PatientTemplateCriteria.forPatientId(patientId);
+        return retrieveAllServiceExecutions(patientTemplateService.findAllByCriteria(patientTemplateCriteria),
+                startDate, endDate);
+    }
+
+    @Override
+    public List<ServiceResultList> retrieveAllServiceExecutions(Date startDate, Date endDate)
+            throws ExecutionException {
+        return retrieveAllServiceExecutions(patientTemplateService.getAll(false), startDate, endDate);
     }
 
     public void setConceptService(ConceptService conceptService) {
@@ -137,5 +163,12 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
         }
 
         return results;
+    }
+
+    private void checkIfStatusIsNotPendingOrFuture(ServiceStatus status) {
+        if (ServiceStatus.PENDING.equals(status) || ServiceStatus.FUTURE.equals(status)) {
+            throw new IllegalArgumentException(String.format(
+                    "%s status cannot be registered", status.name()));
+        }
     }
 }

@@ -25,15 +25,16 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.UUID;
 import org.hamcrest.Matchers;
-import org.hibernate.PropertyValueException;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.messages.Constant;
 import org.openmrs.module.messages.ContextSensitiveTest;
 import org.openmrs.module.messages.api.dao.ActorResponseDao;
 import org.openmrs.module.messages.api.dao.MessagingDao;
+import org.openmrs.module.messages.api.exception.EntityNotFoundException;
 import org.openmrs.module.messages.api.model.ActorResponse;
 import org.openmrs.module.messages.api.model.DeliveryAttempt;
 import org.openmrs.module.messages.api.model.ScheduledService;
@@ -127,9 +128,9 @@ public class MessagingServiceITTest extends ContextSensitiveTest {
                 is(expected.getScheduledService().getStatus()));
     }
 
-    @Test(expected = PropertyValueException.class)
-    public void shouldThrowExceptionWhenScheduledServiceIsNotSaved() throws PropertyValueException {
-        messagingService.registerResponse(-1,
+    @Test(expected = EntityNotFoundException.class)
+    public void shouldThrowExceptionWhenScheduledServiceIsNotSaved() {
+        messagingService.registerResponse(Constant.NOT_EXISTING_ID,
                 question.getId(),
                 response.getId(),
                 scheduledService.getPatientTemplate().getTemplateFieldValues().get(0).getValue(),
@@ -158,11 +159,11 @@ public class MessagingServiceITTest extends ContextSensitiveTest {
 
     @Test
     public void registerAttemptShouldAddNextAttemptAndUpdateScheduledService() {
-        scheduledService = messagingService.registerAttempt(scheduledService.getId(), ServiceStatus.PENDING,
+        scheduledService = messagingService.registerAttempt(scheduledService.getId(), ServiceStatus.FAILED,
                 new Date(), UUID.randomUUID().toString());
         assertEquals(1, scheduledService.getNumberOfAttempts());
-        assertEquals(ServiceStatus.PENDING, scheduledService.getStatus());
-        assertEquals(ServiceStatus.PENDING, scheduledService.getDeliveryAttempts().get(0).getStatus());
+        assertEquals(ServiceStatus.FAILED, scheduledService.getStatus());
+        assertEquals(ServiceStatus.FAILED, scheduledService.getDeliveryAttempts().get(0).getStatus());
 
         final ServiceStatus newStatus = ServiceStatus.DELIVERED;
         final String serviceExecution = "321";
@@ -182,11 +183,11 @@ public class MessagingServiceITTest extends ContextSensitiveTest {
 
     @Test
     public void registerAttemptShouldParseStringStatusAddNextAttemptAndUpdateScheduledService() {
-        scheduledService = messagingService.registerAttempt(scheduledService.getId(), "PENDING",
+        scheduledService = messagingService.registerAttempt(scheduledService.getId(), "FAILED",
                 new Date(), UUID.randomUUID().toString());
         assertEquals(1, scheduledService.getNumberOfAttempts());
-        assertEquals(ServiceStatus.PENDING, scheduledService.getStatus());
-        assertEquals(ServiceStatus.PENDING, scheduledService.getDeliveryAttempts().get(0).getStatus());
+        assertEquals(ServiceStatus.FAILED, scheduledService.getStatus());
+        assertEquals(ServiceStatus.FAILED, scheduledService.getDeliveryAttempts().get(0).getStatus());
 
         final String newStatus = "DELIVERED";
         final String serviceExecution = "321";
@@ -204,9 +205,39 @@ public class MessagingServiceITTest extends ContextSensitiveTest {
         assertEquals(serviceExecution, actualAttempt.getServiceExecution());
     }
 
+    @Test(expected = EntityNotFoundException.class)
+    public void registerAttemptShouldThrowExceptionIfServiceNotPersisted() {
+        scheduledService = messagingService.registerAttempt(Constant.NOT_EXISTING_ID, ServiceStatus.FAILED,
+                new Date(), UUID.randomUUID().toString());
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void registerAttemptShouldThrowExceptionIfCannotParseStringStatus() {
         scheduledService = messagingService.registerAttempt(scheduledService.getId(), "notValidStatus",
+                new Date(), UUID.randomUUID().toString());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void registerAttemptShouldThrowExceptionIfStatusIsPending() {
+        scheduledService = messagingService.registerAttempt(scheduledService.getId(), ServiceStatus.PENDING,
+                new Date(), UUID.randomUUID().toString());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void registerAttemptShouldThrowExceptionIfStringStatusIsPending() {
+        scheduledService = messagingService.registerAttempt(scheduledService.getId(), "PENDING",
+                new Date(), UUID.randomUUID().toString());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void registerAttemptShouldThrowExceptionIfStatusIsFuture() {
+        scheduledService = messagingService.registerAttempt(scheduledService.getId(), ServiceStatus.FUTURE,
+                new Date(), UUID.randomUUID().toString());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void registerAttemptShouldThrowExceptionIfStringStatusIsFuture() {
+        scheduledService = messagingService.registerAttempt(scheduledService.getId(), "FUTURE",
                 new Date(), UUID.randomUUID().toString());
     }
 

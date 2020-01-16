@@ -84,11 +84,11 @@ public class ServiceGroupDeliveryJobDefinition extends JobDefinition {
         List<ScheduledService> calls = new ArrayList<>();
 
         for (ScheduledService service : getScheduledServices()) {
-            if (ChannelType.CALL.getName().equalsIgnoreCase(service.getChannelType())) {
+            if (ChannelType.CALL.nameEquals(service.getChannelType())) {
                 calls.add(service);
-            } else if (ChannelType.SMS.getName().equalsIgnoreCase(service.getChannelType())) {
+            } else if (ChannelType.SMS.nameEquals(service.getChannelType())) {
                 smsList.add(service);
-            } else if (ChannelType.DEACTIVATED.getName().equalsIgnoreCase(service.getChannelType())) {
+            } else if (ChannelType.DEACTIVATED.nameEquals(service.getChannelType())) {
                 LOGGER.info(String.format("Skipped task handling with id %s due to channel " +
                         "deactivation", taskDefinition.getId()));
             } else {

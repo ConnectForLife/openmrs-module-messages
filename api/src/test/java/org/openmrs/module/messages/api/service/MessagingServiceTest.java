@@ -9,6 +9,13 @@
 
 package org.openmrs.module.messages.api.service;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,8 +24,14 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.openmrs.Concept;
+import org.openmrs.api.ConceptService;
 import org.openmrs.module.messages.BaseTest;
+import org.openmrs.module.messages.Constant;
+import org.openmrs.module.messages.api.dao.ActorResponseDao;
 import org.openmrs.module.messages.api.dao.MessagingDao;
+import org.openmrs.module.messages.api.exception.EntityNotFoundException;
+import org.openmrs.module.messages.api.model.ActorResponse;
 import org.openmrs.module.messages.api.model.DeliveryAttempt;
 import org.openmrs.module.messages.api.model.ScheduledService;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
@@ -27,19 +40,19 @@ import org.openmrs.module.messages.api.strategy.ReschedulingStrategy;
 import org.openmrs.module.messages.builder.DeliveryAttemptBuilder;
 import org.openmrs.module.messages.builder.ScheduledServiceBuilder;
 
-import java.util.Date;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @RunWith(MockitoJUnitRunner.class)
 public class MessagingServiceTest extends BaseTest {
 
+    private static final String TEXT_RESPONSE = "Dummy text response";
+
+    private static final int QUESTION_ID = 1;
+    private static final int RESPONSE_ID = 2;
+
     @Captor
-    private ArgumentCaptor<ScheduledService> captor;
+    private ArgumentCaptor<ScheduledService> serviceCaptor;
+
+    @Captor
+    private ArgumentCaptor<ActorResponse> responseCaptor;
 
     @Mock
     private MessagingDao dao;
@@ -50,12 +63,26 @@ public class MessagingServiceTest extends BaseTest {
     @Mock
     private ReschedulingStrategy reschedulingStrategy;
 
+    @Mock
+    private ConceptService conceptService;
+
+    @Mock
+    private ActorResponseDao responseDao;
+
+    @Mock
+    private Concept questionConcept;
+
+    @Mock
+    private Concept responseConcept;
+
     @InjectMocks
     private MessagingServiceImpl messagingService;
 
     @Before
     public void setUp() {
         when(configService.getReschedulingStrategy(any())).thenReturn(reschedulingStrategy);
+        when(conceptService.getConcept(eq(QUESTION_ID))).thenReturn(questionConcept);
+        when(conceptService.getConcept(eq(RESPONSE_ID))).thenReturn(responseConcept);
     }
 
     @Test
@@ -73,9 +100,9 @@ public class MessagingServiceTest extends BaseTest {
 
         messagingService.registerAttempt(scheduledService.getId(), newStatus, timestamp, serviceExecution);
 
-        verify(dao).saveOrUpdate(captor.capture());
+        verify(dao).saveOrUpdate(serviceCaptor.capture());
 
-        ScheduledService actualScheduledService = captor.getValue();
+        ScheduledService actualScheduledService = serviceCaptor.getValue();
         DeliveryAttempt actualAttempt = actualScheduledService.getDeliveryAttempts().get(0);
 
         assertEquals(newStatus, actualScheduledService.getStatus());
@@ -107,8 +134,8 @@ public class MessagingServiceTest extends BaseTest {
 
         messagingService.registerAttempt(scheduledService.getId(), newStatus, timestamp, serviceExecution);
 
-        verify(dao).saveOrUpdate(captor.capture());
-        ScheduledService actualScheduledService = captor.getValue();
+        verify(dao).saveOrUpdate(serviceCaptor.capture());
+        ScheduledService actualScheduledService = serviceCaptor.getValue();
         DeliveryAttempt actualAttempt = actualScheduledService.getDeliveryAttempts().get(1);
 
         assertEquals(newStatus, actualScheduledService.getStatus());
@@ -119,4 +146,162 @@ public class MessagingServiceTest extends BaseTest {
         assertEquals(timestamp, actualAttempt.getTimestamp());
         assertEquals(serviceExecution, actualAttempt.getServiceExecution());
     }
+
+    @Test
+    public void registerResponseAndAttemptShouldPersistAttemptAndResponse() {
+        final ScheduledService scheduledService = new ScheduledServiceBuilder()
+                .withStatus(ServiceStatus.PENDING)
+                .withServiceExec("123")
+                .build();
+        final ServiceStatus newStatus = ServiceStatus.DELIVERED;
+        final String serviceExecution = "321";
+        final Date timestamp = new Date();
+
+        when(dao.getById(eq(scheduledService.getId()))).thenReturn(scheduledService);
+        when(dao.saveOrUpdate(eq(scheduledService))).thenReturn(scheduledService);
+
+        messagingService.registerResponseAndAttempt(scheduledService.getId(), QUESTION_ID, RESPONSE_ID,
+                TEXT_RESPONSE, newStatus, timestamp, serviceExecution);
+
+        validateRegisterResponseAndAttemptResult(scheduledService, newStatus, serviceExecution, timestamp);
+    }
+
+    @Test
+    public void registerResponseAndAttemptShouldPersistAttemptAndResponseWhenPassedServiceStatusAsString() {
+        final ScheduledService scheduledService = new ScheduledServiceBuilder()
+                .withStatus(ServiceStatus.PENDING)
+                .withServiceExec("123")
+                .build();
+        final String newStatus = "DELIVERED";
+        final String serviceExecution = "321";
+        final Date timestamp = new Date();
+
+        when(dao.getById(eq(scheduledService.getId()))).thenReturn(scheduledService);
+        when(dao.saveOrUpdate(eq(scheduledService))).thenReturn(scheduledService);
+
+        messagingService.registerResponseAndAttempt(scheduledService.getId(), QUESTION_ID, RESPONSE_ID,
+                TEXT_RESPONSE, newStatus, timestamp, serviceExecution);
+
+        validateRegisterResponseAndAttemptResult(scheduledService, ServiceStatus.valueOf(newStatus),
+                serviceExecution, timestamp);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void registerResponseAndAttemptShouldThrowExceptionIfStatusIsNotValidServiceStatus() {
+        final ScheduledService scheduledService = new ScheduledServiceBuilder()
+                .withStatus(ServiceStatus.PENDING)
+                .withServiceExec("123")
+                .build();
+        final String newStatus = "NotValidServiceStatus";
+        final String serviceExecution = "321";
+        final Date timestamp = new Date();
+
+        when(dao.getById(eq(scheduledService.getId()))).thenReturn(scheduledService);
+        when(dao.saveOrUpdate(eq(scheduledService))).thenReturn(scheduledService);
+
+        messagingService.registerResponseAndAttempt(scheduledService.getId(), QUESTION_ID, RESPONSE_ID,
+                TEXT_RESPONSE, newStatus, timestamp, serviceExecution);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void registerResponseAndAttemptShouldThrowExceptionIfStatusIsPending() {
+        final ScheduledService scheduledService = new ScheduledServiceBuilder()
+                .withStatus(ServiceStatus.PENDING)
+                .withServiceExec("123")
+                .build();
+        final ServiceStatus newStatus = ServiceStatus.PENDING;
+        final String serviceExecution = "321";
+        final Date timestamp = new Date();
+
+        when(dao.getById(eq(scheduledService.getId()))).thenReturn(scheduledService);
+        when(dao.saveOrUpdate(eq(scheduledService))).thenReturn(scheduledService);
+
+        messagingService.registerResponseAndAttempt(scheduledService.getId(), QUESTION_ID, RESPONSE_ID,
+                TEXT_RESPONSE, newStatus, timestamp, serviceExecution);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void registerResponseAndAttemptShouldThrowExceptionIfStringStatusIsPending() {
+        final ScheduledService scheduledService = new ScheduledServiceBuilder()
+                .withStatus(ServiceStatus.PENDING)
+                .withServiceExec("123")
+                .build();
+        final String newStatus = "PENDING";
+        final String serviceExecution = "321";
+        final Date timestamp = new Date();
+
+        when(dao.getById(eq(scheduledService.getId()))).thenReturn(scheduledService);
+        when(dao.saveOrUpdate(eq(scheduledService))).thenReturn(scheduledService);
+
+        messagingService.registerResponseAndAttempt(scheduledService.getId(), QUESTION_ID, RESPONSE_ID,
+                TEXT_RESPONSE, newStatus, timestamp, serviceExecution);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void registerResponseAndAttemptShouldThrowExceptionIfStatusIsFuture() {
+        final ScheduledService scheduledService = new ScheduledServiceBuilder()
+                .withStatus(ServiceStatus.PENDING)
+                .withServiceExec("123")
+                .build();
+        final ServiceStatus newStatus = ServiceStatus.FUTURE;
+        final String serviceExecution = "321";
+        final Date timestamp = new Date();
+
+        when(dao.getById(eq(scheduledService.getId()))).thenReturn(scheduledService);
+        when(dao.saveOrUpdate(eq(scheduledService))).thenReturn(scheduledService);
+
+        messagingService.registerResponseAndAttempt(scheduledService.getId(), QUESTION_ID, RESPONSE_ID,
+                TEXT_RESPONSE, newStatus, timestamp, serviceExecution);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void registerResponseAndAttemptShouldThrowExceptionIfStringStatusIsFuture() {
+        final ScheduledService scheduledService = new ScheduledServiceBuilder()
+                .withStatus(ServiceStatus.PENDING)
+                .withServiceExec("123")
+                .build();
+        final String newStatus = "FUTURE";
+        final String serviceExecution = "321";
+        final Date timestamp = new Date();
+
+        when(dao.getById(eq(scheduledService.getId()))).thenReturn(scheduledService);
+        when(dao.saveOrUpdate(eq(scheduledService))).thenReturn(scheduledService);
+
+        messagingService.registerResponseAndAttempt(scheduledService.getId(), QUESTION_ID, RESPONSE_ID,
+                TEXT_RESPONSE, newStatus, timestamp, serviceExecution);
+    }
+
+    @Test(expected = EntityNotFoundException.class)
+    public void registerResponseAndAttemptShouldThrowExceptionIfScheduledServiceNotExists() {
+        final String newStatus = "DELIVERED";
+        final String serviceExecution = "321";
+        final Date timestamp = new Date();
+
+        messagingService.registerResponseAndAttempt(Constant.NOT_EXISTING_ID, QUESTION_ID, RESPONSE_ID,
+                TEXT_RESPONSE, newStatus, timestamp, serviceExecution);
+    }
+
+    private void validateRegisterResponseAndAttemptResult(ScheduledService scheduledService, ServiceStatus newStatus,
+                                                          String serviceExecution, Date timestamp) {
+        verify(responseDao).saveOrUpdate(responseCaptor.capture());
+        verify(dao).saveOrUpdate(serviceCaptor.capture());
+
+        ActorResponse response = responseCaptor.getValue();
+        assertEquals(scheduledService, response.getScheduledService());
+        assertEquals(questionConcept, response.getQuestion());
+        assertEquals(responseConcept, response.getResponse());
+        assertEquals(TEXT_RESPONSE, response.getTextResponse());
+        assertEquals(timestamp, response.getAnsweredTime());
+
+        ScheduledService actualScheduledService = serviceCaptor.getValue();
+        DeliveryAttempt actualAttempt = actualScheduledService.getDeliveryAttempts().get(0);
+        assertEquals(newStatus, actualScheduledService.getStatus());
+        assertEquals(serviceExecution, actualScheduledService.getLastServiceExecution());
+        assertEquals(1, actualScheduledService.getDeliveryAttempts().size());
+        assertEquals(scheduledService.getId(), actualAttempt.getScheduledService().getId());
+        assertEquals(newStatus, actualAttempt.getStatus());
+        assertEquals(timestamp, actualAttempt.getTimestamp());
+        assertEquals(serviceExecution, actualAttempt.getServiceExecution());
+    }
 }
+

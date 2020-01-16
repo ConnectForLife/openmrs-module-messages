@@ -1,5 +1,14 @@
 package org.openmrs.module.messages.web.it;
 
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.io.IOException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,6 +21,7 @@ import org.openmrs.module.messages.BaseModuleWebContextSensitiveWithActivatorTes
 import org.openmrs.module.messages.Constant;
 import org.openmrs.module.messages.api.constants.ConfigConstants;
 import org.openmrs.module.messages.api.dto.PersonStatusDTO;
+import org.openmrs.module.messages.api.model.ErrorMessageEnum;
 import org.openmrs.module.messages.api.model.PersonStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -21,16 +31,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
-import java.io.IOException;
-
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebAppConfiguration
 public class PersonStatusControllerITTest extends BaseModuleWebContextSensitiveWithActivatorTest {
@@ -128,12 +128,13 @@ public class PersonStatusControllerITTest extends BaseModuleWebContextSensitiveW
     }
 
     @Test
-    public void shouldReturnMessagesObjectNotFoundExceptionIfPersonNotExists() throws Exception {
+    public void shouldReturnEntityNotFoundExceptionIfPersonNotExists() throws Exception {
         mockMvc.perform(get(String.format(BASE_URL_PATTERN, NOT_EXIST_PERSON))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(org.apache.http.HttpStatus.SC_NOT_FOUND))
                 .andExpect(content().contentType(Constant.APPLICATION_JSON_UTF8))
-                .andExpect(jsonPath("$.error").value(String.format(EXPECTED_ERROR, NOT_EXIST_PERSON)));
+                .andExpect(jsonPath("$.errorMessages.[0].code").value(ErrorMessageEnum.ERR_ENTITY_NOT_FOUND.getCode()))
+                .andExpect(jsonPath("$.errorMessages.[0].message").value(String.format(EXPECTED_ERROR, NOT_EXIST_PERSON)));
     }
 
     @Test

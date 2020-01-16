@@ -1,17 +1,25 @@
+/* * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+
 package org.openmrs.module.messages;
 
 public final class Constant {
 
-    public static final String CAREGIVER_RELATIONSHIP = "Caregiver";
-
-    public static final String CARETAKER_RELATIONSHIP = "Caretaker";
+    public static final int NOT_EXISTING_ID = -1;
 
     public static final String DEACTIVATED_SCHEDULE_MESSAGE = "DEACTIVATED";
 
+    public static final String CAREGIVER_RELATIONSHIP = "Caregiver";
+    public static final String CARETAKER_RELATIONSHIP = "Caretaker";
     public static final String PATIENT_RELATIONSHIP = "Patient";
 
     public static final String UUID_KEY = "uuid";
-
     public static final String VALUE_KEY = "value";
 
     private Constant() {
