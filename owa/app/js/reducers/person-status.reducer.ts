@@ -88,11 +88,10 @@ export default (state = initialState, action) => {
 const personStatusUrl = 'ws/messages/person-statuses/';
 
 export const getPersonStatus = (personId: string) => async (dispatch) => {
-    const body = {
+    await dispatch({
         type: ACTION_TYPES.GET_PERSON_STATUS,
         payload: axiosInstance.get(personStatusUrl + personId)
-    };
-    await handleRequest(dispatch, body, Msg.GENERIC_SUCCESS, Msg.GENERIC_FAILURE);
+      });
 };
 
 export const putPersonStatus = (personStatus: PersonStatusUI) => async (dispatch) => {
