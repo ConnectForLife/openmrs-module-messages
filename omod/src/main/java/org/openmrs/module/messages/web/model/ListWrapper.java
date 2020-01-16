@@ -11,14 +11,14 @@ package org.openmrs.module.messages.web.model;
 
 import java.util.List;
 
-public class Wrapper<T> {
+public class ListWrapper<T> {
 
     private List<T> records;
 
-    public Wrapper() {
+    public ListWrapper() {
     }
 
-    public Wrapper(List<T> records) {
+    public ListWrapper(List<T> records) {
         this.records = records;
     }
 
@@ -26,7 +26,7 @@ public class Wrapper<T> {
         return records;
     }
 
-    public Wrapper setRecords(List<T> records) {
+    public ListWrapper setRecords(List<T> records) {
         this.records = records;
         return this;
     }

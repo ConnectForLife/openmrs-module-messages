@@ -92,7 +92,6 @@ public class ActorController extends BaseRestController {
 
     @RequestMapping(value = "/contact-times/default", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     public void setBestContactTimes(@RequestBody DefaultContactTimeWrapper contactTimes) {
         BestContactTimeHelper.setDefaultContactTimes(contactTimes.getRecords());
     }

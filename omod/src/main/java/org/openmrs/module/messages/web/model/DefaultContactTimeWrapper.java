@@ -11,4 +11,4 @@ package org.openmrs.module.messages.web.model;
 
 import org.openmrs.module.messages.api.dto.DefaultContactTimeDTO;
 
-public class DefaultContactTimeWrapper extends Wrapper<DefaultContactTimeDTO> { }
+public class DefaultContactTimeWrapper extends ListWrapper<DefaultContactTimeDTO> { }
