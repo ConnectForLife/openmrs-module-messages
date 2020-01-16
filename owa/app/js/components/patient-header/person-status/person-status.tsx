@@ -56,7 +56,7 @@ class PersonStatus extends React.PureComponent<IPersonStatusProps, IPersonStatus
     };
 
     handleConfirm = (value: string, reason?: string) => {
-        const status  = _.cloneDeep(this.props.personStatus.status);
+        const status = _.cloneDeep(this.props.personStatus.status);
         status.value = value;
         status.reason = reason;
         this.props.putPersonStatus(status);
@@ -79,7 +79,7 @@ class PersonStatus extends React.PureComponent<IPersonStatusProps, IPersonStatus
         const { status, showModal, personStatusLoading, submitDisabled } = this.props.personStatus;
         const statusStyle = status.styleObject || {};
         return (
-            <div className="person-status-wrapper">
+            <>
                 <ChangeStatusModal
                     cancel={this.handleClose}
                     confirm={this.handleConfirm}
@@ -89,7 +89,7 @@ class PersonStatus extends React.PureComponent<IPersonStatusProps, IPersonStatus
                 <div className="person-status" style={statusStyle} onClick={this.handleChangeStatus}>
                     {!personStatusLoading && this.renderStatus()}
                 </div>
-            </div>
+            </>
         );
     };
 };
