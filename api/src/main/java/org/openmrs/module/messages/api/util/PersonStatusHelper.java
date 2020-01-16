@@ -9,7 +9,6 @@
 
 package org.openmrs.module.messages.api.util;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -44,12 +43,14 @@ public class PersonStatusHelper {
         Person person = getPersonFromDashboardPersonId(personId);
         if (person != null) {
             PersonStatus status = PersonAttributeUtil.getPersonStatus(person);
+            PersonAttribute lastReason = PersonAttributeUtil.getPersonStatusReasonAttribute(person);
             String style = buildMessageStyle(status);
             return new PersonStatusDTO()
                     .setPersonId(personId)
                     .setTitle(status.getTitleKey())
                     .setValue(status.name())
-                    .setStyle(style);
+                    .setStyle(style)
+                    .setReason(lastReason != null ? lastReason.getValue() : null);
         }
         LOGGER.debug(String.format("Couldn't find person for id: %s", personId));
         return null;
@@ -64,7 +65,7 @@ public class PersonStatusHelper {
         LOGGER.debug(String.format("Trying to save a new status value %s for person %s", statusDTO.getValue(),
                 statusDTO.getPersonId()));
         Person person = getPersonFromDashboardPersonId(statusDTO.getPersonId());
-        voidTheRecentValue(statusDTO, person);
+        changeStatusReason(statusDTO, person);
         saveNewValue(statusDTO, person);
     }
 
@@ -78,14 +79,7 @@ public class PersonStatusHelper {
 
     private String buildMessageStyle(PersonStatus personStatus) {
         PersonStatusConfigDTO configuration = configService.getPersonStatusConfiguration(personStatus);
-        StringBuilder result = new StringBuilder();
-        if (configuration != null) {
-            result.append("style=\"");
-            appendTheBackgroundColor(configuration.getBackgroundColor(), result);
-            appendTextColor(configuration.getTextColor(), result);
-            result.append("\"");
-        }
-        return result.toString();
+        return configuration.getStyle();
     }
 
     private Person getPersonFromDashboardPersonId(String personId) {
@@ -95,29 +89,17 @@ public class PersonStatusHelper {
         return personService.getPersonByUuid(personId);
     }
 
-    private void appendTheBackgroundColor(String backgroundColor, StringBuilder result) {
-        if (StringUtils.isNotBlank(backgroundColor)) {
-            result.append("background-color: ").append(backgroundColor).append("; ");
-            result.append("border-color: ").append(backgroundColor).append("; ");
-        }
-    }
-
-    private void appendTextColor(String textColor, StringBuilder result) {
-        if (StringUtils.isNotBlank(textColor)) {
-            result.append("color: ").append(textColor).append("; ");
-        }
-    }
-
-    private void voidTheRecentValue(PersonStatusDTO statusDTO, Person person) {
-        PersonAttribute oldStatus = PersonAttributeUtil.getPersonStatusAttribute(person);
-        if (oldStatus != null && !statusDTO.getValue().equalsIgnoreCase(PersonStatus.DEACTIVATE.name())) {
-            oldStatus.setVoidReason(statusDTO.getReason());
-        }
+    private void changeStatusReason(PersonStatusDTO statusDTO, Person person) {
+        PersonAttributeType attributeTypeStatusReason =
+                personService.getPersonAttributeTypeByUuid(ConfigConstants.PERSON_STATUS_REASON_ATTRIBUTE_TYPE_UUID);
+        PersonAttribute newStatus = new PersonAttribute(attributeTypeStatusReason, statusDTO.getReason());
+        person.addAttribute(newStatus);
+        personService.savePerson(person);
     }
 
     private void saveNewValue(PersonStatusDTO statusDTO, Person person) {
         PersonAttributeType attributeTypeStatus =
-                personService.getPersonAttributeTypeByUuid(ConfigConstants.PATIENT_STATUS_ATTRIBUTE_TYPE_UUID);
+                personService.getPersonAttributeTypeByUuid(ConfigConstants.PERSON_STATUS_ATTRIBUTE_TYPE_UUID);
         PersonAttribute newStatus = new PersonAttribute(attributeTypeStatus, statusDTO.getValue());
         person.addAttribute(newStatus);
         personService.savePerson(person);

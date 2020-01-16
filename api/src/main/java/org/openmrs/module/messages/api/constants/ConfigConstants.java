@@ -25,55 +25,52 @@ public final class ConfigConstants {
     public static final String PERSON_CONTACT_TIME_TYPE_FORMAT = "java.util.Date";
     public static final String PERSON_CONTACT_TIME_TYPE_UUID = "7a8ad9aa-bd0e-48c0-826d-fa628f1db644";
 
-    public static final String PATIENT_STATUS_ATTRIBUTE_TYPE_NAME = "Person status";
-    public static final String PATIENT_STATUS_ATTRIBUTE_TYPE_DESCRIPTION = "Person status attribute";
-    public static final String PATIENT_STATUS_ATTRIBUTE_TYPE_FORMAT = "java.lang.String";
-    public static final String PATIENT_STATUS_ATTRIBUTE_TYPE_UUID = "dda246c6-c806-402a-9b7c-e2c1574a6441";
+    public static final String PERSON_STATUS_ATTRIBUTE_TYPE_NAME = "Person status";
+    public static final String PERSON_STATUS_ATTRIBUTE_TYPE_DESCRIPTION = "Person status attribute";
+    public static final String PERSON_STATUS_ATTRIBUTE_TYPE_FORMAT = "java.lang.String";
+    public static final String PERSON_STATUS_ATTRIBUTE_TYPE_UUID = "dda246c6-c806-402a-9b7c-e2c1574a6441";
+
+    public static final String PERSON_STATUS_REASON_ATTRIBUTE_TYPE_NAME = "Person status - reason";
+    public static final String PERSON_STATUS_REASON_ATTRIBUTE_TYPE_DESCRIPTION = "Reason of change the person status";
+    public static final String PERSON_STATUS_REASON_ATTRIBUTE_TYPE_FORMAT = "java.lang.String";
+    public static final String PERSON_STATUS_REASON_ATTRIBUTE_TYPE_UUID = "da7a9976-c681-4182-a7f4-f9f6b31a9058";
 
     public static final String PERSON_STATUS_CONFIGURATION_KEY = "message.personStatus.configuration";
     public static final String PERSON_STATUS_CONFIGURATION_DEFAULT_VALUE = "[\n"
             + "  {\n"
             + "    \"name\": \"NO_CONSENT\",\n"
-            + "    \"backgroundColor\": \"#EEA616\",\n"
-            + "    \"textColor\": \"#f5f5f5\"\n"
+            + "    \"style\": \"background-color: #EEA616; border-color: #EEA616; color: #f5f5f5;\""
             + "  },\n"
             + "  {\n"
             + "    \"name\": \"ACTIVE\",\n"
-            + "    \"backgroundColor\": \"#51a351\",\n"
-            + "    \"textColor\": \"#f5f5f5\"\n"
+            + "    \"style\": \"background-color: #51a351; border-color: #51a351; color: #f5f5f5;\""
             + "  },\n"
             + "  {\n"
             + "    \"name\": \"DEACTIVATE\",\n"
-            + "    \"backgroundColor\": \"#f23722\",\n"
-            + "    \"textColor\": \"#f5f5f5\"\n"
+            + "    \"style\": \"background-color: #f23722; border-color: #f23722; color: #f5f5f5;\""
             + "  },\n"
             + "  {\n"
             + "    \"name\": \"MISSING_VALUE\",\n"
-            + "    \"backgroundColor\": \"#EEA616\",\n"
-            + "    \"textColor\": \"#f5f5f5\"\n"
+            + "    \"style\": \"background-color: #EEA616; border-color: #EEA616; color: #f5f5f5;\""
             + "  }\n"
             + "]";
     public static final String PERSON_STATUS_CONFIGURATION_DESCRIPTION = "Person status configuration in JSON-like format."
             + "Example: [\n"
             + "  {\n"
             + "    \"name\": \"NO_CONSENT\",\n"
-            + "    \"backgroundColor\": \"#EEA616\",\n"
-            + "    \"textColor\": \"#f5f5f5\"\n"
+            + "    \"style\": \"background-color: #EEA616; border-color: #EEA616; color: #f5f5f5;\""
             + "  },\n"
             + "  {\n"
             + "    \"name\": \"ACTIVE\",\n"
-            + "    \"backgroundColor\": \"#51a351\",\n"
-            + "    \"textColor\": \"#f5f5f5\"\n"
+            + "    \"style\": \"background-color: #51a351; border-color: #51a351; color: #f5f5f5;\""
             + "  },\n"
             + "  {\n"
             + "    \"name\": \"DEACTIVATE\",\n"
-            + "    \"backgroundColor\": \"#f23722\",\n"
-            + "    \"textColor\": \"#f5f5f5\"\n"
+            + "    \"style\": \"background-color: #f23722; border-color: #f23722; color: #f5f5f5;\""
             + "  },\n"
             + "  {\n"
             + "    \"name\": \"MISSING_VALUE\",\n"
-            + "    \"backgroundColor\": \"#EEA616\",\n"
-            + "    \"textColor\": \"#f5f5f5\"\n"
+            + "    \"style\": \"background-color: #EEA616; border-color: #EEA616; color: #f5f5f5;\""
             + "  }\n"
             + "]";
 

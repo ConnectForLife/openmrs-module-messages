@@ -42,13 +42,25 @@ public final class PersonAttributeUtil {
     }
 
     /**
+     * Returns the actual person status attribute value if it exists
+     * @param person - related person
+     * @return - the actual person status attribute
+     */
+    public static PersonAttribute getPersonStatusAttribute(Person person) {
+        if (person != null) {
+            return person.getAttribute(ConfigConstants.PERSON_STATUS_ATTRIBUTE_TYPE_NAME);
+        }
+        return null;
+    }
+
+    /**
      * Returns the actual reason of change the person status if it exists
      * @param person - related person
      * @return - the actual reason of change the person status
      */
-    public static PersonAttribute getPersonStatusAttribute(Person person) {
+    public static PersonAttribute getPersonStatusReasonAttribute(Person person) {
         if (person != null) {
-            return person.getAttribute(ConfigConstants.PATIENT_STATUS_ATTRIBUTE_TYPE_NAME);
+            return person.getAttribute(ConfigConstants.PERSON_STATUS_REASON_ATTRIBUTE_TYPE_NAME);
         }
         return null;
     }

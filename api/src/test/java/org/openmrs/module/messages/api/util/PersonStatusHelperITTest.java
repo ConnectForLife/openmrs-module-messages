@@ -36,13 +36,13 @@ public class PersonStatusHelperITTest extends ContextSensitiveWithActivatorTest 
     private static final String WRONG_STATUS = "No consent";
 
     private static final String EXPECTED_ACTIVE_STYLE =
-            "style=\"background-color: #51a351; border-color: #51a351; color: #f5f5f5; \"";
+            "background-color: #51a351; border-color: #51a351; color: #f5f5f5;";
 
     private static final String EXPECTED_MISSING_STYLE =
-            "style=\"background-color: #EEA616; border-color: #EEA616; color: #f5f5f5; \"";
+            "background-color: #EEA616; border-color: #EEA616; color: #f5f5f5;";
 
     private static final String EXPECTED_DEACTIVATE_STYLE =
-            "style=\"background-color: #f23722; border-color: #f23722; color: #f5f5f5; \"";
+            "background-color: #f23722; border-color: #f23722; color: #f5f5f5;";
 
     private static final String NOT_EXIST_PERSON = "8124263d-d1ec-4be5-bf62-502ab125d076";
 
@@ -67,7 +67,7 @@ public class PersonStatusHelperITTest extends ContextSensitiveWithActivatorTest 
         executeDataSet(XML_PERSON_ATTRIBUTE_DATASET);
         person = personService.getPersonByUuid(PERSON_UUID);
         PersonAttributeType personStatusAttributeType = personService.getPersonAttributeTypeByUuid(
-                ConfigConstants.PATIENT_STATUS_ATTRIBUTE_TYPE_UUID);
+                ConfigConstants.PERSON_STATUS_ATTRIBUTE_TYPE_UUID);
 
         PersonAttribute voidedStatus = new PersonAttribute(personStatusAttributeType, VOIDED_STATUS);
         person.addAttribute(voidedStatus);
@@ -145,7 +145,7 @@ public class PersonStatusHelperITTest extends ContextSensitiveWithActivatorTest 
         assertThat(actual, hasProperty("title", is(PersonStatus.DEACTIVATE.getTitleKey())));
         assertThat(actual, hasProperty("value", is(PersonStatus.DEACTIVATE.name())));
         assertThat(actual, hasProperty("style", is(EXPECTED_DEACTIVATE_STYLE)));
-        assertThat(actual, hasProperty("reason", is(nullValue())));
+        assertThat(actual, hasProperty("reason", is(TEST_REASON)));
     }
 
 }

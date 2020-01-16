@@ -10,7 +10,7 @@
 // Messages displayed on the frontend
 
 export const MODULE_NAME = 'Messages';
-export const FIELD_REQUIRED = 'This field is required';
+export const FIELD_REQUIRED = 'Required';
 export const SAVE_BUTTON_LABEL = 'Save';
 export const NEXT_BUTTON_LABEL = 'Next';
 export const CANCEL_BUTTON_LABEL = 'Cancel';
@@ -62,3 +62,19 @@ export const CATEGORIES_MAP = {
   'HT_PREVENTION': 'Prevention',
   'HT_SPREAD': 'Spread'
 };
+
+// Person status
+export const PERSON_STATUS_NO_CONSENT = 'No consent';
+export const PERSON_STATUS_ACTIVE = 'Active';
+export const PERSON_STATUS_DEACTIVATE = 'Deactivate';
+export const PERSON_STATUS_MISSING_VALUE = 'Missing value';
+export const PERSON_STATUS_LABEL = 'Person status:';
+
+// Person status- modal
+export const PERSON_STATUS_MODAL_LABEL = 'Update the person status';
+export const PERSON_STATUS_MODAL_INSTRUCTION = 'Change person status';
+export const PERSON_STATUS_MODAL_FIELD_LABEL = 'Person status:';
+export const PERSON_STATUS_MODAL_REASON_FIELD_LABEL = 'Reason:';
+
+export const CANCEL = 'Cancel';
+export const CONFIRM = 'Confirm';

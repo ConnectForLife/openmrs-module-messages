@@ -113,7 +113,8 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
     }
 
     private void createConsentConfig() {
-        createPatientStatusAttributeType();
+        createPersonStatusAttributeType();
+        createPersonStatusReasonAttributeType();
         createBestContactTimeAttributeType();
         createGlobalSettingIfNotExists(ConfigConstants.BEST_CONTACT_TIME_KEY,
                 ConfigConstants.BEST_CONTACT_TIME_DEFAULT_VALUE, ConfigConstants.BEST_CONTACT_TIME_DESCRIPTION);
@@ -147,12 +148,21 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
         createPersonAttributeTypeIfNotExists(attributeType);
     }
 
-    private void createPatientStatusAttributeType() {
+    private void createPersonStatusAttributeType() {
         PersonAttributeType attributeType = new PersonAttributeType();
-        attributeType.setName(ConfigConstants.PATIENT_STATUS_ATTRIBUTE_TYPE_NAME);
-        attributeType.setFormat(ConfigConstants.PATIENT_STATUS_ATTRIBUTE_TYPE_FORMAT);
-        attributeType.setDescription(ConfigConstants.PATIENT_STATUS_ATTRIBUTE_TYPE_DESCRIPTION);
-        attributeType.setUuid(ConfigConstants.PATIENT_STATUS_ATTRIBUTE_TYPE_UUID);
+        attributeType.setName(ConfigConstants.PERSON_STATUS_ATTRIBUTE_TYPE_NAME);
+        attributeType.setFormat(ConfigConstants.PERSON_STATUS_ATTRIBUTE_TYPE_FORMAT);
+        attributeType.setDescription(ConfigConstants.PERSON_STATUS_ATTRIBUTE_TYPE_DESCRIPTION);
+        attributeType.setUuid(ConfigConstants.PERSON_STATUS_ATTRIBUTE_TYPE_UUID);
+        createPersonAttributeTypeIfNotExists(attributeType);
+    }
+
+    private void createPersonStatusReasonAttributeType() {
+        PersonAttributeType attributeType = new PersonAttributeType();
+        attributeType.setName(ConfigConstants.PERSON_STATUS_REASON_ATTRIBUTE_TYPE_NAME);
+        attributeType.setFormat(ConfigConstants.PERSON_STATUS_REASON_ATTRIBUTE_TYPE_FORMAT);
+        attributeType.setDescription(ConfigConstants.PERSON_STATUS_REASON_ATTRIBUTE_TYPE_DESCRIPTION);
+        attributeType.setUuid(ConfigConstants.PERSON_STATUS_REASON_ATTRIBUTE_TYPE_UUID);
         createPersonAttributeTypeIfNotExists(attributeType);
     }
 

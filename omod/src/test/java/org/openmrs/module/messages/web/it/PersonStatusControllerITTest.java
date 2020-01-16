@@ -52,13 +52,13 @@ public class PersonStatusControllerITTest extends BaseModuleWebContextSensitiveW
     private static final String ACTUAL_STATUS = PersonStatus.ACTIVE.name();
 
     private static final String EXPECTED_ACTIVE_STYLE =
-            "style=\"background-color: #51a351; border-color: #51a351; color: #f5f5f5; \"";
+            "background-color: #51a351; border-color: #51a351; color: #f5f5f5;";
 
     private static final String EXPECTED_MISSING_STYLE =
-            "style=\"background-color: #EEA616; border-color: #EEA616; color: #f5f5f5; \"";
+            "background-color: #EEA616; border-color: #EEA616; color: #f5f5f5;";
 
     private static final String EXPECTED_DEACTIVATE_STYLE =
-            "style=\"background-color: #f23722; border-color: #f23722; color: #f5f5f5; \"";
+            "background-color: #f23722; border-color: #f23722; color: #f5f5f5;";
 
     private static final String NOT_EXIST_PERSON = "8124263d-d1ec-4be5-bf62-502ab125d076";
 
@@ -87,7 +87,7 @@ public class PersonStatusControllerITTest extends BaseModuleWebContextSensitiveW
         PersonAttributeType contactTimeAttributeType = personService.getPersonAttributeTypeByUuid(
                 ConfigConstants.PERSON_CONTACT_TIME_TYPE_UUID);
         PersonAttributeType personStatusAttributeType = personService.getPersonAttributeTypeByUuid(
-                ConfigConstants.PATIENT_STATUS_ATTRIBUTE_TYPE_UUID);
+                ConfigConstants.PERSON_STATUS_ATTRIBUTE_TYPE_UUID);
 
         PersonAttribute voidedContactTime = new PersonAttribute(contactTimeAttributeType, VOIDED_CONTACT_TIME);
         person.addAttribute(voidedContactTime);
@@ -159,16 +159,13 @@ public class PersonStatusControllerITTest extends BaseModuleWebContextSensitiveW
         mockMvc.perform(put(String.format(BASE_URL_PATTERN, person.getUuid()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json(status)))
-                .andExpect(status().is(org.apache.http.HttpStatus.SC_OK));
-
-        mockMvc.perform(get(String.format(BASE_URL_PATTERN, person.getUuid())))
-                .andExpect(status().is(HttpStatus.OK.value()))
+                .andExpect(status().is(org.apache.http.HttpStatus.SC_OK))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.personId").value(person.getUuid()))
                 .andExpect(jsonPath("$.title").value(PersonStatus.DEACTIVATE.getTitleKey()))
                 .andExpect(jsonPath("$.value").value(PersonStatus.DEACTIVATE.name()))
                 .andExpect(jsonPath("$.style").value(EXPECTED_DEACTIVATE_STYLE))
-                .andExpect(jsonPath("$.reason").value(nullValue()));
+                .andExpect(jsonPath("$.reason").value(TEST_REASON));
     }
 
     private String json(Object obj) throws IOException {

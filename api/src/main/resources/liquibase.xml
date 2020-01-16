@@ -1111,6 +1111,7 @@
                 ]]>
         </sql>
     </changeSet>
+
     <changeSet id="messages-35" author="Michał Lewandowski">
         <preConditions>
             <tableExists tableName="messages_template"/>
@@ -1177,6 +1178,25 @@
             order by 1 desc;'
             where name = 'Visit reminder';
         </sql>
+    </changeSet>
+
+    <changeSet id="messages-36" author="Arkadiusz Lalo">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_property"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from global_property
+                where property = 'message.personStatus.configuration'
+            </sqlCheck>
+        </preConditions>
+
+        <comment>Resets message.personStatus.configuration to the default value (the property structure and its description
+            have been changed). It is in order to apply the new changes to all already existing environments. The
+            migration can be removed if the liquibase refactor will be conducted (eg. replacing all changes by one
+            changeSet).</comment>
+
+        <delete tableName="global_property">
+            <where>property='message.personStatus.configuration'</where>
+        </delete>
     </changeSet>
 </databaseChangeLog>
 

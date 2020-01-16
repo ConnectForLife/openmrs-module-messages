@@ -51,7 +51,7 @@ public class PersonAttributeUtilITTest extends ContextSensitiveWithActivatorTest
         PersonAttributeType contactTimeAttributeType = personService.getPersonAttributeTypeByUuid(
                 ConfigConstants.PERSON_CONTACT_TIME_TYPE_UUID);
         PersonAttributeType personStatusAttributeType = personService.getPersonAttributeTypeByUuid(
-                ConfigConstants.PATIENT_STATUS_ATTRIBUTE_TYPE_UUID);
+                ConfigConstants.PERSON_STATUS_ATTRIBUTE_TYPE_UUID);
 
         PersonAttribute voidedContactTime = new PersonAttribute(contactTimeAttributeType, VOIDED_CONTACT_TIME);
         person.addAttribute(voidedContactTime);

@@ -7,7 +7,7 @@ import { Moment } from 'moment';
 import moment from 'moment';
 
 export class ServiceResultUI extends ObjectUI<IServiceResult> implements IServiceResult {
-  executionDate: Moment | null;;
+  executionDate: Moment | null;
   messageId: Object;
   channelId: number | null;
   serviceStatus: ServiceStatus;

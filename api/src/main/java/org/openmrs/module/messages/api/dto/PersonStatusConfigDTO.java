@@ -20,9 +20,7 @@ public class PersonStatusConfigDTO implements Serializable {
 
     private String name;
 
-    private String backgroundColor;
-
-    private String textColor;
+    private String style;
 
     public String getName() {
         return name;
@@ -33,21 +31,12 @@ public class PersonStatusConfigDTO implements Serializable {
         return this;
     }
 
-    public String getBackgroundColor() {
-        return backgroundColor;
+    public String getStyle() {
+        return style;
     }
 
-    public PersonStatusConfigDTO setBackgroundColor(String backgroundColor) {
-        this.backgroundColor = backgroundColor;
-        return this;
-    }
-
-    public String getTextColor() {
-        return textColor;
-    }
-
-    public PersonStatusConfigDTO setTextColor(String textColor) {
-        this.textColor = textColor;
+    public PersonStatusConfigDTO setStyle(String style) {
+        this.style = style;
         return this;
     }
 

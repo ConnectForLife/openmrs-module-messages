@@ -50,13 +50,14 @@ public class ConfigServiceImplTest extends ContextSensitiveTest {
 
     private static final String EXPECTED_DEFAULT_RELATIONSHIP_DIRECTION = RelationshipTypeDirection.A.name();
 
-    private static final String TEXT_COLOR = "#f5f5f5";
+    private static final String EXPECTED_ACTIVE_STYLE =
+            "background-color: #51a351; border-color: #51a351; color: #f5f5f5;";
 
-    private static final String NO_CONSENT_BACKGROUND_COLOR = "#EEA616";
+    private static final String EXPECTED_MISSING_STYLE =
+            "background-color: #EEA616; border-color: #EEA616; color: #f5f5f5;";
 
-    private static final String ACTIVE_BACKGROUND_COLOR = "#51a351";
-
-    private static final String MISSING_VALUE_BACKGROUND_COLOR = "#EEA616";
+    private static final String EXPECTED_NO_CONSENT_STYLE =
+            "background-color: #EEA616; border-color: #EEA616; color: #f5f5f5;";
 
     private PersonStatusConfigDTO noConsentConfig;
 
@@ -157,18 +158,15 @@ public class ConfigServiceImplTest extends ContextSensitiveTest {
         personStatusConfigDTOS = new ArrayList<>();
         noConsentConfig = new PersonStatusConfigDTO()
                 .setName(PersonStatus.NO_CONSENT.name())
-                .setBackgroundColor(NO_CONSENT_BACKGROUND_COLOR)
-                .setTextColor(TEXT_COLOR);
+                .setStyle(EXPECTED_NO_CONSENT_STYLE);
         personStatusConfigDTOS.add(noConsentConfig);
         personStatusConfigDTOS.add(
                 new PersonStatusConfigDTO()
                         .setName(PersonStatus.ACTIVE.name())
-                        .setBackgroundColor(ACTIVE_BACKGROUND_COLOR)
-                        .setTextColor(TEXT_COLOR));
+                        .setStyle(EXPECTED_ACTIVE_STYLE));
         personStatusConfigDTOS.add(
                 new PersonStatusConfigDTO()
                         .setName(PersonStatus.MISSING_VALUE.name())
-                        .setBackgroundColor(MISSING_VALUE_BACKGROUND_COLOR)
-                        .setTextColor(TEXT_COLOR));
+                        .setStyle(EXPECTED_MISSING_STYLE));
     }
 }

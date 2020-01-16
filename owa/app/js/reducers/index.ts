@@ -15,6 +15,7 @@ import calendar, { CalendarState } from './calendar.reducer';
 import actor, { ActorState } from './actor.reducer';
 import patient, { PatientState } from './patient.reducer';
 import adminSettings, { AdminSettingsState } from './admin-settings.reducer';
+import personStatus, { PersonState } from './person-status.reducer';
 
 export interface IRootState {
   readonly openmrs: any;
@@ -24,6 +25,7 @@ export interface IRootState {
   readonly actor: ActorState;
   readonly patient: PatientState;
   readonly adminSettings: AdminSettingsState;
+  readonly personStatus: PersonState;
 }
 
 export default combineReducers<IRootState>({
@@ -33,5 +35,6 @@ export default combineReducers<IRootState>({
   calendar,
   actor,
   patient,
-  adminSettings
+  adminSettings,
+  personStatus
 });

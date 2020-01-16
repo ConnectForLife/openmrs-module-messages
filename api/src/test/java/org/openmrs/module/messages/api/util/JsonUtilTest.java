@@ -20,23 +20,19 @@ public class JsonUtilTest {
     private static final String STRING_LIST = "[\n"
             + "  {\n"
             + "    \"name\": \"NO_CONSENT\",\n"
-            + "    \"backgroundColor\": \"#EEA616\",\n"
-            + "    \"textColor\": \"#f5f5f5\"\n"
+            + "    \"style\": \"background-color: #EEA616; border-color: #EEA616; color: #f5f5f5;\""
             + "  },\n"
             + "  {\n"
             + "    \"name\": \"ACTIVE\",\n"
-            + "    \"backgroundColor\": \"#51a351\",\n"
-            + "    \"textColor\": \"#f5f5f5\"\n"
+            + "    \"style\": \"background-color: #51a351; border-color: #51a351; color: #f5f5f5;\""
             + "  },\n"
             + "  {\n"
             + "    \"name\": \"DEACTIVATE\",\n"
-            + "    \"backgroundColor\": \"#f23722\",\n"
-            + "    \"textColor\": \"#f5f5f5\"\n"
+            + "    \"style\": \"background-color: #f23722; border-color: #f23722; color: #f5f5f5;\""
             + "  },\n"
             + "  {\n"
             + "    \"name\": \"MISSING_VALUE\",\n"
-            + "    \"backgroundColor\": \"#EEA616\",\n"
-            + "    \"textColor\": \"#f5f5f5\"\n"
+            + "    \"style\": \"background-color: #EEA616; border-color: #EEA616; color: #f5f5f5;\""
             + "  }\n"
             + "]";
 
@@ -50,15 +46,17 @@ public class JsonUtilTest {
     private static final List<PersonStatusConfigDTO> EXPECTED_LIST = new ArrayList<PersonStatusConfigDTO>();
     private static final Map<String, String> EXPECTED_MAP = new HashMap<String, String>();
 
-    private static final String TEXT_COLOR = "#f5f5f5";
+    private static final String EXPECTED_ACTIVE_STYLE =
+            "background-color: #51a351; border-color: #51a351; color: #f5f5f5;";
 
-    private static final String NO_CONSENT_BACKGROUND_COLOR = "#EEA616";
+    private static final String EXPECTED_MISSING_STYLE =
+            "background-color: #EEA616; border-color: #EEA616; color: #f5f5f5;";
 
-    private static final String ACTIVE_BACKGROUND_COLOR = "#51a351";
+    private static final String EXPECTED_DEACTIVATE_STYLE =
+            "background-color: #f23722; border-color: #f23722; color: #f5f5f5;";
 
-    private static final String DEACTIVATE_BACKGROUND_COLOR = "#f23722";
-
-    private static final String MISSING_VALUE_BACKGROUND_COLOR = "#EEA616";
+    private static final String EXPECTED_NO_CONSENT_STYLE =
+            "background-color: #EEA616; border-color: #EEA616; color: #f5f5f5;";
 
     @Before
     public void setUp() {
@@ -107,22 +105,18 @@ public class JsonUtilTest {
         EXPECTED_LIST.add(
                 new PersonStatusConfigDTO()
                         .setName(PersonStatus.NO_CONSENT.name())
-                        .setBackgroundColor(NO_CONSENT_BACKGROUND_COLOR)
-                        .setTextColor(TEXT_COLOR));
+                        .setStyle(EXPECTED_NO_CONSENT_STYLE));
         EXPECTED_LIST.add(
                 new PersonStatusConfigDTO()
                         .setName(PersonStatus.ACTIVE.name())
-                        .setBackgroundColor(ACTIVE_BACKGROUND_COLOR)
-                        .setTextColor(TEXT_COLOR));
+                        .setStyle(EXPECTED_ACTIVE_STYLE));
         EXPECTED_LIST.add(
                 new PersonStatusConfigDTO()
                         .setName(PersonStatus.DEACTIVATE.name())
-                        .setBackgroundColor(DEACTIVATE_BACKGROUND_COLOR)
-                        .setTextColor(TEXT_COLOR));
+                        .setStyle(EXPECTED_DEACTIVATE_STYLE));
         EXPECTED_LIST.add(
                 new PersonStatusConfigDTO()
                         .setName(PersonStatus.MISSING_VALUE.name())
-                        .setBackgroundColor(MISSING_VALUE_BACKGROUND_COLOR)
-                        .setTextColor(TEXT_COLOR));
+                        .setStyle(EXPECTED_MISSING_STYLE));
     }
 }

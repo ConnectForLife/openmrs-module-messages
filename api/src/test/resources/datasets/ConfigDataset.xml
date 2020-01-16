@@ -30,18 +30,15 @@
             property_value='[
               {
                 "name": "NO_CONSENT",
-                "backgroundColor": "#EEA616",
-                "textColor": "#f5f5f5"
+                "style": "background-color: #EEA616; border-color: #EEA616; color: #f5f5f5;"
               },
               {
                 "name": "ACTIVE",
-                "backgroundColor": "#51a351",
-                "textColor": "#f5f5f5"
+                "style": "background-color: #51a351; border-color: #51a351; color: #f5f5f5;"
               },
               {
                 "name": "MISSING_VALUE",
-                "backgroundColor": "#EEA616",
-                "textColor": "#f5f5f5"
+                "style": "background-color: #EEA616; border-color: #EEA616; color: #f5f5f5;"
               }
             ]'
             uuid="82fe3664-08d5-429d-bbce-2e738d789b8c"/>

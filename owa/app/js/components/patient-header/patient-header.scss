@@ -1,0 +1,46 @@
+.patient-header-container {
+  border-bottom: 2px solid #eee;
+  background: #f9f9f9;
+
+  .patient-header {
+    border-bottom: none;
+
+    .identifiers {
+      em {
+        max-width: 170px;
+        min-width: 120px;
+        display: inline-block;
+        color: #888;
+        font-style: normal;
+        font-size: 0.9em;
+        border-bottom: 1px solid #ddd;
+        border-bottom-width: 1px;
+        text-align: right;
+        margin-left: 20px;
+      }
+    }
+
+    .identifiers-number {
+      span {
+        background: #666666;
+        color: white;
+        letter-spacing: 1px;
+        margin: 2px;
+        display: inline-block;
+        padding: 2px 8px;
+        font-size: 0.8em;
+        -webkit-border-radius: 50px;
+        -moz-border-radius: 50px;
+        border-radius: 50px;
+      }
+    }
+  }
+
+  .patient-header-second-line {
+    margin: 9px;
+
+    p {
+      margin: 0px;
+    }
+  }
+}

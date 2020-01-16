@@ -65,7 +65,7 @@ public class InitialPersonAttributeListener extends PeopleActionListener {
 
     private PersonAttributeType getStatusType() {
         return getPersonService().getPersonAttributeTypeByUuid(
-                ConfigConstants.PATIENT_STATUS_ATTRIBUTE_TYPE_UUID);
+                ConfigConstants.PERSON_STATUS_ATTRIBUTE_TYPE_UUID);
     }
 
     private PersonStatus getInitialValue() {

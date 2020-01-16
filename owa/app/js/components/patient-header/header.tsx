@@ -6,12 +6,14 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
+
 import React from 'react';
 import { connect } from 'react-redux';
 import { IRootState } from '../../reducers';
 import { PatientHeader } from '@openmrs/react-components';
 import { getPatient } from '../../reducers/patient.reducer'
-import { Accordion } from '@openmrs/react-components';
+import PersonStatus from './person-status/person-status';
+import './patient-header.scss';
 
 interface IHeaderProps extends DispatchProps, StateProps {
   patientUuid: string;
@@ -28,14 +30,17 @@ class Header extends React.Component<IHeaderProps> {
 
   render() {
     return (
-      <>
-        {!this.props.patientLoading && !!this.props.patient &&
-          <PatientHeader
-            patient={this.props.patient}
-            note={[]}
-          />
-        } 
-      </>
+      <div className="patient-header-container">
+        {!this.props.patientLoading && !!this.props.patient && (
+          <>
+            <PatientHeader
+              patient={this.props.patient}
+              note={[]}
+            />
+            <PersonStatus patientUuid={this.props.patientUuid} />
+          </>
+        )}
+      </div>
     );
   }
 }

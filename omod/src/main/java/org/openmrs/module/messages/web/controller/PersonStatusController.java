@@ -48,8 +48,11 @@ public class PersonStatusController extends BaseRestController {
 
     @RequestMapping(value = "/{personId}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
-    public void updatePersonStatus(@PathVariable("personId") String personId, @RequestBody PersonStatusDTO personStatusDTO) {
+    @ResponseBody
+    public PersonStatusDTO updatePersonStatus(@PathVariable("personId") String personId,
+            @RequestBody PersonStatusDTO personStatusDTO) {
         personStatusDTO.setPersonId(personId);
         personStatusHelper.saveStatus(personStatusDTO);
+        return personStatusHelper.getStatus(personId);
     }
 }
