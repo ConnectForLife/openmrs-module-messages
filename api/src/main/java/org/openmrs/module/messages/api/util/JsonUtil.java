@@ -61,5 +61,16 @@ public final class JsonUtil {
         return getGson().fromJson(source, mapType.getType());
     }
 
+    /**
+     * Convert map from Java HashMap to string JSON representation
+     * @param source - map to be stringified
+     * @param <K> - the source map key type
+     * @param <V> - the source map value type
+     * @return - the Java representation of map
+     */
+    public static <K, V> String fromMap(Map<K, V> source) {
+        return getGson().toJson(source);
+    }
+
     private JsonUtil() { }
 }

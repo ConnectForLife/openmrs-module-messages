@@ -1,5 +1,5 @@
 import { REQUEST, SUCCESS, FAILURE } from './action-type.util';
-import { handleRequest } from '@bit/soldevelo-omrs.cfl-components.request-toast-handler';
+import { handleRequest, handleRequestFailure, initRequestHandling, continueRequestHandling } from '@bit/soldevelo-omrs.cfl-components.request-toast-handler';
 import _ from 'lodash';
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -15,9 +15,10 @@ export const ACTION_TYPES = {
   GET_TEMPLATES: 'adminSettingsReducer/GET_TEMPLATES',
   GET_ACTOR_TYPES: 'adminSettingsReducer/GET_ACTOR_TYPES',
   GET_DEFAULT_CONTACT_TIMES: 'adminSettingsReducer/GET_DEFAULT_CONTACT_TIMES',
-  PUT_DEFAULT_CONTACT_TIMES: 'adminSettingsReducer/PUT_DEFAULT_CONTACT_TIMES',
   UPDATE_TEMPLATES: 'adminSettingsReducer/UPDATE_TEMPLATE',
+  UPDATE_DEFAULT_CONTACT_TIMES: 'adminSettingsReducer/UPDATE_DEFAULT_CONTACT_TIMES',
   PUT_TEMPLATES: 'adminSettingsReducer/PUT_TEMPLATE',
+  PUT_DEFAULT_CONTACT_TIMES: 'adminSettingsReducer/PUT_DEFAULT_CONTACT_TIMES',
   RESET: 'adminSettingsReducer/RESET'
 };
 
@@ -69,6 +70,7 @@ export default (state = initialState, action): AdminSettingsState => {
         defaultBestContactTimes: _.map(action.payload.data, mapFromRequest)
       };
     case SUCCESS(ACTION_TYPES.PUT_TEMPLATES):
+    case SUCCESS(ACTION_TYPES.PUT_DEFAULT_CONTACT_TIMES):
       return {
         ...state,
         loading: false
@@ -77,6 +79,11 @@ export default (state = initialState, action): AdminSettingsState => {
       return {
         ...state,
         defaultTemplates: <Array<TemplateUI>>mergeWithObjectUIs(state.defaultTemplates, action.payload as TemplateUI)
+      };
+    case ACTION_TYPES.UPDATE_DEFAULT_CONTACT_TIMES:
+      return {
+        ...state,
+        defaultBestContactTimes: action.payload
       };
     case ACTION_TYPES.RESET:
       return {
@@ -92,6 +99,12 @@ const templatesUrl = `${baseUrl}/templates`;
 const actorUrl = `${baseUrl}/actor`;
 const defaultContactTimesUrl = `${actorUrl}/contact-times/default`;
 const actorTypesUrl = `${actorUrl}/types`;
+
+export const getConfig = () => async (dispatch) => {
+  await dispatch(getTemplates());
+  await dispatch(getBestContactTimes());
+  await dispatch(getActorTypes());
+}
 
 export const getTemplates = () => ({
   type: ACTION_TYPES.GET_TEMPLATES,
@@ -114,14 +127,30 @@ export const updateTemplate = (template: TemplateUI) => async (dispatch) =>
     payload: await template
   });
 
-export const putTemplates = (templates: Array<TemplateUI>) => async (dispatch) => {
-  const body = {
-    type: ACTION_TYPES.PUT_TEMPLATES,
-    payload: axiosInstance.put(templatesUrl, { templates: _.map(templates, toModel) })
-  }
-  await handleRequest(dispatch, body, Msg.GENERIC_SUCCESS, Msg.GENERIC_FAILURE);
-  dispatch(getTemplates());
+export const updateBestContactTime = (defaultBestContactTimes: Array<IDefaultBestContactTime>) => async (dispatch) =>
+  dispatch({
+    type: ACTION_TYPES.UPDATE_DEFAULT_CONTACT_TIMES,
+    payload: await defaultBestContactTimes
+  });
+
+export const saveConfig = (templates: Array<TemplateUI>, contactTimes: Array<IDefaultBestContactTime>) => async (dispatch) => {
+  const toastId = initRequestHandling();
+  await dispatch(putDefaultContactTimes(contactTimes)).then(
+    response => dispatch(putTemplates(templates)).then(
+      response => continueRequestHandling(toastId, dispatch, getConfig(), Msg.GENERIC_SUCCESS, Msg.GENERIC_FAILURE),
+      error => handleRequestFailure(error, toastId, Msg.GENERIC_FAILURE)),
+    error => handleRequestFailure(error, toastId, Msg.GENERIC_FAILURE))
 }
+
+export const putDefaultContactTimes = (contactTimes: Array<IDefaultBestContactTime>) => ({
+  type: ACTION_TYPES.PUT_DEFAULT_CONTACT_TIMES,
+  payload: axiosInstance.put(defaultContactTimesUrl, { records: contactTimes })
+});
+
+export const putTemplates = (templates: Array<TemplateUI>) => ({
+  type: ACTION_TYPES.PUT_TEMPLATES,
+  payload: axiosInstance.put(templatesUrl, { templates: _.map(templates, toModel) })
+});
 
 export const reset = () => ({
   type: ACTION_TYPES.RESET

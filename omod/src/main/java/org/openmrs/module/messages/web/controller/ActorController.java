@@ -14,6 +14,7 @@ import org.openmrs.module.messages.api.mappers.ActorMapper;
 import org.openmrs.module.messages.api.mappers.ActorTypeMapper;
 import org.openmrs.module.messages.api.service.ActorService;
 import org.openmrs.module.messages.api.util.BestContactTimeHelper;
+import org.openmrs.module.messages.web.model.DefaultContactTimeWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -87,6 +88,13 @@ public class ActorController extends BaseRestController {
     @ResponseBody
     public List<DefaultContactTimeDTO> getBestContactTimes() {
         return BestContactTimeHelper.getDefaultContactTimes();
+    }
+
+    @RequestMapping(value = "/contact-times/default", method = RequestMethod.PUT)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public void setBestContactTimes(@RequestBody DefaultContactTimeWrapper contactTimes) {
+        BestContactTimeHelper.setDefaultContactTimes(contactTimes.getRecords());
     }
 
     @RequestMapping(value = "/contact-time", method = RequestMethod.POST)

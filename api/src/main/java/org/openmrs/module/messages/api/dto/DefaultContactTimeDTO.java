@@ -22,6 +22,8 @@ public class DefaultContactTimeDTO implements Serializable {
 
     private String time;
 
+    public DefaultContactTimeDTO() { }
+
     public DefaultContactTimeDTO(String actor, String time) {
         this.actor = actor;
         this.time = time;

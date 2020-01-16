@@ -12,7 +12,7 @@ import DefaultSettingsTable from './default-settings/default-settings-table';
 import { connect } from 'react-redux';
 
 import { IRootState } from '../reducers';
-import { getTemplates, putTemplates, getBestContactTimes, getActorTypes } from '../reducers/admin-settings.reducer';
+import { getConfig, saveConfig } from '../reducers/admin-settings.reducer';
 import { Button } from 'react-bootstrap';
 import * as Msg from '../shared/utils/messages';
 import BestContactTime from './default-settings/default-best-contact-time';
@@ -21,36 +21,28 @@ interface IProps extends StateProps, DispatchProps { }
 
 class AppManagement extends React.Component<IProps> {
 
-    componentDidMount = () => {
-        this.props.getActorTypes();
-        this.props.getBestContactTimes();
-        this.props.getTemplates();
-    }
+    componentDidMount = () => this.props.getConfig();
 
-    // todo in CFLM-517: save best contact time as well
-    handleSave = () => this.props.putTemplates(this.props.templates);
+    handleSave = () => this.props.saveConfig(this.props.templates, this.props.defaultBestContactTimes);
 
-    render() {
-        return (
-            <div className="body-wrapper">
-                <div className="content">
-                    <h3>{Msg.DEFAULT_SETTINGS}</h3>
-                    <BestContactTime
-                        loading={this.props.loading}
-                        bestContactTimes={this.props.defaultBestContactTimes}
-                        actorTypes={this.props.actorTypes} />
-                    <DefaultSettingsTable templates={this.props.templates} />
-                    <div className="flex-justify-end u-mt-8">
-                        <Button
-                            className="btn btn-success btn-md"
-                            onClick={this.handleSave}>
-                            {Msg.SAVE_BUTTON_LABEL}
-                        </Button>
-                    </div>
+    render = () =>
+        <div className="body-wrapper">
+            <div className="content">
+                <h3>{Msg.DEFAULT_SETTINGS}</h3>
+                <BestContactTime
+                    loading={this.props.loading}
+                    bestContactTimes={this.props.defaultBestContactTimes}
+                    actorTypes={this.props.actorTypes} />
+                <DefaultSettingsTable templates={this.props.templates} />
+                <div className="flex-justify-end u-mt-8">
+                    <Button
+                        className="btn btn-success btn-md"
+                        onClick={this.handleSave}>
+                        {Msg.SAVE_BUTTON_LABEL}
+                    </Button>
                 </div>
             </div>
-        );
-    };
+        </div>
 };
 
 const mapStateToProps = ({ adminSettings }: IRootState) => ({
@@ -61,10 +53,8 @@ const mapStateToProps = ({ adminSettings }: IRootState) => ({
 });
 
 const mapDispatchToProps = ({
-    getTemplates,
-    putTemplates,
-    getBestContactTimes,
-    getActorTypes
+    getConfig,
+    saveConfig
 });
 
 type StateProps = ReturnType<typeof mapStateToProps>;

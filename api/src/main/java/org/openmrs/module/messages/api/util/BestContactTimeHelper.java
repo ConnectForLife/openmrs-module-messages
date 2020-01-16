@@ -11,12 +11,23 @@ import org.openmrs.module.messages.api.constants.ConfigConstants;
 import org.openmrs.module.messages.api.dto.DefaultContactTimeDTO;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public final class BestContactTimeHelper {
 
     private static final Log LOG = LogFactory.getLog(BestContactTimeHelper.class);
+
+    public static void setDefaultContactTimes(List<DefaultContactTimeDTO> contactTimes) {
+        Map<String, String> newValue = new HashMap<String, String>();
+
+        for (DefaultContactTimeDTO contactTime : contactTimes) {
+            newValue.put(contactTime.getActor(), contactTime.getTime());
+        }
+
+        setBestContactTimeProperty(JsonUtil.fromMap(newValue));
+    }
 
     public static List<DefaultContactTimeDTO> getDefaultContactTimes() {
         List<DefaultContactTimeDTO> result = new ArrayList<>();
@@ -58,6 +69,10 @@ public final class BestContactTimeHelper {
 
     private static String getBestContactTimeProperty() {
         return Context.getAdministrationService().getGlobalProperty(ConfigConstants.BEST_CONTACT_TIME_KEY);
+    }
+
+    private static void setBestContactTimeProperty(String newValue) {
+        Context.getAdministrationService().setGlobalProperty(ConfigConstants.BEST_CONTACT_TIME_KEY, newValue);
     }
 
     private BestContactTimeHelper() {

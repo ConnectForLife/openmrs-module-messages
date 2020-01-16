@@ -10,7 +10,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { updateTemplate } from '../../reducers/admin-settings.reducer';
+import { updateTemplate, updateBestContactTime } from '../../reducers/admin-settings.reducer';
 import { IDefaultBestContactTime } from '../../shared/model/default-best-contact-time.model';
 import { IActorType } from '../../shared/model/actor-type.model';
 import { TimePicker } from 'antd';
@@ -27,33 +27,41 @@ interface IProps extends DispatchProps {
 
 class BestContactTime extends React.Component<IProps> {
 
-  onTimeChange = (time: Moment, timeString: string, actor: IDefaultBestContactTime | undefined) => {
-    // todo in CFLM-517: handle change
+  onTimeChange = (time: Moment, contactTimeId: number, actor: string) => {
+    const updated = _.clone(this.props.bestContactTimes) as Array<IDefaultBestContactTime>;
+    if (contactTimeId === -1) {
+      updated.push({ actor, time });
+    } else {
+      updated[contactTimeId].time = time;
+    }
+    this.props.updateBestContactTime(updated);
+  }
+
+  renderTimePicker = (key: string, label: string, contactTimeId: number, defaultTime: Moment, actor: string) => {
+    const contactTime = this.props.bestContactTimes[contactTimeId];
+    return (
+      <div className="time-section" key={key}>
+        <span>{label}</span>
+        <TimePicker
+          value={contactTime ? contactTime.time : defaultTime}
+          onChange={date => this.onTimeChange(date, contactTimeId, actor)}
+          format="HH:mm" />
+      </div>);
   }
 
   renderTimePickers = () => {
     const { bestContactTimes, actorTypes } = this.props;
-    const patientContactTime = _.find(bestContactTimes, a => a.actor === 'global');
+    const patientContactTimeId = _.findIndex(bestContactTimes, a => a.actor === 'global');
+    let defaultTime = moment();
+    if (patientContactTimeId !== -1 && bestContactTimes[patientContactTimeId].time) {
+      defaultTime = bestContactTimes[patientContactTimeId].time!;
+    }
     return (
       <div className="sections">
-        <div className="time-section" key={`patient-time-section`}>
-          <span>{"Patient"}</span>
-          <TimePicker
-            value={patientContactTime ? patientContactTime.time : moment()}
-            onChange={(date, dateString) => this.onTimeChange(date, dateString, patientContactTime)}
-            format="HH:mm" />
-        </div>
+        {this.renderTimePicker("patient-time-section", "Patient", patientContactTimeId, defaultTime, 'global')}
         {actorTypes.map((type, i) => {
-          let contactTime = _.find(bestContactTimes, a => a.actor === type.uuid);
-          return (
-            <div className="time-section" key={`time-section-${i}`}>
-              <span>{type.display}</span>
-              <TimePicker
-                value={contactTime ? contactTime.time : moment()}
-                onChange={(date, dateString) => this.onTimeChange(date, dateString, contactTime)}
-                format="HH:mm" />
-            </div>
-          )
+          let contactTimeId = _.findIndex(bestContactTimes, a => a.actor === type.uuid);
+          return (this.renderTimePicker(`time-section-${i}`, type.display, contactTimeId, defaultTime, type.uuid))
         })}
       </div>
     );
@@ -74,6 +82,7 @@ class BestContactTime extends React.Component<IProps> {
 
 const mapDispatchToProps = ({
   updateTemplate,
+  updateBestContactTime
 });
 
 type DispatchProps = typeof mapDispatchToProps;
