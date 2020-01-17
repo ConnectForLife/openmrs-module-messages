@@ -1,14 +1,5 @@
 package org.openmrs.module.messages.web.it;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.io.IOException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,6 +23,16 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.io.IOException;
+
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @WebAppConfiguration
 public class PersonStatusControllerITTest extends BaseModuleWebContextSensitiveWithActivatorTest {
 
@@ -49,9 +50,9 @@ public class PersonStatusControllerITTest extends BaseModuleWebContextSensitiveW
 
     private static final String VOIDED_STATUS = PersonStatus.NO_CONSENT.name();
 
-    private static final String ACTUAL_STATUS = PersonStatus.ACTIVE.name();
+    private static final String ACTUAL_STATUS = PersonStatus.ACTIVATED.name();
 
-    private static final String EXPECTED_ACTIVE_STYLE =
+    private static final String EXPECTED_ACTIVATED_STYLE =
             "background-color: #51a351; border-color: #51a351; color: #f5f5f5;";
 
     private static final String EXPECTED_MISSING_STYLE =
@@ -67,6 +68,10 @@ public class PersonStatusControllerITTest extends BaseModuleWebContextSensitiveW
     private static final String TEST_REASON = "The status was changed for test reason";
 
     private static final String EXPECTED_ERROR = "Could not fetch person status for personId: %s";
+
+    private static final String NO_VALID_VALUE = "No value";
+
+    private static final String NO_VALID_VALUE_EXPECTED_ERROR = "Not valid value of status: %s";
 
     private Person person;
 
@@ -109,9 +114,9 @@ public class PersonStatusControllerITTest extends BaseModuleWebContextSensitiveW
                 .andExpect(status().is(HttpStatus.OK.value()))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.personId").value(is(person.getId().toString())))
-                .andExpect(jsonPath("$.title").value(is(PersonStatus.ACTIVE.getTitleKey())))
-                .andExpect(jsonPath("$.value").value(is(PersonStatus.ACTIVE.name())))
-                .andExpect(jsonPath("$.style").value(is(EXPECTED_ACTIVE_STYLE)))
+                .andExpect(jsonPath("$.title").value(is(PersonStatus.ACTIVATED.getTitleKey())))
+                .andExpect(jsonPath("$.value").value(is(PersonStatus.ACTIVATED.name())))
+                .andExpect(jsonPath("$.style").value(is(EXPECTED_ACTIVATED_STYLE)))
                 .andExpect(jsonPath("$.reason").value(is(nullValue())));
     }
 
@@ -121,9 +126,9 @@ public class PersonStatusControllerITTest extends BaseModuleWebContextSensitiveW
                 .andExpect(status().is(HttpStatus.OK.value()))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.personId").value(person.getUuid()))
-                .andExpect(jsonPath("$.title").value(PersonStatus.ACTIVE.getTitleKey()))
-                .andExpect(jsonPath("$.value").value(PersonStatus.ACTIVE.name()))
-                .andExpect(jsonPath("$.style").value(EXPECTED_ACTIVE_STYLE))
+                .andExpect(jsonPath("$.title").value(PersonStatus.ACTIVATED.getTitleKey()))
+                .andExpect(jsonPath("$.value").value(PersonStatus.ACTIVATED.name()))
+                .andExpect(jsonPath("$.style").value(EXPECTED_ACTIVATED_STYLE))
                 .andExpect(jsonPath("$.reason").value(nullValue()));
     }
 
@@ -153,7 +158,7 @@ public class PersonStatusControllerITTest extends BaseModuleWebContextSensitiveW
     public void shouldUpdateStatusAttribute() throws Exception {
         PersonStatusDTO status = new PersonStatusDTO()
                 .setPersonId(person.getUuid())
-                .setValue(PersonStatus.DEACTIVATE.name())
+                .setValue(PersonStatus.DEACTIVATED.name())
                 .setReason(TEST_REASON);
 
         mockMvc.perform(put(String.format(BASE_URL_PATTERN, person.getUuid()))
@@ -162,10 +167,44 @@ public class PersonStatusControllerITTest extends BaseModuleWebContextSensitiveW
                 .andExpect(status().is(org.apache.http.HttpStatus.SC_OK))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.personId").value(person.getUuid()))
-                .andExpect(jsonPath("$.title").value(PersonStatus.DEACTIVATE.getTitleKey()))
-                .andExpect(jsonPath("$.value").value(PersonStatus.DEACTIVATE.name()))
+                .andExpect(jsonPath("$.title").value(PersonStatus.DEACTIVATED.getTitleKey()))
+                .andExpect(jsonPath("$.value").value(PersonStatus.DEACTIVATED.name()))
                 .andExpect(jsonPath("$.style").value(EXPECTED_DEACTIVATE_STYLE))
                 .andExpect(jsonPath("$.reason").value(TEST_REASON));
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenNoValidStatusValue() throws Exception {
+        PersonStatusDTO status = new PersonStatusDTO()
+                .setPersonId(person.getUuid())
+                .setValue(NO_VALID_VALUE)
+                .setReason(TEST_REASON);
+
+        mockMvc.perform(put(String.format(BASE_URL_PATTERN, person.getUuid()))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json(status)))
+                .andExpect(content().contentType(Constant.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.errorMessages.[0].code")
+                        .value(ErrorMessageEnum.ERR_SYSTEM.getCode()))
+                .andExpect(jsonPath("$.errorMessages.[0].message")
+                        .value(String.format(NO_VALID_VALUE_EXPECTED_ERROR, NO_VALID_VALUE)));
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenMissingStatusValue() throws Exception {
+        PersonStatusDTO status = new PersonStatusDTO()
+                .setPersonId(person.getUuid())
+                .setValue(PersonStatus.MISSING_VALUE.name())
+                .setReason(TEST_REASON);
+
+        mockMvc.perform(put(String.format(BASE_URL_PATTERN, person.getUuid()))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json(status)))
+                .andExpect(content().contentType(Constant.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.errorMessages.[0].code")
+                        .value(ErrorMessageEnum.ERR_SYSTEM.getCode()))
+                .andExpect(jsonPath("$.errorMessages.[0].message")
+                        .value(String.format(NO_VALID_VALUE_EXPECTED_ERROR, PersonStatus.MISSING_VALUE.name())));
     }
 
     private String json(Object obj) throws IOException {

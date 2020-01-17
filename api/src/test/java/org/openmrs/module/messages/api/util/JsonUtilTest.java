@@ -23,11 +23,11 @@ public class JsonUtilTest {
             + "    \"style\": \"background-color: #EEA616; border-color: #EEA616; color: #f5f5f5;\""
             + "  },\n"
             + "  {\n"
-            + "    \"name\": \"ACTIVE\",\n"
+            + "    \"name\": \"ACTIVATED\",\n"
             + "    \"style\": \"background-color: #51a351; border-color: #51a351; color: #f5f5f5;\""
             + "  },\n"
             + "  {\n"
-            + "    \"name\": \"DEACTIVATE\",\n"
+            + "    \"name\": \"DEACTIVATED\",\n"
             + "    \"style\": \"background-color: #f23722; border-color: #f23722; color: #f5f5f5;\""
             + "  },\n"
             + "  {\n"
@@ -46,7 +46,7 @@ public class JsonUtilTest {
     private static final List<PersonStatusConfigDTO> EXPECTED_LIST = new ArrayList<PersonStatusConfigDTO>();
     private static final Map<String, String> EXPECTED_MAP = new HashMap<String, String>();
 
-    private static final String EXPECTED_ACTIVE_STYLE =
+    private static final String EXPECTED_ACTIVATED_STYLE =
             "background-color: #51a351; border-color: #51a351; color: #f5f5f5;";
 
     private static final String EXPECTED_MISSING_STYLE =
@@ -108,11 +108,11 @@ public class JsonUtilTest {
                         .setStyle(EXPECTED_NO_CONSENT_STYLE));
         EXPECTED_LIST.add(
                 new PersonStatusConfigDTO()
-                        .setName(PersonStatus.ACTIVE.name())
-                        .setStyle(EXPECTED_ACTIVE_STYLE));
+                        .setName(PersonStatus.ACTIVATED.name())
+                        .setStyle(EXPECTED_ACTIVATED_STYLE));
         EXPECTED_LIST.add(
                 new PersonStatusConfigDTO()
-                        .setName(PersonStatus.DEACTIVATE.name())
+                        .setName(PersonStatus.DEACTIVATED.name())
                         .setStyle(EXPECTED_DEACTIVATE_STYLE));
         EXPECTED_LIST.add(
                 new PersonStatusConfigDTO()

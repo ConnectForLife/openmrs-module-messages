@@ -65,16 +65,36 @@ export const CATEGORIES_MAP = {
 
 // Person status
 export const PERSON_STATUS_NO_CONSENT = 'No consent';
-export const PERSON_STATUS_ACTIVE = 'Active';
-export const PERSON_STATUS_DEACTIVATE = 'Deactivate';
+export const PERSON_STATUS_ACTIVATED = 'Activated';
+export const PERSON_STATUS_DEACTIVATED = 'Deactivated';
 export const PERSON_STATUS_MISSING_VALUE = 'Missing value';
 export const PERSON_STATUS_LABEL = 'Person status:';
-
-// Person status- modal
 export const PERSON_STATUS_MODAL_LABEL = 'Update the person status';
 export const PERSON_STATUS_MODAL_INSTRUCTION = 'Change person status';
 export const PERSON_STATUS_MODAL_FIELD_LABEL = 'Person status:';
 export const PERSON_STATUS_MODAL_REASON_FIELD_LABEL = 'Reason:';
+export const DEACTIVATED_KEY = 'DEACTIVATED';
+export const ACTIVATED_KEY = 'ACTIVATED';
+export const MISSING_VALUE_KEY = 'MISSING_VALUE';
+export const NO_CONSENT_KEY = 'NO_CONSENT';
+export const PERSON_STATUSES = {
+  NO_CONSENT: {
+    value: NO_CONSENT_KEY,
+    label: PERSON_STATUS_NO_CONSENT
+  },
+  ACTIVATED: {
+    value: ACTIVATED_KEY,
+    label: PERSON_STATUS_ACTIVATED
+  },
+  DEACTIVATED: {
+    value: DEACTIVATED_KEY,
+    label: PERSON_STATUS_DEACTIVATED
+  },
+  MISSING_VALUE_KEY: {
+    value: MISSING_VALUE_KEY,
+    label: PERSON_STATUS_MISSING_VALUE
+  }
+};
 
 export const CANCEL = 'Cancel';
 export const CONFIRM = 'Confirm';

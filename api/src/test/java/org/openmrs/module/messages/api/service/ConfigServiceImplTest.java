@@ -9,12 +9,6 @@
 
 package org.openmrs.module.messages.api.service;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.messages.ContextSensitiveTest;
@@ -25,6 +19,13 @@ import org.openmrs.module.messages.api.model.RelationshipTypeDirection;
 import org.openmrs.module.messages.api.strategy.ReschedulingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 public class ConfigServiceImplTest extends ContextSensitiveTest {
 
@@ -50,7 +51,7 @@ public class ConfigServiceImplTest extends ContextSensitiveTest {
 
     private static final String EXPECTED_DEFAULT_RELATIONSHIP_DIRECTION = RelationshipTypeDirection.A.name();
 
-    private static final String EXPECTED_ACTIVE_STYLE =
+    private static final String EXPECTED_ACTIVATED_STYLE =
             "background-color: #51a351; border-color: #51a351; color: #f5f5f5;";
 
     private static final String EXPECTED_MISSING_STYLE =
@@ -150,7 +151,7 @@ public class ConfigServiceImplTest extends ContextSensitiveTest {
 
     @Test
     public void shouldReturnNullPersonStatusConfigurationIfMissing() {
-        PersonStatusConfigDTO actual = configService.getPersonStatusConfiguration(PersonStatus.DEACTIVATE);
+        PersonStatusConfigDTO actual = configService.getPersonStatusConfiguration(PersonStatus.DEACTIVATED);
         assertThat(actual, is(nullValue()));
     }
 
@@ -162,8 +163,8 @@ public class ConfigServiceImplTest extends ContextSensitiveTest {
         personStatusConfigDTOS.add(noConsentConfig);
         personStatusConfigDTOS.add(
                 new PersonStatusConfigDTO()
-                        .setName(PersonStatus.ACTIVE.name())
-                        .setStyle(EXPECTED_ACTIVE_STYLE));
+                        .setName(PersonStatus.ACTIVATED.name())
+                        .setStyle(EXPECTED_ACTIVATED_STYLE));
         personStatusConfigDTOS.add(
                 new PersonStatusConfigDTO()
                         .setName(PersonStatus.MISSING_VALUE.name())

@@ -8,6 +8,6 @@
  */
 
  export interface IPersonStatusEntry {
-    title: string,
+    label: string,
     value: string
 }

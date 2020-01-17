@@ -4,7 +4,7 @@ changeStatus.updatePersonStatusDialog = null;
 
 changeStatus.handelChangedStatus = function(selectObject) {
     var value = selectObject.value;
-    if (value === 'DEACTIVATE') {
+    if (value === 'DEACTIVATED') {
         jq('.person-status-reason').show();
     } else {
         jq('.person-status-reason').hide();
@@ -34,7 +34,7 @@ changeStatus.submit = function() {
 
     if (!statusValue) {
         jq('#person-status-select-empty').css({'color' : 'red', display : 'inline'}).show();
-    } else if (statusValue === 'DEACTIVATE' && (!changeReason || changeReason.length === 0)) {
+    } else if (statusValue === 'DEACTIVATED' && (!changeReason || changeReason.length === 0)) {
         jq('#person-status-reason-field-empty').css({'color' : 'red', display : 'inline'}).show();
     } else {
         jq('#person-status-update-dialog' + ' .icon-spin').css('display', 'inline-block').parent().addClass('disabled');

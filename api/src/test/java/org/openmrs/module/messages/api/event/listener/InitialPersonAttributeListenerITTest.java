@@ -107,7 +107,7 @@ public class InitialPersonAttributeListenerITTest extends ContextSensitiveWithAc
         assertThat(person.getAttributes().size(), is(EXPECTED_SIZE));
         PersonAttribute attribute = getFirstAttribute(person);
         assertThat(attribute, hasProperty(Constant.UUID_KEY, notNullValue()));
-        assertThat(attribute, hasProperty(Constant.VALUE_KEY, is(PersonStatus.ACTIVE.name())));
+        assertThat(attribute, hasProperty(Constant.VALUE_KEY, is(PersonStatus.ACTIVATED.name())));
     }
 
     @Test
@@ -122,7 +122,7 @@ public class InitialPersonAttributeListenerITTest extends ContextSensitiveWithAc
         assertThat(patient.getAttributes().size(), is(EXPECTED_SIZE));
         PersonAttribute attribute = getFirstAttribute(patient);
         assertThat(attribute, hasProperty(Constant.UUID_KEY, notNullValue()));
-        assertThat(attribute, hasProperty(Constant.VALUE_KEY, is(PersonStatus.ACTIVE.name())));
+        assertThat(attribute, hasProperty(Constant.VALUE_KEY, is(PersonStatus.ACTIVATED.name())));
     }
 
     @Test(expected = MessagesRuntimeException.class)

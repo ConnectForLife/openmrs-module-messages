@@ -1198,6 +1198,7 @@
             <where>property='message.personStatus.configuration'</where>
         </delete>
     </changeSet>
+
     <changeSet id="messages-37" author="Michał Lewandowski">
         <sql>
             DROP FUNCTION IF EXISTS GET_PREDICTION_START_DATE_FOR_VISIT;
@@ -1322,105 +1323,105 @@
         <sql>
             INSERT INTO messages_template
             (
-                service_query, service_query_type, name, creator, uuid, date_created
+            service_query, service_query_type, name, creator, uuid, date_created
             )
             VALUES(
-                'SELECT EXECUTION_DATE, MESSAGE_ID, CHANNEL_ID, null as STATUS_ID FROM
-                (SELECT TIMESTAMP(selected_date, :bestContactTime) AS EXECUTION_DATE, 1 AS MESSAGE_ID, :Service_type AS CHANNEL_ID
-                FROM (SELECT * FROM (SELECT * FROM DATES_LIST) v
-                WHERE selected_date >= :Start_of_weekly_messages
-                AND selected_date &lt;= :End_of_weekly_messages
-                AND selected_date &lt;= :endDate
-                AND selected_date >= :startDate
-                AND :Week_day_of_delivering_message
-                like concat(\'%\',DAYNAME(selected_date),\'%\') ) dates ) temp
-                WHERE EXECUTION_DATE > GET_PREDICTION_START_DATE_FOR_ADHERENCE_WEEKLY(:patientId)
-                AND CHANNEL_ID != \'Deactivate service\'
-                UNION
-                SELECT mssg.msg_send_time as EXECUTION_DATE, 1 as MESSAGE_ID, mss.channel_type as CHANNEL_ID, mss.status as STATUS_ID
-                FROM messages_scheduled_service mss
-                JOIN messages_patient_template mpt on mpt.messages_patient_template_id = mss.patient_template_id
-                JOIN messages_template mt on mt.messages_template_id = mpt.template_id
-                JOIN messages_scheduled_service_group mssg on mssg.messages_scheduled_service_group_id = mss.group_id
-                WHERE mt.name = \'Adherence report weekly\'
-                AND mpt.patient_id = :patientId
-                AND mssg.msg_send_time >= :startDate
-                AND mssg.msg_send_time &lt;= :endDate
-                ORDER BY 1 DESC;',
-                'SQL',
-                'Adherence report weekly',
-                1,
-                '96d93c15-3884-11ea-b1e9-0242ac160002',
-                now()
+            'SELECT EXECUTION_DATE, MESSAGE_ID, CHANNEL_ID, null as STATUS_ID FROM
+            (SELECT TIMESTAMP(selected_date, :bestContactTime) AS EXECUTION_DATE, 1 AS MESSAGE_ID, :Service_type AS CHANNEL_ID
+            FROM (SELECT * FROM (SELECT * FROM DATES_LIST) v
+            WHERE selected_date >= :Start_of_weekly_messages
+            AND selected_date &lt;= :End_of_weekly_messages
+            AND selected_date &lt;= :endDate
+            AND selected_date >= :startDate
+            AND :Week_day_of_delivering_message
+            like concat(\'%\',DAYNAME(selected_date),\'%\') ) dates ) temp
+            WHERE EXECUTION_DATE > GET_PREDICTION_START_DATE_FOR_ADHERENCE_WEEKLY(:patientId)
+            AND CHANNEL_ID != \'Deactivate service\'
+            UNION
+            SELECT mssg.msg_send_time as EXECUTION_DATE, 1 as MESSAGE_ID, mss.channel_type as CHANNEL_ID, mss.status as STATUS_ID
+            FROM messages_scheduled_service mss
+            JOIN messages_patient_template mpt on mpt.messages_patient_template_id = mss.patient_template_id
+            JOIN messages_template mt on mt.messages_template_id = mpt.template_id
+            JOIN messages_scheduled_service_group mssg on mssg.messages_scheduled_service_group_id = mss.group_id
+            WHERE mt.name = \'Adherence report weekly\'
+            AND mpt.patient_id = :patientId
+            AND mssg.msg_send_time >= :startDate
+            AND mssg.msg_send_time &lt;= :endDate
+            ORDER BY 1 DESC;',
+            'SQL',
+            'Adherence report weekly',
+            1,
+            '96d93c15-3884-11ea-b1e9-0242ac160002',
+            now()
             );
         </sql>
 
         <sql>
             INSERT INTO messages_template_field
             (
-                name, mandatory, default_value, template_id, template_field_type, creator, uuid, date_created
+            name, mandatory, default_value, template_id, template_field_type, creator, uuid, date_created
             )
             VALUES(
-                'Service type',
-                1,
-                'Deactivate service',
-                (SELECT messages_template_id FROM messages_template WHERE uuid = '96d93c15-3884-11ea-b1e9-0242ac160002'
-                ),
-                'SERVICE_TYPE',
-                1,
-                'ce1ae5a2-3884-11ea-b1e9-0242ac160002',
-                now()
+            'Service type',
+            1,
+            'Deactivate service',
+            (SELECT messages_template_id FROM messages_template WHERE uuid = '96d93c15-3884-11ea-b1e9-0242ac160002'
+            ),
+            'SERVICE_TYPE',
+            1,
+            'ce1ae5a2-3884-11ea-b1e9-0242ac160002',
+            now()
             );
         </sql>
 
         <sql>
             INSERT INTO messages_template_field
             (
-                name, mandatory, default_value, template_id, template_field_type, creator, uuid, date_created
+            name, mandatory, default_value, template_id, template_field_type, creator, uuid, date_created
             )
             VALUES(
-                'Week day of delivering message',
-                1,
-                'Monday',
-                (SELECT messages_template_id FROM messages_template WHERE uuid = '96d93c15-3884-11ea-b1e9-0242ac160002'),
-                'DAY_OF_WEEK_SINGLE',
-                1,
-                'dce23c53-3884-11ea-b1e9-0242ac160002',
-                now()
+            'Week day of delivering message',
+            1,
+            'Monday',
+            (SELECT messages_template_id FROM messages_template WHERE uuid = '96d93c15-3884-11ea-b1e9-0242ac160002'),
+            'DAY_OF_WEEK_SINGLE',
+            1,
+            'dce23c53-3884-11ea-b1e9-0242ac160002',
+            now()
             );
         </sql>
 
         <sql>
             INSERT INTO messages_template_field
             (
-                name, mandatory, default_value, template_id, template_field_type, creator, uuid, date_created
+            name, mandatory, default_value, template_id, template_field_type, creator, uuid, date_created
             )
             VALUES(
-                'Start of weekly messages',
-                0,
-                '',
-                (SELECT messages_template_id FROM messages_template WHERE uuid = '96d93c15-3884-11ea-b1e9-0242ac160002'),
-                'START_OF_MESSAGES',
-                1,
-                'fc9cf90e-3884-11ea-b1e9-0242ac160002',
-                now()
+            'Start of weekly messages',
+            0,
+            '',
+            (SELECT messages_template_id FROM messages_template WHERE uuid = '96d93c15-3884-11ea-b1e9-0242ac160002'),
+            'START_OF_MESSAGES',
+            1,
+            'fc9cf90e-3884-11ea-b1e9-0242ac160002',
+            now()
             );
         </sql>
 
         <sql>
             INSERT INTO messages_template_field
             (
-                name, mandatory, default_value, template_id, template_field_type, creator, uuid, date_created
+            name, mandatory, default_value, template_id, template_field_type, creator, uuid, date_created
             )
             VALUES(
-                'End of weekly messages',
-                1,
-                'NO_DATE|EMPTY',
-                (SELECT messages_template_id FROM messages_template WHERE uuid = '96d93c15-3884-11ea-b1e9-0242ac160002'),
-                'END_OF_MESSAGES',
-                1,
-                'f0f4750c-3884-11ea-b1e9-0242ac160002',
-                now()
+            'End of weekly messages',
+            1,
+            'NO_DATE|EMPTY',
+            (SELECT messages_template_id FROM messages_template WHERE uuid = '96d93c15-3884-11ea-b1e9-0242ac160002'),
+            'END_OF_MESSAGES',
+            1,
+            'f0f4750c-3884-11ea-b1e9-0242ac160002',
+            now()
             );
         </sql>
 
@@ -1447,5 +1448,24 @@
                 END
             ]]>
         </sql>
+    </changeSet>
+
+    <changeSet id="messages-41" author="Arkadiusz Lalo">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_property"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from global_property
+                where property = 'message.personStatus.configuration'
+            </sqlCheck>
+        </preConditions>
+
+        <comment>Resets message.personStatus.configuration to the default value (the property structure and its description
+            have been changed). It is in order to apply the new changes to all already existing environments. The
+            migration can be removed if the liquibase refactor will be conducted (eg. replacing all changes by one
+            changeSet).</comment>
+
+        <delete tableName="global_property">
+            <where>property='message.personStatus.configuration'</where>
+        </delete>
     </changeSet>
 </databaseChangeLog>

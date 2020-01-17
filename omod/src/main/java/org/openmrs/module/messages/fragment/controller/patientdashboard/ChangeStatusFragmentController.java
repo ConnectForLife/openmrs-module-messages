@@ -23,7 +23,7 @@ public class ChangeStatusFragmentController {
     public void controller(FragmentModel model,
             @SpringBean(value = "messages.personStatusHelper") PersonStatusHelper personStatusHelper,
             @RequestParam(value = "patientId", required = false) String personID) {
-        model.addAttribute("personStatusValues", Arrays.asList(PersonStatus.ACTIVE, PersonStatus.DEACTIVATE));
+        model.addAttribute("personStatusValues", Arrays.asList(PersonStatus.ACTIVATED, PersonStatus.DEACTIVATED));
         PersonStatusDTO personStatus = personStatusHelper.getStatus(personID);
         if (personStatus != null) {
             model.addAttribute("personStatusValue", personStatus.getValue());

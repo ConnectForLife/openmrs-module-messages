@@ -32,7 +32,7 @@ public class PersonAttributeUtilITTest extends ContextSensitiveWithActivatorTest
 
     private static final String VOIDED_STATUS = PersonStatus.NO_CONSENT.name();
 
-    private static final String ACTUAL_STATUS = PersonStatus.ACTIVE.name();
+    private static final String ACTUAL_STATUS = PersonStatus.ACTIVATED.name();
 
     private static final String WRONG_STATUS = "No consent";
 

@@ -41,7 +41,6 @@ interface IChangeStatusState {
 
 const FORM_CLASS = 'form-control';
 const ERROR_FORM_CLASS = FORM_CLASS + ' error-field';
-const DEACTIVATED = 'DEACTIVATE';
 
 class ChangeStatusModal extends React.PureComponent<IChangeStatusProps, IChangeStatusState> {
 
@@ -51,17 +50,17 @@ class ChangeStatusModal extends React.PureComponent<IChangeStatusProps, IChangeS
       statusValue: props.status.value,
       statusReason: props.status.reason,
       errors: {},
-      possibleStatuses: [{ title: "Active", value: "ACTIVE" }, { title: "Deactivate", value: DEACTIVATED }]
+      possibleStatuses: [ Msg.PERSON_STATUSES.ACTIVATED, Msg.PERSON_STATUSES.DEACTIVATED ]
     };
   }
 
-  componentDidUpdate(prevProps: IChangeStatusProps)  {
+  componentDidUpdate(prevProps: IChangeStatusProps) {
     const { status } = this.props;
     if (status != prevProps.status) {
       this.setState({ statusValue: status.value, statusReason: status.reason });
     }
   };
-
+  
   handleChange = (newValue, prop: string) => {
     const cloned = _.cloneDeep(this.state);
     cloned[prop] = newValue;
@@ -96,14 +95,14 @@ class ChangeStatusModal extends React.PureComponent<IChangeStatusProps, IChangeS
   renderStatusField = () =>
     this.renderDropdown(Msg.PERSON_STATUS_MODAL_FIELD_LABEL, 'statusValue',
       this.state.possibleStatuses.map(status =>
-        <option value={status.value} key={status.value}>{status.title}</option>
+        <option value={status.value} key={status.value}>{status.label}</option>
       ), true);
 
   renderReasonField = () =>
     this.renderTextField(
       Msg.PERSON_STATUS_MODAL_REASON_FIELD_LABEL,
       'statusReason',
-      this.state.statusValue === DEACTIVATED);
+      this.state.statusValue === Msg.DEACTIVATED_KEY);
 
   buildContext = () => {
     return (
@@ -112,7 +111,7 @@ class ChangeStatusModal extends React.PureComponent<IChangeStatusProps, IChangeS
           {Msg.PERSON_STATUS_MODAL_INSTRUCTION}
         </div>
         {this.renderStatusField()}
-        {this.state.statusValue === DEACTIVATED && this.renderReasonField()}
+        {this.state.statusValue === Msg.DEACTIVATED_KEY && this.renderReasonField()}
       </Form>
     );
   };
@@ -145,7 +144,7 @@ class ChangeStatusModal extends React.PureComponent<IChangeStatusProps, IChangeS
 
   validateStatusReason = (errors) => {
     delete errors['statusReason'];
-    if (this.state.statusValue === DEACTIVATED && !this.state.statusReason) {
+    if (this.state.statusValue === Msg.DEACTIVATED_KEY && !this.state.statusReason) {
       errors['statusReason'] = Msg.FIELD_REQUIRED;
     }
   }

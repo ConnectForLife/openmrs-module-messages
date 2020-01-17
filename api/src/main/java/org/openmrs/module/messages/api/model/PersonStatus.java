@@ -6,8 +6,8 @@ import static org.openmrs.module.messages.api.util.PersonAttributeUtil.getPerson
 
 public enum PersonStatus {
     NO_CONSENT("person.status.no_consent.title"),
-    ACTIVE("person.status.active.title"),
-    DEACTIVATE("person.status.deactivate.title"),
+    ACTIVATED("person.status.activated.title"),
+    DEACTIVATED("person.status.deactivated.title"),
     MISSING_VALUE("person.status.missing.title");
 
     private String titleKey;
@@ -21,6 +21,6 @@ public enum PersonStatus {
     }
 
     public static boolean isActive(Person person) {
-        return ACTIVE.equals(getPersonStatus(person));
+        return ACTIVATED.equals(getPersonStatus(person));
     }
 }

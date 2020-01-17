@@ -16,6 +16,7 @@ import org.openmrs.Person;
 import org.openmrs.PersonAttribute;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.api.PersonService;
+import org.openmrs.api.ValidationException;
 import org.openmrs.module.messages.api.constants.ConfigConstants;
 import org.openmrs.module.messages.api.dto.PersonStatusConfigDTO;
 import org.openmrs.module.messages.api.dto.PersonStatusDTO;
@@ -59,11 +60,14 @@ public class PersonStatusHelper {
     /**
      * Saves the value of the person status attribute
      * @param statusDTO - the value which should be insert to DB, if the status value is equals to
-     * {@link PersonStatus#DEACTIVATE} then the voided reason will be set to the previous value
+     * {@link PersonStatus#DEACTIVATED} then the voided reason will be set to the previous value
      */
     public void saveStatus(PersonStatusDTO statusDTO) {
         LOGGER.debug(String.format("Trying to save a new status value %s for person %s", statusDTO.getValue(),
                 statusDTO.getPersonId()));
+        if (!isValidStatusValue(statusDTO.getValue())) {
+            throw new ValidationException(String.format("Not valid value of status: %s", statusDTO.getValue()));
+        }
         Person person = getPersonFromDashboardPersonId(statusDTO.getPersonId());
         changeStatusReason(statusDTO, person);
         saveNewValue(statusDTO, person);
@@ -103,5 +107,17 @@ public class PersonStatusHelper {
         PersonAttribute newStatus = new PersonAttribute(attributeTypeStatus, statusDTO.getValue());
         person.addAttribute(newStatus);
         personService.savePerson(person);
+    }
+
+    private boolean isValidStatusValue(String value) {
+        boolean valid = false;
+        try {
+            if (!PersonStatus.valueOf(value).equals(PersonStatus.MISSING_VALUE)) {
+                valid = true;
+            }
+        } catch (IllegalArgumentException ex) {
+            valid = false;
+        }
+        return valid;
     }
 }

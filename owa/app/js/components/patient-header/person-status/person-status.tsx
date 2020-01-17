@@ -20,35 +20,27 @@ import {
 import './person-status.scss';
 import * as Msg from '../../../shared/utils/messages';
 import ChangeStatusModal from './modal/change-status-modal';
+import { PersonStatusUI } from '../../../shared/model/person-status.model-ui';
 
 interface IPersonStatusProps extends DispatchProps, StateProps {
     patientUuid: string
 };
 
 interface IPersonStatusState {
-    statusLabels: Object
 };
 
 class PersonStatus extends React.PureComponent<IPersonStatusProps, IPersonStatusState> {
 
     constructor(props: IPersonStatusProps) {
         super(props);
-        this.state = {
-            statusLabels: {
-                NO_CONSENT: Msg.PERSON_STATUS_NO_CONSENT,
-                ACTIVE: Msg.PERSON_STATUS_ACTIVE,
-                DEACTIVATE: Msg.PERSON_STATUS_DEACTIVATE,
-                MISSING_VALUE: Msg.PERSON_STATUS_MISSING_VALUE
-            }
-        };
     }
 
     componentDidMount() {
         this.props.getPersonStatus(this.props.patientUuid);
     };
 
-    getValueLabel = (key, set) => {
-        return _.get(set, key, key);
+    getStatusLabel = (key, set) => {
+        return _.get(set, `${key}.label`, key);
     };
 
     handleClose = () => {
@@ -69,11 +61,19 @@ class PersonStatus extends React.PureComponent<IPersonStatusProps, IPersonStatus
 
     renderStatus = () => {
         const { personStatus } = this.props;
-        const { statusLabels } = this.state;
         return (
-            <p>{Msg.PERSON_STATUS_LABEL + ' ' + this.getValueLabel(personStatus.status.value, statusLabels)}</p>
+            <p>{Msg.PERSON_STATUS_LABEL + ' ' + this.getStatusLabel(personStatus.status.value, Msg.PERSON_STATUSES)}</p>
         );
     };
+
+    prepereStatusForModal = (status: PersonStatusUI): PersonStatusUI => {
+        const modalStatus = _.cloneDeep(status);
+        modalStatus.value = this.getInitialValue(modalStatus);
+        return modalStatus;
+    }
+
+    getInitialValue = (status: PersonStatusUI) =>  (!!status.value &&
+        status.value != Msg.MISSING_VALUE_KEY && status.value != Msg.NO_CONSENT_KEY) ? status.value : Msg.ACTIVATED_KEY;
 
     render() {
         const { status, showModal, personStatusLoading, submitDisabled } = this.props.personStatus;
@@ -85,7 +85,7 @@ class PersonStatus extends React.PureComponent<IPersonStatusProps, IPersonStatus
                     confirm={this.handleConfirm}
                     show={showModal}
                     submitDisabled={submitDisabled}
-                    status={status} />
+                    status={this.prepereStatusForModal(status)} />
                 <div className="person-status" style={statusStyle} onClick={this.handleChangeStatus}>
                     {!personStatusLoading && this.renderStatus()}
                 </div>
@@ -93,7 +93,6 @@ class PersonStatus extends React.PureComponent<IPersonStatusProps, IPersonStatus
         );
     };
 };
-
 
 const mapStateToProps = ({ personStatus }: IRootState) => ({
     personStatus
