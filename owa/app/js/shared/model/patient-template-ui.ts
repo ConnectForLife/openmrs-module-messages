@@ -7,6 +7,7 @@ import { TemplateUI } from './template-ui';
 import { IForm } from './form';
 import { validateFormSafely } from '@bit/soldevelo-omrs.cfl-components.validation';
 import { IActor } from './actor.model';
+import { prepareFieldValues } from '../utils/end-date-util';
 
 export class PatientTemplateUI extends ObjectUI<IPatientTemplate> implements IPatientTemplate, IForm {
   id: number | null;
@@ -59,13 +60,14 @@ export class PatientTemplateUI extends ObjectUI<IPatientTemplate> implements IPa
   static getNew(patientId: number, template: TemplateUI, relationshipDirection?: string, relationshipTypeId?: number, actor?: IActor): PatientTemplateUI {
     const actorId = actor && actor.actorId ? actor.actorId : patientId;
     const actorTypeId = actor && actor.actorTypeId ? actor.actorTypeId : undefined;
+    const templateFields = prepareFieldValues(template.templateFields, relationshipTypeId, relationshipDirection);
     return new PatientTemplateUI({
       ...getDefaultValue(),
       patientId,
       actorId,
       actorTypeId,
       templateId: template.id!,
-      templateFieldValues: _.map(template.templateFields, item  => TemplateFieldValueUI.getNew(item, relationshipDirection, relationshipTypeId))
+      templateFieldValues: _.map(templateFields, item  => TemplateFieldValueUI.getNew(item, relationshipDirection, relationshipTypeId))
     });
   }
 

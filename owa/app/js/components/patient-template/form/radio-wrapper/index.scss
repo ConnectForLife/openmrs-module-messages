@@ -7,6 +7,8 @@
  * graphic logo is a trademark of OpenMRS Inc.
  */
 
+ $WIDTH_FOR_THREE_DIGITS: 70px;
+
 .radio-wrapper-container {
   display: flex;
   justify-content: flex-start;
@@ -41,4 +43,8 @@
       margin-left: 5px;
     }
   }
+}
+
+.input-after-days {
+  width: $WIDTH_FOR_THREE_DIGITS;
 }

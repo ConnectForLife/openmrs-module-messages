@@ -33,8 +33,8 @@ interface IProps {
 
 const elements: InitInput[] = [
   factory(InputTypeEnum.NO_DATE),
-  factory(InputTypeEnum.DATE_PICKER),
-  factory(InputTypeEnum.AFTER_TIMES)
+  factory(InputTypeEnum.AFTER_TIMES),
+  factory(InputTypeEnum.OTHER)
 ];
 
 // WARNING this class overrides shouldComponentUpdate, pay special attention
@@ -235,7 +235,7 @@ export class TemplateForm extends React.Component<IProps> {
     const { template } = this.props;
     const templateName = template ? template.name : '';
     return (
-      <Form>
+      <Form className="one-column">
         <strong><h4>{templateName}</h4></strong>
         {template.templateFields.map(this.renderField)}
       </Form>

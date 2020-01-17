@@ -1,38 +1,30 @@
 import React from 'react';
 import { FormGroup, FormControl } from 'react-bootstrap';
-import { WrappedInputProps } from '../radio-wrapper';
 
-enum TimeType {
-  DAY = 'DAY',
-  MONTH = 'MONTH',
-  YEAR = 'YEAR'
-}
-
-interface IOption {
-  type: TimeType;
-  value: number;
-  label: string;
-}
+import { WrappedInputProps } from './radio-wrapper';
+import { TimeType } from '../../../shared/enums/time-type';
+import { IOption, getEmptyOption } from '../../../shared/model/dropdown-opton';
 
 interface IProps extends WrappedInputProps { }
 
 export default class OtherTimesDropdown extends React.Component<IProps> {
 
   getOptions = (): ReadonlyArray<IOption> => [
+    getEmptyOption(),
+    {
+      type: TimeType.MONTH,
+      value: 1,
+      label: "After 1 month"
+    },
+    {
+      type: TimeType.MONTH,
+      value: 3,
+      label: "After 3 months"
+    },
     {
       type: TimeType.MONTH,
       value: 6,
       label: "After 6 months"
-    },
-    {
-      type: TimeType.DAY,
-      value: 14,
-      label: "After 14 days"
-    },
-    {
-      type: TimeType.YEAR,
-      value: 1,
-      label: "After 1 year"
     }
   ];
 

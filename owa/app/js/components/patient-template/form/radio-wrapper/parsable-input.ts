@@ -13,7 +13,8 @@ export const EMPTY = 'EMPTY';
 export enum InputTypeEnum {
   NO_DATE = 'NO_DATE',
   AFTER_TIMES = 'AFTER_TIMES',
-  DATE_PICKER = 'DATE_PICKER'
+  DATE_PICKER = 'DATE_PICKER',
+  OTHER = 'OTHER'
 }
 
 export type ValueType = {

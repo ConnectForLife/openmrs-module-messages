@@ -19,9 +19,11 @@ import {
   NO_END_DATE_LABEL,
   DATE_PICKER_END_DATE_LABEL,
   AFTER_DAYS_BEFORE,
-  AFTER_DAYS_AFTER
+  AFTER_DAYS_AFTER,
+  OTHER
 } from '../../../shared/utils/messages';
 import AfterTimesInput from './after-times-input';
+import OtherTimesDropdown from './other-times-dropdown';
 
 export const parseType = (inputValue: string): ValueType => {
   const result: ValueType = {
@@ -51,6 +53,9 @@ export const factory = (type: InputTypeEnum): InitInput => {
     case InputTypeEnum.AFTER_TIMES: {
       return afterDays;
     }
+    case InputTypeEnum.OTHER: {
+      return other;
+    }
     default: {
       return noDate;
     }
@@ -79,6 +84,14 @@ const afterDaysParse = (value: string): string => {
 
 const afterDaysSerialize = (value: string): string => {
   return InputTypeEnum.AFTER_TIMES + SEPARATOR + value;
+}
+
+const othersParse = (value: string): string => {
+  return value;
+}
+
+const othersSerialize = (value: string): string => {
+  return InputTypeEnum.OTHER + SEPARATOR + value;
 }
 
 const noDate: InitInput = {
@@ -113,3 +126,14 @@ const afterDays: InitInput = {
   element: <AfterTimesInput />,
   labelAfter: AFTER_DAYS_AFTER
 };
+
+const other: InitInput = {
+  type: InputTypeEnum.OTHER,
+  defaultValue: '',
+  parser: {
+    parse: othersParse,
+    serialize: othersSerialize
+  },
+  labelBefore: OTHER,
+  element: <OtherTimesDropdown />
+}

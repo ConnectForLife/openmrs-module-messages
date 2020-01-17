@@ -135,3 +135,19 @@ header .logo img {
 .calendar-filters {
     color: #363463;
 }
+
+.one-column {
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+
+        .radio-inline, .checkbox-inline, .openmrs-date-picker {
+            margin-left: 15px;
+        }
+
+        .radio-wrapper-container {
+            flex-direction: column;
+        }
+    }
+}

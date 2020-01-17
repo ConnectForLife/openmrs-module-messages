@@ -10,10 +10,10 @@
 import React from 'react';
 import DefaultSettingsTable from './default-settings/default-settings-table';
 import { connect } from 'react-redux';
+import { Button } from 'react-bootstrap';
 
 import { IRootState } from '../reducers';
 import { getConfig, saveConfig } from '../reducers/admin-settings.reducer';
-import { Button } from 'react-bootstrap';
 import * as Msg from '../shared/utils/messages';
 import BestContactTime from './default-settings/default-best-contact-time';
 
