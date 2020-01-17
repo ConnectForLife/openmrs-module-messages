@@ -82,23 +82,11 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
     const sections = this.mapTemplatesToSections();
     if (this.props.isNew) {
       return (
-        <>
-          <div className="page-header">
-            The patient template is new
-            for patient (patientId: {this.props.match.params.patientId})
-          </div>
-          <FormEntry sections={sections} activeSection={this.props.match.params.activeSection} />
-        </>
+        <FormEntry sections={sections} activeSection={this.props.match.params.activeSection} />
       );
     } else {
       return (
-        <>
-          <div className="page-header">
-            The patient template is not new
-            (patientId: {this.props.match.params.patientId})
-          </div>
-          <FormEntry sections={sections} activeSection={this.props.match.params.activeSection} />
-        </>
+        <FormEntry sections={sections} activeSection={this.props.match.params.activeSection} />
       );
     }
   }
@@ -151,7 +139,7 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
     return (
       <>
         <div className="panel-body">
-          <h2>Patient Template Edit page</h2>
+          <h4>{Msg.EDIT_MESSAGES_TITLE}</h4>
           {!this.props.loading && this.renderTemplateState()}
         </div>
         <div className="panel-body">

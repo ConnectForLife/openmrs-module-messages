@@ -78,3 +78,6 @@ export const PERSON_STATUS_MODAL_REASON_FIELD_LABEL = 'Reason:';
 
 export const CANCEL = 'Cancel';
 export const CONFIRM = 'Confirm';
+
+// Edit messages
+export const EDIT_MESSAGES_TITLE = 'Create messages';
