@@ -41,13 +41,12 @@ interface IChangeStatusState {
 
 const FORM_CLASS = 'form-control';
 const ERROR_FORM_CLASS = FORM_CLASS + ' error-field';
-const DEACTIVATED = 'DEACTIVATED';
+const DEACTIVATED = 'DEACTIVATE';
 
 class ChangeStatusModal extends React.PureComponent<IChangeStatusProps, IChangeStatusState> {
 
   constructor(props: IChangeStatusProps) {
     super(props);
-    console.log("init", props.status);
     this.state = {
       statusValue: props.status.value,
       statusReason: props.status.reason,
