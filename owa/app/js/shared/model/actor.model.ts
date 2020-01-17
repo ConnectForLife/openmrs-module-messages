@@ -4,4 +4,5 @@ export interface IActor {
   actorTypeName: string | null;
   actorTypeId: number | null;
   relationshipTypeId: number;
+  relationshipTypeUuid?: string;
 }

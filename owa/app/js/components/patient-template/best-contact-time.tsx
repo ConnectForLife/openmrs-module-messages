@@ -4,6 +4,7 @@ import * as Msg from '../../shared/utils/messages';
 import { IRootState } from '../../reducers';
 import { connect } from 'react-redux';
 import { getBestContactTime, postBestContactTime, updateBestConstactTime } from '../../reducers/best-contact-time.reducer';
+import { getBestContactTimes } from '../../reducers/admin-settings.reducer';
 import { history } from '../../config/redux-store';
 import './best-contact-time.scss';
 import { TimePicker } from 'antd';
@@ -12,6 +13,7 @@ import { IBestContactTime } from '../../shared/model/best-contact-time.model';
 import _ from 'lodash';
 import { Moment } from 'moment';
 import { IActor } from '../../shared/model/actor.model';
+import { IContactTime } from '../../shared/model/contact-time.model';
 
 interface IBestContactTimeProps extends DispatchProps, StateProps {
   patientId: number,
@@ -28,11 +30,12 @@ class BestContactTime extends React.PureComponent<IBestContactTimeProps, IBestCo
   }
 
   componentDidMount() {
+    this.props.getBestContactTimes();
     this.refreshBestContactTimeList();
   }
 
-  componentDidUpdate(prevprops) {
-    if (this.props.actorResultList !== prevprops.actorResultList) {
+  componentDidUpdate(prevProps) {
+    if (this.props.actorResultList !== prevProps.actorResultList) {
       this.refreshBestContactTimeList();
     }
   }
@@ -51,7 +54,7 @@ class BestContactTime extends React.PureComponent<IBestContactTimeProps, IBestCo
 
   handleSave = () => {
     if (!!this.props.bestContactTimes && !!this.props.patientId) {
-      this.props.postBestContactTime(this.props.bestContactTimes);
+      this.props.postBestContactTime(this.applyDefaultValuesIfNeeded(this.props.bestContactTimes));
     }
   }
 
@@ -84,16 +87,51 @@ class BestContactTime extends React.PureComponent<IBestContactTimeProps, IBestCo
     }
   }
 
+  applyDefaultValuesIfNeeded = (bestContactTimes: Array<IBestContactTime>): Array<IBestContactTime> => {
+    const clonededValues = _.clone(bestContactTimes);
+    clonededValues.map(contactTime => {
+      if (!contactTime.time) {
+        contactTime.time = this.getDefaultValue(contactTime);
+      }
+    });
+    return clonededValues;
+  }
+
+  getDefaultValue = (contactTime: IBestContactTime): Moment | undefined => {
+    let defaultValue;
+    if (this.isActorPatient(contactTime)) {
+      defaultValue = this.findDefaultValueForActor('global');
+    } else {
+      defaultValue = this.getDefaultValueForActor(contactTime.personId);
+    }
+    if (defaultValue) {
+      return defaultValue.time;
+    }
+  }
+
+  getDefaultValueForPatient = (): IContactTime | undefined => this.findDefaultValueForActor('global');
+
+  getDefaultValueForActor = (personId: number): IContactTime | undefined => {
+    const actorId: number = _.findIndex(this.props.actorResultList, (a) => a.actorId === personId);
+    if (actorId !== -1) {
+      return this.findDefaultValueForActor(this.props.actorResultList[actorId].relationshipTypeUuid);
+    }
+  }
+
+  findDefaultValueForActor = (actor?: string) => _.find(this.props.defaultBestContactTimes, a => a.actor === actor);
+
+  isActorPatient = (contactTime: IBestContactTime) => contactTime.personId === this.props.patientId;
+
   renderTimePickers() {
-    const { bestContactTimes, actorResultList, patientId } = this.props;
+    const bestContactTimes = this.applyDefaultValuesIfNeeded(this.props.bestContactTimes);
     return (
       <div className="sections">
         {bestContactTimes.map((e, i) => {
           let label: string = `Person ${e.personId}`;
-          if (e.personId === patientId) {
+          if (this.isActorPatient(e)) {
             label = 'Patient';
           } else {
-            const actor: IActor | undefined = _.find(actorResultList, (a) => a.actorId === e.personId);
+            const actor: IActor | undefined = _.find(this.props.actorResultList, (a) => a.actorId === e.personId);
             if (!!actor) {
               label = `${actor.actorTypeName} - ${actor.actorName}`;
             }
@@ -129,16 +167,18 @@ class BestContactTime extends React.PureComponent<IBestContactTimeProps, IBestCo
   }
 };
 
-const mapStateToProps = ({ bestContactTime, actor }: IRootState) => ({
+const mapStateToProps = ({ bestContactTime, actor, adminSettings }: IRootState) => ({
   bestContactTimes: bestContactTime.bestContactTimes,
   actorResultList: actor.actorResultList,
-  loading: bestContactTime.bestContactTimesLoading || actor.actorResultListLoading
+  loading: bestContactTime.bestContactTimesLoading || actor.actorResultListLoading,
+  defaultBestContactTimes: adminSettings.defaultBestContactTimes
 });;
 
 const mapDispatchToProps = ({
   getBestContactTime,
   postBestContactTime,
-  updateBestConstactTime
+  updateBestConstactTime,
+  getBestContactTimes
 });
 
 type StateProps = ReturnType<typeof mapStateToProps>;

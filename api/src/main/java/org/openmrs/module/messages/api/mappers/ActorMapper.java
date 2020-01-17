@@ -2,11 +2,10 @@ package org.openmrs.module.messages.api.mappers;
 
 import org.openmrs.module.messages.api.dto.ActorDTO;
 import org.openmrs.module.messages.api.model.Actor;
+import org.openmrs.module.messages.api.util.ActorUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.openmrs.module.messages.api.util.ActorUtil;
 
 public class ActorMapper {
 
@@ -26,6 +25,7 @@ public class ActorMapper {
                 .setActorName(dao.getTarget().getPersonName().getFullName())
                 .setActorTypeId(dao.getRelationship().getId())
                 .setActorTypeName(typeName)
+                .setRelationshipTypeUuid(dao.getRelationship().getRelationshipType().getUuid())
                 .setRelationshipTypeId(dao.getRelationship().getRelationshipType().getId());
     }
 }

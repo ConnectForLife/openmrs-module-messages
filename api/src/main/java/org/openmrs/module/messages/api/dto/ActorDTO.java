@@ -19,6 +19,8 @@ public class ActorDTO implements Serializable {
 
     private Integer relationshipTypeId;
 
+    private String relationshipTypeUuid;
+
     public Integer getActorId() {
         return actorId;
     }
@@ -61,6 +63,15 @@ public class ActorDTO implements Serializable {
 
     public ActorDTO setRelationshipTypeId(Integer relationshipTypeId) {
         this.relationshipTypeId = relationshipTypeId;
+        return this;
+    }
+
+    public String getRelationshipTypeUuid() {
+        return relationshipTypeUuid;
+    }
+
+    public ActorDTO setRelationshipTypeUuid(String relationshipTypeUuid) {
+        this.relationshipTypeUuid = relationshipTypeUuid;
         return this;
     }
 

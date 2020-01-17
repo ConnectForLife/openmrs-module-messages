@@ -111,10 +111,11 @@ export const getTemplates = () => ({
   payload: axiosInstance.get(templatesUrl)
 });
 
-export const getBestContactTimes = () => ({
-  type: ACTION_TYPES.GET_DEFAULT_CONTACT_TIMES,
-  payload: axiosInstance.get(defaultContactTimesUrl)
-});
+export const getBestContactTimes = () => async (dispatch) =>
+  dispatch({
+    type: ACTION_TYPES.GET_DEFAULT_CONTACT_TIMES,
+    payload: axiosInstance.get(defaultContactTimesUrl)
+  });
 
 export const getActorTypes = () => ({
   type: ACTION_TYPES.GET_ACTOR_TYPES,
@@ -144,7 +145,7 @@ export const saveConfig = (templates: Array<TemplateUI>, contactTimes: Array<IDe
 
 export const putDefaultContactTimes = (contactTimes: Array<IDefaultBestContactTime>) => ({
   type: ACTION_TYPES.PUT_DEFAULT_CONTACT_TIMES,
-  payload: axiosInstance.put(defaultContactTimesUrl, { records: contactTimes })
+  payload: axiosInstance.put(defaultContactTimesUrl, { records: _.map(contactTimes, mapToRequest) })
 });
 
 export const putTemplates = (templates: Array<TemplateUI>) => ({
