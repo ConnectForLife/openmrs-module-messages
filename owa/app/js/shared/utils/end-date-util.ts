@@ -45,7 +45,7 @@ export const prepareFieldValues = (templateFieldsOld: Array<TemplateFieldUI>,
   return templateFields;
 }
 
-const findDefaultValue = (defaultValues: ReadonlyArray<TemplateFieldDefaultValue>,
+export const findDefaultValue = (defaultValues: ReadonlyArray<TemplateFieldDefaultValue>,
   relationshipTypeId: number, relationshipDirection: string, templateFieldId: number) =>
     defaultValues.find(f => f.direction === relationshipDirection
       && f.relationshipTypeId === relationshipTypeId

@@ -5,6 +5,8 @@ import { ITemplate, getDefaultValue } from './template.model';
 import { TemplateFieldUI } from './template-field-ui';
 import * as Yup from "yup";
 import * as Msg from '../../shared/utils/messages';
+import { IActorType } from './actor-type.model';
+import { findDefaultValue } from '../utils/end-date-util';
 
 export class TemplateUI extends ObjectUI<ITemplate> implements ITemplate {
   id: number | null;
@@ -49,6 +51,26 @@ export class TemplateUI extends ObjectUI<ITemplate> implements ITemplate {
   }
 
   static fromModel(model: ITemplate) {
+    return new TemplateUI(model);
+  }
+
+  static fromModelWithActorTypes(model: ITemplate, actorTypes: ReadonlyArray<IActorType>) {
+    if (!!actorTypes) {
+      actorTypes.forEach(actorType => {
+        model.templateFields.forEach(tf => {
+          const defaultValue = findDefaultValue(tf.defaultValues, actorType.relationshipTypeId, 
+            actorType.relationshipTypeDirection, tf.id!);
+          if (!defaultValue) {
+            tf.defaultValues.push({
+              defaultValue: tf.defaultValue,
+              templateFieldId: tf.id!,
+              relationshipTypeId: actorType.relationshipTypeId,
+              direction: actorType.relationshipTypeDirection
+            });
+          }
+        })
+      })
+    }
     return new TemplateUI(model);
   }
 }

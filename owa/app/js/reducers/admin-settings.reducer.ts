@@ -55,7 +55,8 @@ export default (state = initialState, action): AdminSettingsState => {
       return {
         ...state,
         loading: false,
-        defaultTemplates: _.map(action.payload.data.content, TemplateUI.fromModel)
+        defaultTemplates: _.map(action.payload.data.content, template =>
+          TemplateUI.fromModelWithActorTypes(template, state.actorTypes))
       };
     case SUCCESS(ACTION_TYPES.GET_ACTOR_TYPES):
       return {
@@ -101,9 +102,10 @@ const defaultContactTimesUrl = `${actorUrl}/contact-times/default`;
 const actorTypesUrl = `${actorUrl}/types`;
 
 export const getConfig = () => async (dispatch) => {
+  // Actor types must be first because the result is required in templates mapping
+  await dispatch(getActorTypes());
   await dispatch(getTemplates());
   await dispatch(getBestContactTimes());
-  await dispatch(getActorTypes());
 }
 
 export const getTemplates = () => ({

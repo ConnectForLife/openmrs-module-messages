@@ -78,6 +78,8 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
     }
   }
 
+  componentDidMount = () => this.props.updatePatientTemplate(this.getPatientTemplate(), [this.props.template]);
+
   getActorType = (relationshipTypeId: number) =>
     this.props.actorTypes.find((actorType) => actorType.relationshipTypeId === relationshipTypeId);
 
