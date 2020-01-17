@@ -57,7 +57,7 @@ export class PatientTemplateUI extends ObjectUI<IPatientTemplate> implements IPa
   }
 
   static getNew(patientId: number, template: TemplateUI, relationshipDirection?: string, relationshipTypeId?: number, actor?: IActor): PatientTemplateUI {
-    const actorId = actor && actor.actorId ? actor.actorId : undefined;
+    const actorId = actor && actor.actorId ? actor.actorId : patientId;
     const actorTypeId = actor && actor.actorTypeId ? actor.actorTypeId : undefined;
     return new PatientTemplateUI({
       ...getDefaultValue(),

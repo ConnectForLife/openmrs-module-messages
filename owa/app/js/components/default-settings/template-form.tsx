@@ -201,7 +201,7 @@ export class TemplateForm extends React.Component<IProps> {
 
   renderDatePicker = (field: TemplateFieldUI, fieldName: string,
     value: string) => (
-      <FormGroup controlId={field.localId} key={field.localId}>
+      <FormGroup controlId={field.localId} key={this.props.actorType.uuid + ' ' + field.localId}>
         <FormLabel label={fieldName} />
         <OpenMrsDatePicker
           value={value}

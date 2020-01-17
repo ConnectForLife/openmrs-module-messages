@@ -116,7 +116,7 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
       case TemplateFieldType.END_OF_MESSAGES:
         return (
           <RadioWrappedContainer
-            key={tfv.localId}
+            key={(this.props.actor ? this.props.actor.actorId : this.props.patientId) + ' ' + tfv.localId}
             id={tfv.localId}
             initValue={tfv.value}
             mandatory={isMandatory}
@@ -145,7 +145,7 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
         options={options}
         selectedOptions={tfv.value}
         label={fieldName}
-        key={tfv.localId}
+        key={(this.props.actor ? this.props.actor.actorId : this.props.patientId) + ' ' + tfv.localId}
         mandatory={isMandatory}
         onSelectChange={(value: string) => this.onTemplateFieldValueChange(tfv.localId, value)}
       />
@@ -175,7 +175,7 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
         options={options}
         selectedOption={tfv.value}
         label={fieldName}
-        key={tfv.localId}
+        key={(this.props.actor ? this.props.actor.actorId : this.props.patientId) + ' ' + tfv.localId}
         id={tfv.localId}
         mandatory={isMandatory}
         onSelectChange={(value: string) => this.onTemplateFieldValueChange(tfv.localId, value)}
@@ -194,7 +194,7 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
         selectedOptions={value}
         label={fieldName}
         fieldName={fieldName}
-        key={tfv.localId}
+        key={(this.props.actor ? this.props.actor.actorId : this.props.patientId) + ' ' + tfv.localId}
         id={tfv.localId}
         mandatory={isMandatory}
         onSelectChange={(value: string) => this.onTemplateFieldValueChange(tfv.localId, value)} />
@@ -209,7 +209,7 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
         fieldName={fieldName}
         value={tfv.value}
         label={fieldName}
-        key={tfv.localId}
+        key={(this.props.actor ? this.props.actor.actorId : this.props.patientId) + ' ' + tfv.localId}
         mandatory={isMandatory}
         handleChange={(value: string) => {
           this.onTemplateFieldValueChange(tfv.localId, value)
@@ -218,7 +218,7 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
   };
 
   renderDatePicker = (tfv: TemplateFieldValueUI, fieldName: string, isMandatory: boolean, isStartDate: boolean) => (
-    <FormGroup controlId={tfv.localId} key={tfv.localId}>
+    <FormGroup controlId={tfv.localId} key={(this.props.actor ? this.props.actor.actorId : this.props.patientId) + ' ' + tfv.localId}>
       <FormLabel
         label={fieldName}
         mandatory={isMandatory} />
