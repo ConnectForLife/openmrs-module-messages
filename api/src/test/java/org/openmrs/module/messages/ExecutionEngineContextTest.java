@@ -21,76 +21,130 @@ import org.openmrs.module.messages.api.model.TemplateFieldType;
 import org.openmrs.module.messages.api.model.TemplateFieldValue;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
 import org.openmrs.module.messages.api.service.PatientTemplateService;
+import org.openmrs.module.messages.api.service.TemplateFieldService;
 import org.openmrs.module.messages.api.service.TemplateService;
+import org.openmrs.module.messages.api.util.EndDateType;
+import org.openmrs.module.messages.builder.TemplateFieldBuilder;
+import org.openmrs.module.messages.builder.TemplateFieldValueBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.openmrs.module.messages.api.model.TemplateFieldType.END_OF_MESSAGES;
+import static org.openmrs.module.messages.api.model.TemplateFieldType.MESSAGING_FREQUENCY_WEEKLY_OR_MONTHLY;
+import static org.openmrs.module.messages.api.model.TemplateFieldType.START_OF_MESSAGES;
 
 public class ExecutionEngineContextTest extends ContextSensitiveTest {
-    
+
     private static final Date START_DATE = DateUtils.addYears(new Date(), -2);
     private static final Date END_DATE = DateUtils.addYears(new Date(), 2);
+
+    private static final int YEAR_2020 = 2020 - 1900; // new Date implementation is x - 1900
+    private static final int YEAR_2019 = 2019 - 1900;
+    private static final Date DATE_1 = new Date(YEAR_2019, Calendar.DECEMBER, 15, 0, 0, 0);
+    private static final String DATE_1_TXT = "2019-12-15";
+    private static final Date DATE_2 = new Date(YEAR_2020, Calendar.JANUARY, 10, 0, 0, 0);
+    private static final String DATE_2_TXT = "2020-01-10";
+    private static final Date DATE_3 = new Date(YEAR_2020, Calendar.JANUARY, 13, 0, 0, 0);
+    private static final String DATE_3_TXT = "2020-01-13";
+
     private static final String SERVICE_NAME = "Service Name";
     // drop mili precision for H2 testing purposes
     private static final Date BIRTH_DATE = DateUtils.setMilliseconds(DateUtils.addYears(new Date(), -1), 0);
-    
+
     @Autowired
+    @Qualifier("messages.ServiceExecutor")
     private ServiceExecutor serviceExecutor;
-    
+
     @Autowired
     private PatientService patientService;
-    
+
     @Autowired
+    @Qualifier("messages.patientTemplateService")
     private PatientTemplateService patientTemplateService;
-    
+
     @Autowired
+    @Qualifier("messages.templateFieldService")
+    private TemplateFieldService templateFieldService;
+
+    @Autowired
+    @Qualifier("messages.templateService")
     private TemplateService templateService;
-    
+
     @Autowired
     private LocationService locationService;
-    
+
     @Test
     public void shouldSetupContext() throws ExecutionException {
         PatientTemplate patientTemplate = prepareData();
         Range<Date> dateRange = new Range<>(START_DATE, END_DATE);
-        
+
         ServiceResultList serviceResultList = serviceExecutor.execute(patientTemplate, dateRange);
-        
+
         assertEquals(patientTemplate.getPatient().getId(), serviceResultList.getPatientId());
         assertEquals(patientTemplate.getPatient().getId(), serviceResultList.getActorId());
         assertEquals(START_DATE, serviceResultList.getStartDate());
         assertEquals(END_DATE, serviceResultList.getEndDate());
         assertEquals(1, serviceResultList.getResults().size());
         assertEquals(SERVICE_NAME, serviceResultList.getServiceName());
-        
+
         ServiceResult result = serviceResultList.getResults().get(0);
         assertEquals("msg", result.getMessageId());
         assertEquals(ChannelType.CALL, result.getChannelType());
         assertEquals(ServiceStatus.FUTURE, result.getServiceStatus());
         // query adds 1 year to the birth date
         assertEquals(DateUtils.addYears(BIRTH_DATE, 1).getTime(), result.getExecutionDate().getTime());
-        
+
         assertEquals(1, result.getAdditionalParams().size());
         assertEquals("M", result.getAdditionalParams().get("GENDER"));
     }
-    
+
+    @Test
+    public void shouldReturnPatientTemplateEndDateIfItIsBeforeRangeEndDate() throws ExecutionException {
+        PatientTemplate patientTemplate = prepareData2(DATE_1_TXT, DATE_2_TXT);
+        Range<Date> dateRange = new Range<>(DATE_1, DATE_3);
+
+        ServiceResultList serviceResultList = serviceExecutor.execute(patientTemplate, dateRange);
+
+        assertEquals(patientTemplate.getPatient().getId(), serviceResultList.getPatientId());
+        assertEquals(patientTemplate.getPatient().getId(), serviceResultList.getActorId());
+        assertEquals(DATE_1, serviceResultList.getStartDate());
+        assertEquals(DATE_2, serviceResultList.getEndDate());
+    }
+
+    @Test
+    public void shouldReturnRangeEndDateIfItIsBeforePatientTemplateEndDate() throws ExecutionException {
+        PatientTemplate patientTemplate = prepareData2(DATE_1_TXT, DATE_3_TXT);
+        Range<Date> dateRange = new Range<>(DATE_1, DATE_2);
+
+        ServiceResultList serviceResultList = serviceExecutor.execute(patientTemplate, dateRange);
+
+        assertEquals(patientTemplate.getPatient().getId(), serviceResultList.getPatientId());
+        assertEquals(patientTemplate.getPatient().getId(), serviceResultList.getActorId());
+        assertEquals(DATE_1, serviceResultList.getStartDate());
+        assertEquals(DATE_2, serviceResultList.getEndDate());
+    }
+
     private PatientTemplate prepareData() {
         PatientIdentifierType idType = new PatientIdentifierType();
         idType.setName("Test ID");
         idType = patientService.savePatientIdentifierType(idType);
-        
+
         Patient patient = new Patient();
         patient.addName(new PersonName("Test", "John", "Boe"));
         patient.setGender("M");
         patient.setBirthdate(BIRTH_DATE);
-        
+
         PatientIdentifier id = new PatientIdentifier("XXX", idType, locationService.getDefaultLocation());
         patient.addIdentifier(id);
-        
+
         patient = patientService.savePatient(patient);
-        
+
         Template template = new Template();
         template.setServiceQuery("SELECT DATEADD('YEAR', 1, per.birthdate) AS EXECUTION_DATE, 'msg' AS MESSAGE_ID, " +
                 "'Call' AS CHANNEL_ID, per.gender AS GENDER " +
@@ -100,7 +154,7 @@ public class ExecutionEngineContextTest extends ContextSensitiveTest {
         template.setServiceQueryType("SQL");
         template.setName(SERVICE_NAME);
         template = templateService.saveOrUpdate(template);
-        
+
         PatientTemplate patientTemplate = new PatientTemplate();
         patientTemplate.setPatient(patient);
         patientTemplate.setActor(patient);
@@ -110,18 +164,88 @@ public class ExecutionEngineContextTest extends ContextSensitiveTest {
                 "FROM patient p " +
                 "JOIN person per ON per.person_id = p.patient_id  " +
                 "WHERE per.birthdate > :startDate AND per.birthdate < :endDate");
-        
+
         // TODO incorrect schema
         TemplateField templateField = new TemplateField();
         templateField.setTemplate(template);
         templateField.setMandatory(false);
         templateField.setName("This relation is wrong");
         templateField.setTemplateFieldType(TemplateFieldType.SERVICE_TYPE);
-        
+
         TemplateFieldValue templateFieldValue = new TemplateFieldValue();
         templateFieldValue.setTemplateField(templateField);
         patientTemplate.setTemplate(template);
-        
+
         return patientTemplateService.saveOrUpdate(patientTemplate);
+    }
+
+    private PatientTemplate prepareData2(String start, String end) {
+        Template template = new Template();
+        template.setServiceQuery("SELECT DATEADD('YEAR', 1, per.birthdate) AS EXECUTION_DATE, 'msg' AS MESSAGE_ID, " +
+                "'Call' AS CHANNEL_ID, per.gender AS GENDER " +
+                "FROM patient p " +
+                "JOIN person per ON per.person_id = p.patient_id  " +
+                "WHERE per.birthdate > :startDate AND per.birthdate < :endDate");
+        template.setServiceQueryType("SQL");
+        template.setName(SERVICE_NAME);
+        template = templateService.saveOrUpdate(template);
+
+        PatientTemplate patientTemplate = prepareBase();
+
+        List<TemplateFieldValue> values = new ArrayList<>();
+        values.add(buildTemplateFieldWithValue(MESSAGING_FREQUENCY_WEEKLY_OR_MONTHLY, "Tuesday",
+                template, patientTemplate));
+        values.add(buildTemplateFieldWithValue(START_OF_MESSAGES, start,
+                template, patientTemplate));
+        values.add(buildTemplateFieldWithValue(END_OF_MESSAGES, EndDateType.DATE_PICKER.getName() + "|" + end,
+                template, patientTemplate));
+
+        patientTemplate.setTemplateFieldValues(values);
+        patientTemplate.setTemplate(template);
+
+        return patientTemplateService.saveOrUpdate(patientTemplate);
+    }
+
+    private TemplateFieldValue buildTemplateFieldWithValue(TemplateFieldType type,
+                                                           String value,
+                                                           Template template,
+                                                           PatientTemplate patientTemplate) {
+        TemplateField field = templateFieldService.saveOrUpdate(new TemplateFieldBuilder()
+                .withTemplateFieldType(type)
+                .withTemplate(template)
+                .build());
+        return new TemplateFieldValueBuilder()
+                .withPatientTemplate(patientTemplate)
+                .withTemplateField(field)
+                .withValue(value)
+                .build();
+    }
+
+    private PatientTemplate prepareBase() {
+        PatientIdentifierType idType = new PatientIdentifierType();
+        idType.setName("Test ID");
+        idType = patientService.savePatientIdentifierType(idType);
+
+        Patient patient = new Patient();
+        patient.addName(new PersonName("Test", "John", "Boe"));
+        patient.setGender("M");
+        patient.setBirthdate(BIRTH_DATE);
+
+        PatientIdentifier id = new PatientIdentifier("XXX", idType, locationService.getDefaultLocation());
+        patient.addIdentifier(id);
+
+        patient = patientService.savePatient(patient);
+
+        PatientTemplate patientTemplate = new PatientTemplate();
+        patientTemplate.setPatient(patient);
+        patientTemplate.setActor(patient);
+        patientTemplate.setServiceQueryType("SQL");
+        patientTemplate.setServiceQuery("SELECT DATEADD('YEAR', 1, per.birthdate) AS EXECUTION_DATE, 'msg' AS MESSAGE_ID, " +
+                "'Call' AS CHANNEL_ID, per.gender AS GENDER " +
+                "FROM patient p " +
+                "JOIN person per ON per.person_id = p.patient_id  " +
+                "WHERE per.birthdate > :startDate AND per.birthdate < :endDate");
+
+        return patientTemplate;
     }
 }

@@ -36,23 +36,15 @@ public class ExecutionContext {
 
     public ExecutionContext(PatientTemplate patientTemplate, Range<Date> dateRange, String bestContactTime) {
         this.patientTemplate = patientTemplate;
-        this.dateRange = dateRange;
         this.bestContactTime = bestContactTime;
+        setRange(dateRange);
 
-        params = new HashMap<>();
-
-        params.put(START_DATE_PARAM, dateRange.getStart());
-        Date endDate = patientTemplate.getEndOfMessages() != null
-                ? patientTemplate.getEndOfMessages()
-                : dateRange.getEnd();
-        params.put(END_DATE_PARAM, endDate);
-
-        params.put(PATIENT_ID_PARAM, patientTemplate.getPatient().getPatientId());
-        params.put(ACTOR_ID_PARAM, patientTemplate.getActor().getPersonId());
-        params.put(BEST_CONTACT_TIME_PARAM, bestContactTime);
+        putParam(PATIENT_ID_PARAM, patientTemplate.getPatient().getPatientId());
+        putParam(ACTOR_ID_PARAM, patientTemplate.getActor().getPersonId());
+        putParam(BEST_CONTACT_TIME_PARAM, bestContactTime);
 
         for (TemplateFieldValue param : patientTemplate.getTemplateFieldValues()) {
-            params.put(param.getTemplateField().getName().replace(' ', '_'), param.getValue());
+            putParam(param.getTemplateField().getName().replace(' ', '_'), param.getValue());
         }
     }
 
@@ -74,5 +66,27 @@ public class ExecutionContext {
 
     public String getQuery() {
         return patientTemplate.getServiceQuery();
+    }
+
+    private void setRange(Range<Date> dateRange) {
+        this.dateRange = new Range<>(dateRange.getStart(), getEndDate(dateRange));
+        putParam(START_DATE_PARAM, this.dateRange.getStart());
+        putParam(END_DATE_PARAM, this.dateRange.getEnd());
+    }
+
+    private void putParam(String key, Object value) {
+        if (params == null) {
+            params = new HashMap<>();
+        }
+        params.put(key, value);
+    }
+
+    private Date getEndDate(Range<Date> dateRange) {
+        Date endDate = patientTemplate.getEndOfMessages();
+        if (endDate == null || endDate.after(dateRange.getEnd())) {
+            return dateRange.getEnd();
+        } else {
+            return endDate;
+        }
     }
 }
