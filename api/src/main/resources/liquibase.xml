@@ -1467,4 +1467,189 @@
             <where>property='message.personStatus.configuration'</where>
         </delete>
     </changeSet>
+
+    <changeSet id="messages-42" author="Dawid Ruchniewicz">
+        <preConditions>
+            <tableExists tableName="messages_template"/>
+            <tableExists tableName="messages_template_field"/>
+        </preConditions>
+        <comment>Added query for Health tip service and its template fields</comment>
+        <sql>
+            INSERT INTO messages_template
+            (
+                service_query, service_query_type, name, creator, uuid, date_created
+            )
+            VALUES(
+                'SELECT EXECUTION_DATE, MESSAGE_ID, CHANNEL_ID, NULL AS STATUS_ID, HEALTH_TIP_ID
+                FROM (
+                SELECT TIMESTAMP(selected_date, times) AS EXECUTION_DATE, 1 AS MESSAGE_ID, :Service_type AS CHANNEL_ID
+                FROM (
+                SELECT *
+                FROM
+                (SELECT *
+                FROM DATES_LIST) dates_list
+                WHERE selected_date >= :startDate
+                AND selected_date &lt;= :endDate
+                AND selected_date >= :Start_of_messages
+                AND selected_date &lt;= :End_of_messages
+                AND (DAYOFMONTH(selected_date) &lt; IF ((
+                SELECT value
+                FROM messages_template_field_value WHERE template_field_id = (
+                SELECT messages_template_field_id
+                FROM messages_template_field WHERE name = \'Frequency of the message\'
+                AND template_id = (SELECT messages_template_id FROM messages_template WHERE name = \'Health tip\'))) = \'Weekly\'
+                OR (SELECT value FROM messages_template_field_value WHERE template_field_id = (SELECT messages_template_field_id FROM messages_template_field where name = \'Frequency of the message\'
+                AND template_id = (SELECT messages_template_id FROM messages_template WHERE name = \'Health tip\'))) = \'Daily\', 32, 8) )
+                AND :Week_day_of_delivering_message like concat(\'%\',DAYNAME(selected_date),\'%\') ) dates
+                JOIN (SELECT :bestContactTime times) timeslist) temp
+                JOIN (SELECT group_concat(HT_ID) as HEALTH_TIP_ID
+                FROM ( (SELECT concept_id as HT_ID FROM concept_set as cs WHERE cs.concept_set
+                IN (SELECT concept_id FROM concept_name cn WHERE :Categories_of_the_message like concat(\'%\', cn.name, \'%\'))
+                AND concept_id not IN (SELECT question FROM messages_actor_response mar
+                JOIN messages_scheduled_service mss on mar.scheduled_service_id = mss.messages_scheduled_service_id
+                JOIN messages_patient_template mpt on mss.patient_template_id = mpt.messages_patient_template_id
+                JOIN messages_template mt on mpt.template_id = mt.messages_template_id
+                WHERE mt.name = \'Health tip\' AND mpt.patient_id = :patientId AND mss.status = \'DELIVERED\') order by cs.sort_weight ASC limit 3) tips)) gc
+                WHERE EXECUTION_DATE > GET_PREDICTION_START_DATE_FOR_HEALTH_TIP(:patientId) AND CHANNEL_ID != \'Deactivate service\'
+                Union
+                SELECT mssg.msg_send_time as EXECUTION_DATE, 1 as MESSAGE_ID, mss.channel_type as CHANNEL_ID,
+                mss.status as STATUS_ID, null as HEALTH_TIP_ID
+                FROM messages_scheduled_service mss
+                JOIN messages_patient_template mpt on mpt.messages_patient_template_id = mss.patient_template_id
+                JOIN messages_template mt on mt.messages_template_id = mpt.template_id
+                JOIN messages_scheduled_service_group mssg on mssg.messages_scheduled_service_group_id = mss.group_id
+                WHERE mt.name = \'Health tip\'
+                AND mpt.patient_id = :patientId
+                AND mssg.msg_send_time >= :startDate
+                AND mssg.msg_send_time &lt;= :endDate
+                ORDER BY 1 DESC ;',
+                'SQL',
+                'Health tip',
+                1,
+                '9556f9ab-20b2-11ea-ac12-0242c0a82002',
+                now()
+            );
+        </sql>
+        <sql>
+            INSERT INTO messages_template_field
+            (
+                name, mandatory, default_value, template_id, template_field_type, creator, uuid, date_created
+            )
+            VALUES(
+                'Service type',
+                1,
+                'Deactivate service',
+                (SELECT messages_template_id FROM messages_template WHERE uuid = '9556f9ab-20b2-11ea-ac12-0242c0a82002'),
+                'SERVICE_TYPE',
+                1,
+                '95570356-20b2-11ea-ac12-0242c0a82002',
+                now()
+            );
+        </sql>
+        <sql>
+            INSERT INTO messages_template_field
+            (
+                name, mandatory, default_value, template_id, template_field_type, creator, uuid, date_created
+            )
+            VALUES(
+                'Frequency of the message',
+                1,
+                'Daily',
+                (SELECT messages_template_id FROM messages_template WHERE uuid = '9556f9ab-20b2-11ea-ac12-0242c0a82002'),
+                'MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY',
+                1,
+                '95570d01-20b2-11ea-ac12-0242c0a82002',
+                now()
+            );
+        </sql>
+        <sql>
+            INSERT INTO messages_template_field
+            (
+                name, mandatory, default_value, template_id, template_field_type, creator, uuid, date_created
+            )
+            VALUES(
+                'Week day of delivering message',
+                1,
+                'Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday',
+                (SELECT messages_template_id FROM messages_template WHERE uuid = '9556f9ab-20b2-11ea-ac12-0242c0a82002'),
+                'DAY_OF_WEEK',
+                1,
+                '955716a6-20b2-11ea-ac12-0242c0a82002',
+                now()
+            );
+        </sql>
+        <sql>
+            INSERT INTO messages_template_field
+            (
+                name, mandatory, default_value, template_id, template_field_type, creator, uuid, date_created
+            )
+            VALUES(
+                'Start of messages',
+                0,
+                '',
+                (SELECT messages_template_id FROM messages_template WHERE uuid = '9556f9ab-20b2-11ea-ac12-0242c0a82002'),
+                'START_OF_MESSAGES',
+                1,
+                '9557232f-20b2-11ea-ac12-0242c0a82002',
+                now()
+            );
+        </sql>
+        <sql>
+            INSERT INTO messages_template_field
+            (
+                name, mandatory, default_value, template_id, template_field_type, creator, uuid, date_created
+            )
+            VALUES(
+                'Categories of the message',
+                1,
+                'Category1',
+                (SELECT messages_template_id FROM messages_template WHERE uuid = '9556f9ab-20b2-11ea-ac12-0242c0a82002'),
+                'CATEGORY_OF_MESSAGE',
+                1,
+                '95572cd9-20b2-11ea-ac12-0242c0a82002',
+                now()
+            );
+        </sql>
+        <sql>
+            INSERT INTO messages_template_field
+            (
+                name, mandatory, default_value, template_id, template_field_type, creator, uuid, date_created
+            )
+            VALUES(
+                'End of messages',
+                1,
+                'NO_DATE|EMPTY',
+                (SELECT messages_template_id FROM messages_template WHERE uuid = '9556f9ab-20b2-11ea-ac12-0242c0a82002'),
+                'END_OF_MESSAGES',
+                1,
+                '95573791-20b2-11ea-ac12-0242c0a82002',
+                now()
+            );
+        </sql>
+    </changeSet>
+    <changeSet id="messages-43" author="Michał Lewandowski">
+        <sql splitStatements="false" stripComments="false">
+            <![CDATA[
+                        CREATE FUNCTION `GET_PREDICTION_START_DATE_FOR_HEALTH_TIP`(patient_id long)
+                        RETURNS DATETIME
+                        BEGIN
+                        DECLARE mssg_date DATE;
+                        SET mssg_date =
+                            (SELECT EXECUTION_DATE FROM
+                                (SELECT mssg.msg_send_time AS EXECUTION_DATE, 1 AS MESSAGE_ID,
+                                    mss.channel_type AS CHANNEL_ID, mss.status AS STATUS_ID
+                                FROM messages_scheduled_service mss
+                                    JOIN messages_patient_template mpt on mpt.messages_patient_template_id = mss.patient_template_id
+                                    JOIN messages_template mt on mt.messages_template_id = mpt.template_id
+                                    JOIN messages_scheduled_service_group mssg on mssg.messages_scheduled_service_group_id = mss.group_id
+                                WHERE
+                                    mt.name = 'Health tip'
+                                    AND mpt.patient_id = patient_id
+                                ORDER BY 1 DESC)
+                               a LIMIT 1);
+                        RETURN if(mssg_date > NOW(), mssg_date, NOW());
+                        END
+                ]]>
+        </sql>
+    </changeSet>
 </databaseChangeLog>
