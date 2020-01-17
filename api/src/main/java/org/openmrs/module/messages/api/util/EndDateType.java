@@ -3,7 +3,8 @@ package org.openmrs.module.messages.api.util;
 public enum EndDateType {
     NO_DATE("NO_DATE"),
     AFTER_TIMES("AFTER_TIMES"),
-    DATE_PICKER("DATE_PICKER");
+    DATE_PICKER("DATE_PICKER"),
+    OTHER("OTHER");
 
     private String name;
 

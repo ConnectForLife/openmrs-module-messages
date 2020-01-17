@@ -108,7 +108,7 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
             key={tfv.localId}
             id={tfv.localId}
             initValue={tfv.value}
-            isMandatory={isMandatory}
+            mandatory={isMandatory}
             label={PATIENT_TEMPLATE_END_DATE}
             fieldName={fieldName}
             initElements={elements}

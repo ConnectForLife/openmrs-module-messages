@@ -29,7 +29,6 @@ import java.util.List;
 /**
  * Templates Controller to manage Templates resource
  */
-// TODO: 09.01.2020 tests for new endpoint
 @Controller
 @RequestMapping(value = "/messages/templates")
 public class TemplateController extends BaseRestController {
@@ -71,7 +70,10 @@ public class TemplateController extends BaseRestController {
     @ResponseBody
     public TemplateDTO updateTemplate(@PathVariable Integer templateId,
                                       @RequestBody TemplateDTO templateDTO) {
-        Template updatedTemplate = validateAndUpdateTemplate(templateDTO, templateId);
+        validateTemplateId(templateId);
+        Template oldTemplate = templateService.getById(templateId);
+        validateTemplate(templateDTO, oldTemplate, templateId);
+        Template updatedTemplate = updateTemplate(templateDTO, oldTemplate);
         return templateMapper.toDto(templateService.saveOrUpdateTemplate(updatedTemplate));
     }
 
@@ -79,25 +81,29 @@ public class TemplateController extends BaseRestController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public TemplateWrapper updateTemplates(@RequestBody TemplateWrapper templateWrapper) {
-        List<Template> updatedTemplates = validateAndUpdateTemplates(templateWrapper.getTemplates());
+        List<Template> updatedTemplates = validateTemplates(templateWrapper.getTemplates());
         return new TemplateWrapper(templateMapper.toDtos(templateService.saveOrUpdate(updatedTemplates)));
     }
 
-    private List<Template> validateAndUpdateTemplates(List<TemplateDTO> templateDTOS) {
+    private List<Template> validateTemplates(List<TemplateDTO> templateDTOS) {
         List<Template> templates = new ArrayList<>();
         for (TemplateDTO dto : templateDTOS) {
-            templates.add(validateAndUpdateTemplate(dto, dto.getId()));
+            Integer templateId = dto.getId();
+            validateTemplateId(templateId);
+            Template oldTemplate = templateService.getById(templateId);
+            validateTemplate(dto, oldTemplate, templateId);
+            templates.add(updateTemplate(dto, oldTemplate));
         }
         return templates;
     }
 
-    private Template validateAndUpdateTemplate(TemplateDTO templateDTO, Integer templateId) {
-        validateTemplateId(templateId);
+    private void validateTemplate(TemplateDTO templateDTO, Template oldTemplate, Integer templateId) {
         validationComponent.validate(templateDTO);
-        Template oldTemplate = templateService.getById(templateId);
         validateOldTemplate(templateId, oldTemplate);
-        Template newTemplate = templateMapper.fromDto(templateDTO);
-        return templateMapper.update(oldTemplate, newTemplate);
+    }
+
+    private Template updateTemplate(TemplateDTO newTemplate, Template oldTemplate) {
+        return templateMapper.update(oldTemplate, templateMapper.fromDto(newTemplate));
     }
 
     private void validateIfNewTemplate(TemplateDTO templateDTO) {

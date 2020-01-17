@@ -45,7 +45,7 @@ type RadioValueContainer = {
 interface IProps {
   id: string,
   fieldName: string,
-  isMandatory: boolean;
+  mandatory: boolean;
   label: string;
   initValue: string;
   initElements: InitInput[];
@@ -59,7 +59,7 @@ interface IState {
 export default class RadioWrappedContainer extends React.Component<IProps, IState> {
 
   public static defaultProps = {
-    isMandatory: false
+    mandatory: false
   };
 
   constructor(props) {
@@ -150,13 +150,13 @@ export default class RadioWrappedContainer extends React.Component<IProps, IStat
   }
 
   render = () => {
-    const { isMandatory, fieldName } = this.props;
+    const { mandatory, fieldName } = this.props;
     const id = `${this.props.id}-${fieldName}`;
     return (
       <FormGroup controlId={this.props.id}>
         <FormLabel
           label={this.props.label}
-          mandatory={isMandatory} />
+          mandatory={mandatory} />
         <div className="radio-wrapper-container">
           {this.state.values.map((container: RadioValueContainer) => {
             const { radioValue, input } = container;

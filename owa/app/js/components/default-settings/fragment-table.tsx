@@ -10,10 +10,16 @@ interface IProps {
   fragments: ReadonlyArray<IFragmentRow>;
 }
 
+const FULL_WIDTH_COLUMN = 12;
+const HALF_WIDTH_COLUMN = 6;
+
 export class FragmentTable extends React.Component<IProps> {
 
+  getColumnWidth = () => this.props.columns.length === 1 ?
+    FULL_WIDTH_COLUMN : HALF_WIDTH_COLUMN;
+
   renderColumnWithRows = (column: IColumn) => (
-    <Col md={this.props.columns.length === 1 ? 12 : 6} className="fragment-column">
+    <Col md={this.getColumnWidth()} className="fragment-column">
       <div className="fragment-row header u-ta-center">
         <strong><h4>{column.label}</h4></strong>
       </div>

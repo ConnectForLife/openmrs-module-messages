@@ -23,7 +23,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.io.IOException;
@@ -194,7 +193,6 @@ public class TemplateControllerITTest extends BaseModuleWebContextSensitiveTest 
     }
 
     @Test
-    @Transactional
     public void shouldBatchUpdateSuccessfully() throws Exception {
         List<Template> templatesToUpdate = templateService.getAll(false);
 
