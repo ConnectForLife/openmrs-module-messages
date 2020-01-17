@@ -23,6 +23,7 @@ import {
 import { PatientTemplateUI } from '../../shared/model/patient-template-ui';
 import _ from 'lodash';
 import { IActor } from '../../shared/model/actor.model';
+import { getActorTypes } from '../../reducers/admin-settings.reducer';
 
 interface IPatientTemplateEditProps extends DispatchProps, StateProps, RouteComponentProps<{
   patientId: string,
@@ -45,6 +46,7 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
   componentDidMount() {
     this.props.getTemplates();
     this.props.getActorList(parseInt(this.props.match.params.patientId));
+    this.props.getActorTypes();
     this.props.getPatientTemplates(parseInt(this.props.match.params.patientId));
   }
 
@@ -102,13 +104,11 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
   }
 
   buildActorTemplate = (patientTemplates: ReadonlyArray<PatientTemplateUI>, template: TemplateUI, actor?: IActor): ReactFragment =>
-    <PatientTemplateForm key={`template-form-${actor ? actor.actorId : parseInt(this.props.match.params.patientId)}}`}
+    <PatientTemplateForm key={`template-form-${actor ? actor.actorId : parseInt(this.props.match.params.patientId)}`}
       patientTemplate={patientTemplates.length ? patientTemplates[0] : undefined}
       template={template}
       patientId={parseInt(this.props.match.params.patientId)}
-      actorId={actor ? actor.actorId : parseInt(this.props.match.params.patientId)}
-      actorName={actor ? actor.actorName : undefined}
-      actorTypeId={actor ? actor.actorTypeId : undefined}
+      actor={actor}
     />
 
   mapTemplatesToSections = (): Array<FormSection> => {
@@ -179,10 +179,10 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
   }
 }
 
-const mapStateToProps = ({ actor, patientTemplate }: IRootState) => ({
+const mapStateToProps = ({ actor, patientTemplate, adminSettings }: IRootState) => ({
   templates: patientTemplate.templates,
   patientTemplates: patientTemplate.patientTemplates,
-  loading: patientTemplate.patientTemplatesLoading || patientTemplate.templatesLoading,
+  loading: patientTemplate.patientTemplatesLoading || patientTemplate.templatesLoading || adminSettings.loading,
   relatedActors: actor.actorResultList
 });
 
@@ -190,7 +190,8 @@ const mapDispatchToProps = ({
   getTemplates,
   getPatientTemplates,
   putPatientTemplates,
-  getActorList
+  getActorList,
+  getActorTypes
 });
 
 type StateProps = ReturnType<typeof mapStateToProps>;

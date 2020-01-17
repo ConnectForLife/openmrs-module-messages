@@ -1263,5 +1263,47 @@
             Update messages_template_field set default_value = 'NO_DATE|EMPTY' where template_field_type = 'END_OF_MESSAGES';
         </sql>
     </changeSet>
-</databaseChangeLog>
 
+    <changeSet id="messages-39" author="Artur Fijał">
+        <preConditions>
+            <not><tableExists tableName="messages_template_field_default_values"/></not>
+        </preConditions>
+        <comment>Created the template_field_default_values table</comment>
+        <createTable tableName="messages_template_field_default_values">
+            <column name="messages_template_field_default_values_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="uuid" type="char(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="relationship_type" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="relationship_direction" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="template_field" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="default_value" type="TEXT"/>
+            <column name="creator" type="int"/>
+            <column name="changed_by" type="int"/>
+            <column name="date_changed" type="datetime"/>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_voided" type="datetime"/>
+            <column name="void_reason" type="varchar(255)"/>
+            <column name="voided" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voided_by" type="int"/>
+        </createTable>
+        <addForeignKeyConstraint constraintName="messages_template_field_default_values_relationship_type_fk"
+                                 baseTableName="messages_template_field_default_values" baseColumnNames="relationship_type"
+                                 referencedTableName="relationship_type" referencedColumnNames="relationship_type_id"/>
+        <addForeignKeyConstraint constraintName="messages_template_field_default_values_template_field_fk"
+                                 baseTableName="messages_template_field_default_values" baseColumnNames="template_field"
+                                 referencedTableName="messages_template_field" referencedColumnNames="messages_template_field_id"/>
+    </changeSet>
+</databaseChangeLog>

@@ -1,5 +1,6 @@
 package org.openmrs.module.messages.api.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -8,7 +9,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name = "messages.TemplateField")
 @Table(name = "messages_template_field")
@@ -29,6 +33,9 @@ public class TemplateField extends AbstractBaseOpenmrsData {
     
     @Column(name = "default_value", columnDefinition = "text")
     private String defaultValue;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "templateField")
+    private List<TemplateFieldDefaultValue> defaultValues = new ArrayList<>();
     
     @ManyToOne
     @JoinColumn(name = "template_id", nullable = false)
@@ -37,7 +44,23 @@ public class TemplateField extends AbstractBaseOpenmrsData {
     @Column(name = "template_field_type", nullable = false)
     @Enumerated(EnumType.STRING)
     private TemplateFieldType templateFieldType;
-    
+
+    /**
+     * default empty constructor
+     */
+    public TemplateField() {
+    }
+
+    /**
+     * Default constructor taking in the primary key id value
+     *
+     * @param id Integer internal id for this template field
+     * @should set person id
+     */
+    public TemplateField(Integer id) {
+        this.id = id;
+    }
+
     @Override
     public Integer getId() {
         return id;
@@ -86,5 +109,13 @@ public class TemplateField extends AbstractBaseOpenmrsData {
 
     public void setTemplateFieldType(TemplateFieldType templateFieldType) {
         this.templateFieldType = templateFieldType;
+    }
+
+    public List<TemplateFieldDefaultValue> getDefaultValues() {
+        return defaultValues;
+    }
+
+    public void setDefaultValues(List<TemplateFieldDefaultValue> defaultValues) {
+        this.defaultValues = defaultValues;
     }
 }

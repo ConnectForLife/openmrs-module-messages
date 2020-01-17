@@ -68,11 +68,19 @@ export class TemplateFieldValueUI extends ObjectUI<ITemplateFieldValue> implemen
       .type;
   }
 
-  static getNew(templateField: TemplateFieldUI): TemplateFieldValueUI {
+  static getNew(templateField: TemplateFieldUI, relationshipTypeDirection?: string, relationshipTypeId?: number): TemplateFieldValueUI {
+    const defaultValue = relationshipTypeDirection
+      && relationshipTypeId
+      && templateField.defaultValues.find((f) => f.direction === relationshipTypeDirection
+        && f.relationshipTypeId === relationshipTypeId && f.templateFieldId === templateField.id);
     return new TemplateFieldValueUI({
       ...getDefaultValue(),
       templateFieldId: templateField.id!,
-      value: prepareDefaultValue(templateField.defaultValue, templateField.type),
+      value: prepareDefaultValue(relationshipTypeDirection
+        ? defaultValue
+          ? defaultValue.defaultValue
+          : ''
+        : templateField.defaultValue, templateField.type),
     });
   }
 }

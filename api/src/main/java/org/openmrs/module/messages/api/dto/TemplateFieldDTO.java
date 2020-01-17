@@ -6,6 +6,9 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.openmrs.module.messages.api.model.TemplateFieldType;
 import org.openmrs.module.messages.api.util.validate.ValueOfEnum;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Represent the DTO for the {@link org.openmrs.module.messages.api.model.TemplateField}
  */
@@ -19,6 +22,8 @@ public class TemplateFieldDTO {
     private boolean mandatory;
 
     private String defaultValue;
+
+    private List<TemplateFieldDefaultValueDTO> defaultValues = new ArrayList<>();
 
     @NotBlank
     @ValueOfEnum(enumClass = TemplateFieldType.class)
@@ -77,6 +82,15 @@ public class TemplateFieldDTO {
 
     public TemplateFieldDTO setUuid(String uuid) {
         this.uuid = uuid;
+        return this;
+    }
+
+    public List<TemplateFieldDefaultValueDTO> getDefaultValues() {
+        return defaultValues;
+    }
+
+    public TemplateFieldDTO setDefaultValues(List<TemplateFieldDefaultValueDTO> defaultValues) {
+        this.defaultValues = defaultValues;
         return this;
     }
 

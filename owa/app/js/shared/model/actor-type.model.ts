@@ -8,6 +8,8 @@
  */
 
 export interface IActorType {
-  uuid: string,
-  display: string
+  uuid: string;
+  display: string;
+  relationshipTypeId: number;
+  relationshipTypeDirection: string;
 }

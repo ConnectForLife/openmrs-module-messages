@@ -11,6 +11,7 @@ package org.openmrs.module.messages.api.dto;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.openmrs.module.messages.api.model.RelationshipTypeDirection;
 
 import java.io.Serializable;
 
@@ -22,9 +23,16 @@ public class ActorTypeDTO implements Serializable {
 
     private String display;
 
-    public ActorTypeDTO(String uuid, String display) {
+    private Integer relationshipTypeId;
+
+    private RelationshipTypeDirection relationshipTypeDirection;
+
+    public ActorTypeDTO(String uuid, String display, Integer relationshipTypeId,
+                        RelationshipTypeDirection relationshipTypeDirection) {
         this.uuid = uuid;
         this.display = display;
+        this.relationshipTypeId = relationshipTypeId;
+        this.relationshipTypeDirection = relationshipTypeDirection;
     }
 
     public String getUuid() {
@@ -43,6 +51,22 @@ public class ActorTypeDTO implements Serializable {
     public ActorTypeDTO setDisplay(String display) {
         this.display = display;
         return this;
+    }
+
+    public Integer getRelationshipTypeId() {
+        return relationshipTypeId;
+    }
+
+    public void setRelationshipTypeId(Integer relationshipTypeId) {
+        this.relationshipTypeId = relationshipTypeId;
+    }
+
+    public RelationshipTypeDirection getRelationshipTypeDirection() {
+        return relationshipTypeDirection;
+    }
+
+    public void setRelationshipTypeDirection(RelationshipTypeDirection relationshipTypeDirection) {
+        this.relationshipTypeDirection = relationshipTypeDirection;
     }
 
     @Override

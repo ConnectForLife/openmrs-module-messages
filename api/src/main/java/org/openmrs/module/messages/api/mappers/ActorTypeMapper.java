@@ -27,6 +27,7 @@ public class ActorTypeMapper {
     }
 
     public ActorTypeDTO toDto(ActorType dao) {
-        return new ActorTypeDTO(dao.getRelationshipType().getUuid(), ActorUtil.getActorTypeName(dao));
+        return new ActorTypeDTO(dao.getRelationshipType().getUuid(), ActorUtil.getActorTypeName(dao),
+                dao.getRelationshipType().getRelationshipTypeId(), dao.getDirection());
     }
 }

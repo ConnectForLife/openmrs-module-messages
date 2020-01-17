@@ -4,6 +4,7 @@ import { ObjectUI } from './object-ui';
 import { IFormField } from './form-field';
 import { ITemplateField, getDefaultValue } from './template-field.model';
 import { TemplateFieldType } from './template-field-type';
+import { TemplateFieldDefaultValue } from './template-field-default-value.model';
 
 export class TemplateFieldUI extends ObjectUI<ITemplateField> implements ITemplateField, IFormField {
   id: number | null;
@@ -11,6 +12,7 @@ export class TemplateFieldUI extends ObjectUI<ITemplateField> implements ITempla
   mandatory: boolean;
   defaultValue: string;
   type: TemplateFieldType;
+  defaultValues: Array<TemplateFieldDefaultValue>;
 
   isEnabled: boolean;
   isEdited: boolean;

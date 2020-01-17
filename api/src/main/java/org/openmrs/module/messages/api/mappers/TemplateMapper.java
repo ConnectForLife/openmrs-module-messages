@@ -95,6 +95,7 @@ public class TemplateMapper extends AbstractMapper<TemplateDTO, Template> implem
             field.setMandatory(newField.getMandatory());
             field.setDefaultValue(newField.getDefaultValue());
             field.setTemplateFieldType(newField.getTemplateFieldType());
+            field.setDefaultValues(newField.getDefaultValues());
         }
     }
 

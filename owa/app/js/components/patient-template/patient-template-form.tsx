@@ -37,18 +37,19 @@ import {
 } from '../../shared/utils/messages';
 import { factory } from './form/type-factory';
 import { InputTypeEnum } from './form/radio-wrapper/parsable-input';
+import { IActor } from '../../shared/model/actor.model';
+import { IRootState } from '../../reducers';
+import { IActorType } from '../../shared/model/actor-type.model';
 
 
 interface IReactProps {
   patientTemplate: PatientTemplateUI | undefined;
   template: TemplateUI;
   patientId: number;
-  actorId: number;
-  actorName?: string;
-  actorTypeId?: number;
+  actor: IActor;
 }
 
-interface IProps extends IReactProps, DispatchProps {
+interface IProps extends IReactProps, DispatchProps, StateProps {
 }
 
 interface IState {
@@ -65,10 +66,20 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
 
   constructor(props: IProps) {
     super(props);
+    const actorType: IActorType | undefined = this.getActorType(props.actor && props.actor.relationshipTypeId)
     this.state = {
-      defaultPatientTemplate: PatientTemplateUI.getNew(props.patientId, props.actorId, props.template, props.actorTypeId)
+      defaultPatientTemplate: PatientTemplateUI.getNew(
+        props.patientId,
+        props.template,
+        actorType && actorType.relationshipTypeDirection ? actorType.relationshipTypeDirection : undefined,
+        actorType && actorType.relationshipTypeId ? actorType.relationshipTypeId : undefined,
+        props.actor
+      )
     }
   }
+
+  getActorType = (relationshipTypeId: number) =>
+    this.props.actorTypes.find((actorType) => actorType.relationshipTypeId === relationshipTypeId);
 
   getPatientTemplate = () => this.props.patientTemplate || this.state.defaultPatientTemplate;
 
@@ -242,13 +253,13 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
   render = () => {
     const patientTemplate = this.getPatientTemplate();
     const templateName = this.props.template ? this.props.template.name : '';
-    const { actorName } = this.props;
+    const { actor } = this.props;
 
     return (
       <div>
         <Form className="fields-form">
           <ControlLabel className="fields-form-title">
-            <h4>{`${templateName} - ${actorName ? actorName : PATIENT_ROLE}`}</h4>
+            <h4>{`${templateName} - ${actor && actor.actorName ? actor.actorName : PATIENT_ROLE}`}</h4>
           </ControlLabel>
           {patientTemplate.templateFieldValues.map(tfv => this.addErrorDesc(
             this.renderField(tfv), tfv.templateFieldId ? this.getPatientTemplate().errors[tfv.templateFieldId] : null))}
@@ -258,13 +269,18 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
   };
 }
 
+const mapStateToProps = ({ adminSettings }: IRootState) => ({
+  actorTypes: adminSettings.actorTypes
+});
+
 const mapDispatchToProps = ({
   updatePatientTemplate
 });
 
+type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = typeof mapDispatchToProps;
 
 export default connect(
-  undefined,
+  mapStateToProps,
   mapDispatchToProps
 )(PatientTemplateForm);

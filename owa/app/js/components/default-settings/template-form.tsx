@@ -23,9 +23,11 @@ import DynamicCheckboxButton from '../patient-template/form/dynamic-checbox-butt
 import InputField from '../patient-template/form/input-field';
 import { TemplateUI } from '../../shared/model/template-ui';
 import { TemplateFieldType } from '../../shared/model/template-field-type';
+import { IActorType } from '../../shared/model/actor-type.model';
 
 interface IProps {
   template: TemplateUI;
+  actorType: IActorType;
   updateTemplate: (template: TemplateUI) => void;
 }
 
@@ -35,90 +37,130 @@ const elements: InitInput[] = [
   factory(InputTypeEnum.AFTER_TIMES)
 ];
 
+// WARNING this class overrides shouldComponentUpdate, pay special attention
 export class TemplateForm extends React.Component<IProps> {
 
   shouldComponentUpdate = (nextProps: IProps) => {
     const currentTemplate = this.props.template;
     const nextTemplate = nextProps.template;
-    const result = currentTemplate.templateFields
-      .some(field => nextTemplate.templateFields
-        .find(nextField => nextField.localId === field.localId)!.defaultValue !== field.defaultValue);
+    const result = this.hasDefaultValueChanged(currentTemplate, nextTemplate)
+      || this.hasDefaultValuesChanged(currentTemplate, nextTemplate);
     return result;
   }
 
+  hasDefaultValueChanged = (currentTemplate: TemplateUI, nextTemplate: TemplateUI) => currentTemplate.templateFields
+    .some(field => nextTemplate.templateFields
+      .find(nextField => nextField.localId === field.localId)!.defaultValue !== field.defaultValue);
+
+  hasDefaultValuesChanged = (currentTemplate: TemplateUI, nextTemplate: TemplateUI) => currentTemplate.templateFields
+    .some(field => nextTemplate.templateFields
+      .find(nextField => nextField.localId === field.localId)!.defaultValues !== field.defaultValues);
+
+  isPatientTemplate = () => this.props.actorType && this.props.actorType.uuid === '';
+  
   onTemplateFieldValueChange = (fieldLocalId: string, value: string) => {
+    const { relationshipTypeId, relationshipTypeDirection } = this.props.actorType;
     const template = _.cloneDeep(this.props.template);
     const fieldToUpdate = template.templateFields.find(field => field.localId === fieldLocalId)!;
-    fieldToUpdate.defaultValue = value;
+    if (this.isPatientTemplate()) {
+      fieldToUpdate.defaultValue = value;
+    } else {
+      let existingField = fieldToUpdate.defaultValues.find((f) => f.direction === relationshipTypeDirection
+        && f.relationshipTypeId === relationshipTypeId && f.templateFieldId === fieldToUpdate.id);
+      if (!!existingField) {
+        existingField.defaultValue = value;
+      } else {
+        fieldToUpdate.defaultValues.push({
+          relationshipTypeId: relationshipTypeId,
+          direction: relationshipTypeDirection,
+          templateFieldId: fieldToUpdate.id ? fieldToUpdate.id : undefined,
+          defaultValue: value
+        });
+      }
+    }
     this.props.updateTemplate(template);
   };
+
+  getValueForField = (templateField: TemplateFieldUI) => {
+    if (this.isPatientTemplate()) {
+      return templateField.defaultValue;
+    } else {
+      const tfdv = templateField.defaultValues && templateField.defaultValues.find(d => this.props.actorType.relationshipTypeId === d.relationshipTypeId
+        && this.props.actorType.relationshipTypeDirection === d.direction)
+      return !!tfdv ? tfdv.defaultValue : '';
+    }
+  }
 
   renderField = (templateField: TemplateFieldUI) => {
     const fieldType: TemplateFieldType = templateField.type;
     const fieldName: string = templateField.name;
+    const value = this.getValueForField(templateField);
 
     switch (fieldType) {
       case TemplateFieldType.SERVICE_TYPE:
-        return this.renderDynamicRadioButton(templateField, SERVICE_TYPE_VALUES, fieldName);
+        return this.renderDynamicRadioButton(templateField, SERVICE_TYPE_VALUES, fieldName, value);
       case TemplateFieldType.DAY_OF_WEEK:
-        return this.renderDynamicDayOfWeekButton(templateField, DAY_OF_WEEK_VALUES, fieldName);
+        return this.renderDynamicDayOfWeekButton(templateField, DAY_OF_WEEK_VALUES, fieldName, value);
       case TemplateFieldType.MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY:
         return this.renderDynamicRadioButton(templateField,
-          MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY_VALUES, fieldName);
+          MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY_VALUES, fieldName, value);
       case TemplateFieldType.MESSAGING_FREQUENCY_WEEKLY_OR_MONTHLY:
         return this.renderDynamicRadioButton(templateField,
-          MESSAGING_FREQUENCY_WEEKLY_OR_MONTHLY_VALUES, fieldName);
+          MESSAGING_FREQUENCY_WEEKLY_OR_MONTHLY_VALUES, fieldName, value);
       case TemplateFieldType.CATEGORY_OF_MESSAGE:
-        return this.renderDynamicMultiselect(templateField, Object.keys(CATEGORIES_MAP), fieldName);
+        return this.renderDynamicMultiselect(templateField, Object.keys(CATEGORIES_MAP), fieldName, value);
       case TemplateFieldType.START_OF_MESSAGES:
-        return this.renderDatePicker(templateField, PATIENT_TEMPLATE_START_DATE);
+        return this.renderDatePicker(templateField, PATIENT_TEMPLATE_START_DATE, value);
       case TemplateFieldType.END_OF_MESSAGES:
         return (
           <RadioWrappedContainer
-            key={templateField.localId}
+            key={this.props.actorType.uuid + ' ' + templateField.localId}
             id={templateField.localId}
-            initValue={templateField.defaultValue}
+            initValue={value}
             label={PATIENT_TEMPLATE_END_DATE}
             fieldName={fieldName}
             initElements={elements}
             fieldValueChange={this.onTemplateFieldValueChange} />
         );
       default:
-        return this.renderInputField(templateField, fieldName);
+        return this.renderInputField(templateField, fieldName, value);
     };
   };
 
   renderDynamicMultiselect = (field: TemplateFieldUI,
     options: ReadonlyArray<string>,
-    fieldName: string) => (
+    fieldName: string,
+    value: string) => (
       <DynamicMultiselect
         options={options}
-        selectedOptions={field.defaultValue}
+        selectedOptions={value}
         label={fieldName}
-        key={field.localId}
+        key={this.props.actorType.uuid + ' ' + field.localId}
         onSelectChange={(value: string) => this.onTemplateFieldValueChange(field.localId, value)}
       />
     )
 
   renderDynamicDayOfWeekButton = (field: TemplateFieldUI,
     options: ReadonlyArray<string>,
-    fieldName: string) => {
+    fieldName: string,
+    value: string) => {
     if (this.isDayOfWeekMultiple()) {
-      return this.renderDynamicCheckboxButton(field, options, fieldName);
+      return this.renderDynamicCheckboxButton(field, options, fieldName, value);
     } else {
-      return this.renderDynamicRadioButton(field, options, fieldName);
+      return this.renderDynamicRadioButton(field, options, fieldName, value);
     }
   }
 
   renderDynamicRadioButton = (field: TemplateFieldUI,
     options: ReadonlyArray<string>,
-    fieldName: string) => {
+    fieldName: string,
+    value: string) => {
     return (
       <DynamicRadioButton
         options={options}
-        selectedOption={field.defaultValue}
+        selectedOption={value}
         label={fieldName}
-        key={field.localId}
+        key={this.props.actorType.uuid + ' ' + field.localId}
         id={field.localId}
         onSelectChange={(value: string) => this.onTemplateFieldValueChange(field.localId, value)}
       />
@@ -127,43 +169,46 @@ export class TemplateForm extends React.Component<IProps> {
 
   renderDynamicCheckboxButton = (field: TemplateFieldUI,
     options: ReadonlyArray<string>,
-    fieldName: string) => {
-    const value = _.split(field.defaultValue, ',');
+    fieldName: string,
+    value: string) => {
+    const formattedValue = _.split(value, ',');
     return (
       <DynamicCheckboxButton
         options={options}
-        selectedOptions={value}
+        selectedOptions={formattedValue}
         label={fieldName}
         fieldName={fieldName}
-        key={field.localId}
+        key={this.props.actorType.uuid + ' ' + field.localId}
         id={field.localId}
         onSelectChange={(value: string) => this.onTemplateFieldValueChange(field.localId, value)} />
     );
   };
 
   renderInputField = (field: TemplateFieldUI,
-    fieldName: string) => {
+    fieldName: string,
+    value: string) => {
     return (
       <InputField
         fieldName={fieldName}
-        value={field.defaultValue}
+        value={value}
         label={fieldName}
-        key={field.localId}
+        key={this.props.actorType.uuid + ' ' + field.localId}
         handleChange={(value: string) => {
           this.onTemplateFieldValueChange(field.localId, value)
         }} />
     );
   };
 
-  renderDatePicker = (field: TemplateFieldUI, fieldName: string) => (
-    <FormGroup controlId={field.localId} key={field.localId}>
-      <FormLabel label={fieldName} />
-      <OpenMrsDatePicker
-        value={field.defaultValue}
-        onChange={isoDate => this.onTemplateFieldValueChange(field.localId, isoDate)}
-      />
-    </FormGroup>
-  );
+  renderDatePicker = (field: TemplateFieldUI, fieldName: string,
+    value: string) => (
+      <FormGroup controlId={field.localId} key={field.localId}>
+        <FormLabel label={fieldName} />
+        <OpenMrsDatePicker
+          value={value}
+          onChange={isoDate => this.onTemplateFieldValueChange(field.localId, isoDate)}
+        />
+      </FormGroup>
+    );
 
   private isDayOfWeekMultiple = () => {
     const weeklyMonthlyFrequency = this.props

@@ -19,9 +19,13 @@ public class TemplateFieldMapperTest {
 
     private TemplateFieldMapper templateFieldMapper;
 
+    private TemplateFieldDefaultValueMapper templateFieldDefaultValueMapper;
+
     @Before
     public void setUp() {
         templateFieldMapper = new TemplateFieldMapper();
+        templateFieldDefaultValueMapper = new TemplateFieldDefaultValueMapper();
+        templateFieldMapper.setTemplateFieldDefaultValueMapper(templateFieldDefaultValueMapper);
         dao = new TemplateFieldBuilder().build();
         dto = new TemplateFieldDTOBuilder().build();
     }

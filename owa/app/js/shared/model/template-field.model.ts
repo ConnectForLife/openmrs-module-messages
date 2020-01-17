@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { TemplateFieldType } from './template-field-type';
+import { TemplateFieldDefaultValue } from './template-field-default-value.model';
 
 export interface ITemplateField {
   id: number | null;
@@ -7,6 +8,7 @@ export interface ITemplateField {
   mandatory: boolean;
   defaultValue: string;
   type: TemplateFieldType;
+  defaultValues: Array<TemplateFieldDefaultValue>
   // value_concept is skipped for now
 }
 
@@ -15,5 +17,6 @@ export const getDefaultValue = (): ITemplateField => ({
   name: '',
   mandatory: true,
   defaultValue: '',
-  type: TemplateFieldType.DAY_OF_WEEK
+  type: TemplateFieldType.DAY_OF_WEEK,
+  defaultValues: []
 });

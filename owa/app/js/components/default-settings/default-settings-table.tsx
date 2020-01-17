@@ -1,43 +1,49 @@
 import React, { ReactFragment } from 'react';
 import { connect } from 'react-redux';
+import { IRootState } from '../../reducers';
 
-import { updateTemplate } from '../../reducers/admin-settings.reducer';
+import { updateTemplate, getActorTypes } from '../../reducers/admin-settings.reducer';
 import { TemplateUI } from '../../shared/model/template-ui';
 import { TemplateForm } from './template-form';
 import * as Msg from '../../shared/utils/messages';
 import { IColumn } from '../../shared/model/column.model';
 import { FragmentTable } from './fragment-table';
 import { IFragmentRow } from '../../shared/model/fragment-table-row.model';
+import { IActorType } from '../../shared/model/actor-type.model';
 
 interface IProps extends DispatchProps {
-  templates: ReadonlyArray<TemplateUI>
+  templates: ReadonlyArray<TemplateUI>,
+  actorTypes: ReadonlyArray<IActorType>
  }
 
 class DefaultSettingsTable extends React.Component<IProps> {
 
-  // todo CFLM-521 get actor types and build columns
-  getActorTypes = () => ['Patient', 'Caregiver', 'Father'];
+  componentDidMount = () => {
+    this.props.getActorTypes();
+  }
 
-  getColumns = (): ReadonlyArray<IColumn> => 
-    this.getActorTypes().map(actorType => ({
-      key: actorType,
-      label: actorType + Msg.DEFAULT_SETTINGS_POSTFIX
+  getActorTypes = () => [{uuid: '', display: 'Patient'} as IActorType, ...this.props.actorTypes];
+
+  getColumns = (): ReadonlyArray<IColumn> => this.getActorTypes().map(actorType => ({
+      key: actorType.display,
+      label: actorType.display + Msg.DEFAULT_SETTINGS_POSTFIX
     }));
 
   getTemplateFragmentRows = (): ReadonlyArray<IFragmentRow> => 
     this.getActorTypes().map(actorType => ({
-      key: actorType,
-      fragments: this.buildTemplateFragments()
+      key: actorType.display,
+      fragments: this.buildTemplateFragments(actorType)
     }));
 
-  buildTemplateFragments = (): ReadonlyArray<ReactFragment> =>
-    this.props.templates.map(this.buildTemplateForm);
+  buildTemplateFragments = (actorType: IActorType): ReadonlyArray<ReactFragment> =>
+    this.props.templates.map((t) => this.buildTemplateForm(t, actorType));
 
-  buildTemplateForm = (template: TemplateUI): ReactFragment => (
+  buildTemplateForm = (template: TemplateUI, actorType: IActorType): ReactFragment => (
     <TemplateForm 
       key={`template-form-${template.localId}`}
       template={template}
       updateTemplate={this.props.updateTemplate}
+      actorType={actorType}
     />
   );
 
@@ -52,13 +58,19 @@ class DefaultSettingsTable extends React.Component<IProps> {
   );
 };
 
+const mapStateToProps = ({ adminSettings }: IRootState) => ({
+  loading: adminSettings.loading,
+  actorTypes: adminSettings.actorTypes
+});
+
 const mapDispatchToProps = ({
   updateTemplate,
+  getActorTypes
 });
 
 type DispatchProps = typeof mapDispatchToProps;
 
 export default connect(
-  undefined,
+  mapStateToProps,
   mapDispatchToProps
 )(DefaultSettingsTable);

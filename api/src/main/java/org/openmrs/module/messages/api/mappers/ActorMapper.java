@@ -5,6 +5,7 @@ import org.openmrs.module.messages.api.model.Actor;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.openmrs.module.messages.api.util.ActorUtil;
 
 public class ActorMapper {
@@ -24,6 +25,7 @@ public class ActorMapper {
                 .setActorId(dao.getTarget().getPersonId())
                 .setActorName(dao.getTarget().getPersonName().getFullName())
                 .setActorTypeId(dao.getRelationship().getId())
-                .setActorTypeName(typeName);
+                .setActorTypeName(typeName)
+                .setRelationshipTypeId(dao.getRelationship().getRelationshipType().getId());
     }
 }

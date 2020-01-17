@@ -44,6 +44,12 @@
         </property>
     </bean>
 
+    <bean id="messages.TemplateFieldDefaultValueDao" class="org.openmrs.module.messages.api.dao.impl.TemplateFieldDefaultValueDaoImpl">
+        <property name="dbSessionFactory">
+            <ref bean="dbSessionFactory"/>
+        </property>
+    </bean>
+
     <bean id="messages.TemplateFieldDao" class="org.openmrs.module.messages.api.dao.impl.TemplateFieldDaoImpl">
         <property name="dbSessionFactory">
             <ref bean="dbSessionFactory"/>
@@ -201,7 +207,13 @@
         </property>
     </bean>
 
-    <bean id="messages.templateFieldMapper" class="org.openmrs.module.messages.api.mappers.TemplateFieldMapper"/>
+    <bean id="messages.templateFieldDefaultValueMapper" class="org.openmrs.module.messages.api.mappers.TemplateFieldDefaultValueMapper"/>
+
+    <bean id="messages.templateFieldMapper" class="org.openmrs.module.messages.api.mappers.TemplateFieldMapper">
+        <property name="templateFieldDefaultValueMapper">
+            <ref local="messages.templateFieldDefaultValueMapper"/>
+        </property>
+    </bean>
 
     <bean id="messages.templateMapper" class="org.openmrs.module.messages.api.mappers.TemplateMapper">
         <property name="templateFieldMapper">
