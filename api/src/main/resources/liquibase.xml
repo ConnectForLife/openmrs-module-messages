@@ -1258,5 +1258,10 @@
             ]]>
         </sql>
     </changeSet>
+    <changeSet id="messages-38" author="Michał Lewandowski">
+        <sql>
+            Update messages_template_field set default_value = 'NO_DATE|EMPTY' where template_field_type = 'END_OF_MESSAGES';
+        </sql>
+    </changeSet>
 </databaseChangeLog>
 
