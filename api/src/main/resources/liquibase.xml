@@ -1704,4 +1704,22 @@
             where name = 'Health tip';
         </sql>
     </changeSet>
+
+    <changeSet id="messages-45" author="Daniel Serkowski">
+        <preConditions>
+            <tableExists tableName="messages_template_field"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from messages_template_field
+                where uuid = '95572cd9-20b2-11ea-ac12-0242c0a82002'
+            </sqlCheck>
+        </preConditions>
+
+        <comment>Updating default_value of Categories of the message for the HealthTip messages
+            (removing the invalid value 'Category1)'</comment>
+
+        <update tableName="messages_template_field">
+            <column name="default_value" value=""/>
+            <where>uuid = '95572cd9-20b2-11ea-ac12-0242c0a82002' and default_value = 'Category1'</where>
+        </update>
+    </changeSet>
 </databaseChangeLog>
