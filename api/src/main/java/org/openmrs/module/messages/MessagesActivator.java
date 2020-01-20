@@ -99,6 +99,7 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
         createDaysBeforeVisitReminderConfig();
         createReschedulingStrategyConfig();
         createConsentConfig();
+        createAdherenceFeedbackConfig();
     }
 
     private void createActorTypeConfig() {
@@ -138,7 +139,22 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
                 ConfigConstants.TIME_INTERVAL_TO_NEXT_RESCHEDULE_DEFAULT_VALUE,
                 ConfigConstants.TIME_INTERVAL_TO_NEXT_RESCHEDULE_DESCRIPTION);
     }
-
+    
+    private void createAdherenceFeedbackConfig() {
+        createGlobalSettingIfNotExists(ConfigConstants.CUT_OFF_SCORE_FOR_HIGH_MEDIUM_ADHERENCE_LEVEL_KEY,
+                ConfigConstants.CUT_OFF_SCORE_FOR_HIGH_MEDIUM_ADHERENCE_LEVEL_DEFAULT_VALUE,
+                ConfigConstants.CUT_OFF_SCORE_FOR_HIGH_MEDIUM_ADHERENCE_LEVEL_DESCRIPTION);
+        createGlobalSettingIfNotExists(ConfigConstants.CUT_OFF_SCORE_FOR_MEDIUM_LOW_ADHERENCE_LEVEL_KEY,
+                ConfigConstants.CUT_OFF_SCORE_FOR_MEDIUM_LOW_ADHERENCE_LEVEL_DEFAULT_VALUE,
+                ConfigConstants.CUT_OFF_SCORE_FOR_MEDIUM_LOW_ADHERENCE_LEVEL_DESCRIPTION);
+        createGlobalSettingIfNotExists(ConfigConstants.CUT_OFF_SCORE_FOR_ADHERENCE_TREND_KEY,
+                ConfigConstants.CUT_OFF_SCORE_FOR_ADHERENCE_TREND_DEFAULT_VALUE,
+                ConfigConstants.CUT_OFF_SCORE_FOR_ADHERENCE_TREND_DESCRIPTION);
+        createGlobalSettingIfNotExists(ConfigConstants.BENCHMARK_PERIOD_KEY,
+                ConfigConstants.BENCHMARK_PERIOD_DEFAULT_VALUE,
+                ConfigConstants.BENCHMARK_PERIOD_DESCRIPTION);
+    }
+    
     private void createBestContactTimeAttributeType() {
         PersonAttributeType attributeType = new PersonAttributeType();
         attributeType.setName(ConfigConstants.PERSON_CONTACT_TIME_ATTRIBUTE_TYPE_NAME);
@@ -173,7 +189,7 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
             personService.savePersonAttributeType(attributeType);
         }
     }
-
+    
     private void createGlobalSettingIfNotExists(String key, String value, String description) {
         String existSetting = Context.getAdministrationService().getGlobalProperty(key);
         if (StringUtils.isBlank(existSetting)) {
@@ -184,7 +200,7 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
             }
         }
     }
-
+    
     private void safeShutdownModule() {
         Module mod = ModuleFactory.getModuleById(ConfigConstants.MODULE_ID);
         ModuleFactory.stopModule(mod);

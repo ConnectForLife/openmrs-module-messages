@@ -132,6 +132,28 @@ public final class ConfigConstants {
             + "set according to the time when the system gets registerAttempt response from the service plus the "
             + "number of second expressed in the value of this property.";
 
+    public static final String CUT_OFF_SCORE_FOR_HIGH_MEDIUM_ADHERENCE_LEVEL_KEY =
+            "messages.cutOffScoreForHighMediumAdherenceLevel";
+    public static final String CUT_OFF_SCORE_FOR_HIGH_MEDIUM_ADHERENCE_LEVEL_DEFAULT_VALUE = "90";
+    public static final String CUT_OFF_SCORE_FOR_HIGH_MEDIUM_ADHERENCE_LEVEL_DESCRIPTION =
+            "Used to specify a percentage cut-off score for High and Medium adherence level";
+    
+    public static final String CUT_OFF_SCORE_FOR_MEDIUM_LOW_ADHERENCE_LEVEL_KEY =
+            "messages.cutOffScoreForMediumLowAdherenceLevel";
+    public static final String CUT_OFF_SCORE_FOR_MEDIUM_LOW_ADHERENCE_LEVEL_DEFAULT_VALUE = "70";
+    public static final String CUT_OFF_SCORE_FOR_MEDIUM_LOW_ADHERENCE_LEVEL_DESCRIPTION =
+            "Used to specify a percentage cut-off score for Medium and Low adherence level";
+    
+    public static final String CUT_OFF_SCORE_FOR_ADHERENCE_TREND_KEY = "messages.cutOffScoreForAdherenceTrend";
+    public static final String CUT_OFF_SCORE_FOR_ADHERENCE_TREND_DEFAULT_VALUE = "5";
+    public static final String CUT_OFF_SCORE_FOR_ADHERENCE_TREND_DESCRIPTION =
+            "Used to specify a percentage cut-off score for adherence trend";
+    
+    public static final String BENCHMARK_PERIOD_KEY = "messages.benchmarkPeriod";
+    public static final String BENCHMARK_PERIOD_DEFAULT_VALUE = "7";
+    public static final String BENCHMARK_PERIOD_DESCRIPTION =
+            "Used to specify the number of days from which adherence trend is calculated";
+    
     private ConfigConstants() {
     }
 }
