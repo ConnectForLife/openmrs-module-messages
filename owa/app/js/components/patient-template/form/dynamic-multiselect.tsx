@@ -43,7 +43,7 @@ export default class DynamicMultiselect extends React.Component<IProps, IState> 
   }
 
   mapOptionsToMultiselectOptionsArray = (optionString: string) => {
-    return optionString.split(',')
+    return optionString && optionString.split(',')
       .filter(optionName => !!optionName)
       .map((optionName) => (new MultiselectOption(this.getCategoryOptionLabel(optionName), optionName)));
   }
