@@ -1918,4 +1918,47 @@
                 ]]>
     </sql>
     </changeSet>
+
+    <changeSet id="messages-48" author="Michał Lewandowski">
+        <preConditions>
+            <tableExists tableName="messages_template"/>
+            <tableExists tableName="messages_template_field"/>
+            <tableExists tableName="messages_scheduled_service"/>
+        </preConditions>
+
+        <comment>Adjust date before visit conditions</comment>
+
+        <sql>
+            Update messages_template set service_query =
+            'SELECT EXECUTION_DATE, MESSAGE_ID, CHANNEL_ID, null as STATUS_ID, visitTypeId, locationId, dateStarted FROM
+            (SELECT TIMESTAMP(selected_date, :bestContactTime ) AS EXECUTION_DATE, 1 AS MESSAGE_ID, :Service_type AS
+            CHANNEL_ID, visitTypeId, locationId, visit_dates as dateStarted
+            FROM (SELECT * FROM (SELECT * FROM DATES_LIST) dates_list
+            WHERE selected_date >= :Start_of_messages
+                AND selected_date &lt;= :End_of_messages
+            ) dates_in_range
+            JOIN (SELECT date_started as visit_dates, visit_type_id as visitTypeId, location_id as locationId FROM visit
+            WHERE patient_id = :patientId ) dates_of_visit
+            WHERE concat(\',\',(SELECT property_value FROM global_property
+            WHERE property =\'message.daysToCallBeforeVisit.default\'), \',\') LIKE concat(\'%,\',datediff(visit_dates, selected_date),\',%\')
+                AND date(visit_dates) !=  selected_date )dates_before_visit
+            WHERE EXECUTION_DATE &lt;= :endDate
+                AND EXECUTION_DATE >= :startDate
+                AND EXECUTION_DATE >= GET_PREDICTION_START_DATE_FOR_VISIT(:patientId)
+                AND CHANNEL_ID != \'Deactivate service\'
+            Union
+            SELECT mssg.msg_send_time as EXECUTION_DATE, 1 as MESSAGE_ID, mss.channel_type as CHANNEL_ID,
+            mss.status as STATUS_ID, null as visitTypeId, null as locationId, null as dateStarted
+            FROM messages_scheduled_service mss
+                JOIN messages_patient_template mpt on mpt.messages_patient_template_id = mss.patient_template_id
+                JOIN messages_template mt on mt.messages_template_id = mpt.template_id
+                JOIN messages_scheduled_service_group mssg on mssg.messages_scheduled_service_group_id = mss.group_id
+            WHERE mt.name = \'Visit reminder\'
+                AND mpt.patient_id = :patientId
+                AND mssg.msg_send_time >= :startDate
+                AND mssg.msg_send_time &lt;= :endDate
+            ORDER BY 1 desc;'
+            WHERE name = 'Visit reminder';
+        </sql>
+    </changeSet>
 </databaseChangeLog>
