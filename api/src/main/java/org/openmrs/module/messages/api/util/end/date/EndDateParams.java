@@ -2,11 +2,13 @@ package org.openmrs.module.messages.api.util.end.date;
 
 import java.util.Date;
 import java.util.List;
+import org.openmrs.module.messages.api.util.FrequencyType;
 
 public class EndDateParams {
     private String value;
     private Date startDate;
-    private List<String> frequency;
+    private FrequencyType frequency;
+    private List<String> daysOfWeek;
 
     public EndDateParams(String value) {
         this.value = value;
@@ -17,10 +19,12 @@ public class EndDateParams {
         this.startDate = startDate;
     }
 
-    public EndDateParams(String value, Date startDate, List<String> frequency) {
+    public EndDateParams(String value, Date startDate, FrequencyType frequency,
+                         List<String> daysOfWeek) {
         this.value = value;
         this.startDate = startDate;
         this.frequency = frequency;
+        this.daysOfWeek = daysOfWeek;
     }
 
     public String getValue() {
@@ -39,11 +43,21 @@ public class EndDateParams {
         this.startDate = startDate;
     }
 
-    public List<String> getFrequency() {
+    public List<String> getDaysOfWeek() {
+        return daysOfWeek;
+    }
+
+    public EndDateParams setDaysOfWeek(List<String> daysOfWeek) {
+        this.daysOfWeek = daysOfWeek;
+        return this;
+    }
+
+    public FrequencyType getFrequency() {
         return frequency;
     }
 
-    public void setFrequency(List<String> frequency) {
+    public EndDateParams setFrequency(FrequencyType frequency) {
         this.frequency = frequency;
+        return this;
     }
 }

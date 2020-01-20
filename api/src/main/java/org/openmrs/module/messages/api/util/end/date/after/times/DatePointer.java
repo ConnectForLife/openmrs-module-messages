@@ -27,8 +27,16 @@ public class DatePointer {
         counter += by;
     }
 
-    public void incDate(int by) {
+    public void incDateByDay(int by) {
         date = date.plusDays(by);
+    }
+
+    public void incDateByWeek(int by) {
+        date = date.plusWeeks(by);
+    }
+
+    public void incDateByMonth(int by) {
+        date = date.plusMonths(by);
     }
 
     public LocalDate getDate() {

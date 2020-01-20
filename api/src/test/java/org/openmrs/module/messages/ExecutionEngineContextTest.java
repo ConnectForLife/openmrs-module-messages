@@ -36,7 +36,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.openmrs.module.messages.api.model.TemplateFieldType.END_OF_MESSAGES;
-import static org.openmrs.module.messages.api.model.TemplateFieldType.MESSAGING_FREQUENCY_WEEKLY_OR_MONTHLY;
+import static org.openmrs.module.messages.api.model.TemplateFieldType.MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY;
 import static org.openmrs.module.messages.api.model.TemplateFieldType.START_OF_MESSAGES;
 
 public class ExecutionEngineContextTest extends ContextSensitiveTest {
@@ -193,7 +193,8 @@ public class ExecutionEngineContextTest extends ContextSensitiveTest {
         PatientTemplate patientTemplate = prepareBase();
 
         List<TemplateFieldValue> values = new ArrayList<>();
-        values.add(buildTemplateFieldWithValue(MESSAGING_FREQUENCY_WEEKLY_OR_MONTHLY, "Tuesday",
+        values.add(buildTemplateFieldWithValue(MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY,
+            "Daily",
                 template, patientTemplate));
         values.add(buildTemplateFieldWithValue(START_OF_MESSAGES, start,
                 template, patientTemplate));

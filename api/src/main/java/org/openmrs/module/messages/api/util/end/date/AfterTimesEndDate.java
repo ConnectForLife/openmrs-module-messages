@@ -20,7 +20,8 @@ public class AfterTimesEndDate implements EndDate {
         try {
             AfterTimesParser parser = new AfterTimesParser();
             AfterTimes afterTimes = new AfterTimes(
-                    parser.parseWeekDays(params.getFrequency()),
+                    params.getFrequency(),
+                    parser.parseWeekDays(params.getDaysOfWeek()),
                     parser.parseOccurrence(params.getValue()),
                     params.getStartDate());
             return afterTimes.get();

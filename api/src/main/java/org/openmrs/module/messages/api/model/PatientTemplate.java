@@ -132,6 +132,6 @@ public class PatientTemplate extends AbstractBaseOpenmrsData {
 
     @Transient
     public Date getEndOfMessages() {
-        return EndDateUtil.getEndDate(getTemplateFieldValues());
+        return EndDateUtil.getEndDate(getTemplateFieldValues(), getTemplate().getName());
     }
 }
