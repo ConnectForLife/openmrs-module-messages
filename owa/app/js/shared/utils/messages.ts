@@ -44,8 +44,8 @@ export const DEFAULT_SETTINGS_POSTFIX = ' - default settings';
 export const DEFAULT_SETTINGS_TABLE_TITLE = 'Default message details';
 export const OTHER = 'Other';
 
-export const PATIENT_TEMPLATE_START_DATE = 'Start of daily messages';
-export const PATIENT_TEMPLATE_END_DATE = 'End of daily messages';
+export const PATIENT_TEMPLATE_START_DATE = 'Start of messages';
+export const PATIENT_TEMPLATE_END_DATE = 'End of messages';
 export const PATIENT_ROLE = 'Patient';
 export const ISO_DATE_FORMAT = 'YYYY-MM-DD';
 export const DATE_FORMAT = 'dd MMM yyyy';
