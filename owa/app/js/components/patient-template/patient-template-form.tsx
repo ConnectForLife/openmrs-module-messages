@@ -78,12 +78,15 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
     }
   }
 
-  componentDidMount = () => this.props.updatePatientTemplate(this.getPatientTemplate(), [this.props.template]);
+  componentDidMount = () => this.props.updatePatientTemplate(this.getPatientTemplate(), [this.props.template],
+    this.isDefaultPatientTemplateLoaded());
 
   getActorType = (relationshipTypeId: number) =>
     this.props.actorTypes.find((actorType) => actorType.relationshipTypeId === relationshipTypeId);
 
   getPatientTemplate = () => this.props.patientTemplate || this.state.defaultPatientTemplate;
+
+  isDefaultPatientTemplateLoaded = () => !this.props.patientTemplate;
 
   onTemplateFieldValueChange = (templateFieldLocalId: string, value: string) => {
     const patientTemplate = this.getPatientTemplate();

@@ -91,6 +91,18 @@ export class TemplateForm extends React.Component<IProps> {
     }
   }
 
+  setValueForField = (templateField: TemplateFieldUI, value: string) => {
+    if (this.isPatientTemplate()) {
+      templateField.defaultValue = value;
+    } else {
+      const tfdv = templateField.defaultValues && templateField.defaultValues.find(d => this.props.actorType.relationshipTypeId === d.relationshipTypeId
+        && this.props.actorType.relationshipTypeDirection === d.direction)
+      if (!!tfdv) {
+        tfdv.defaultValue = value;
+      }
+    }
+  }
+
   renderField = (templateField: TemplateFieldUI) => {
     const fieldType: TemplateFieldType = templateField.type;
     const fieldName: string = templateField.name;
@@ -101,6 +113,8 @@ export class TemplateForm extends React.Component<IProps> {
         return this.renderDynamicRadioButton(templateField, SERVICE_TYPE_VALUES, fieldName, value);
       case TemplateFieldType.DAY_OF_WEEK:
         return this.renderDynamicDayOfWeekButton(templateField, DAY_OF_WEEK_VALUES, fieldName, value);
+      case TemplateFieldType.DAY_OF_WEEK_SINGLE:
+        return this.renderDynamicRadioButton(templateField, DAY_OF_WEEK_VALUES, fieldName, value);
       case TemplateFieldType.MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY:
         return this.renderDynamicRadioButton(templateField,
           MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY_VALUES, fieldName, value);
@@ -147,6 +161,10 @@ export class TemplateForm extends React.Component<IProps> {
     if (this.isDayOfWeekMultiple()) {
       return this.renderDynamicCheckboxButton(field, options, fieldName, value);
     } else {
+      const isMultipleValueProvided = this.getValueForField(field).indexOf(',') !== -1;
+      if (isMultipleValueProvided) {
+        this.setValueForField(field, '');
+      }
       return this.renderDynamicRadioButton(field, options, fieldName, value);
     }
   }
@@ -225,7 +243,7 @@ export class TemplateForm extends React.Component<IProps> {
       .find(f => f.type === TemplateFieldType.MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY);
     if (!!dailyWeeklyMonthlyFrequency) {
       const daily = MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY_VALUES[0];
-      return dailyWeeklyMonthlyFrequency.defaultValue === daily;
+      return this.getValueForField(dailyWeeklyMonthlyFrequency) === daily;
     }
 
     return true;

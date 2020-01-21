@@ -124,7 +124,7 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
         </>
 
       const isValid = !_.some(patientTemplates, pt => pt.hasErrors());
-      const isPersisted = patientTemplates.length > 0;
+      const isPersisted = _.some(patientTemplates, pt => pt.isPersisted);
 
       const onSelectCallback: SelectCallback = () => this.changeLocation(name);
 

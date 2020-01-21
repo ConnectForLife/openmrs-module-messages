@@ -177,7 +177,8 @@ export const putPatientTemplates = (patientTemplates: Array<PatientTemplateUI>,
   };
 
 export const updatePatientTemplate = (patientTemplate: PatientTemplateUI,
-  templates: Array<TemplateUI>) => async (dispatch) => {
+  templates: Array<TemplateUI>, persisted: boolean = false) => async (dispatch) => {
+    patientTemplate.isPersisted = !persisted;
     dispatch({
       type: ACTION_TYPES.UPDATE_PATIENT_TEMPLATE,
       payload: await patientTemplate.validate(templates, false)

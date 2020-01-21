@@ -17,6 +17,7 @@ export class PatientTemplateUI extends ObjectUI<IPatientTemplate> implements IPa
   templateId: number;
   actorId: number;
   actorTypeId: number;
+  isPersisted: boolean;
 
   errors: {[key: string]: string};
 
