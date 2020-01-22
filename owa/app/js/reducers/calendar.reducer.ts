@@ -2,7 +2,6 @@ import _ from 'lodash';
 
 import { REQUEST, SUCCESS, FAILURE } from './action-type.util'
 import 'react-toastify/dist/ReactToastify.css';
-import { IPatientTemplate } from '../shared/model/patient-template.model';
 import axiosInstance from '../config/axios';
 import { ServiceResultListUI } from '../shared/model/service-result-list-ui';
 

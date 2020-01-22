@@ -54,6 +54,7 @@ interface IActorIdWithEvents {
   events: Array<ICalendarMessageEvent>;
 }
 
+const DATE_RANGE_CHANGE_CALLBACK_DEBOUNCE_DELAY = 200;
 
 class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewState> {
   constructor(props: ICalendarViewProps) {
@@ -80,7 +81,10 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
     }
   }
 
-  private dateRangeChanged = (start: Date, end: Date, tabKey: string) => {
+  // We have to debounce calling this method because fullcalendar 
+  // calls dateRangeChangedCallback few times with the same values.
+  // Debounce allows us to wait until last component update is performed
+  private dateRangeChanged = _.debounce((start, end, tabKey) => {
     if (this.state.patientId && tabKey === this.state.activeTabKey &&
       ((this.state.startDate && !moment(this.state.startDate).isSame(moment(start)))
         || (this.state.endDate && !moment(this.state.endDate).isSame(moment(end)))
@@ -90,7 +94,7 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
         endDate: moment(end)
       }, () => this.props.getServiceResultLists(start, end, this.state.patientId));
     }
-  }
+  }, DATE_RANGE_CHANGE_CALLBACK_DEBOUNCE_DELAY);
 
   private prepareActorsData = () => {
     const actorsResults = [] as Array<IActorIdWithEvents>;
@@ -233,7 +237,7 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
                         <a href={`${window.location.href}/patient-template`}>
                           <Button className="btn btn-md pull-right btn-manage-messages">
                             Manage messages
-                        </Button>
+                          </Button>
                         </a>
                         <Calendar
                           dateRangeChangedCallback={(startDate, endDate) => this.dateRangeChanged(startDate, endDate, tabName)}
@@ -262,7 +266,7 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
 const mapStateToProps = ({ calendar, patientTemplate, actor }: IRootState) => ({
   serviceResultLists: calendar.serviceResultLists,
   templates: patientTemplate.templates,
-  loading: patientTemplate.templatesLoading || actor.actorResultListLoading,
+  loading: patientTemplate.templatesLoading || actor.actorResultListLoading || calendar.serviceResultListsLoading,
   actorResultList: actor.actorResultList
 });
 
