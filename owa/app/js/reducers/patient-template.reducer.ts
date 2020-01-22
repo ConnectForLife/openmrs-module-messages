@@ -27,7 +27,6 @@ const initialState = {
   patientTemplates: [] as Array<PatientTemplateUI>,
   patientTemplatesLoading: false,
   messageDetails: null as unknown as MessageDetails,
-  messageDetailsPages: 0,
   messageDetailsLoading: false
 };
 
@@ -65,10 +64,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         messageDetailsLoading: false,
-        // the response is wrapped in a page because the collection inside is paginated,
-        // so the true result is always in the only collection element
-        messageDetails: action.payload.data.content[0],
-        pages: Math.ceil((action.payload.data.totalRecords / action.payload.data.pageSize))
+        messageDetails: action.payload.data
       };
     case REQUEST(ACTION_TYPES.GET_PATIENT_TEMPLATES):
       return {
@@ -128,14 +124,12 @@ const templatesUrl = messagesUrl + "/templates";
 const messageDetailsUrl = messagesUrl + "/details";
 const patientTemplatesUrl = messagesUrl + "/patient-templates";
 
-export const getMessagesPage = (page: number, size: number, patientId: number) => async (dispatch) => {
+export const getMessages = (patientId: number) => async (dispatch) => {
   await dispatch({
     type: ACTION_TYPES.GET_MESSAGE_DETAILS,
     payload: axiosInstance.get(messageDetailsUrl, {
       params: {
-        patientId: patientId,
-        page: page + 1,
-        rows: size
+        patientId: patientId
       }
     })
   });

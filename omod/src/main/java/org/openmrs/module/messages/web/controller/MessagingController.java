@@ -3,7 +3,6 @@ package org.openmrs.module.messages.web.controller;
 import org.openmrs.module.messages.api.service.ActorService;
 import org.openmrs.module.messages.api.dto.ErrorResponseDTO;
 import org.openmrs.module.messages.api.dto.MessageDetailsDTO;
-import org.openmrs.module.messages.api.dto.PageDTO;
 import org.openmrs.module.messages.api.execution.ExecutionException;
 import org.openmrs.module.messages.api.execution.ServiceResultList;
 import org.openmrs.module.messages.api.mappers.MessageDetailsMapper;
@@ -13,7 +12,6 @@ import org.openmrs.module.messages.api.service.MessagingService;
 import org.openmrs.module.messages.api.service.PatientTemplateService;
 import org.openmrs.module.messages.api.service.TemplateService;
 import org.openmrs.module.messages.api.util.MessageDetailsUtil;
-import org.openmrs.module.messages.domain.PagingInfo;
 import org.openmrs.module.messages.domain.criteria.PatientTemplateCriteria;
 import org.openmrs.module.messages.web.model.MessagingParams;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -59,22 +56,18 @@ public class MessagingController extends BaseRestController {
 
     @RequestMapping(value = "/details", method = RequestMethod.GET)
     @ResponseBody
-    public PageDTO<MessageDetailsDTO> getMessageDetails(MessagingParams messagingParams) {
+    public MessageDetailsDTO getMessageDetails(MessagingParams messagingParams) {
         PatientTemplateCriteria criteria = messagingParams.getCriteria();
-        PagingInfo paging = messagingParams.getPagingInfo();
         List<PatientTemplate> patientTemplates = patientTemplateService.findAllByCriteria(
-                criteria, paging);
+                criteria);
 
-        // the response is wrapped in a page because the collection inside is paginated
-        List<MessageDetailsDTO> details = new ArrayList<>();
         MessageDetailsDTO messageDetailsDTO =
             messageDetailsMapper.toDto(patientTemplates).withPatientId(criteria.getPatientId());
-        messageDetailsDTO = MessageDetailsUtil.attachDefaultTemplates(messageDetailsDTO,
+        messageDetailsDTO = MessageDetailsUtil.attachDefaultMessageDetails(messageDetailsDTO,
             templateService.getAll(false),
             actorService.getAllActorsForPatientId(criteria.getPatientId()));
 
-        details.add(messageDetailsDTO);
-        return new PageDTO<>(details, paging);
+        return messageDetailsDTO;
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)

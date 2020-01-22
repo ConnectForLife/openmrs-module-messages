@@ -18,9 +18,9 @@ import java.util.TreeSet;
 
 public final class MessageDetailsUtil {
 
-    public static MessageDetailsDTO attachDefaultTemplates(MessageDetailsDTO messageDetailsDTO,
-                                                           List<Template> templates,
-                                                           List<Actor> actors) {
+    public static MessageDetailsDTO attachDefaultMessageDetails(MessageDetailsDTO messageDetailsDTO,
+                                                                List<Template> templates,
+                                                                List<Actor> actors) {
         if (messageDetailsDTO.getMessages() == null) {
             throw new IllegalArgumentException("Messages collection cannot be null");
         }

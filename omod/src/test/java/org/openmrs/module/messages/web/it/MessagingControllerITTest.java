@@ -2,6 +2,7 @@ package org.openmrs.module.messages.web.it;
 
 import org.apache.commons.lang3.time.DateUtils;
 import org.codehaus.jackson.type.TypeReference;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Patient;
@@ -14,7 +15,6 @@ import org.openmrs.module.messages.api.dao.TemplateDao;
 import org.openmrs.module.messages.api.dto.ActorScheduleDTO;
 import org.openmrs.module.messages.api.dto.MessageDTO;
 import org.openmrs.module.messages.api.dto.MessageDetailsDTO;
-import org.openmrs.module.messages.api.dto.PageDTO;
 import org.openmrs.module.messages.api.model.ChannelType;
 import org.openmrs.module.messages.api.execution.ServiceResult;
 import org.openmrs.module.messages.api.execution.ServiceResultList;
@@ -57,6 +57,9 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
     private static final String QUERY_2 = "query2";
     private static final String QUERY_TYPE_2 = "query_type2";
     private static final int THREE = 3;
+    private static final int FIVE = 5;
+    private static final int SIX = 6;
+    private static final int TEN = 10;
     private static final int FIRST_PAGE = 1;
     private static final int SECOND_PAGE = 2;
     private static final String ROWS_PARAM = "rows";
@@ -66,6 +69,7 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
     public static final String END_DATE_PARAM = "endDate";
     private static final String MESSAGE_TEMPLATE_NAME = "Template Name";
     private static final String EXPECTED_DEACTIVATED_STATE = "DEACTIVATED";
+    private static final int PAGE_SIZE_ONE_HUNDRED = 1000;
 
     private MockMvc mockMvc;
 
@@ -152,7 +156,7 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
     }
 
     @Test
-    public void testPagination() throws Exception {
+    public void testPaginationIsDisabledAndAllObjectsAreReturned() throws Exception {
         Relationship relationship = personService.getAllRelationships().get(0);
 
         // Page 1, with QUERY_TYPE_1
@@ -180,7 +184,7 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
 
         // Fetch page 1
         MvcResult result = mockMvc.perform(get("/messages/details")
-                .param(ROWS_PARAM, String.valueOf(THREE))
+                .param(ROWS_PARAM, String.valueOf(SIX))
                 .param(PAGE_PARAM, String.valueOf(FIRST_PAGE))
                 .param(PATIENT_ID_PARAM, patient1.getId().toString()))
                 .andExpect(status().is(HttpStatus.OK.value())).andReturn();
@@ -191,7 +195,7 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
 
         // Fetch page 2
         result = mockMvc.perform(get("/messages/details")
-                .param(ROWS_PARAM, String.valueOf(THREE))
+                .param(ROWS_PARAM, String.valueOf(SIX))
                 .param(PAGE_PARAM, String.valueOf(SECOND_PAGE))
                 .param(PATIENT_ID_PARAM, patient1.getId().toString()))
                 .andExpect(status().is(HttpStatus.OK.value())).andReturn();
@@ -199,6 +203,44 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
         assertThat(result, is(notNullValue()));
         assertMessageDetailsDTO(getDtoFromMvcResult(result), QUERY_TYPE_2,
                 patientWithId.getPatientId());
+    }
+
+    @Test
+    public void shouldReturnDetailsForExistingPatientTemplatesAndDefault() throws Exception {
+        Relationship relationship = personService.getAllRelationships().get(0);
+
+        int existingPatientTemplatesCount = TEN;
+        for (int i = 0; i < existingPatientTemplatesCount; i++) {
+            createPatientTemplate(patient1, relationship.getPersonA(),
+                relationship, QUERY_1, QUERY_TYPE_1);
+        }
+
+        int templatesForDefaultAttachment = FIVE;
+        for (int i = 0; i < templatesForDefaultAttachment; i++) {
+            createTemplate(String.format("Template %s without PT", i));
+
+        }
+
+        // Fetch page 1
+        MvcResult result = mockMvc.perform(get("/messages/details")
+            .param(ROWS_PARAM, String.valueOf(PAGE_SIZE_ONE_HUNDRED))
+            .param(PAGE_PARAM, String.valueOf(FIRST_PAGE))
+            .param(PATIENT_ID_PARAM, patient1.getId().toString()))
+            .andExpect(status().is(HttpStatus.OK.value())).andReturn();
+
+        MessageDetailsDTO messageDetailsDTO = getDtoFromMvcResult(result);
+
+        int summarySize = existingPatientTemplatesCount + templatesForDefaultAttachment;
+        Assert.assertThat(messageDetailsDTO.getMessages(), hasSize(summarySize));
+
+        for (int i = 0; i < existingPatientTemplatesCount; i++) {
+            assertIsRelatedToExistingPatientTemplate(messageDetailsDTO.getMessages()
+                .get(i));
+        }
+        for (int i = 0; i < templatesForDefaultAttachment; i++) {
+            assertIsBasedOnDefaultTemplate(messageDetailsDTO.getMessages()
+                .get(existingPatientTemplatesCount + i));
+        }
     }
 
     @Test
@@ -239,7 +281,7 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
 
     private void assertMessageDetailsDTO(MessageDetailsDTO dto, String queryType, Integer patientId) {
         assertThat(dto.getPatientId(), is(equalTo(patientId)));
-        assertThat(dto.getMessages().size(), is(equalTo(THREE)));
+        assertThat(dto.getMessages().size(), is(equalTo(SIX)));
 
         for (MessageDTO messageDTO : dto.getMessages()) {
             assertThat(messageDTO.getType(), is(MESSAGE_TEMPLATE_NAME));
@@ -247,21 +289,9 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
     }
 
     private MessageDetailsDTO getDtoFromMvcResult(MvcResult result) throws IOException {
-        String contentString = TestUtil.writeValueAsString(
-                TestUtil.readValue(
-                        result.getResponse().getContentAsString(),
-                        PageDTO.class).getContent());
-
-        List<MessageDetailsDTO> resultList = TestUtil.readValueAsList(contentString,
-                new TypeReference<List<MessageDetailsDTO>>() {
-                });
-
-        // the response is wrapped in a page because the collection inside is paginated
-        if (resultList.isEmpty()) {
-            return null;
-        } else {
-            return resultList.get(0);
-        }
+        return TestUtil.readValue(
+            result.getResponse().getContentAsString(),
+            MessageDetailsDTO.class);
     }
 
     private List<ServiceResultList> getResultListFromMvcResult(MvcResult result) throws IOException {
@@ -298,5 +328,15 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
                 .setName(templateName)
                 .buildAsNew();
         return templateDao.saveOrUpdate(template);
+    }
+
+    private void assertIsRelatedToExistingPatientTemplate(MessageDTO messageDTO) {
+        Assert.assertEquals(messageDTO.getAuthor().getUsername(), "admin");
+        Assert.assertNotNull(messageDTO.getCreatedAt());
+    }
+
+    private void assertIsBasedOnDefaultTemplate(MessageDTO messageDTO) {
+        Assert.assertNull(messageDTO.getAuthor());
+        Assert.assertNull(messageDTO.getCreatedAt());
     }
 }

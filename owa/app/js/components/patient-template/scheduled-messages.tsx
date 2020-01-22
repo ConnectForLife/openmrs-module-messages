@@ -4,7 +4,7 @@ import { IRootState } from '../../reducers';
 import './patient-template.scss';
 import Table from '@bit/soldevelo-omrs.cfl-components.table/table';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { getMessagesPage } from '../../reducers/patient-template.reducer'
+import { getMessages } from '../../reducers/patient-template.reducer'
 import MessageDetails from '../../shared/model/message-details';
 import _ from 'lodash';
 import ActorSchedule from '../../shared/model/actor-schedule';
@@ -42,18 +42,20 @@ class ScheduledMessages extends React.PureComponent<IScheduledMessagesProps, ISc
       return data;
     }
 
-    this.props.messageDetails.messages.forEach((m) => {
+    let messages = this.props.messageDetails.messages;
+    messages = _.orderBy(messages, ['createdAt'],['asc']);
+    messages.forEach((m) => {
       data.push({
         messageType: m.type,
         schedules: this.mapActorSchedules(m.actorSchedules)
       })
-    })
+    });
 
     return data;
   }
 
-  private getMessages = (activePage: number, itemsPerPage: number, sort: string, order: string, filters: {}) => {
-    this.props.getMessagesPage(activePage, itemsPerPage, this.props.patientId);
+  private getMessages = () => {
+    this.props.getMessages(this.props.patientId);
   }
 
   private renderMessagesTable = () => {
@@ -70,8 +72,12 @@ class ScheduledMessages extends React.PureComponent<IScheduledMessagesProps, ISc
         data={data}
         columns={columns}
         loading={this.props.loading}
-        pages={this.props.pages}
+        pages={0}
         fetchDataCallback={this.getMessages}
+        showPagination={false}
+        sortable={false}
+        multiSort={false}
+        resizable={true}
       />);
   };
 
@@ -153,14 +159,13 @@ class ScheduledMessages extends React.PureComponent<IScheduledMessagesProps, ISc
 }
 
 const mapStateToProps = ({ patientTemplate, actor }: IRootState) => ({
-  pages: patientTemplate.messageDetailsPages,
   messageDetails: patientTemplate.messageDetails,
   loading: patientTemplate.messageDetailsLoading || actor.actorResultListLoading,
   actorResultList: actor.actorResultList
 });
 
 const mapDispatchToProps = ({
-  getMessagesPage,
+  getMessages,
   getActorList
 });
 
