@@ -41,7 +41,7 @@ public final class EndDateUtil {
     public static Date getEndDate(List<TemplateFieldValue> templateFieldValues,
                                   String templateName) {
         Date startDate = getStartDate(templateFieldValues);
-        FrequencyType frequency = getIncidence(templateFieldValues, templateName);
+        FrequencyType frequency = getFrequency(templateFieldValues, templateName);
         String[] daysOfWeek = getDaysOfWeek(templateFieldValues);
         Date result = parseEndDate(getEndDateValue(templateFieldValues), startDate, frequency, daysOfWeek);
         if (result == null) {
@@ -108,7 +108,7 @@ public final class EndDateUtil {
         return result;
     }
 
-    private static FrequencyType getIncidence(List<TemplateFieldValue> templateFieldValues, String templateName) {
+    private static FrequencyType getFrequency(List<TemplateFieldValue> templateFieldValues, String templateName) {
         switch (templateName) {
             case ADHERENCE_REPORT_DAILY:
             case VISIT_REMINDER:
@@ -117,8 +117,8 @@ public final class EndDateUtil {
                 return FrequencyType.WEEKLY;
             default:
                 String result = StringUtils.defaultString(
-                    getIncidenceValue(templateFieldValues),
-                    getDefaultIncidenceValue(templateFieldValues)
+                    getFrequencyValue(templateFieldValues),
+                    getDefaultFrequencyValue(templateFieldValues)
                 );
                 if (StringUtils.isBlank(result)) {
                     return DEFAULT_FREQUENCY_TYPE;
@@ -144,7 +144,7 @@ public final class EndDateUtil {
         return getValue(templateFieldValues, START_OF_MESSAGES);
     }
 
-    private static String getIncidenceValue(List<TemplateFieldValue> templateFieldValues) {
+    private static String getFrequencyValue(List<TemplateFieldValue> templateFieldValues) {
         String value = null;
         for (TemplateFieldType type : FREQUENCIES) {
             value = getValue(templateFieldValues, type);
@@ -174,7 +174,7 @@ public final class EndDateUtil {
         return getDefaultValue(templateFieldValues, END_OF_MESSAGES);
     }
 
-    private static String getDefaultIncidenceValue(List<TemplateFieldValue> templateFieldValues) {
+    private static String getDefaultFrequencyValue(List<TemplateFieldValue> templateFieldValues) {
         String value = null;
         for (TemplateFieldType type : FREQUENCIES) {
             value = getDefaultValue(templateFieldValues, type);

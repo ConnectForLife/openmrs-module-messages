@@ -39,6 +39,11 @@ public class DatePointer {
         date = date.plusMonths(by);
     }
 
+    public void incDateToBeginningOfNextMonth() {
+        date = date.plusMonths(1);
+        date = date.withDayOfMonth(1);
+    }
+
     public LocalDate getDate() {
         return date;
     }
