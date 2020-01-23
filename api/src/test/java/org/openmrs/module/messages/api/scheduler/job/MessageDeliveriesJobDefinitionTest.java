@@ -14,11 +14,7 @@ import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.ContextSensitiveTest;
 import org.openmrs.module.messages.api.constants.ConfigConstants;
-import org.openmrs.module.messages.api.execution.ActorWithDate;
-import org.openmrs.module.messages.api.execution.GroupedServiceResultList;
-import org.openmrs.module.messages.api.execution.ServiceResultList;
 import org.openmrs.module.messages.api.mappers.ScheduledGroupMapper;
-import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
 import org.openmrs.module.messages.api.model.ScheduledService;
 import org.openmrs.module.messages.api.model.ScheduledServiceGroup;
 import org.openmrs.module.messages.api.model.ScheduledServiceParameter;
@@ -37,7 +33,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.Matchers.greaterThan;
@@ -193,17 +188,6 @@ public class MessageDeliveriesJobDefinitionTest extends ContextSensitiveTest {
 
     private List<ScheduledService> findScheduledServicesByActorId(int actorId) {
         return messagingService.findAllByCriteria(ScheduledServiceCriteria.forActorId(actorId));
-    }
-
-    private ScheduledExecutionContext getExecutionContext(Date date, ServiceResultList resultList) {
-        GroupedServiceResultList groupResults = new GroupedServiceResultList(
-                new ActorWithDate(DEFAULT_PATIENT_ID, date), resultList);
-        ScheduledServiceGroup group = groupMapper.fromDto(groupResults);
-        group = messagingGroupService.saveOrUpdate(group);
-        return new ScheduledExecutionContext(
-                group.getScheduledServices(),
-                groupResults.getActorWithExecutionDate().getDate(),
-                group.getActor());
     }
 
     private ScheduledServiceParameter getParam(String key, String value) {

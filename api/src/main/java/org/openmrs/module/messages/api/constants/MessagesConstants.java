@@ -31,6 +31,8 @@ public final class MessagesConstants {
 
     public static final String CALLFLOWS_DEFAULT_FLOW = "MainFlow"; //TODO: CFLM-473: Use global properties
 
+    public static final String CALL_FLOW_INITIATE_CALL_EVENT = "callflows-call-initiate";
+
     public static final String CALL_FLOW_SERVICE_RESULT_HANDLER_SERVICE = MODULE_ID +
         ".callFlowServiceResultHandlerService";
     public static final String SMS_SERVICE_RESULT_HANDLER_SERVICE = MODULE_ID +

@@ -15,6 +15,21 @@ public final class CallFlowParamConstants {
      * Recipient's phone number
      */
     public static final String PHONE = "phone";
+
+    /**
+     * Recipient's id as a person id
+     */
+    public static final String ACTOR_ID = "actorId";
+
+    /**
+     * Recipient's type. Possible values, e.g. Patient, Caregiver, etc.
+     */
+    public static final String ACTOR_TYPE = "actorType";
+
+    /**
+     * Reference key between messages and callflows. It is message group id.
+     */
+    public static final String REF_KEY = "refKey";
     
     /**
      * Config that was used for this call

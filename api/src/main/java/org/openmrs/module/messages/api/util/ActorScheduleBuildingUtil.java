@@ -1,10 +1,5 @@
 package org.openmrs.module.messages.api.util;
 
-import static org.openmrs.module.messages.api.constants.MessagesConstants.PATIENT_DEFAULT_ACTOR_TYPE;
-import static org.openmrs.module.messages.api.model.ChannelType.DEACTIVATED;
-
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -15,20 +10,24 @@ import org.openmrs.module.messages.api.model.ChannelType;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.TemplateFieldType;
 import org.openmrs.module.messages.api.model.TemplateFieldValue;
-import org.openmrs.module.messages.api.service.impl.MessagesSchedulerServiceImpl;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.openmrs.module.messages.api.model.ChannelType.DEACTIVATED;
 
 public final class ActorScheduleBuildingUtil {
 
     public static final String ERROR_INFORMATION = "Unable to display schedule";
 
-    private static final Log LOGGER = LogFactory.getLog(MessagesSchedulerServiceImpl.class);
+    private static final Log LOGGER = LogFactory.getLog(ActorScheduleBuildingUtil.class);
     private static final String SCHEDULE_ELEMENTS_SEPARATOR = ", ";
     private static final String FIELD_CONTENT_SEPARATOR = ",";
     private static final String DEFAULT_INFORMATION = "Schedule data not specified";
 
     public static ActorScheduleDTO build(PatientTemplate patientTemplate) {
         Integer actorId = buildActorId(patientTemplate);
-        String actorType = buildActorType(patientTemplate);
+        String actorType = patientTemplate.getActorTypeAsString();
         String schedule = buildSchedule(patientTemplate);
         return new ActorScheduleDTO(actorId, actorType, schedule);
     }
@@ -36,11 +35,6 @@ public final class ActorScheduleBuildingUtil {
     private static Integer buildActorId(PatientTemplate patientTemplate) {
         return patientTemplate.getActorType() == null ? null :
             getActorId(patientTemplate.getActorType(), patientTemplate.getPatient().getId());
-    }
-
-    private static String buildActorType(PatientTemplate patientTemplate) {
-        return patientTemplate.getActorType() == null ? PATIENT_DEFAULT_ACTOR_TYPE :
-            getActorType(patientTemplate.getActorType(), patientTemplate.getPatient().getId());
     }
 
     private static String buildSchedule(PatientTemplate patientTemplate) {
@@ -165,12 +159,6 @@ public final class ActorScheduleBuildingUtil {
         return patientId.equals(actorType.getPersonA().getId()) ?
             actorType.getPersonB().getId() :
             actorType.getPersonA().getId();
-    }
-
-    private static String getActorType(Relationship actorType, Integer patientId) {
-        return patientId.equals(actorType.getPersonA().getId()) ?
-            actorType.getRelationshipType().getbIsToA() :
-            actorType.getRelationshipType().getaIsToB();
     }
 
     private static boolean isDeactivated(String serviceType) {

@@ -9,8 +9,6 @@
 
 package org.openmrs.module.messages.api.strategy.impl;
 
-import java.util.Date;
-import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
@@ -20,6 +18,9 @@ import org.openmrs.module.messages.api.service.ConfigService;
 import org.openmrs.module.messages.api.service.MessagesDeliveryService;
 import org.openmrs.module.messages.api.strategy.ReschedulingStrategy;
 import org.openmrs.module.messages.api.util.DateUtil;
+
+import java.util.Date;
+import java.util.List;
 
 public abstract class AbstractReschedulingStrategy implements ReschedulingStrategy {
 
@@ -40,7 +41,9 @@ public abstract class AbstractReschedulingStrategy implements ReschedulingStrate
         deliveryService.scheduleDelivery(new ScheduledExecutionContext(
                 servicesToExecute,
                 getRescheduleDate(),
-                service.getPatientTemplate().getActor()
+                service.getPatientTemplate().getActor(),
+                service.getPatientTemplate().getActorTypeAsString(),
+                service.getGroup().getId()
         ));
     }
 

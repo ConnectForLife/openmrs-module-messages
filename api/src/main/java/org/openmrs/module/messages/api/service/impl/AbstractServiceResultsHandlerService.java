@@ -9,9 +9,9 @@ import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
 import org.openmrs.module.messages.api.service.MessagesEventService;
 import org.openmrs.module.messages.api.service.ServiceResultsHandlerService;
 
-public abstract class AbstractServiceResultsHandlerService implements ServiceResultsHandlerService {
+import static org.openmrs.module.messages.api.constants.ConfigConstants.PERSON_PHONE_ATTR;
 
-    private static final String PERSON_PHONE_ATTR = "Telephone Number";
+public abstract class AbstractServiceResultsHandlerService implements ServiceResultsHandlerService {
 
     private PersonService personService;
 

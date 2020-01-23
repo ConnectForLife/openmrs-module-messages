@@ -13,6 +13,8 @@ public final class ConfigConstants {
 
     public static final String MODULE_ID = "messages";
 
+    public static final String PERSON_PHONE_ATTR = "Telephone Number";
+
     public static final String ACTOR_TYPES_KEY = "messages.actor.types";
     public static final String ACTOR_TYPES_DEFAULT_VALUE = "";
     public static final String ACTOR_TYPES_DESCRIPTION = "Coma separated list of relationship types used to control the "

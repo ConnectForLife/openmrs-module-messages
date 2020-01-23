@@ -79,7 +79,9 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
             getDeliveryService().scheduleDelivery(new ScheduledExecutionContext(
                     group.getScheduledServices(),
                     groupedResult.getActorWithExecutionDate().getDate(),
-                    group.getActor()
+                    group.getActor(),
+                    groupedResult.getActorWithExecutionDate().getActorType(),
+                    group.getId()
             ));
         }
     }

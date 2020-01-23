@@ -1,22 +1,24 @@
 package org.openmrs.module.messages.api.execution;
 
-import static org.junit.Assert.assertEquals;
-import static org.openmrs.module.messages.api.execution.ServiceResultGroupHelper.groupByActorAndExecutionDate;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import org.junit.Test;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
 import org.openmrs.module.messages.builder.DateBuilder;
 import org.openmrs.module.messages.builder.ServiceResultBuilder;
 import org.openmrs.module.messages.builder.ServiceResultListBuilder;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.openmrs.module.messages.api.execution.ServiceResultGroupHelper.groupByActorAndExecutionDate;
+
 @SuppressWarnings("checkstyle:magicnumber")
 public class ServiceResultGroupHelperTest {
 
     private static final int ACTOR_1_ID = 1;
     private static final int ACTOR_2_ID = 2;
+    private static final int PATIENT_1_ID = 5;
     private static final int PATIENT_TEMPLATE_1_ID = 1;
     private static final int PATIENT_TEMPLATE_2_ID = 2;
 
@@ -193,6 +195,27 @@ public class ServiceResultGroupHelperTest {
         List<GroupedServiceResultList> result = groupByActorAndExecutionDate(input, false);
         assertEquals(1, result.size());
         assertEquals(2, getResultsFor(result, ACTOR_1_ID, date).size());
+    }
+
+    @Test
+    public void shouldGroupByActorWithProperActorType() {
+        List<ServiceResultList> input = new ArrayList<>();
+        Date date = getDate();
+
+        input.add(new ServiceResultListBuilder().withServiceResults(1, date)
+                .withActorId(ACTOR_1_ID)
+                .withPatientId(PATIENT_1_ID)
+                .build());
+
+        input.add(new ServiceResultListBuilder().withServiceResults(3, date)
+                .withActorId(ACTOR_2_ID)
+                .withPatientId(ACTOR_2_ID)
+                .build());
+
+        List<GroupedServiceResultList> result = groupByActorAndExecutionDate(input, false);
+        assertEquals(2, result.size());
+        assertEquals("Caregiver", result.get(0).getActorWithExecutionDate().getActorType());
+        assertEquals("Patient", result.get(1).getActorWithExecutionDate().getActorType());
     }
 
     private List<ServiceResultList> getServiceResultListsWithOneFutureAndOnePendingStatus(Date date, int actorId) {

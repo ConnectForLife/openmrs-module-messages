@@ -8,16 +8,21 @@ import java.util.Date;
 public class ActorWithDate {
 
     private Integer actorId;
-
+    private String actorType;
     private Date date;
 
-    public ActorWithDate(Integer actorId, Date date) {
+    public ActorWithDate(Integer actorId, String actorType, Date date) {
         this.actorId = actorId;
+        this.actorType = actorType;
         this.date = date;
     }
 
     public Integer getActorId() {
         return actorId;
+    }
+
+    public String getActorType() {
+        return actorType;
     }
 
     public Date getDate() {

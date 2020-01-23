@@ -1,14 +1,5 @@
 package org.openmrs.module.messages.api.execution;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,11 +13,22 @@ import org.openmrs.module.messages.api.model.Range;
 import org.openmrs.module.messages.api.model.Template;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
+
 @RunWith(MockitoJUnitRunner.class)
 public class ServiceResultListTest {
 
     private static final int PATIENT_ID = 1;
     private static final int ACTOR_ID = 2;
+    private static final String ACTOR_TYPE = "Caregiver";
     private static final int SERVICE_ID = 11;
     private static final Date START_DATE = new Date();
     private static final Date END_DATE = DateUtils.addMonths(new Date(), 2);
@@ -64,6 +66,7 @@ public class ServiceResultListTest {
         when(patientTemplate.getActor()).thenReturn(actor);
         when(patientTemplate.getPatient()).thenReturn(patient);
         when(patientTemplate.getTemplate()).thenReturn(template);
+        when(patientTemplate.getActorTypeAsString()).thenReturn(ACTOR_TYPE);
         when(patient.getPatientId()).thenReturn(PATIENT_ID);
         when(actor.getPersonId()).thenReturn(ACTOR_ID);
         when(patientTemplate.getServiceId()).thenReturn(SERVICE_ID);
@@ -73,6 +76,7 @@ public class ServiceResultListTest {
 
         assertEquals(PATIENT_ID, resultList.getPatientId().intValue());
         assertEquals(ACTOR_ID, resultList.getActorId().intValue());
+        assertEquals(ACTOR_TYPE, resultList.getActorType());
         assertEquals(SERVICE_ID, resultList.getServiceId().intValue());
         assertEquals(START_DATE, resultList.getStartDate());
         assertEquals(END_DATE, resultList.getEndDate());

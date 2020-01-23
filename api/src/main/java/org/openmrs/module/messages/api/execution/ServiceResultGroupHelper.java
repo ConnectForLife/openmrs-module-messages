@@ -9,12 +9,13 @@
 
 package org.openmrs.module.messages.api.execution;
 
+import org.openmrs.module.messages.api.model.types.ServiceStatus;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.openmrs.module.messages.api.model.types.ServiceStatus;
 
 public final class ServiceResultGroupHelper {
 
@@ -57,6 +58,7 @@ public final class ServiceResultGroupHelper {
         for (GroupedServiceResultList group : input) {
             ActorWithDate actorWithDate = new ActorWithDate(
                     group.getActorWithExecutionDate().getActorId(),
+                    group.getActorWithExecutionDate().getActorType(),
                     group.getActorWithExecutionDate().getDate());
             if (groupsMap.containsKey(actorWithDate)) {
                 groupsMap.get(actorWithDate).getGroup().getResults().addAll(group.getGroup().getResults());

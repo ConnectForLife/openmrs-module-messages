@@ -99,4 +99,9 @@ public final class PatientTemplateBuilder extends AbstractBuilder<PatientTemplat
         this.templateFieldValues = templateFieldValues;
         return this;
     }
+
+    public PatientTemplateBuilder withRelationship(Relationship relationship) {
+        this.actorType = relationship;
+        return this;
+    }
 }

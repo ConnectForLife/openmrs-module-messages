@@ -7,9 +7,6 @@ import org.openmrs.Relationship;
 import org.openmrs.module.messages.api.util.EndDateUtil;
 import validate.annotation.ValidPatientTemplate;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,6 +18,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.openmrs.module.messages.api.constants.MessagesConstants.PATIENT_DEFAULT_ACTOR_TYPE;
 
 @Entity(name = "messages.PatientTemplate")
 @Table(name = "messages_patient_template")
@@ -133,5 +135,13 @@ public class PatientTemplate extends AbstractBaseOpenmrsData {
     @Transient
     public Date getEndOfMessages() {
         return EndDateUtil.getEndDate(getTemplateFieldValues(), getTemplate().getName());
+    }
+
+    @Transient
+    public String getActorTypeAsString() {
+        return getActorType() == null ? PATIENT_DEFAULT_ACTOR_TYPE :
+                getPatient().getId().equals(actorType.getPersonA().getId()) ?
+                        actorType.getRelationshipType().getbIsToA() :
+                        actorType.getRelationshipType().getaIsToB();
     }
 }

@@ -22,7 +22,10 @@ public class GroupedServiceResultList {
         for (ServiceResultList list : input) {
             if (!list.getResults().isEmpty()) {
                 Date date = list.getResults().get(0).getExecutionDate();
-                result.add(new GroupedServiceResultList(new ActorWithDate(list.getActorId(), date), list));
+                result.add(new GroupedServiceResultList(new ActorWithDate(
+                        list.getActorId(),
+                        list.getActorType(),
+                        date), list));
             }
         }
 

@@ -28,6 +28,7 @@ public class ServiceResultList implements Serializable {
 
     private Integer patientId;
     private Integer actorId;
+    private String actorType;
     private Integer serviceId;
     private String serviceName;
     private Date startDate;
@@ -39,6 +40,7 @@ public class ServiceResultList implements Serializable {
 
         result.patientId = other.getPatientId();
         result.actorId = other.getActorId();
+        result.actorType = other.getActorType();
         result.serviceId = other.getServiceId();
         result.serviceName = other.getServiceName();
         result.startDate = other.getStartDate();
@@ -57,6 +59,7 @@ public class ServiceResultList implements Serializable {
 
         resultList.setPatientId(patientTemplate.getPatient().getPatientId());
         resultList.setActorId(patientTemplate.getActor().getPersonId());
+        resultList.setActorType(patientTemplate.getActorTypeAsString());
         // TODO: at this moment is is always set to 0 - it should not be in ServiceResultList
         resultList.setServiceId(patientTemplate.getServiceId());
 
@@ -83,6 +86,14 @@ public class ServiceResultList implements Serializable {
 
     private void setActorId(Integer actorId) {
         this.actorId = actorId;
+    }
+
+    public String getActorType() {
+        return actorType;
+    }
+
+    public void setActorType(String actorType) {
+        this.actorType = actorType;
     }
 
     public Integer getServiceId() {

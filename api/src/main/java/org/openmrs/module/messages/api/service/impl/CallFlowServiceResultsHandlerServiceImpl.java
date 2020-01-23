@@ -9,18 +9,6 @@
 
 package org.openmrs.module.messages.api.service.impl;
 
-import static org.openmrs.module.messages.api.constants.MessagesConstants.CALLFLOWS_DEFAULT_CONFIG;
-import static org.openmrs.module.messages.api.constants.MessagesConstants.CALLFLOWS_DEFAULT_FLOW;
-import static org.openmrs.module.messages.api.event.CallFlowParamConstants.ADDITIONAL_PARAMS;
-import static org.openmrs.module.messages.api.event.CallFlowParamConstants.CONFIG;
-import static org.openmrs.module.messages.api.event.CallFlowParamConstants.FLOW_NAME;
-import static org.openmrs.module.messages.api.event.CallFlowParamConstants.MESSAGES;
-import static org.openmrs.module.messages.api.event.CallFlowParamConstants.PHONE;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.messages.api.event.MessagesEvent;
@@ -28,8 +16,24 @@ import org.openmrs.module.messages.api.model.Message;
 import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
 import org.openmrs.module.messages.api.model.ScheduledService;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.openmrs.module.messages.api.constants.MessagesConstants.CALLFLOWS_DEFAULT_CONFIG;
+import static org.openmrs.module.messages.api.constants.MessagesConstants.CALLFLOWS_DEFAULT_FLOW;
+import static org.openmrs.module.messages.api.constants.MessagesConstants.CALL_FLOW_INITIATE_CALL_EVENT;
+import static org.openmrs.module.messages.api.event.CallFlowParamConstants.ACTOR_ID;
+import static org.openmrs.module.messages.api.event.CallFlowParamConstants.ACTOR_TYPE;
+import static org.openmrs.module.messages.api.event.CallFlowParamConstants.ADDITIONAL_PARAMS;
+import static org.openmrs.module.messages.api.event.CallFlowParamConstants.CONFIG;
+import static org.openmrs.module.messages.api.event.CallFlowParamConstants.FLOW_NAME;
+import static org.openmrs.module.messages.api.event.CallFlowParamConstants.MESSAGES;
+import static org.openmrs.module.messages.api.event.CallFlowParamConstants.PHONE;
+import static org.openmrs.module.messages.api.event.CallFlowParamConstants.REF_KEY;
+
 public class CallFlowServiceResultsHandlerServiceImpl extends AbstractServiceResultsHandlerService {
-    private static final String CALL_FLOW_INITIATE_CALL_EVENT = "callflows-call-initiate";
 
     private static final Log LOG = LogFactory.getLog(CallFlowServiceResultsHandlerServiceImpl.class);
 
@@ -60,6 +64,9 @@ public class CallFlowServiceResultsHandlerServiceImpl extends AbstractServiceRes
         List<Message> messages = getMessages(callServices);
         additionalParams.put(MESSAGES, toPrimitivesList(messages));
         additionalParams.put(PHONE, personPhone);
+        additionalParams.put(ACTOR_ID, Integer.toString(executionContext.getActorId()));
+        additionalParams.put(REF_KEY, Integer.toString(executionContext.getGroupId()));
+        additionalParams.put(ACTOR_TYPE, executionContext.getActorType());
 
         params.put(ADDITIONAL_PARAMS, additionalParams);
 

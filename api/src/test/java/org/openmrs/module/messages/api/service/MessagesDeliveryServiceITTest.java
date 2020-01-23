@@ -16,15 +16,16 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.openmrs.module.messages.ContextSensitiveTest;
 import org.openmrs.module.messages.api.execution.ActorWithDate;
-import org.openmrs.module.messages.api.model.ChannelType;
 import org.openmrs.module.messages.api.execution.GroupedServiceResultList;
 import org.openmrs.module.messages.api.execution.ServiceResult;
 import org.openmrs.module.messages.api.execution.ServiceResultList;
 import org.openmrs.module.messages.api.mappers.ScheduledGroupMapper;
-import org.openmrs.module.messages.api.model.ScheduledServiceGroup;
+import org.openmrs.module.messages.api.model.ChannelType;
 import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
+import org.openmrs.module.messages.api.model.ScheduledServiceGroup;
 import org.openmrs.module.messages.api.util.JsonUtil;
 import org.openmrs.module.messages.builder.DateBuilder;
+import org.openmrs.module.messages.builder.ScheduledExecutionContextBuilder;
 import org.openmrs.module.messages.builder.ServiceResultBuilder;
 import org.openmrs.module.messages.builder.ServiceResultListBuilder;
 import org.openmrs.scheduler.SchedulerException;
@@ -44,6 +45,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.openmrs.module.messages.api.constants.MessagesConstants.PATIENT_DEFAULT_ACTOR_TYPE;
 import static org.openmrs.module.messages.api.model.ChannelType.CALL;
 import static org.openmrs.module.messages.api.model.ChannelType.SMS;
 import static org.openmrs.module.messages.api.scheduler.job.ServiceGroupDeliveryJobDefinition.EXECUTION_CONTEXT;
@@ -106,13 +108,16 @@ public class MessagesDeliveryServiceITTest extends ContextSensitiveTest {
 
     private ScheduledExecutionContext getExecutionContext(Date date, ServiceResultList resultList) {
         GroupedServiceResultList groupResults = new GroupedServiceResultList(
-                new ActorWithDate(DEFAULT_PATIENT_ID, date), resultList);
+                new ActorWithDate(DEFAULT_PATIENT_ID, PATIENT_DEFAULT_ACTOR_TYPE, date), resultList);
         ScheduledServiceGroup group = groupMapper.fromDto(groupResults);
         group = messagingGroupService.saveOrUpdate(group);
-        return new ScheduledExecutionContext(
-                group.getScheduledServices(),
-                groupResults.getActorWithExecutionDate().getDate(),
-                group.getActor());
+        return new ScheduledExecutionContextBuilder()
+                .withScheduledServices(group.getScheduledServices())
+                .withExecutionDate(groupResults.getActorWithExecutionDate().getDate())
+                .withActorId(group.getActor().getId())
+                .withActorType(groupResults.getActorWithExecutionDate().getActorType())
+                .withGroupId(group.getId())
+                .build();
     }
 
     private TaskDefinition getCreatedTask() throws SchedulerException {

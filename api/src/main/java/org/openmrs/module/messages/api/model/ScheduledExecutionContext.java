@@ -9,13 +9,14 @@
 
 package org.openmrs.module.messages.api.model;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.openmrs.Person;
 import org.openmrs.module.messages.api.util.OpenmrsObjectUtil;
+
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
 
 public class ScheduledExecutionContext implements Serializable {
 
@@ -27,23 +28,60 @@ public class ScheduledExecutionContext implements Serializable {
 
     private int actorId;
 
+    private String actorType;
+
+    private int groupId;
+
+    public ScheduledExecutionContext() {
+    }
+
     public ScheduledExecutionContext(List<ScheduledService> scheduledServices,
-                                     Date executionDate, Person actor) {
+                                     Date executionDate, Person actor, String actorType, int groupId) {
         this.serviceIdsToExecute = OpenmrsObjectUtil.getIds(scheduledServices);
         this.executionDate = executionDate;
         this.actorId = actor.getId();
+        this.actorType = actorType;
+        this.groupId = groupId;
     }
 
     public List<Integer> getServiceIdsToExecute() {
         return serviceIdsToExecute;
     }
 
+    public void setServiceIdsToExecute(List<Integer> serviceIdsToExecute) {
+        this.serviceIdsToExecute = serviceIdsToExecute;
+    }
+
     public Date getExecutionDate() {
         return executionDate;
     }
 
+    public void setExecutionDate(Date executionDate) {
+        this.executionDate = executionDate;
+    }
+
     public int getActorId() {
         return actorId;
+    }
+
+    public void setActorId(int actorId) {
+        this.actorId = actorId;
+    }
+
+    public String getActorType() {
+        return actorType;
+    }
+
+    public void setActorType(String actorType) {
+        this.actorType = actorType;
+    }
+
+    public int getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
     }
 
     @Override

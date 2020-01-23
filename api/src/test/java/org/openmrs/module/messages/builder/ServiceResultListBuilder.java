@@ -11,8 +11,10 @@ package org.openmrs.module.messages.builder;
 
 import org.openmrs.Patient;
 import org.openmrs.Person;
+import org.openmrs.Relationship;
 import org.openmrs.module.messages.api.execution.ServiceResult;
 import org.openmrs.module.messages.api.execution.ServiceResultList;
+import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.Range;
 
 import java.util.ArrayList;
@@ -33,10 +35,31 @@ public final class ServiceResultListBuilder extends AbstractBuilder<ServiceResul
     @Override
     public ServiceResultList build() {
         Person actor = new PersonBuilder().withId(actorId).build();
+        if (patientId == null) {
+            patientId = actorId;
+        }
         Patient patient = new PatientBuilder().withId(patientId).build();
+
+        PatientTemplate patientTemplate = new PatientTemplateBuilder()
+                .withActor(actor)
+                .withPatient(patient)
+                .build();
+
+        Relationship relationship;
+        if (!actorId.equals(patientId)) {
+            relationship = new RelationshipBuilder()
+                    .withPersonA(actor)
+                    .withPersonB(patient.getPerson())
+                    .build();
+        } else {
+            relationship = null;
+        }
+        //Relationship should be present only if actorId and patientId are not equals
+        patientTemplate.setActorType(relationship);
+
         ServiceResultList result = ServiceResultList.createList(
                 new ArrayList<>(),
-                new PatientTemplateBuilder().withActor(actor).withPatient(patient).build(),
+                patientTemplate,
                 new Range<>(null, null));
         result.setResults(results);
         result.setServiceName(serviceName);
