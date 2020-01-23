@@ -9,6 +9,7 @@
 
 package org.openmrs.module.messages.api.execution;
 
+import org.openmrs.module.messages.api.model.DateRange;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.Range;
 import org.openmrs.module.messages.api.model.TemplateFieldValue;
@@ -31,7 +32,7 @@ public class ExecutionContext {
 
     private Map<String, Object> params;
     private PatientTemplate patientTemplate;
-    private Range<Date> dateRange;
+    private DateRange dateRange;
     private String bestContactTime;
 
     public ExecutionContext(PatientTemplate patientTemplate, Range<Date> dateRange, String bestContactTime) {
@@ -56,7 +57,7 @@ public class ExecutionContext {
         return patientTemplate;
     }
 
-    public Range<Date> getDateRange() {
+    public DateRange getDateRange() {
         return dateRange;
     }
 
@@ -69,7 +70,7 @@ public class ExecutionContext {
     }
 
     private void setRange(Range<Date> dateRange) {
-        this.dateRange = new Range<>(dateRange.getStart(), getEndDate(dateRange));
+        this.dateRange = new DateRange(dateRange.getStart(), getEndDate(dateRange));
         putParam(START_DATE_PARAM, this.dateRange.getStart());
         putParam(END_DATE_PARAM, this.dateRange.getEnd());
     }

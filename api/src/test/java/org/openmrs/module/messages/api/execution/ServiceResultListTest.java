@@ -8,8 +8,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.module.messages.api.model.ChannelType;
+import org.openmrs.module.messages.api.model.DateRange;
 import org.openmrs.module.messages.api.model.PatientTemplate;
-import org.openmrs.module.messages.api.model.Range;
 import org.openmrs.module.messages.api.model.Template;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
 
@@ -70,7 +70,7 @@ public class ServiceResultListTest {
         when(patient.getPatientId()).thenReturn(PATIENT_ID);
         when(actor.getPersonId()).thenReturn(ACTOR_ID);
         when(patientTemplate.getServiceId()).thenReturn(SERVICE_ID);
-        Range<Date> dateRange = new Range<>(START_DATE, END_DATE);
+        DateRange dateRange = new DateRange(START_DATE, END_DATE);
 
         ServiceResultList resultList = ServiceResultList.createList(buildRows(), patientTemplate, dateRange);
 
@@ -78,8 +78,8 @@ public class ServiceResultListTest {
         assertEquals(ACTOR_ID, resultList.getActorId().intValue());
         assertEquals(ACTOR_TYPE, resultList.getActorType());
         assertEquals(SERVICE_ID, resultList.getServiceId().intValue());
-        assertEquals(START_DATE, resultList.getStartDate());
-        assertEquals(END_DATE, resultList.getEndDate());
+        assertDate(START_DATE, resultList.getStartDate());
+        assertDate(END_DATE, resultList.getEndDate());
 
         assertEquals(EXEC_DATES.size(), resultList.getResults().size());
         for (int i = 0; i < EXEC_DATES.size(); i++) {
@@ -106,5 +106,14 @@ public class ServiceResultListTest {
         }
 
         return rows;
+    }
+
+    private void assertDate(Date expected, Date other) {
+        assertEquals(expected.getYear(), other.getYear());
+        assertEquals(expected.getMonth(), other.getMonth());
+        assertEquals(expected.getDate(), other.getDate());
+        assertEquals(0, other.getHours());
+        assertEquals(0, other.getMinutes());
+        assertEquals(0, other.getSeconds());
     }
 }

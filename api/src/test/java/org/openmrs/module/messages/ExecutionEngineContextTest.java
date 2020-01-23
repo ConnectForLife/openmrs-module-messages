@@ -88,8 +88,8 @@ public class ExecutionEngineContextTest extends ContextSensitiveTest {
 
         assertEquals(patientTemplate.getPatient().getId(), serviceResultList.getPatientId());
         assertEquals(patientTemplate.getPatient().getId(), serviceResultList.getActorId());
-        assertEquals(START_DATE, serviceResultList.getStartDate());
-        assertEquals(END_DATE, serviceResultList.getEndDate());
+        assertDate(START_DATE, serviceResultList.getStartDate());
+        assertDate(END_DATE, serviceResultList.getEndDate());
         assertEquals(1, serviceResultList.getResults().size());
         assertEquals(SERVICE_NAME, serviceResultList.getServiceName());
 
@@ -113,8 +113,8 @@ public class ExecutionEngineContextTest extends ContextSensitiveTest {
 
         assertEquals(patientTemplate.getPatient().getId(), serviceResultList.getPatientId());
         assertEquals(patientTemplate.getPatient().getId(), serviceResultList.getActorId());
-        assertEquals(DATE_1, serviceResultList.getStartDate());
-        assertEquals(DATE_2, serviceResultList.getEndDate());
+        assertDate(DATE_1, serviceResultList.getStartDate());
+        assertDate(DATE_2, serviceResultList.getEndDate());
     }
 
     @Test
@@ -126,8 +126,8 @@ public class ExecutionEngineContextTest extends ContextSensitiveTest {
 
         assertEquals(patientTemplate.getPatient().getId(), serviceResultList.getPatientId());
         assertEquals(patientTemplate.getPatient().getId(), serviceResultList.getActorId());
-        assertEquals(DATE_1, serviceResultList.getStartDate());
-        assertEquals(DATE_2, serviceResultList.getEndDate());
+        assertDate(DATE_1, serviceResultList.getStartDate());
+        assertDate(DATE_2, serviceResultList.getEndDate());
     }
 
     private PatientTemplate prepareData() {
@@ -248,5 +248,14 @@ public class ExecutionEngineContextTest extends ContextSensitiveTest {
                 "WHERE per.birthdate > :startDate AND per.birthdate < :endDate");
 
         return patientTemplate;
+    }
+
+    private void assertDate(Date expected, Date other) {
+        assertEquals(expected.getYear(), other.getYear());
+        assertEquals(expected.getMonth(), other.getMonth());
+        assertEquals(expected.getDate(), other.getDate());
+        assertEquals(0, other.getHours());
+        assertEquals(0, other.getMinutes());
+        assertEquals(0, other.getSeconds());
     }
 }

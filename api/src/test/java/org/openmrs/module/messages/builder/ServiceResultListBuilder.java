@@ -15,7 +15,7 @@ import org.openmrs.Relationship;
 import org.openmrs.module.messages.api.execution.ServiceResult;
 import org.openmrs.module.messages.api.execution.ServiceResultList;
 import org.openmrs.module.messages.api.model.PatientTemplate;
-import org.openmrs.module.messages.api.model.Range;
+import org.openmrs.module.messages.api.model.DateRange;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -60,7 +60,7 @@ public final class ServiceResultListBuilder extends AbstractBuilder<ServiceResul
         ServiceResultList result = ServiceResultList.createList(
                 new ArrayList<>(),
                 patientTemplate,
-                new Range<>(null, null));
+                new DateRange(null, null));
         result.setResults(results);
         result.setServiceName(serviceName);
         return result;

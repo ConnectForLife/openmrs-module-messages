@@ -9,7 +9,7 @@
 
 package org.openmrs.module.messages.api.execution;
 
-import org.openmrs.module.messages.api.model.Range;
+import org.openmrs.module.messages.api.model.DateRange;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 
 import javax.validation.constraints.NotNull;
@@ -51,7 +51,7 @@ public class ServiceResultList implements Serializable {
     }
 
     public static ServiceResultList createList(@NotNull List<Map<String, Object>> rowList, PatientTemplate patientTemplate,
-                                               @NotNull Range<Date> dateRange) {
+                                               @NotNull DateRange dateRange) {
         ServiceResultList resultList = new ServiceResultList();
 
         List<ServiceResult> results = ServiceResult.parseList(rowList, patientTemplate);
