@@ -58,13 +58,23 @@ public class SqlExecutionEngine implements ExecutionEngine {
             Object paramValue = paramEntry.getValue();
             
             if (ArrayUtils.contains(namedParameters, paramName)) {
-                if (LOG.isTraceEnabled()) {
-                    LOG.trace(String.format("Replacing parameter: %s = %s", paramName, paramValue));
-                }
+                logConsumedParameterInfo(paramName, paramValue);
                 sqlQuery.setParameter(paramName, paramValue);
             } else {
-                LOG.warn(String.format("Omitting not defined parameter: %s", paramName));
+                logNotConsumedParameterInfo(paramName, paramValue);
             }
+        }
+    }
+
+    private void logConsumedParameterInfo(String paramName, Object paramValue) {
+        if (LOG.isTraceEnabled()) {
+            LOG.trace(String.format("Replacing parameter: %s = %s", paramName, paramValue));
+        }
+    }
+
+    private void logNotConsumedParameterInfo(String paramName, Object paramValue) {
+        if (LOG.isTraceEnabled()) {
+            LOG.trace(String.format("The SQL does not consume parameter: %s = %s", paramName, paramValue));
         }
     }
 }

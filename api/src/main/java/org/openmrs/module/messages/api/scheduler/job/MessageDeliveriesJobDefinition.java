@@ -44,9 +44,11 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
             List<ServiceResultList> results =
                 getMessagingService().retrieveAllServiceExecutions(DateUtil.now(),
                 DateUtil.getDatePlusSeconds(getTaskDefinition().getRepeatInterval()));
+            logNumberOfResults(results);
 
             List<GroupedServiceResultList> groupedResults = ServiceResultGroupHelper
                 .groupByActorAndExecutionDate(results, true);
+            LOGGER.debug(String.format("Converted to %d groups to execute", groupedResults.size()));
 
             for (GroupedServiceResultList groupedResult : groupedResults) {
                 scheduleTaskForActivePerson(groupedResult);
@@ -136,5 +138,17 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
     private ConfigService getConfigService() {
         return Context.getRegisteredComponent(
                 MessagesConstants.CONFIG_SERVICE, ConfigService.class);
+    }
+
+    private void logNumberOfResults(List<ServiceResultList> results) {
+        if (LOGGER.isDebugEnabled()) {
+            int numberOfServiceResults = 0;
+            for (ServiceResultList srl : results) {
+                if (srl.getResults() != null) {
+                    numberOfServiceResults += srl.getResults().size();
+                }
+            }
+            LOGGER.debug(String.format("Collected %d service results from SQL", numberOfServiceResults));
+        }
     }
 }

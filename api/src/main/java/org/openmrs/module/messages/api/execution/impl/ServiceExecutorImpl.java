@@ -33,9 +33,7 @@ public class ServiceExecutorImpl extends BaseOpenmrsService implements ServiceEx
         ExecutionContext executionContext = new ExecutionContext(patientTemplate, dateRange,
                 BestContactTimeHelper.getBestContactTime(patientTemplate.getActor(), patientTemplate.getActorType()));
 
-        LOG.debug(String.format("Executing template for service %s using query engine %s",
-                patientTemplate.getServiceId(), executionContext.getClass().getName()));
-
+        logExecutingInfo(patientTemplate, executionEngine);
         return executionEngine.execute(executionContext);
     }
 
@@ -46,5 +44,13 @@ public class ServiceExecutorImpl extends BaseOpenmrsService implements ServiceEx
             throw new ExecutionException("Unknown query type: " + engineKey);
         }
         return engine;
+    }
+
+    private void logExecutingInfo(PatientTemplate patientTemplate, ExecutionEngine executionEngine) {
+        if (LOG.isTraceEnabled()) {
+            LOG.trace(String.format("Executing template '%s' using query engine: %s",
+                    patientTemplate.getTemplate().getName(),
+                    executionEngine.getClass().getName()));
+        }
     }
 }
