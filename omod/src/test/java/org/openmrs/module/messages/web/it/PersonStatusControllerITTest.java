@@ -8,6 +8,7 @@ import org.openmrs.PersonAttribute;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.messages.ApiConstant;
 import org.openmrs.module.messages.BaseModuleWebContextSensitiveWithActivatorTest;
 import org.openmrs.module.messages.Constant;
 import org.openmrs.module.messages.api.constants.ConfigConstants;
@@ -25,6 +26,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.io.IOException;
 
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -39,6 +41,8 @@ public class PersonStatusControllerITTest extends BaseModuleWebContextSensitiveW
     private static final String XML_DATASET_PATH = "datasets/";
 
     private static final String BASE_URL_PATTERN = "/messages/person-statuses/%s";
+
+    private static final String URL_REASONS_SUFFIX = "/reasons";
 
     private static final String XML_PERSON_ATTRIBUTE_DATASET = XML_DATASET_PATH + "PersonAttributeDataset.xml";
 
@@ -65,13 +69,17 @@ public class PersonStatusControllerITTest extends BaseModuleWebContextSensitiveW
 
     private static final String PERSON_WITHOUT_ATTRIBUTE = "8c8169be-94f0-42ba-81de-cf3f2c12a7ec";
 
-    private static final String TEST_REASON = "The status was changed for test reason";
+    private static final String TEST_INVALID_REASON = "The status was changed for test reason";
 
     private static final String EXPECTED_ERROR = "Could not fetch person status for personId: %s";
 
     private static final String NO_VALID_VALUE = "No value";
 
     private static final String NO_VALID_VALUE_EXPECTED_ERROR = "Not valid value of status: %s";
+
+    private static final String NO_VALID_REASON_EXPECTED_ERROR = "Not valid value of reason: %s";
+
+    private static final int EXPECTED_REASON_SIZE = 6;
 
     private Person person;
 
@@ -137,7 +145,7 @@ public class PersonStatusControllerITTest extends BaseModuleWebContextSensitiveW
         mockMvc.perform(get(String.format(BASE_URL_PATTERN, NOT_EXIST_PERSON))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(org.apache.http.HttpStatus.SC_NOT_FOUND))
-                .andExpect(content().contentType(Constant.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(ApiConstant.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.errorMessages.[0].code").value(ErrorMessageEnum.ERR_ENTITY_NOT_FOUND.getCode()))
                 .andExpect(jsonPath("$.errorMessages.[0].message").value(String.format(EXPECTED_ERROR, NOT_EXIST_PERSON)));
     }
@@ -159,7 +167,7 @@ public class PersonStatusControllerITTest extends BaseModuleWebContextSensitiveW
         PersonStatusDTO status = new PersonStatusDTO()
                 .setPersonId(person.getUuid())
                 .setValue(PersonStatus.DEACTIVATED.name())
-                .setReason(TEST_REASON);
+                .setReason(Constant.STATUS_REASON_PAUSE);
 
         mockMvc.perform(put(String.format(BASE_URL_PATTERN, person.getUuid()))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -170,7 +178,7 @@ public class PersonStatusControllerITTest extends BaseModuleWebContextSensitiveW
                 .andExpect(jsonPath("$.title").value(PersonStatus.DEACTIVATED.getTitleKey()))
                 .andExpect(jsonPath("$.value").value(PersonStatus.DEACTIVATED.name()))
                 .andExpect(jsonPath("$.style").value(EXPECTED_DEACTIVATE_STYLE))
-                .andExpect(jsonPath("$.reason").value(TEST_REASON));
+                .andExpect(jsonPath("$.reason").value(Constant.STATUS_REASON_PAUSE));
     }
 
     @Test
@@ -178,12 +186,12 @@ public class PersonStatusControllerITTest extends BaseModuleWebContextSensitiveW
         PersonStatusDTO status = new PersonStatusDTO()
                 .setPersonId(person.getUuid())
                 .setValue(NO_VALID_VALUE)
-                .setReason(TEST_REASON);
+                .setReason(Constant.STATUS_REASON_PAUSE);
 
         mockMvc.perform(put(String.format(BASE_URL_PATTERN, person.getUuid()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json(status)))
-                .andExpect(content().contentType(Constant.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(ApiConstant.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.errorMessages.[0].code")
                         .value(ErrorMessageEnum.ERR_SYSTEM.getCode()))
                 .andExpect(jsonPath("$.errorMessages.[0].message")
@@ -195,16 +203,47 @@ public class PersonStatusControllerITTest extends BaseModuleWebContextSensitiveW
         PersonStatusDTO status = new PersonStatusDTO()
                 .setPersonId(person.getUuid())
                 .setValue(PersonStatus.MISSING_VALUE.name())
-                .setReason(TEST_REASON);
+                .setReason(Constant.STATUS_REASON_PAUSE);
 
         mockMvc.perform(put(String.format(BASE_URL_PATTERN, person.getUuid()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json(status)))
-                .andExpect(content().contentType(Constant.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(ApiConstant.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.errorMessages.[0].code")
                         .value(ErrorMessageEnum.ERR_SYSTEM.getCode()))
                 .andExpect(jsonPath("$.errorMessages.[0].message")
                         .value(String.format(NO_VALID_VALUE_EXPECTED_ERROR, PersonStatus.MISSING_VALUE.name())));
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenInvalidReasonValue() throws Exception {
+        PersonStatusDTO status = new PersonStatusDTO()
+                .setPersonId(person.getUuid())
+                .setValue(PersonStatus.ACTIVATED.name())
+                .setReason(TEST_INVALID_REASON);
+
+        mockMvc.perform(put(String.format(BASE_URL_PATTERN, person.getUuid()))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json(status)))
+                .andExpect(content().contentType(ApiConstant.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.errorMessages.[0].code")
+                        .value(ErrorMessageEnum.ERR_SYSTEM.getCode()))
+                .andExpect(jsonPath("$.errorMessages.[0].message")
+                        .value(String.format(NO_VALID_REASON_EXPECTED_ERROR, TEST_INVALID_REASON)));
+    }
+
+    @Test
+    public void shouldFetchPossibleStatusReasons() throws Exception {
+        mockMvc.perform(get(String.format(BASE_URL_PATTERN, URL_REASONS_SUFFIX)))
+                .andExpect(status().is(HttpStatus.OK.value()))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.length()").value(EXPECTED_REASON_SIZE))
+                .andExpect(jsonPath("$.[*]").value(hasItem(Constant.STATUS_REASON_DECEASED)))
+                .andExpect(jsonPath("$.[*]").value(hasItem(Constant.STATUS_REASON_LOST_FOLLOW_UP)))
+                .andExpect(jsonPath("$.[*]").value(hasItem(Constant.STATUS_REASON_PAUSE)))
+                .andExpect(jsonPath("$.[*]").value(hasItem(Constant.STATUS_REASON_VACATION)))
+                .andExpect(jsonPath("$.[*]").value(hasItem(Constant.STATUS_REASON_TRANSFERRED)))
+                .andExpect(jsonPath("$.[*]").value(hasItem(Constant.STATUS_REASON_OTHER)));
     }
 
     private String json(Object obj) throws IOException {

@@ -34,6 +34,8 @@ public class ConfigServiceImpl implements ConfigService {
 
     private static final Log LOGGER = LogFactory.getLog(ConfigServiceImpl.class);
 
+    private static final String COMMA_DELIMITER = ",";
+
     /**
      * Provides execution strategy {@link ReschedulingStrategy} for specific channel type
      * @param channelType - name of specific channel type (case sensitive)
@@ -130,6 +132,15 @@ public class ConfigServiceImpl implements ConfigService {
             }
         }
         return null;
+    }
+
+    /**
+     * Provides the list of possible reason for changing status
+     * @return - the possible reasons
+     */
+    @Override
+    public List<String> getPersonStatusPossibleChangeReasons() {
+        return GlobalPropertyUtil.parseList(getGp(ConfigConstants.PERSON_STATUS_POSSIBLE_REASONS_KEY), COMMA_DELIMITER);
     }
 
     private String getGp(String propertyName) {

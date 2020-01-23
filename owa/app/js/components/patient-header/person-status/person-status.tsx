@@ -15,7 +15,8 @@ import {
     getPersonStatus,
     closeModal,
     openModal,
-    putPersonStatus
+    putPersonStatus,
+    getPossibleReasons
 } from '../../../reducers/person-status.reducer'
 import './person-status.scss';
 import * as Msg from '../../../shared/utils/messages';
@@ -37,6 +38,7 @@ class PersonStatus extends React.PureComponent<IPersonStatusProps, IPersonStatus
 
     componentDidMount() {
         this.props.getPersonStatus(this.props.patientUuid);
+        this.props.getPossibleReasons();
     };
 
     getStatusLabel = (key, set) => {
@@ -76,7 +78,7 @@ class PersonStatus extends React.PureComponent<IPersonStatusProps, IPersonStatus
         status.value != Msg.MISSING_VALUE_KEY && status.value != Msg.NO_CONSENT_KEY) ? status.value : Msg.ACTIVATED_KEY;
 
     render() {
-        const { status, showModal, personStatusLoading, submitDisabled } = this.props.personStatus;
+        const { status, showModal, personStatusLoading, submitDisabled, possibleResults } = this.props.personStatus;
         const statusStyle = status.styleObject || {};
         return (
             <>
@@ -85,7 +87,8 @@ class PersonStatus extends React.PureComponent<IPersonStatusProps, IPersonStatus
                     confirm={this.handleConfirm}
                     show={showModal}
                     submitDisabled={submitDisabled}
-                    status={this.prepereStatusForModal(status)} />
+                    status={this.prepereStatusForModal(status)} 
+                    possibleResults={possibleResults} />
                 <div className="person-status" style={statusStyle} onClick={this.handleChangeStatus}>
                     {!personStatusLoading && this.renderStatus()}
                 </div>
@@ -102,7 +105,8 @@ const mapDispatchToProps = ({
     getPersonStatus,
     closeModal,
     openModal,
-    putPersonStatus
+    putPersonStatus,
+    getPossibleReasons
 });
 
 type StateProps = ReturnType<typeof mapStateToProps>;

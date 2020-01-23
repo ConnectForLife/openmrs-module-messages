@@ -27,16 +27,22 @@
                 <h6 id="person-status-select-empty">${ ui.message("messages.required") }</h6>
             </li>
             <li class="info person-status-reason">
-                <label for="person-status-reason-field">
+                <label for="person-status-reason-select">
                     ${ ui.message("person.status.update.reason.label") }:
                 </label>
             </li>
             <li class="person-status-reason">
-                <input type="text"
-                    id="person-status-reason-field"
-                    value="${(personStatusReason) ? personStatusReason : ''}">
+                <select id="person-status-reason-select">
+                    <% for(item in possibleReasons) { %>
+                        <option value="${item}"
+                        style="font-size: 16px;"
+                        ${ (personStatusReason.equals(item) ? 'selected' : '') }>
+                            ${ ui.message(item)}
+                        </option>
+                    <% } %>
+                </select>
                 <br>
-                <h6 id="person-status-reason-field-empty">${ ui.message("messages.required") }</h6>
+                <h6 id="person-status-reason-select-empty">${ ui.message("messages.required") }</h6>
             </li>
         </ul>
 

@@ -7,6 +7,7 @@ import org.openmrs.PersonAttribute;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.ValidationException;
+import org.openmrs.module.messages.Constant;
 import org.openmrs.module.messages.ContextSensitiveWithActivatorTest;
 import org.openmrs.module.messages.api.constants.ConfigConstants;
 import org.openmrs.module.messages.api.dto.PersonStatusDTO;
@@ -14,7 +15,11 @@ import org.openmrs.module.messages.api.model.PersonStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -49,13 +54,17 @@ public class PersonStatusHelperITTest extends ContextSensitiveWithActivatorTest 
 
     private static final String PERSON_WITHOUT_ATTRIBUTE = "8c8169be-94f0-42ba-81de-cf3f2c12a7ec";
 
-    private static final String TEST_REASON = "The status was changed for test reason";
+    private static final String TEST_INVALID_REASON = "The status was changed for test reason";
 
     private static final String NO_VALID_VALUE = "No valid";
+
+    private static final int EXPECTED_REASON_SIZE = 6;
 
     private Person person;
 
     private Person personWithWrongAttributeValue;
+
+    private List<String> expectedReasons;
 
     @Autowired
     @Qualifier("personService")
@@ -82,6 +91,14 @@ public class PersonStatusHelperITTest extends ContextSensitiveWithActivatorTest 
         PersonAttribute wrongStatus = new PersonAttribute(personStatusAttributeType, WRONG_STATUS);
         personWithWrongAttributeValue.addAttribute(wrongStatus);
         personWithWrongAttributeValue = personService.savePerson(personWithWrongAttributeValue);
+
+        expectedReasons = new ArrayList<>();
+        expectedReasons.add(Constant.STATUS_REASON_DECEASED);
+        expectedReasons.add(Constant.STATUS_REASON_LOST_FOLLOW_UP);
+        expectedReasons.add(Constant.STATUS_REASON_PAUSE);
+        expectedReasons.add(Constant.STATUS_REASON_VACATION);
+        expectedReasons.add(Constant.STATUS_REASON_TRANSFERRED);
+        expectedReasons.add(Constant.STATUS_REASON_OTHER);
     }
 
     @Test
@@ -139,7 +156,7 @@ public class PersonStatusHelperITTest extends ContextSensitiveWithActivatorTest 
         PersonStatusDTO status = new PersonStatusDTO()
                 .setPersonId(person.getUuid())
                 .setValue(PersonStatus.DEACTIVATED.name())
-                .setReason(TEST_REASON);
+                .setReason(Constant.STATUS_REASON_OTHER);
         personStatusHelper.saveStatus(status);
 
         PersonStatusDTO actual = personStatusHelper.getStatus(person.getUuid());
@@ -148,7 +165,7 @@ public class PersonStatusHelperITTest extends ContextSensitiveWithActivatorTest 
         assertThat(actual, hasProperty("title", is(PersonStatus.DEACTIVATED.getTitleKey())));
         assertThat(actual, hasProperty("value", is(PersonStatus.DEACTIVATED.name())));
         assertThat(actual, hasProperty("style", is(EXPECTED_DEACTIVATE_STYLE)));
-        assertThat(actual, hasProperty("reason", is(TEST_REASON)));
+        assertThat(actual, hasProperty("reason", is(Constant.STATUS_REASON_OTHER)));
     }
 
     @Test(expected = ValidationException.class)
@@ -156,7 +173,7 @@ public class PersonStatusHelperITTest extends ContextSensitiveWithActivatorTest 
         PersonStatusDTO status = new PersonStatusDTO()
                 .setPersonId(person.getUuid())
                 .setValue(NO_VALID_VALUE)
-                .setReason(TEST_REASON);
+                .setReason(Constant.STATUS_REASON_OTHER);
         personStatusHelper.saveStatus(status);
     }
 
@@ -165,7 +182,24 @@ public class PersonStatusHelperITTest extends ContextSensitiveWithActivatorTest 
         PersonStatusDTO status = new PersonStatusDTO()
                 .setPersonId(person.getUuid())
                 .setValue(PersonStatus.MISSING_VALUE.name())
-                .setReason(TEST_REASON);
+                .setReason(Constant.STATUS_REASON_OTHER);
         personStatusHelper.saveStatus(status);
+    }
+
+    @Test(expected = ValidationException.class)
+    public void shouldThrowExceptionWhenInvalidStatusReason() {
+        PersonStatusDTO status = new PersonStatusDTO()
+                .setPersonId(person.getUuid())
+                .setValue(PersonStatus.ACTIVATED.name())
+                .setReason(TEST_INVALID_REASON);
+        personStatusHelper.saveStatus(status);
+    }
+
+    @Test
+    public void shouldReturnTheDefaultSetOfReason() {
+        List<String> actual = personStatusHelper.getPossibleReasons();
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.size(), is(EXPECTED_REASON_SIZE));
+        assertThat(actual, is(equalTo(expectedReasons)));
     }
 }

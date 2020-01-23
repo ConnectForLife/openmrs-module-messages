@@ -17,7 +17,7 @@ public final class ConfigConstants {
 
     public static final String ACTOR_TYPES_KEY = "messages.actor.types";
     public static final String ACTOR_TYPES_DEFAULT_VALUE = "";
-    public static final String ACTOR_TYPES_DESCRIPTION = "Coma separated list of relationship types used to control the "
+    public static final String ACTOR_TYPES_DESCRIPTION = "Comma separated list of relationship types used to control the "
             + "list of possible targets of message (not including the patient as a target). Example of usage: "
             + "'relationshipTypeUuid:directionOfRelationship,secondRelationshipTypeUuid:directionOfRelationship'";
 
@@ -36,6 +36,12 @@ public final class ConfigConstants {
     public static final String PERSON_STATUS_REASON_ATTRIBUTE_TYPE_DESCRIPTION = "Reason of change the person status";
     public static final String PERSON_STATUS_REASON_ATTRIBUTE_TYPE_FORMAT = "java.lang.String";
     public static final String PERSON_STATUS_REASON_ATTRIBUTE_TYPE_UUID = "da7a9976-c681-4182-a7f4-f9f6b31a9058";
+
+    public static final String PERSON_STATUS_POSSIBLE_REASONS_KEY = "message.personStatus.reason.values";
+    public static final String PERSON_STATUS_POSSIBLE_REASONS_DEFAULT_VALUE = "Deceased,Lost to Follow Up,"
+            + "Temporary pause,On vacation,Transferred,Other";
+    public static final String PERSON_STATUS_POSSIBLE_REASONS_DESCRIPTION = "Comma separated list of possible values for "
+            + "changing the person status. Example: 'Deceased,Temporary pause,On vacation,Transferred,Other'";
 
     public static final String PERSON_STATUS_CONFIGURATION_KEY = "message.personStatus.configuration";
     public static final String PERSON_STATUS_CONFIGURATION_DEFAULT_VALUE = "[\n"

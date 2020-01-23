@@ -99,6 +99,7 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
         createDaysBeforeVisitReminderConfig();
         createReschedulingStrategyConfig();
         createConsentConfig();
+        createPersonStatusConfig();
         createAdherenceFeedbackConfig();
     }
 
@@ -114,8 +115,6 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
     }
 
     private void createConsentConfig() {
-        createPersonStatusAttributeType();
-        createPersonStatusReasonAttributeType();
         createBestContactTimeAttributeType();
         createGlobalSettingIfNotExists(ConfigConstants.BEST_CONTACT_TIME_KEY,
                 ConfigConstants.BEST_CONTACT_TIME_DEFAULT_VALUE, ConfigConstants.BEST_CONTACT_TIME_DESCRIPTION);
@@ -123,9 +122,6 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
                 ConfigConstants.ACTOR_BEST_CONTACT_TIME_DEFAULT_VALUE, ConfigConstants.ACTOR_BEST_CONTACT_TIME_DESCRIPTION);
         createGlobalSettingIfNotExists(ConfigConstants.CONSENT_CONTROL_KEY,
                 ConfigConstants.CONSENT_CONTROL_DEFAULT_VALUE, ConfigConstants.CONSENT_CONTROL_DESCRIPTION);
-        createGlobalSettingIfNotExists(ConfigConstants.PERSON_STATUS_CONFIGURATION_KEY,
-                ConfigConstants.PERSON_STATUS_CONFIGURATION_DEFAULT_VALUE,
-                ConfigConstants.PERSON_STATUS_CONFIGURATION_DESCRIPTION);
     }
 
     private void createReschedulingStrategyConfig() {
@@ -139,7 +135,7 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
                 ConfigConstants.TIME_INTERVAL_TO_NEXT_RESCHEDULE_DEFAULT_VALUE,
                 ConfigConstants.TIME_INTERVAL_TO_NEXT_RESCHEDULE_DESCRIPTION);
     }
-    
+
     private void createAdherenceFeedbackConfig() {
         createGlobalSettingIfNotExists(ConfigConstants.CUT_OFF_SCORE_FOR_HIGH_MEDIUM_ADHERENCE_LEVEL_KEY,
                 ConfigConstants.CUT_OFF_SCORE_FOR_HIGH_MEDIUM_ADHERENCE_LEVEL_DEFAULT_VALUE,
@@ -154,7 +150,7 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
                 ConfigConstants.BENCHMARK_PERIOD_DEFAULT_VALUE,
                 ConfigConstants.BENCHMARK_PERIOD_DESCRIPTION);
     }
-    
+
     private void createBestContactTimeAttributeType() {
         PersonAttributeType attributeType = new PersonAttributeType();
         attributeType.setName(ConfigConstants.PERSON_CONTACT_TIME_ATTRIBUTE_TYPE_NAME);
@@ -162,6 +158,17 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
         attributeType.setDescription(ConfigConstants.PERSON_CONTACT_TIME_TYPE_DESCRIPTION);
         attributeType.setUuid(ConfigConstants.PERSON_CONTACT_TIME_TYPE_UUID);
         createPersonAttributeTypeIfNotExists(attributeType);
+    }
+
+    private void createPersonStatusConfig() {
+        createPersonStatusAttributeType();
+        createPersonStatusReasonAttributeType();
+        createGlobalSettingIfNotExists(ConfigConstants.PERSON_STATUS_POSSIBLE_REASONS_KEY,
+                ConfigConstants.PERSON_STATUS_POSSIBLE_REASONS_DEFAULT_VALUE,
+                ConfigConstants.PERSON_STATUS_POSSIBLE_REASONS_DESCRIPTION);
+        createGlobalSettingIfNotExists(ConfigConstants.PERSON_STATUS_CONFIGURATION_KEY,
+                ConfigConstants.PERSON_STATUS_CONFIGURATION_DEFAULT_VALUE,
+                ConfigConstants.PERSON_STATUS_CONFIGURATION_DESCRIPTION);
     }
 
     private void createPersonStatusAttributeType() {
@@ -189,7 +196,7 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
             personService.savePersonAttributeType(attributeType);
         }
     }
-    
+
     private void createGlobalSettingIfNotExists(String key, String value, String description) {
         String existSetting = Context.getAdministrationService().getGlobalProperty(key);
         if (StringUtils.isBlank(existSetting)) {
@@ -200,7 +207,7 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
             }
         }
     }
-    
+
     private void safeShutdownModule() {
         Module mod = ModuleFactory.getModuleById(ConfigConstants.MODULE_ID);
         ModuleFactory.stopModule(mod);

@@ -30,12 +30,12 @@ changeStatus.submit = function() {
         "person.status.update.unsuccessful"
     ]);
     var statusValue = document.getElementById("person-status-select").value;
-    var changeReason = document.getElementById("person-status-reason-field").value.trim();
+    var changeReason = document.getElementById("person-status-reason-select").value.trim();
 
     if (!statusValue) {
         jq('#person-status-select-empty').css({'color' : 'red', display : 'inline'}).show();
     } else if (statusValue === 'DEACTIVATED' && (!changeReason || changeReason.length === 0)) {
-        jq('#person-status-reason-field-empty').css({'color' : 'red', display : 'inline'}).show();
+        jq('#person-status-reason-select-empty').css({'color' : 'red', display : 'inline'}).show();
     } else {
         jq('#person-status-update-dialog' + ' .icon-spin').css('display', 'inline-block').parent().addClass('disabled');
         var url = '/' + OPENMRS_CONTEXT_PATH + '/messages/patientdashboard/changeStatus/update.action';
@@ -64,7 +64,7 @@ changeStatus.showPersonStatusUpdateDialog = function(personId) {
         changeStatus.createPersonStatusUpdateDialog();
     }
     jq('#person-status-select-empty').hide();
-    jq('#person-status-reason-field-empty').hide();
+    jq('#person-status-reason-select-empty').hide();
     changeStatus.handelChangedStatus(document.getElementById("person-status-select"));
     changeStatus.updatePersonStatusDialog.show();
 };

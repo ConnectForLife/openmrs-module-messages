@@ -5,8 +5,8 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.openmrs.module.messages.Constant.PAGE_PARAM;
-import static org.openmrs.module.messages.Constant.ROWS_PARAM;
+import static org.openmrs.module.messages.ApiConstant.PAGE_PARAM;
+import static org.openmrs.module.messages.ApiConstant.ROWS_PARAM;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.module.messages.Constant;
+import org.openmrs.module.messages.ApiConstant;
 import org.openmrs.module.messages.api.dto.PatientTemplateDTO;
 import org.openmrs.module.messages.api.dto.TemplateFieldValueDTO;
 import org.openmrs.module.messages.api.mappers.PatientTemplateMapper;
@@ -185,7 +185,7 @@ public class PatientTemplateControllerITTest extends BaseModuleWebContextSensiti
         PatientTemplatesWrapper body = new PatientTemplatesWrapper(dtos);
 
         mockMvc.perform(post("/messages/patient-templates/patient/{id}", PATIENT_3_ID)
-                .contentType(Constant.APPLICATION_JSON_UTF8)
+                .contentType(ApiConstant.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(body)))
                 .andExpect(status().is(HttpStatus.OK.value()))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -203,7 +203,7 @@ public class PatientTemplateControllerITTest extends BaseModuleWebContextSensiti
         PatientTemplatesWrapper body = wrap(dto);
 
         mockMvc.perform(post("/messages/patient-templates/patient/{id}", PATIENT_3_ID)
-                .contentType(Constant.APPLICATION_JSON_UTF8)
+                .contentType(ApiConstant.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(body)))
                 .andExpect(status().is(HttpStatus.OK.value()))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -216,7 +216,7 @@ public class PatientTemplateControllerITTest extends BaseModuleWebContextSensiti
         body = new PatientTemplatesWrapper(new ArrayList<>());
 
         mockMvc.perform(post("/messages/patient-templates/patient/{id}", PATIENT_3_ID)
-                .contentType(Constant.APPLICATION_JSON_UTF8)
+                .contentType(ApiConstant.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(body)))
                 .andExpect(status().is(HttpStatus.OK.value()))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
@@ -243,7 +243,7 @@ public class PatientTemplateControllerITTest extends BaseModuleWebContextSensiti
         body = new PatientTemplatesWrapper(dtos);
 
         mockMvc.perform(post("/messages/patient-templates/patient/{id}", PATIENT_2_ID)
-                .contentType(Constant.APPLICATION_JSON_UTF8)
+                .contentType(ApiConstant.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(body)))
                 .andExpect(status().is(HttpStatus.OK.value()))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
@@ -265,7 +265,7 @@ public class PatientTemplateControllerITTest extends BaseModuleWebContextSensiti
         PatientTemplatesWrapper body = new PatientTemplatesWrapper(dtos);
 
         mockMvc.perform(post("/messages/patient-templates/patient/{id}", PATIENT_3_ID)
-                .contentType(Constant.APPLICATION_JSON_UTF8)
+                .contentType(ApiConstant.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(body)))
                 .andExpect(status().is(HttpStatus.OK.value()))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -293,7 +293,7 @@ public class PatientTemplateControllerITTest extends BaseModuleWebContextSensiti
         PatientTemplatesWrapper body = new PatientTemplatesWrapper(dtos);
 
         mockMvc.perform(post("/messages/patient-templates/patient/{id}", PATIENT_3_ID)
-                .contentType(Constant.APPLICATION_JSON_UTF8)
+                .contentType(ApiConstant.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(body)))
                 .andExpect(status().is(HttpStatus.OK.value()))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -313,7 +313,7 @@ public class PatientTemplateControllerITTest extends BaseModuleWebContextSensiti
         PatientTemplatesWrapper body = new PatientTemplatesWrapper(dtos);
 
         mockMvc.perform(post("/messages/patient-templates/patient/{id}", PATIENT_3_ID)
-                .contentType(Constant.APPLICATION_JSON_UTF8)
+                .contentType(ApiConstant.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(body)))
                 .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -330,7 +330,7 @@ public class PatientTemplateControllerITTest extends BaseModuleWebContextSensiti
         PatientTemplatesWrapper body = new PatientTemplatesWrapper(dtos);
 
         mockMvc.perform(post("/messages/patient-templates/patient/{id}", PATIENT_3_ID)
-                .contentType(Constant.APPLICATION_JSON_UTF8)
+                .contentType(ApiConstant.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(body)))
                 .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))

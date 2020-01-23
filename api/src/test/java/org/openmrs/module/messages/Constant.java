@@ -22,6 +22,13 @@ public final class Constant {
     public static final String UUID_KEY = "uuid";
     public static final String VALUE_KEY = "value";
 
+    public static final String STATUS_REASON_DECEASED = "Deceased";
+    public static final String STATUS_REASON_LOST_FOLLOW_UP = "Lost to Follow Up";
+    public static final String STATUS_REASON_PAUSE = "Temporary pause";
+    public static final String STATUS_REASON_VACATION = "On vacation";
+    public static final String STATUS_REASON_TRANSFERRED = "Transferred";
+    public static final String STATUS_REASON_OTHER = "Other";
+
     private Constant() {
     }
 }

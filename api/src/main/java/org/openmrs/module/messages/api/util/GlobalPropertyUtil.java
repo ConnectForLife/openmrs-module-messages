@@ -1,9 +1,13 @@
 package org.openmrs.module.messages.api.util;
 
-import java.util.HashMap;
-import java.util.Map;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public final class GlobalPropertyUtil {
 
@@ -46,6 +50,13 @@ public final class GlobalPropertyUtil {
             result.put(keyValue[0].toUpperCase(), keyValue[1]);
         }
         return result;
+    }
+
+    public static List<String> parseList(String value, String delimiter) {
+        if (StringUtils.isNotBlank(delimiter) && value.contains(delimiter)) {
+            return Arrays.asList(value.split(delimiter));
+        }
+        return Collections.singletonList(value);
     }
 
     private GlobalPropertyUtil() {

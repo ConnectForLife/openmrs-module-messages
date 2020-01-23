@@ -30,6 +30,7 @@ interface IChangeStatusProps {
   status: PersonStatusUI
   confirm: (value: string, reason?: string) => void
   cancel: () => void
+  possibleResults: Array<string>
 }
 
 interface IChangeStatusState {
@@ -67,19 +68,6 @@ class ChangeStatusModal extends React.PureComponent<IChangeStatusProps, IChangeS
     this.setState(cloned);
   }
 
-  renderTextField = (label: string, fieldName: string, required?: boolean) =>
-    <FormGroup controlId={fieldName}>
-      <FormLabel label={label} mandatory={required} />
-      <FormControl
-        type="text"
-        name={fieldName}
-        value={!!this.state[fieldName] ? this.state[fieldName] : ''}
-        onChange={e => this.handleChange((e.target as HTMLInputElement).value, fieldName)}
-        className={this.state.errors[fieldName] ? ERROR_FORM_CLASS : FORM_CLASS}>
-      </FormControl>
-      {<ErrorDesc field={this.state.errors[fieldName]} />}
-    </FormGroup>
-
   renderDropdown = (label: string, fieldName: string, options: Array<React.ReactFragment>, required?: boolean) =>
     <FormGroup controlId={fieldName}>
       <FormLabel label={label} mandatory={required} />
@@ -99,10 +87,10 @@ class ChangeStatusModal extends React.PureComponent<IChangeStatusProps, IChangeS
       ), true);
 
   renderReasonField = () =>
-    this.renderTextField(
-      Msg.PERSON_STATUS_MODAL_REASON_FIELD_LABEL,
-      'statusReason',
-      this.state.statusValue === Msg.DEACTIVATED_KEY);
+    this.renderDropdown(Msg.PERSON_STATUS_MODAL_REASON_FIELD_LABEL, 'statusReason',
+      this.props.possibleResults.map(reason =>
+        <option value={reason} key={reason}>{reason}</option>
+      ), this.state.statusValue === Msg.DEACTIVATED_KEY);
 
   buildContext = () => {
     return (

@@ -4,7 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.messages.Constant;
+import org.openmrs.module.messages.ApiConstant;
 import org.openmrs.module.messages.api.dto.ContactTimeDTO;
 import org.openmrs.module.messages.api.constants.ConfigConstants;
 import org.openmrs.module.messages.util.TestUtil;
@@ -25,7 +25,7 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
-import static org.openmrs.module.messages.Constant.CAREGIVER_RELATIONSHIP;
+import static org.openmrs.module.messages.ApiConstant.CAREGIVER_RELATIONSHIP;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -111,7 +111,7 @@ public class ActorControllerITTest extends BaseModuleWebContextSensitiveTest {
         mockMvc.perform(get(BASE_URL + "/" + NOT_EXISTING_PATIENT_ID.toString())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(org.apache.http.HttpStatus.SC_BAD_REQUEST))
-                .andExpect(content().contentType(Constant.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(ApiConstant.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.error").value(EXPECTED_ERROR));
     }
 
@@ -120,7 +120,7 @@ public class ActorControllerITTest extends BaseModuleWebContextSensitiveTest {
         mockMvc.perform(get(String.format(SINGLE_CONTACT_TIME_URL_GET, ""))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
-                .andExpect(content().contentType(Constant.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(ApiConstant.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.error").value(MISSING_ID_ERROR));
     }
 
@@ -146,7 +146,7 @@ public class ActorControllerITTest extends BaseModuleWebContextSensitiveTest {
         mockMvc.perform(get(String.format(SINGLE_CONTACT_TIME_URL_GET, NOT_EXISTING_PATIENT_ID))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
-                .andExpect(content().contentType(Constant.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(ApiConstant.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.error").value(String.format(PERSON_ID_NOT_EXISTS_ERROR,
                         NOT_EXISTING_PATIENT_ID)));
     }
@@ -158,7 +158,7 @@ public class ActorControllerITTest extends BaseModuleWebContextSensitiveTest {
                 .param("personIds[]", CAREGIVER_ID.toString())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(HttpStatus.OK.value()))
-                .andExpect(content().contentType(Constant.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(ApiConstant.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$.[*].time").value(hasItem(PATIENT_TIME)))
                 .andExpect(jsonPath("$.[*].time").value(hasItem(nullValue())));
@@ -171,7 +171,7 @@ public class ActorControllerITTest extends BaseModuleWebContextSensitiveTest {
                 .param("personIds[]", FATHER_ID.toString())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(HttpStatus.OK.value()))
-                .andExpect(content().contentType(Constant.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(ApiConstant.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$.[*].time").value(hasItem(PATIENT_TIME)))
                 .andExpect(jsonPath("$.[*].time").value(hasItem(FATHER_TIME)));
@@ -183,10 +183,10 @@ public class ActorControllerITTest extends BaseModuleWebContextSensitiveTest {
                 .setPersonId(CAREGIVER_ID)
                 .setTime(StringUtils.EMPTY);
         mockMvc.perform(post(SINGLE_CONTACT_TIME_URL_POST)
-                .contentType(Constant.APPLICATION_JSON_UTF8)
+                .contentType(ApiConstant.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(contactTimeDTO)))
                 .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
-                .andExpect(content().contentType(Constant.APPLICATION_JSON_UTF8));
+                .andExpect(content().contentType(ApiConstant.APPLICATION_JSON_UTF8));
     }
 
     @Test
@@ -195,10 +195,10 @@ public class ActorControllerITTest extends BaseModuleWebContextSensitiveTest {
                 .setPersonId(CAREGIVER_ID)
                 .setTime(INCORRECT_TIME_VALUE);
         mockMvc.perform(post(SINGLE_CONTACT_TIME_URL_POST)
-                .contentType(Constant.APPLICATION_JSON_UTF8)
+                .contentType(ApiConstant.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(contactTimeDTO)))
                 .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
-                .andExpect(content().contentType(Constant.APPLICATION_JSON_UTF8));
+                .andExpect(content().contentType(ApiConstant.APPLICATION_JSON_UTF8));
     }
 
     @Test
@@ -212,10 +212,10 @@ public class ActorControllerITTest extends BaseModuleWebContextSensitiveTest {
                         .setTime(INCORRECT_TIME_VALUE)
         );
         mockMvc.perform(post(CONTACT_TIMES_URL)
-                .contentType(Constant.APPLICATION_JSON_UTF8)
+                .contentType(ApiConstant.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(contactTimeDTOs)))
                 .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
-                .andExpect(content().contentType(Constant.APPLICATION_JSON_UTF8));
+                .andExpect(content().contentType(ApiConstant.APPLICATION_JSON_UTF8));
     }
 
     @Test
@@ -229,7 +229,7 @@ public class ActorControllerITTest extends BaseModuleWebContextSensitiveTest {
                         .setTime(CORRECT_TIME_VALUE)
         );
         mockMvc.perform(post(CONTACT_TIMES_URL)
-                .contentType(Constant.APPLICATION_JSON_UTF8)
+                .contentType(ApiConstant.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(contactTimeDTOs)))
                 .andExpect(status().is(HttpStatus.CREATED.value()));
     }
@@ -242,14 +242,14 @@ public class ActorControllerITTest extends BaseModuleWebContextSensitiveTest {
                         .setTime(CORRECT_TIME_VALUE)
         );
         mockMvc.perform(post(CONTACT_TIMES_URL)
-                .contentType(Constant.APPLICATION_JSON_UTF8)
+                .contentType(ApiConstant.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(contactTimeDTOs)))
                 .andExpect(status().is(HttpStatus.CREATED.value()));
         mockMvc.perform(get(CONTACT_TIMES_URL)
                 .param("personIds[]", PATIENT_ID.toString())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(HttpStatus.OK.value()))
-                .andExpect(content().contentType(Constant.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(ApiConstant.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.length()").value(1))
                 .andExpect(jsonPath("$.[*].time").value(hasItem(CORRECT_TIME_VALUE)));
     }
@@ -262,15 +262,15 @@ public class ActorControllerITTest extends BaseModuleWebContextSensitiveTest {
                         .setTime(INCORRECT_TIME_VALUE)
         );
         mockMvc.perform(post(CONTACT_TIMES_URL)
-                .contentType(Constant.APPLICATION_JSON_UTF8)
+                .contentType(ApiConstant.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(contactTimeDTOs)))
                 .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
-                .andExpect(content().contentType(Constant.APPLICATION_JSON_UTF8));
+                .andExpect(content().contentType(ApiConstant.APPLICATION_JSON_UTF8));
         mockMvc.perform(get(CONTACT_TIMES_URL)
                 .param("personIds[]", ANOTHER_PERSON_ID.toString())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(HttpStatus.OK.value()))
-                .andExpect(content().contentType(Constant.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(ApiConstant.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.length()").value(1))
                 .andExpect(jsonPath("$.[*].time").value(hasItem(ANOTHER_PERSON_TIME)));
     }

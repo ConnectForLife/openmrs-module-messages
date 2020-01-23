@@ -4,7 +4,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.module.messages.Constant;
+import org.openmrs.module.messages.ApiConstant;
 import org.openmrs.module.messages.api.dto.PageDTO;
 import org.openmrs.module.messages.api.dto.TemplateDTO;
 import org.openmrs.module.messages.api.dto.TemplateFieldDTO;
@@ -33,8 +33,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.fail;
-import static org.openmrs.module.messages.Constant.PAGE_PARAM;
-import static org.openmrs.module.messages.Constant.ROWS_PARAM;
+import static org.openmrs.module.messages.ApiConstant.PAGE_PARAM;
+import static org.openmrs.module.messages.ApiConstant.ROWS_PARAM;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -150,7 +150,7 @@ public class TemplateControllerITTest extends BaseModuleWebContextSensitiveTest 
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json(request)))
                 .andExpect(status().is(org.apache.http.HttpStatus.SC_BAD_REQUEST))
-                .andExpect(content().contentType(Constant.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(ApiConstant.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.errorMessages.length()").value(EXPECTED_NUMBER_OF_ERROR));
     }
 
@@ -161,7 +161,7 @@ public class TemplateControllerITTest extends BaseModuleWebContextSensitiveTest 
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json(request)))
                 .andExpect(status().is(org.apache.http.HttpStatus.SC_CREATED))
-                .andExpect(content().contentType(Constant.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(ApiConstant.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.id").value(notNullValue()))
                 .andExpect(jsonPath("$.uuid").value(notNullValue()));
     }
@@ -173,7 +173,7 @@ public class TemplateControllerITTest extends BaseModuleWebContextSensitiveTest 
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json(request)))
                 .andExpect(status().is(org.apache.http.HttpStatus.SC_BAD_REQUEST))
-                .andExpect(content().contentType(Constant.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(ApiConstant.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.errorMessages.[0].message").value(EXPECTED_ERROR_MESSAGE));
     }
 
@@ -187,7 +187,7 @@ public class TemplateControllerITTest extends BaseModuleWebContextSensitiveTest 
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json(templateDTO)))
                 .andExpect(status().is(org.apache.http.HttpStatus.SC_OK))
-                .andExpect(content().contentType(Constant.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(ApiConstant.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.name").value(UPDATED_NAME))
                 .andExpect(jsonPath("$.templateFields.length()").value(EXPECTED_NUMBER_OF_FIELDS));
     }
@@ -207,7 +207,7 @@ public class TemplateControllerITTest extends BaseModuleWebContextSensitiveTest 
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json(request)))
                 .andExpect(status().is(org.apache.http.HttpStatus.SC_OK))
-                .andExpect(content().contentType(Constant.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(ApiConstant.APPLICATION_JSON_UTF8))
                 .andReturn());
 
         assertThat(updated.getTemplates().size(), is(2));

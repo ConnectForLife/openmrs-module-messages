@@ -17,6 +17,7 @@ import * as Msg from '../shared/utils/messages';
 
 export const ACTION_TYPES = {
     GET_PERSON_STATUS: 'personStatus/GET_PERSON_STATUS',
+    GET_POSSIBLE_REASONS: 'personStatus/GET_POSSIBLE_REASONS',
     PUT_PERSON_STATUS: 'personStatus/PUT_PERSON_STATUS',
     OPEN_MODAL: 'personStatus/OPEN_MODAL',
     CLOSE_MODAL: 'personStatus/CLOSE_MODAL',
@@ -27,7 +28,8 @@ const initialState = {
     status: {} as PersonStatusUI,
     personStatusLoading: false,
     showModal: false,
-    submitDisabled: false
+    submitDisabled: false,
+    possibleResults: [] as Array<string>
 };
 
 export type PersonState = Readonly<typeof initialState>;
@@ -64,6 +66,16 @@ export default (state = initialState, action) => {
                 submitDisabled: false,
                 status: PersonStatusUI.fromModel(action.payload.data),
             };
+        case REQUEST(ACTION_TYPES.GET_POSSIBLE_REASONS):
+        case FAILURE(ACTION_TYPES.GET_POSSIBLE_REASONS):
+            return {
+                ...state
+            };
+        case SUCCESS(ACTION_TYPES.GET_POSSIBLE_REASONS):
+            return {
+                ...state,
+                possibleResults: action.payload.data,
+            };
         case ACTION_TYPES.RESET:
             return {
                 ..._.cloneDeep(initialState)
@@ -86,6 +98,7 @@ export default (state = initialState, action) => {
 };
 
 const personStatusUrl = 'ws/messages/person-statuses/';
+const personStatusReasonsUrl = personStatusUrl + 'reasons/';
 
 export const getPersonStatus = (personId: string) => async (dispatch) => {
     await dispatch({
@@ -109,6 +122,13 @@ export const openModal = (id) => ({
 export const closeModal = () => ({
     type: ACTION_TYPES.CLOSE_MODAL
   });
+
+export const getPossibleReasons = () => async (dispatch) => {
+    await dispatch({
+        type: ACTION_TYPES.GET_POSSIBLE_REASONS,
+        payload: axiosInstance.get(personStatusReasonsUrl)
+      });
+};
 
 export const reset = () => ({
     type: ACTION_TYPES.RESET

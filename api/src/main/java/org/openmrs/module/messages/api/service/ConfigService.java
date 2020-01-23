@@ -76,4 +76,10 @@ public interface ConfigService {
      * @return - the actual value of configuration or null if missing
      */
     PersonStatusConfigDTO getPersonStatusConfiguration(PersonStatus personStatus);
+
+    /**
+     * Provides the list of possible reason o changing status
+     * @return - the possible reasons
+     */
+    List<String> getPersonStatusPossibleChangeReasons();
 }

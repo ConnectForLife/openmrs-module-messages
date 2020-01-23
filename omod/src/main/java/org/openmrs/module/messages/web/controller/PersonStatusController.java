@@ -9,6 +9,7 @@
 
 package org.openmrs.module.messages.web.controller;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.openmrs.module.messages.api.dto.PersonStatusDTO;
 import org.openmrs.module.messages.api.exception.EntityNotFoundException;
 import org.openmrs.module.messages.api.util.PersonStatusHelper;
@@ -22,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+
+import java.util.List;
 
 /**
  * Exposes endpoints which can be used for managing the person status resources
@@ -54,5 +57,16 @@ public class PersonStatusController extends BaseRestController {
         personStatusDTO.setPersonId(personId);
         personStatusHelper.saveStatus(personStatusDTO);
         return personStatusHelper.getStatus(personId);
+    }
+
+    @RequestMapping(value = "/reasons", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public List<String> getPossibleReasons() {
+        List<String> result = personStatusHelper.getPossibleReasons();
+        if (CollectionUtils.isEmpty(result)) {
+            throw new EntityNotFoundException("Could not fetch person status possible reasons. Check configuration.");
+        }
+        return result;
     }
 }

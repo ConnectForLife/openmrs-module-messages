@@ -4,7 +4,7 @@ import org.springframework.http.MediaType;
 
 import java.nio.charset.StandardCharsets;
 
-public final class Constant {
+public final class ApiConstant {
 
     public static final MediaType APPLICATION_JSON_UTF8 = new MediaType("application", "json",
             StandardCharsets.UTF_8);
@@ -15,5 +15,5 @@ public final class Constant {
 
     public static final String CAREGIVER_RELATIONSHIP = "Caregiver";
 
-    private Constant() { }
+    private ApiConstant() { }
 }

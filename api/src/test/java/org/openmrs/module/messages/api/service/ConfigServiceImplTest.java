@@ -25,6 +25,7 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 
 public class ConfigServiceImplTest extends ContextSensitiveTest {
@@ -59,6 +60,8 @@ public class ConfigServiceImplTest extends ContextSensitiveTest {
 
     private static final String EXPECTED_NO_CONSENT_STYLE =
             "background-color: #EEA616; border-color: #EEA616; color: #f5f5f5;";
+
+    private static final int EXPECTED_SIE_OF_PERSON_STATUS_REASONS = 6;
 
     private PersonStatusConfigDTO noConsentConfig;
 
@@ -153,6 +156,13 @@ public class ConfigServiceImplTest extends ContextSensitiveTest {
     public void shouldReturnNullPersonStatusConfigurationIfMissing() {
         PersonStatusConfigDTO actual = configService.getPersonStatusConfiguration(PersonStatus.DEACTIVATED);
         assertThat(actual, is(nullValue()));
+    }
+
+    @Test
+    public void shouldReturnExpectedPossibleReasons() {
+        List<String> actual = configService.getPersonStatusPossibleChangeReasons();
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.size(), is(EXPECTED_SIE_OF_PERSON_STATUS_REASONS));
     }
 
     private void buildExpectedStatusConfig() {

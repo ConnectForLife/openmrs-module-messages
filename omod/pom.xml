@@ -19,6 +19,13 @@
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
 		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>messages-api</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+			<classifier>tests</classifier>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.openmrs.web</groupId>
 			<artifactId>openmrs-web</artifactId>
             <scope>provided</scope>

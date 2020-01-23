@@ -23,6 +23,8 @@ import org.openmrs.module.messages.api.dto.PersonStatusDTO;
 import org.openmrs.module.messages.api.model.PersonStatus;
 import org.openmrs.module.messages.api.service.ConfigService;
 
+import java.util.List;
+
 /**
  * Provides the useful set of method which can be used during work with person status attribute
  */
@@ -68,9 +70,20 @@ public class PersonStatusHelper {
         if (!isValidStatusValue(statusDTO.getValue())) {
             throw new ValidationException(String.format("Not valid value of status: %s", statusDTO.getValue()));
         }
+        if (!isValidReason(statusDTO.getReason())) {
+            throw new ValidationException(String.format("Not valid value of reason: %s", statusDTO.getReason()));
+        }
         Person person = getPersonFromDashboardPersonId(statusDTO.getPersonId());
         changeStatusReason(statusDTO, person);
         saveNewValue(statusDTO, person);
+    }
+
+    /**
+     * Returns the list of possible reasons for changing the person status
+     * @return - possible reasons
+     */
+    public List<String> getPossibleReasons() {
+        return configService.getPersonStatusPossibleChangeReasons();
     }
 
     public void setPersonService(PersonService personService) {
@@ -119,5 +132,9 @@ public class PersonStatusHelper {
             valid = false;
         }
         return valid;
+    }
+
+    private boolean isValidReason(String reason) {
+        return getPossibleReasons().contains(reason);
     }
 }
