@@ -112,7 +112,9 @@ const datePicker: InitInput = {
     serialize: datePickerSerialize
   },
   labelBefore: DATE_PICKER_END_DATE_LABEL,
-  element: <OpenMrsDatePicker value='' />
+  element: (<OpenMrsDatePicker
+    value=''
+    minDate={new Date()}/>)
 };
 
 const afterDays: InitInput = {
