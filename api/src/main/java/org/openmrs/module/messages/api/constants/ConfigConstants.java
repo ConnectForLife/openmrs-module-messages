@@ -162,6 +162,12 @@ public final class ConfigConstants {
     public static final String BENCHMARK_PERIOD_DESCRIPTION =
             "Used to specify the number of days from which adherence trend is calculated";
     
+    public static final String NUMBER_OF_HEALTH_TIPS_PLAYED_PER_CALL_KEY =
+            "messages.numberOfHealthTipsPlayedPerOneCall";
+    public static final String NUMBER_OF_HEALTH_TIPS_PLAYED_PER_CALL_DEFAULT_VALUE = "3";
+    public static final String NUMBER_OF_HEALTH_TIPS_PLAYED_PER_CALL_DESCRIPTION =
+            "Used to specify a number of health tips that should be played per one call";
+    
     private ConfigConstants() {
     }
 }
