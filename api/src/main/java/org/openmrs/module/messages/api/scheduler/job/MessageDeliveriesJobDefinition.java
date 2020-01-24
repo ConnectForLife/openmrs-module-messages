@@ -95,8 +95,8 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
 
     private boolean isActive(Person person) {
         boolean isActive =  PersonStatus.isActive(person);
-        if (!isActive) {
-            LOGGER.warn(String.format("Status of a person with id=%d is not active, "
+        if (!isActive && LOGGER.isDebugEnabled()) {
+            LOGGER.debug(String.format("Status of a person with id=%d is not active, "
                     + "so no service execution events will be scheduled", person.getId()));
         }
         return isActive;
