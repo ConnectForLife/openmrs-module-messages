@@ -9,6 +9,7 @@
 
 package org.openmrs.module.messages.api.util;
 
+import static org.openmrs.module.messages.TestUtil.getMaxTimeForDate;
 import static org.openmrs.module.messages.api.model.TemplateFieldType.DAY_OF_WEEK;
 import static org.openmrs.module.messages.api.model.TemplateFieldType.END_OF_MESSAGES;
 import static org.openmrs.module.messages.api.model.TemplateFieldType.START_OF_MESSAGES;
@@ -30,7 +31,7 @@ public class FieldDateUtilTest {
     private static final int YEAR_2022 = 2022;
     private static final int DAY_15 = 15;
     private static final int DAY_30 = 30;
-    private static final Date EXPECTED = createDate(YEAR_2020, Calendar.JANUARY, 8);
+    private static final Date EXPECTED = getMaxTimeForDate(YEAR_2020,  Calendar.JANUARY, 8);
     private static final String SEPARATOR = "|";
     private static final String OTHER_TEMPLATE = "Other";
 
@@ -41,7 +42,7 @@ public class FieldDateUtilTest {
         values.add(buildTemplateFieldWithValue(START_OF_MESSAGES, "2020-06-01"));
         values.add(buildTemplateFieldWithValue(END_OF_MESSAGES,
                 EndDateType.AFTER_TIMES.getName() + "|2"));
-        Date endDate = createDate(YEAR_2020, Calendar.JUNE, 2);
+        Date endDate = getMaxTimeForDate(YEAR_2020, Calendar.JUNE, 2);
 
         Date result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
 
@@ -55,7 +56,7 @@ public class FieldDateUtilTest {
         values.add(buildTemplateFieldWithValue(START_OF_MESSAGES, "2020-06-01"));
         values.add(buildTemplateFieldWithValue(END_OF_MESSAGES,
                 EndDateType.AFTER_TIMES.getName() + "|2"));
-        Date endDate = createDate(YEAR_2020, Calendar.JUNE, 2);
+        Date endDate = getMaxTimeForDate(YEAR_2020, Calendar.JUNE, 2);
 
         Date result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
 
@@ -64,7 +65,7 @@ public class FieldDateUtilTest {
 
     @Test
     public void shouldGetValidDatePickerEndDate() {
-        final Date expected = createDate(YEAR_2020, Calendar.JANUARY, 10);
+        final Date expected = getMaxTimeForDate(YEAR_2020, Calendar.JANUARY, 10);
         Date result = FieldDateUtil.getEndDate(getValidDatePickerValues(), OTHER_TEMPLATE);
 
         Assert.assertEquals(expected, result);
@@ -282,7 +283,7 @@ public class FieldDateUtilTest {
         values.add(buildTemplateFieldWithValue(DAY_OF_WEEK, "Monday,Sunday"));
         values.add(buildTemplateFieldWithValue(START_OF_MESSAGES, "2019-12-20"));
         values.add(buildTemplateFieldWithValue(END_OF_MESSAGES, EndDateType.AFTER_TIMES.getName() + "|10"));
-        final Date endDate = createDate(YEAR_2020, Calendar.JANUARY, 20);
+        final Date endDate = getMaxTimeForDate(YEAR_2020, Calendar.JANUARY, 20);
         Date result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
 
         Assert.assertEquals(endDate, result);
@@ -295,7 +296,7 @@ public class FieldDateUtilTest {
         values.add(buildTemplateFieldWithValue(START_OF_MESSAGES, "2019-12-20"));
         values.add(buildTemplateFieldWithValue(END_OF_MESSAGES, EndDateType.AFTER_TIMES.getName() + "|10"));
 
-        final Date endDate = createDate(YEAR_2020, Calendar.JANUARY, 20);
+        final Date endDate = getMaxTimeForDate(YEAR_2020, Calendar.JANUARY, 20);
         Date result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
 
         Assert.assertEquals(endDate, result);
@@ -308,7 +309,7 @@ public class FieldDateUtilTest {
         values.add(buildTemplateFieldWithValue(START_OF_MESSAGES, "2019-12-20"));
         values.add(buildTemplateFieldWithValue(END_OF_MESSAGES, EndDateType.AFTER_TIMES.getName() + "|10"));
 
-        final Date endDate = createDate(YEAR_2020, Calendar.JANUARY, 20);
+        final Date endDate = getMaxTimeForDate(YEAR_2020, Calendar.JANUARY, 20);
         Date result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
 
         Assert.assertEquals(endDate, result);
@@ -320,7 +321,7 @@ public class FieldDateUtilTest {
         values.add(buildTemplateFieldWithValue(DAY_OF_WEEK, ",Monday,,Sunday"));
         values.add(buildTemplateFieldWithValue(START_OF_MESSAGES, "2019-12-20"));
         values.add(buildTemplateFieldWithValue(END_OF_MESSAGES, EndDateType.AFTER_TIMES.getName() + "|10"));
-        final Date endDate = createDate(2020, Calendar.JANUARY, 20);
+        final Date endDate = getMaxTimeForDate(2020, Calendar.JANUARY, 20);
         Date result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
 
         Assert.assertEquals(endDate, result);
@@ -336,7 +337,7 @@ public class FieldDateUtilTest {
 
         Date result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
 
-        Assert.assertEquals(createDate(YEAR_2020, Calendar.MARCH, DAY_15), result);
+        Assert.assertEquals(getMaxTimeForDate(YEAR_2020, Calendar.MARCH, DAY_15), result);
     }
 
     @Test
@@ -349,7 +350,7 @@ public class FieldDateUtilTest {
 
         Date result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
 
-        Assert.assertEquals(createDate(YEAR_2020, Calendar.JANUARY, DAY_30), result);
+        Assert.assertEquals(getMaxTimeForDate(YEAR_2020, Calendar.JANUARY, DAY_30), result);
     }
 
     @Test
@@ -362,7 +363,7 @@ public class FieldDateUtilTest {
 
         Date result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
 
-        Assert.assertEquals(createDate(YEAR_2022, Calendar.JANUARY, DAY_15), result);
+        Assert.assertEquals(getMaxTimeForDate(YEAR_2022, Calendar.JANUARY, DAY_15), result);
     }
 
     @Test
@@ -408,12 +409,5 @@ public class FieldDateUtilTest {
                                 .build())
                 .withValue(value)
                 .build();
-    }
-
-    private static Date createDate(int year, int month, int day) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(year, month, day, 0, 0, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        return calendar.getTime();
     }
 }

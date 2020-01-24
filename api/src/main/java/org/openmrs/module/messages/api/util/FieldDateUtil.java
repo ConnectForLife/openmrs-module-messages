@@ -21,6 +21,7 @@ import static org.openmrs.module.messages.api.model.TemplateFieldType.START_OF_M
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
@@ -68,7 +69,18 @@ public final class FieldDateUtil {
             result = parseEndDate(getDefaultEndDateValue(templateFieldValues), startDate,
                 frequency, daysOfWeek);
         }
+        if (result != null) {
+            result = convertToDateWithMaxTime(result);
+        }
         return result;
+    }
+
+    private static Date convertToDateWithMaxTime(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.DATE, 1);
+        cal.add(Calendar.MILLISECOND, -1);
+        return cal.getTime();
     }
 
     public static String getEndDateText(String endDate) {

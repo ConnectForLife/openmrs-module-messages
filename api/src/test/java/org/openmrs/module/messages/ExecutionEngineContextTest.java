@@ -10,6 +10,8 @@
 package org.openmrs.module.messages;
 
 import static org.junit.Assert.assertEquals;
+import static org.openmrs.module.messages.TestUtil.getMaxTimeForDate;
+import static org.openmrs.module.messages.TestUtil.getMinTimeForDate;
 import static org.openmrs.module.messages.api.model.TemplateFieldType.END_OF_MESSAGES;
 import static org.openmrs.module.messages.api.model.TemplateFieldType.MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY;
 import static org.openmrs.module.messages.api.model.TemplateFieldType.START_OF_MESSAGES;
@@ -52,14 +54,14 @@ public class ExecutionEngineContextTest extends ContextSensitiveTest {
     private static final Date START_DATE = DateUtils.addYears(new Date(), -2);
     private static final Date END_DATE = DateUtils.addYears(new Date(), 2);
 
-    private static final int YEAR_2020 = 2020 - 1900; // new Date implementation is x - 1900
-    private static final int YEAR_2019 = 2019 - 1900;
-    private static final Date DATE_1 = new Date(YEAR_2019, Calendar.DECEMBER, 15, 0, 0, 0);
-    private static final String DATE_1_TXT = "2019-12-15";
-    private static final Date DATE_2 = new Date(YEAR_2020, Calendar.JANUARY, 10, 0, 0, 0);
-    private static final String DATE_2_TXT = "2020-01-10";
-    private static final Date DATE_3 = new Date(YEAR_2020, Calendar.JANUARY, 13, 0, 0, 0);
-    private static final String DATE_3_TXT = "2020-01-13";
+    private static final int YEAR_2020 = 2020;
+    private static final int YEAR_2019 = 2019;
+    private static final Date DECEMBER_15_2019 = getMinTimeForDate(YEAR_2019, Calendar.DECEMBER, 15);
+    private static final String DECEMBER_15_2019_TXT = "2019-12-15";
+    private static final Date JANUARY_10 = getMaxTimeForDate(YEAR_2020, Calendar.JANUARY, 10);
+    private static final String JANUARY_10_TXT = "2020-01-10";
+    private static final Date JANUARY_13 = getMinTimeForDate(YEAR_2020, Calendar.JANUARY, 13);
+    private static final String JANUARY_13_TXT = "2020-01-13";
 
     private static final String SERVICE_NAME = "Service Name";
     // drop mili precision for H2 testing purposes
@@ -114,28 +116,28 @@ public class ExecutionEngineContextTest extends ContextSensitiveTest {
 
     @Test
     public void shouldReturnPatientTemplateEndDateIfItIsBeforeRangeEndDate() throws ExecutionException {
-        PatientTemplate patientTemplate = prepareData2(DATE_1_TXT, DATE_2_TXT);
-        Range<Date> dateRange = new Range<>(DATE_1, DATE_3);
+        PatientTemplate patientTemplate = prepareData2(DECEMBER_15_2019_TXT, JANUARY_10_TXT);
+        Range<Date> dateRange = new Range<>(DECEMBER_15_2019, JANUARY_13);
 
         ServiceResultList serviceResultList = serviceExecutor.execute(patientTemplate, dateRange);
 
         assertEquals(patientTemplate.getPatient().getId(), serviceResultList.getPatientId());
         assertEquals(patientTemplate.getPatient().getId(), serviceResultList.getActorId());
-        assertEquals(DATE_1, serviceResultList.getStartDate());
-        assertEquals(DATE_2, serviceResultList.getEndDate());
+        assertEquals(DECEMBER_15_2019, serviceResultList.getStartDate());
+        assertEquals(JANUARY_10, serviceResultList.getEndDate());
     }
 
     @Test
     public void shouldReturnRangeEndDateIfItIsBeforePatientTemplateEndDate() throws ExecutionException {
-        PatientTemplate patientTemplate = prepareData2(DATE_1_TXT, DATE_3_TXT);
-        Range<Date> dateRange = new Range<>(DATE_1, DATE_2);
+        PatientTemplate patientTemplate = prepareData2(DECEMBER_15_2019_TXT, JANUARY_13_TXT);
+        Range<Date> dateRange = new Range<>(DECEMBER_15_2019, JANUARY_10);
 
         ServiceResultList serviceResultList = serviceExecutor.execute(patientTemplate, dateRange);
 
         assertEquals(patientTemplate.getPatient().getId(), serviceResultList.getPatientId());
         assertEquals(patientTemplate.getPatient().getId(), serviceResultList.getActorId());
-        assertEquals(DATE_1, serviceResultList.getStartDate());
-        assertEquals(DATE_2, serviceResultList.getEndDate());
+        assertEquals(DECEMBER_15_2019, serviceResultList.getStartDate());
+        assertEquals(JANUARY_10, serviceResultList.getEndDate());
     }
 
     private PatientTemplate prepareData() {
