@@ -2889,4 +2889,201 @@
             ]]>
         </sql>
     </changeSet>
+    <changeSet id="messages-53" author="Michał Lewandowski">
+        <sql>
+            <![CDATA[
+                UPDATE messages_template SET service_query =
+                    'SELECT EXECUTION_DATE,
+                        MESSAGE_ID,
+                        CHANNEL_ID,
+                        null AS STATUS_ID,
+                        visitTypeId,
+                        locationId,
+                        dateStarted
+                    FROM
+                    (
+                        SELECT TIMESTAMP(selected_date, :bestContactTime ) AS EXECUTION_DATE,
+                         1 AS MESSAGE_ID,
+                         :Service_type AS CHANNEL_ID,
+                         visitTypeId,
+                         locationId,
+                         visit_dates AS dateStarted
+                        FROM
+                        DATES_LIST
+
+                            JOIN (
+                                SELECT date_started AS visit_dates,
+                                    visit_type_id AS visitTypeId,
+                                    location_id AS locationId
+                                FROM visit
+                                WHERE patient_id = :patientId
+                        ) dates_of_visit
+                        WHERE concat(\',\',(
+                            SELECT property_value
+                            FROM global_property
+                            WHERE property =\'message.daysToCallBeforeVisit.default\'), \',\')
+                                LIKE concat(\'%,\',datediff(visit_dates, selected_date),\',%\')
+                                AND date(visit_dates) !=  selected_date
+                    )dates_before_visit
+                    WHERE EXECUTION_DATE <= :endDateTime
+                        AND EXECUTION_DATE >= :startDateTime
+                        AND EXECUTION_DATE > GET_PREDICTION_START_DATE_FOR_VISIT(:patientId, :actorId)
+                        AND CHANNEL_ID != \'Deactivate service\'
+                    UNION
+                        SELECT mssg.msg_send_time AS EXECUTION_DATE,
+                            1 AS MESSAGE_ID,
+                            mss.channel_type AS CHANNEL_ID,
+                            mss.status AS STATUS_ID,
+                            null AS visitTypeId,
+                            null AS locationId,
+                            null AS dateStarted
+                        FROM messages_scheduled_service mss
+                            JOIN messages_patient_template mpt ON mpt.messages_patient_template_id = mss.patient_template_id
+                            JOIN messages_template mt ON mt.messages_template_id = mpt.template_id
+                            JOIN messages_scheduled_service_group mssg ON mssg.messages_scheduled_service_group_id = mss.group_id
+                        WHERE mt.name = \'Visit reminder\'
+                            AND mpt.patient_id = :patientId
+                            AND mpt.actor_id = :actorId
+                            AND mssg.msg_send_time >= :startDateTime
+                            AND mssg.msg_send_time <= :endDateTime
+                        ORDER BY 1 desc;'
+                WHERE name = 'Visit reminder';
+            ]]>
+        </sql>
+        <sql>
+            DROP FUNCTION IF EXISTS GET_PREDICTION_START_DATE_FOR_ADHERENCE_DAILY;
+        </sql>
+        <sql splitStatements="false" stripComments="false">
+            <![CDATA[
+                        CREATE FUNCTION `GET_PREDICTION_START_DATE_FOR_ADHERENCE_DAILY`(patient_id long, actor_id long)
+                        RETURNS DATETIME
+                        BEGIN
+                        DECLARE mssg_date DATETIME;
+                        SET mssg_date =
+                            (SELECT EXECUTION_DATE FROM
+                                (SELECT mssg.msg_send_time AS EXECUTION_DATE, 1 AS MESSAGE_ID,
+                                    mss.channel_type AS CHANNEL_ID, mss.status AS STATUS_ID
+                                FROM messages_scheduled_service mss
+                                    JOIN messages_patient_template mpt on mpt.messages_patient_template_id = mss.patient_template_id
+                                    JOIN messages_template mt on mt.messages_template_id = mpt.template_id
+                                    JOIN messages_scheduled_service_group mssg on mssg.messages_scheduled_service_group_id = mss.group_id
+                                WHERE
+                                    mt.name = 'Adherence report daily'
+                                    AND mpt.patient_id = patient_id
+                                    AND mpt.actor_id = actor_id
+                                ORDER BY 1 DESC)
+                               a LIMIT 1);
+                        RETURN if(mssg_date > NOW(), mssg_date, NOW());
+                        END
+                ]]>
+        </sql>
+        <sql>
+            DROP FUNCTION IF EXISTS GET_PREDICTION_START_DATE_FOR_VISIT;
+        </sql>
+        <sql splitStatements="false" stripComments="false">
+            <![CDATA[
+                        CREATE FUNCTION `GET_PREDICTION_START_DATE_FOR_VISIT`(patient_id long, actor_id long)
+                        RETURNS DATETIME
+                        BEGIN
+                        DECLARE mssg_date DATETIME;
+                        SET mssg_date =
+                            (SELECT EXECUTION_DATE FROM
+                                (SELECT mssg.msg_send_time AS EXECUTION_DATE, 1 AS MESSAGE_ID,
+                                    mss.channel_type AS CHANNEL_ID, mss.status AS STATUS_ID
+                                FROM messages_scheduled_service mss
+                                    JOIN messages_patient_template mpt on mpt.messages_patient_template_id = mss.patient_template_id
+                                    JOIN messages_template mt on mt.messages_template_id = mpt.template_id
+                                    JOIN messages_scheduled_service_group mssg on mssg.messages_scheduled_service_group_id = mss.group_id
+                                WHERE
+                                    mt.name = 'Visit reminder'
+                                    AND mpt.patient_id = patient_id
+                                    AND mpt.actor_id = actor_id
+                                ORDER BY 1 DESC)
+                               a LIMIT 1);
+                        RETURN if(mssg_date > NOW(), mssg_date, NOW());
+                        END
+                ]]>
+        </sql>
+        <sql>
+            DROP FUNCTION IF EXISTS GET_PREDICTION_START_DATE_FOR_ADHERENCE_WEEKLY;
+        </sql>
+        <sql splitStatements="false" stripComments="false">
+            <![CDATA[
+                        CREATE FUNCTION `GET_PREDICTION_START_DATE_FOR_ADHERENCE_WEEKLY`(patient_id long, actor_id long)
+                        RETURNS DATETIME
+                        BEGIN
+                        DECLARE mssg_date DATETIME;
+                        SET mssg_date =
+                            (SELECT EXECUTION_DATE FROM
+                                (SELECT mssg.msg_send_time AS EXECUTION_DATE, 1 AS MESSAGE_ID,
+                                    mss.channel_type AS CHANNEL_ID, mss.status AS STATUS_ID
+                                FROM messages_scheduled_service mss
+                                    JOIN messages_patient_template mpt on mpt.messages_patient_template_id = mss.patient_template_id
+                                    JOIN messages_template mt on mt.messages_template_id = mpt.template_id
+                                    JOIN messages_scheduled_service_group mssg on mssg.messages_scheduled_service_group_id = mss.group_id
+                                WHERE
+                                    mt.name = 'Adherence report weekly'
+                                    AND mpt.patient_id = patient_id
+                                    AND mpt.actor_id = actor_id
+                                ORDER BY 1 DESC)
+                               a LIMIT 1);
+                        RETURN if(mssg_date > NOW(), mssg_date, NOW());
+                        END
+                ]]>
+        </sql>
+        <sql>
+            DROP FUNCTION IF EXISTS GET_PREDICTION_START_DATE_FOR_HEALTH_TIP;
+        </sql>
+        <sql splitStatements="false" stripComments="false">
+            <![CDATA[
+                        CREATE FUNCTION `GET_PREDICTION_START_DATE_FOR_HEALTH_TIP`(patient_id long, actor_id long)
+                        RETURNS DATETIME
+                        BEGIN
+                        DECLARE mssg_date DATETIME;
+                        SET mssg_date =
+                            (SELECT EXECUTION_DATE FROM
+                                (SELECT mssg.msg_send_time AS EXECUTION_DATE, 1 AS MESSAGE_ID,
+                                    mss.channel_type AS CHANNEL_ID, mss.status AS STATUS_ID
+                                FROM messages_scheduled_service mss
+                                    JOIN messages_patient_template mpt on mpt.messages_patient_template_id = mss.patient_template_id
+                                    JOIN messages_template mt on mt.messages_template_id = mpt.template_id
+                                    JOIN messages_scheduled_service_group mssg on mssg.messages_scheduled_service_group_id = mss.group_id
+                                WHERE
+                                    mt.name = 'Health tip'
+                                    AND mpt.patient_id = patient_id
+                                    AND mpt.actor_id = actor_id
+                                ORDER BY 1 DESC)
+                               a LIMIT 1);
+                        RETURN if(mssg_date > NOW(), mssg_date, NOW());
+                        END
+                ]]>
+        </sql>
+        <sql>
+            DROP FUNCTION IF EXISTS GET_PREDICTION_START_DATE_FOR_ADHERENCE_FEEDBACK;
+        </sql>
+        <sql splitStatements="false" stripComments="false">
+            <![CDATA[
+                        CREATE FUNCTION `GET_PREDICTION_START_DATE_FOR_ADHERENCE_FEEDBACK`(patient_id long, actor_id long)
+                        RETURNS DATETIME
+                        BEGIN
+                        DECLARE mssg_date DATETIME;
+                        SET mssg_date =
+                            (SELECT EXECUTION_DATE FROM
+                                (SELECT mssg.msg_send_time AS EXECUTION_DATE, 1 AS MESSAGE_ID,
+                                    mss.channel_type AS CHANNEL_ID, mss.status AS STATUS_ID
+                                FROM messages_scheduled_service mss
+                                    JOIN messages_patient_template mpt on mpt.messages_patient_template_id = mss.patient_template_id
+                                    JOIN messages_template mt on mt.messages_template_id = mpt.template_id
+                                    JOIN messages_scheduled_service_group mssg on mssg.messages_scheduled_service_group_id = mss.group_id
+                                WHERE
+                                    mt.name = 'Adherence feedback'
+                                    AND mpt.patient_id = patient_id
+                                    AND mpt.actor_id = actor_id
+                                ORDER BY 1 DESC)
+                               a LIMIT 1);
+                        RETURN if(mssg_date > NOW(), mssg_date, NOW());
+                        END
+                ]]>
+        </sql>
+    </changeSet>
 </databaseChangeLog>
