@@ -70,7 +70,7 @@ public class PersonStatusHelper {
         if (!isValidStatusValue(statusDTO.getValue())) {
             throw new ValidationException(String.format("Not valid value of status: %s", statusDTO.getValue()));
         }
-        if (!isValidReason(statusDTO.getReason())) {
+        if (PersonStatus.DEACTIVATED.name().equals(statusDTO.getValue()) && !isValidReason(statusDTO.getReason())) {
             throw new ValidationException(String.format("Not valid value of reason: %s", statusDTO.getReason()));
         }
         Person person = getPersonFromDashboardPersonId(statusDTO.getPersonId());

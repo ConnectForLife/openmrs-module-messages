@@ -219,7 +219,7 @@ public class PersonStatusControllerITTest extends BaseModuleWebContextSensitiveW
     public void shouldThrowExceptionWhenInvalidReasonValue() throws Exception {
         PersonStatusDTO status = new PersonStatusDTO()
                 .setPersonId(person.getUuid())
-                .setValue(PersonStatus.ACTIVATED.name())
+                .setValue(PersonStatus.DEACTIVATED.name())
                 .setReason(TEST_INVALID_REASON);
 
         mockMvc.perform(put(String.format(BASE_URL_PATTERN, person.getUuid()))

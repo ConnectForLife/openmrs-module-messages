@@ -190,7 +190,7 @@ public class PersonStatusHelperITTest extends ContextSensitiveWithActivatorTest 
     public void shouldThrowExceptionWhenInvalidStatusReason() {
         PersonStatusDTO status = new PersonStatusDTO()
                 .setPersonId(person.getUuid())
-                .setValue(PersonStatus.ACTIVATED.name())
+                .setValue(PersonStatus.DEACTIVATED.name())
                 .setReason(TEST_INVALID_REASON);
         personStatusHelper.saveStatus(status);
     }
