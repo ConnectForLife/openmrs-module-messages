@@ -10,6 +10,7 @@
 package org.openmrs.module.messages.api.util;
 
 import static org.openmrs.module.messages.api.constants.MessagesConstants.DEFAULT_FRONT_END_DATE_FORMAT;
+import static org.openmrs.module.messages.api.constants.MessagesConstants.DEFAULT_SERVER_SIDE_DATETIME_FORMAT;
 import static org.openmrs.module.messages.api.constants.MessagesConstants.DEFAULT_SERVER_SIDE_DATE_FORMAT;
 
 import java.text.ParseException;
@@ -68,6 +69,10 @@ public final class DateUtil {
         return convertDate(date, DEFAULT_FRONT_END_DATE_FORMAT, DEFAULT_SERVER_SIDE_DATE_FORMAT);
     }
 
+    public static String convertToServerSideDateTime(Date date) {
+        return convertDate(date, DEFAULT_SERVER_SIDE_DATETIME_FORMAT);
+    }
+
     public static Date toSimpleDate(Date date) {
         if (date instanceof java.sql.Date) { // java.sql.Date cannot be persisted by hibernate
             return new Date(date.getTime());
@@ -80,6 +85,10 @@ public final class DateUtil {
         Date myDate = newDateFormat.parse(date);
         newDateFormat.applyPattern(toFormat);
         return newDateFormat.format(myDate);
+    }
+
+    private static String convertDate(Date date, String toFormat) {
+        return new SimpleDateFormat(toFormat).format(date);
     }
 
     private DateUtil() { }

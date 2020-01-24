@@ -45,7 +45,6 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertEquals;
 import static org.openmrs.module.messages.api.constants.MessagesConstants.PATIENT_DEFAULT_ACTOR_TYPE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -269,8 +268,8 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
         assertThat(results, hasSize(1));
 
         ServiceResultList serviceResultList = results.get(0);
-        assertDate(startDate, serviceResultList.getStartDate());
-        assertDate(endDate, serviceResultList.getEndDate());
+        assertThat(serviceResultList.getStartDate(), is(startDate));
+        assertThat(serviceResultList.getEndDate(), is(endDate));
         assertThat(serviceResultList.getPatientId(), is(patient1.getId()));
         assertThat(serviceResultList.getActorId(), is(patient1.getId()));
         assertThat(serviceResultList.getResults(), hasSize(1));
@@ -339,14 +338,5 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
     private void assertIsBasedOnDefaultTemplate(MessageDTO messageDTO) {
         Assert.assertNull(messageDTO.getAuthor());
         Assert.assertNull(messageDTO.getCreatedAt());
-    }
-
-    private void assertDate(Date expected, Date other) {
-        assertEquals(expected.getYear(), other.getYear());
-        assertEquals(expected.getMonth(), other.getMonth());
-        assertEquals(expected.getDate(), other.getDate());
-        assertEquals(0, other.getHours());
-        assertEquals(0, other.getMinutes());
-        assertEquals(0, other.getSeconds());
     }
 }

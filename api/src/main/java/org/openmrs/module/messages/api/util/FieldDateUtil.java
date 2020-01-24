@@ -1,28 +1,38 @@
+/* * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+
 package org.openmrs.module.messages.api.util;
 
-import org.apache.commons.lang3.StringUtils;
-import org.openmrs.module.messages.api.model.TemplateFieldType;
-import org.openmrs.module.messages.api.model.TemplateFieldValue;
-import org.openmrs.module.messages.api.util.end.date.EndDate;
-import org.openmrs.module.messages.api.util.end.date.EndDateFactory;
-import org.openmrs.module.messages.api.util.end.date.EndDateParams;
+import static org.openmrs.module.messages.api.constants.MessagesConstants.DEFAULT_FRONT_END_DATE_FORMAT;
+import static org.openmrs.module.messages.api.constants.MessagesConstants.DEFAULT_SERVER_SIDE_DATE_FORMAT;
+import static org.openmrs.module.messages.api.model.TemplateFieldType.DAY_OF_WEEK;
+import static org.openmrs.module.messages.api.model.TemplateFieldType.DAY_OF_WEEK_SINGLE;
+import static org.openmrs.module.messages.api.model.TemplateFieldType.END_OF_MESSAGES;
+import static org.openmrs.module.messages.api.model.TemplateFieldType.MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY;
+import static org.openmrs.module.messages.api.model.TemplateFieldType.MESSAGING_FREQUENCY_WEEKLY_OR_MONTHLY;
+import static org.openmrs.module.messages.api.model.TemplateFieldType.START_OF_MESSAGES;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openmrs.module.messages.api.model.TemplateFieldType;
+import org.openmrs.module.messages.api.model.TemplateFieldValue;
+import org.openmrs.module.messages.api.util.end.date.EndDate;
+import org.openmrs.module.messages.api.util.end.date.EndDateFactory;
+import org.openmrs.module.messages.api.util.end.date.EndDateParams;
 
-import static org.openmrs.module.messages.api.constants.MessagesConstants.DEFAULT_FRONT_END_DATE_FORMAT;
-import static org.openmrs.module.messages.api.constants.MessagesConstants.DEFAULT_SERVER_SIDE_DATE_FORMAT;
-import static org.openmrs.module.messages.api.model.TemplateFieldType.DAY_OF_WEEK_SINGLE;
-import static org.openmrs.module.messages.api.model.TemplateFieldType.START_OF_MESSAGES;
-import static org.openmrs.module.messages.api.model.TemplateFieldType.END_OF_MESSAGES;
-import static org.openmrs.module.messages.api.model.TemplateFieldType.MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY;
-import static org.openmrs.module.messages.api.model.TemplateFieldType.MESSAGING_FREQUENCY_WEEKLY_OR_MONTHLY;
-import static org.openmrs.module.messages.api.model.TemplateFieldType.DAY_OF_WEEK;
-
-public final class EndDateUtil {
+public final class FieldDateUtil {
 
     public static final String SEPARATOR = "|";
     private static final String AFTER_TIMES_TEXT = "after %s time(s)";
@@ -37,6 +47,16 @@ public final class EndDateUtil {
     private static final String ADHERENCE_REPORT_WEEKLY = "Adherence report weekly";
     private static final String VISIT_REMINDER = "Visit reminder";
     private static final FrequencyType DEFAULT_FREQUENCY_TYPE = FrequencyType.DAILY;
+
+    private static final Log LOG = LogFactory.getLog(FieldDateUtil.class);
+
+    public static Date getStartDate(List<TemplateFieldValue> templateFieldValues) {
+        Date result = parseStringDbDateToServerSideFormat(getStartDateValue(templateFieldValues));
+        if (result == null) {
+            result = parseStringDbDateToServerSideFormat(getDefaultStartDateValue(templateFieldValues));
+        }
+        return result;
+    }
 
     public static Date getEndDate(List<TemplateFieldValue> templateFieldValues,
                                   String templateName) {
@@ -98,14 +118,6 @@ public final class EndDateUtil {
             return chain[1] + SEPARATOR + chain[2];
         }
         return chain[1];
-    }
-
-    private static Date getStartDate(List<TemplateFieldValue> templateFieldValues) {
-        Date result = parseStringDbDateToServerSideFormat(getStartDateValue(templateFieldValues));
-        if (result == null) {
-            result = parseStringDbDateToServerSideFormat(getDefaultStartDateValue(templateFieldValues));
-        }
-        return result;
     }
 
     private static FrequencyType getFrequency(List<TemplateFieldValue> templateFieldValues, String templateName) {
@@ -197,12 +209,20 @@ public final class EndDateUtil {
     }
 
     private static String getValue(List<TemplateFieldValue> templateFieldValues, TemplateFieldType type) {
+        String value = null;
         for (TemplateFieldValue fieldValue : templateFieldValues) {
             if (fieldValue.getTemplateField().getTemplateFieldType().equals(type)) {
-                return fieldValue.getValue();
+                if (value == null) {
+                    value = fieldValue.getValue();
+                } else {
+                    LOG.warn(String.format("Found redundant field with type %s in the patient template with id %d. "
+                                    + "However, only one expected",
+                            type.name(),
+                            fieldValue.getPatientTemplate().getId()));
+                }
             }
         }
-        return null;
+        return value;
     }
 
     private static String getDefaultValue(List<TemplateFieldValue> templateFieldValues, TemplateFieldType type) {
@@ -246,6 +266,6 @@ public final class EndDateUtil {
                 && StringUtils.equals(chain[0], specialPhrase.getName());
     }
 
-    private EndDateUtil() {
+    private FieldDateUtil() {
     }
 }

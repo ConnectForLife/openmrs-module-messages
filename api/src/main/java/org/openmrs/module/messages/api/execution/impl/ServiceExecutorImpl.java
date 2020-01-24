@@ -1,3 +1,12 @@
+/* * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+
 package org.openmrs.module.messages.api.execution.impl;
 
 import org.apache.commons.logging.Log;
@@ -27,10 +36,11 @@ public class ServiceExecutorImpl extends BaseOpenmrsService implements ServiceEx
 
     @Transactional
     @Override
-    public ServiceResultList execute(PatientTemplate patientTemplate, Range<Date> dateRange) throws ExecutionException {
+    public ServiceResultList execute(PatientTemplate patientTemplate, Range<Date> dateTimeRange)
+            throws ExecutionException {
         ExecutionEngine executionEngine = getEngine(patientTemplate);
 
-        ExecutionContext executionContext = new ExecutionContext(patientTemplate, dateRange,
+        ExecutionContext executionContext = new ExecutionContext(patientTemplate, dateTimeRange,
                 BestContactTimeHelper.getBestContactTime(patientTemplate.getActor(), patientTemplate.getActorType()));
 
         logExecutingInfo(patientTemplate, executionEngine);

@@ -1,5 +1,23 @@
+/* * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+
 package org.openmrs.module.messages;
 
+import static org.junit.Assert.assertEquals;
+import static org.openmrs.module.messages.api.model.TemplateFieldType.END_OF_MESSAGES;
+import static org.openmrs.module.messages.api.model.TemplateFieldType.MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY;
+import static org.openmrs.module.messages.api.model.TemplateFieldType.START_OF_MESSAGES;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Test;
 import org.openmrs.Patient;
@@ -8,11 +26,11 @@ import org.openmrs.PatientIdentifierType;
 import org.openmrs.PersonName;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.PatientService;
-import org.openmrs.module.messages.api.model.ChannelType;
 import org.openmrs.module.messages.api.execution.ExecutionException;
 import org.openmrs.module.messages.api.execution.ServiceExecutor;
 import org.openmrs.module.messages.api.execution.ServiceResult;
 import org.openmrs.module.messages.api.execution.ServiceResultList;
+import org.openmrs.module.messages.api.model.ChannelType;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.Range;
 import org.openmrs.module.messages.api.model.Template;
@@ -28,16 +46,6 @@ import org.openmrs.module.messages.builder.TemplateFieldBuilder;
 import org.openmrs.module.messages.builder.TemplateFieldValueBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.openmrs.module.messages.api.model.TemplateFieldType.END_OF_MESSAGES;
-import static org.openmrs.module.messages.api.model.TemplateFieldType.MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY;
-import static org.openmrs.module.messages.api.model.TemplateFieldType.START_OF_MESSAGES;
 
 public class ExecutionEngineContextTest extends ContextSensitiveTest {
 
@@ -88,8 +96,8 @@ public class ExecutionEngineContextTest extends ContextSensitiveTest {
 
         assertEquals(patientTemplate.getPatient().getId(), serviceResultList.getPatientId());
         assertEquals(patientTemplate.getPatient().getId(), serviceResultList.getActorId());
-        assertDate(START_DATE, serviceResultList.getStartDate());
-        assertDate(END_DATE, serviceResultList.getEndDate());
+        assertEquals(START_DATE, serviceResultList.getStartDate());
+        assertEquals(END_DATE, serviceResultList.getEndDate());
         assertEquals(1, serviceResultList.getResults().size());
         assertEquals(SERVICE_NAME, serviceResultList.getServiceName());
 
@@ -113,8 +121,8 @@ public class ExecutionEngineContextTest extends ContextSensitiveTest {
 
         assertEquals(patientTemplate.getPatient().getId(), serviceResultList.getPatientId());
         assertEquals(patientTemplate.getPatient().getId(), serviceResultList.getActorId());
-        assertDate(DATE_1, serviceResultList.getStartDate());
-        assertDate(DATE_2, serviceResultList.getEndDate());
+        assertEquals(DATE_1, serviceResultList.getStartDate());
+        assertEquals(DATE_2, serviceResultList.getEndDate());
     }
 
     @Test
@@ -126,8 +134,8 @@ public class ExecutionEngineContextTest extends ContextSensitiveTest {
 
         assertEquals(patientTemplate.getPatient().getId(), serviceResultList.getPatientId());
         assertEquals(patientTemplate.getPatient().getId(), serviceResultList.getActorId());
-        assertDate(DATE_1, serviceResultList.getStartDate());
-        assertDate(DATE_2, serviceResultList.getEndDate());
+        assertEquals(DATE_1, serviceResultList.getStartDate());
+        assertEquals(DATE_2, serviceResultList.getEndDate());
     }
 
     private PatientTemplate prepareData() {
@@ -150,7 +158,7 @@ public class ExecutionEngineContextTest extends ContextSensitiveTest {
                 "'Call' AS CHANNEL_ID, per.gender AS GENDER " +
                 "FROM patient p " +
                 "JOIN person per ON per.person_id = p.patient_id  " +
-                "WHERE per.birthdate > :startDate AND per.birthdate < :endDate");
+                "WHERE per.birthdate > :startDateTime AND per.birthdate < :endDateTime");
         template.setServiceQueryType("SQL");
         template.setName(SERVICE_NAME);
         template = templateService.saveOrUpdate(template);
@@ -163,7 +171,7 @@ public class ExecutionEngineContextTest extends ContextSensitiveTest {
                 "'Call' AS CHANNEL_ID, per.gender AS GENDER " +
                 "FROM patient p " +
                 "JOIN person per ON per.person_id = p.patient_id  " +
-                "WHERE per.birthdate > :startDate AND per.birthdate < :endDate");
+                "WHERE per.birthdate > :startDateTime AND per.birthdate < :endDateTime");
 
         // TODO incorrect schema
         TemplateField templateField = new TemplateField();
@@ -185,7 +193,7 @@ public class ExecutionEngineContextTest extends ContextSensitiveTest {
                 "'Call' AS CHANNEL_ID, per.gender AS GENDER " +
                 "FROM patient p " +
                 "JOIN person per ON per.person_id = p.patient_id  " +
-                "WHERE per.birthdate > :startDate AND per.birthdate < :endDate");
+                "WHERE per.birthdate > :startDateTime AND per.birthdate < :startDateTime");
         template.setServiceQueryType("SQL");
         template.setName(SERVICE_NAME);
         template = templateService.saveOrUpdate(template);
@@ -245,17 +253,8 @@ public class ExecutionEngineContextTest extends ContextSensitiveTest {
                 "'Call' AS CHANNEL_ID, per.gender AS GENDER " +
                 "FROM patient p " +
                 "JOIN person per ON per.person_id = p.patient_id  " +
-                "WHERE per.birthdate > :startDate AND per.birthdate < :endDate");
+                "WHERE per.birthdate > :startDateTime AND per.birthdate < :endDateTime");
 
         return patientTemplate;
-    }
-
-    private void assertDate(Date expected, Date other) {
-        assertEquals(expected.getYear(), other.getYear());
-        assertEquals(expected.getMonth(), other.getMonth());
-        assertEquals(expected.getDate(), other.getDate());
-        assertEquals(0, other.getHours());
-        assertEquals(0, other.getMinutes());
-        assertEquals(0, other.getSeconds());
     }
 }

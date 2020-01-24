@@ -9,7 +9,6 @@
 
 package org.openmrs.module.messages.api.execution;
 
-import org.openmrs.module.messages.api.model.DateRange;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.Range;
 import org.openmrs.module.messages.api.model.TemplateFieldValue;
@@ -17,6 +16,7 @@ import org.openmrs.module.messages.api.model.TemplateFieldValue;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import org.openmrs.module.messages.api.util.DateUtil;
 
 /**
  * This context is passed to service execution engines. It contains the patient template, the date range
@@ -24,21 +24,21 @@ import java.util.Map;
  */
 public class ExecutionContext {
 
-    public static final String START_DATE_PARAM = "startDate";
-    public static final String END_DATE_PARAM = "endDate";
+    public static final String START_DATE_TIME_PARAM = "startDateTime";
+    public static final String END_DATE_TIME_PARAM = "endDateTime";
     public static final String PATIENT_ID_PARAM = "patientId";
     public static final String ACTOR_ID_PARAM = "actorId";
     public static final String BEST_CONTACT_TIME_PARAM = "bestContactTime";
 
     private Map<String, Object> params;
     private PatientTemplate patientTemplate;
-    private DateRange dateRange;
+    private Range<Date> dateRange;
     private String bestContactTime;
 
-    public ExecutionContext(PatientTemplate patientTemplate, Range<Date> dateRange, String bestContactTime) {
+    public ExecutionContext(PatientTemplate patientTemplate, Range<Date> dateTimeRange, String bestContactTime) {
         this.patientTemplate = patientTemplate;
         this.bestContactTime = bestContactTime;
-        setRange(dateRange);
+        setRange(dateTimeRange);
 
         putParam(PATIENT_ID_PARAM, patientTemplate.getPatient().getPatientId());
         putParam(ACTOR_ID_PARAM, patientTemplate.getActor().getPersonId());
@@ -57,7 +57,7 @@ public class ExecutionContext {
         return patientTemplate;
     }
 
-    public DateRange getDateRange() {
+    public Range<Date> getDateRange() {
         return dateRange;
     }
 
@@ -69,10 +69,10 @@ public class ExecutionContext {
         return patientTemplate.getServiceQuery();
     }
 
-    private void setRange(Range<Date> dateRange) {
-        this.dateRange = new DateRange(dateRange.getStart(), getEndDate(dateRange));
-        putParam(START_DATE_PARAM, this.dateRange.getStart());
-        putParam(END_DATE_PARAM, this.dateRange.getEnd());
+    private void setRange(Range<Date> dateTimeRange) {
+        this.dateRange = new Range<>(getStartDateTime(dateTimeRange), getEndDateTime(dateTimeRange));
+        putParam(START_DATE_TIME_PARAM, DateUtil.convertToServerSideDateTime(this.dateRange.getStart()));
+        putParam(END_DATE_TIME_PARAM, DateUtil.convertToServerSideDateTime(this.dateRange.getEnd()));
     }
 
     private void putParam(String key, Object value) {
@@ -82,10 +82,19 @@ public class ExecutionContext {
         params.put(key, value);
     }
 
-    private Date getEndDate(Range<Date> dateRange) {
+    private Date getStartDateTime(Range<Date> dateTimeRange) {
+        Date startDate = patientTemplate.getStartOfMessages();
+        if (startDate == null || startDate.before(dateTimeRange.getStart())) {
+            return dateTimeRange.getStart();
+        } else {
+            return startDate;
+        }
+    }
+
+    private Date getEndDateTime(Range<Date> dateTimeRange) {
         Date endDate = patientTemplate.getEndOfMessages();
-        if (endDate == null || endDate.after(dateRange.getEnd())) {
-            return dateRange.getEnd();
+        if (endDate == null || endDate.after(dateTimeRange.getEnd())) {
+            return dateTimeRange.getEnd();
         } else {
             return endDate;
         }
