@@ -55,6 +55,7 @@ interface IActorIdWithEvents {
 }
 
 const DATE_RANGE_CHANGE_CALLBACK_DEBOUNCE_DELAY = 200;
+const MONTH = 'M';
 
 class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewState> {
   constructor(props: ICalendarViewProps) {
@@ -71,8 +72,12 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
   componentDidMount() {
     this.props.getTemplates();
     this.props.getActorList(this.state.patientId);
+    let { startDate, endDate, patientId } = this.state;
+    startDate = startDate ? startDate : moment().subtract(1, MONTH);
+    endDate = endDate ? endDate : moment().add(1, MONTH);
+    this.props.getServiceResultLists(startDate.toDate(), endDate.toDate(), patientId);
   }
-
+  
   componentWillUpdate(nextProps: ICalendarViewProps, nextState: ICalendarViewState) {
     if (nextProps.loading === false && this.props.loading === true) {
       let initialFilters = {};
@@ -154,7 +159,7 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
     return _.filter([role, name]).join(' - ');
   }
 
-  private appendDefaultDummyActorsIfNeeded(actorsResults: IActorIdWithEvents[]): Array<IActorIdWithEvents> {  
+  private appendDefaultDummyActorsIfNeeded(actorsResults: IActorIdWithEvents[]): Array<IActorIdWithEvents> {
     return _.unionBy(actorsResults, this.getDefaultDummyActorResults(), 'actorId');
   }
 
@@ -196,6 +201,8 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
 
   private isServiceSelected = (val: string) => _.has(this.state.filters, val) && !!this.state.filters[val];
 
+  private getClassForCalendarArea = () => this.props.loading ? 'disable-element' : 'enable-element';
+
   fiterCheckboxChanged = (key: string, val: boolean) => {
     this.setState((prevState: Readonly<ICalendarViewState>) => {
       let oldFilters = prevState.filters;
@@ -221,7 +228,6 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
 
   render() {
     const actorsResults: Array<IActorIdWithEvents> = this.prepareActorsData();
-
     return (
       <>
         <div className="row">
@@ -239,11 +245,13 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
                             Manage messages
                           </Button>
                         </a>
-                        <Calendar
-                          dateRangeChangedCallback={(startDate, endDate) => this.dateRangeChanged(startDate, endDate, tabName)}
-                          events={this.parseDataToCalendarEvents(actorWithResults.events)}
-                          key={tabName}
-                        />
+                        <div className={this.getClassForCalendarArea()}>
+                          <Calendar
+                            dateRangeChangedCallback={(startDate, endDate) => this.dateRangeChanged(startDate, endDate, tabName)}
+                            events={this.parseDataToCalendarEvents(actorWithResults.events)}
+                            key={tabName}
+                          />
+                        </div>
                       </Col>
                       <Col sm={3} className="u-p-0 u-mt-4_5em u-mr-0 calendar-filters">
                         <span>
