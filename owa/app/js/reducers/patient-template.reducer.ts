@@ -14,6 +14,7 @@ import MessageDetails from '../shared/model/message-details';
 export const ACTION_TYPES = {
   GET_TEMPLATES: 'patientTemplateReducer/GET_TEMPLATES',
   GET_PATIENT_TEMPLATES: 'patientTemplateReducer/GET_PATIENT_TEMPLATES',
+  GET_PATIENT_TEMPLATES_TO_CHECK_DEFAULT_VALUES: 'patientTemplateReducer/GET_PATIENT_TEMPLATES_TO_CHECK_DEFAULT_VALUES',
   PUT_PATIENT_TEMPLATES: 'patientTemplateReducer/PUT_PATIENT_TEMPLATES',
   RESET: 'patientTemplateReducer/RESET',
   UPDATE_PATIENT_TEMPLATE: 'patientTemplateReducer/UPDATE_PATIENT_TEMPLATE',
@@ -27,7 +28,8 @@ const initialState = {
   patientTemplates: [] as Array<PatientTemplateUI>,
   patientTemplatesLoading: false,
   messageDetails: null as unknown as MessageDetails,
-  messageDetailsLoading: false
+  messageDetailsLoading: false,
+  defaultValuesUsed: undefined as boolean | undefined
 };
 
 export type PatientTemplateState = Readonly<typeof initialState>;
@@ -69,18 +71,32 @@ export default (state = initialState, action) => {
     case REQUEST(ACTION_TYPES.GET_PATIENT_TEMPLATES):
       return {
         ...state,
-        patientTemplatesLoading: true
+        patientTemplatesLoading: true,
+        defaultValuesUsed: undefined
       };
     case FAILURE(ACTION_TYPES.GET_PATIENT_TEMPLATES):
       return {
         ...state,
-        patientTemplatesLoading: false
+        patientTemplatesLoading: false,
+        defaultValuesUsed: undefined
       };
     case SUCCESS(ACTION_TYPES.GET_PATIENT_TEMPLATES):
       return {
         ...state,
         patientTemplatesLoading: false,
-        patientTemplates: _.map(action.payload.data.content, PatientTemplateUI.fromModel)
+        patientTemplates: _.map(action.payload.data.content, PatientTemplateUI.fromModel),
+        defaultValuesUsed: action.payload.data.content.length === 0
+      };
+    case REQUEST(ACTION_TYPES.GET_PATIENT_TEMPLATES_TO_CHECK_DEFAULT_VALUES):
+    case FAILURE(ACTION_TYPES.GET_PATIENT_TEMPLATES_TO_CHECK_DEFAULT_VALUES):
+      return {
+        ...state,
+        defaultValuesUsed: undefined
+      };
+    case SUCCESS(ACTION_TYPES.GET_PATIENT_TEMPLATES_TO_CHECK_DEFAULT_VALUES):
+      return {
+        ...state,
+        defaultValuesUsed: action.payload.data.content.length === 0
       };
     case REQUEST(ACTION_TYPES.PUT_PATIENT_TEMPLATES):
       return {
@@ -144,6 +160,16 @@ export const getPatientTemplates = (patientId: number) => async (dispatch) => {
   const requestUrl = `${patientTemplatesUrl}/patient/${patientId}`
   await dispatch({
     type: ACTION_TYPES.GET_PATIENT_TEMPLATES,
+    payload: axiosInstance.get(requestUrl, {
+      params: { page: ALL_RECORDS_PAGE }
+    })
+  });
+};
+
+export const checkIfDefaultValuesUsed = (patientId: number) => async (dispatch) => {
+  const requestUrl = `${patientTemplatesUrl}/patient/${patientId}`
+  await dispatch({
+    type: ACTION_TYPES.GET_PATIENT_TEMPLATES_TO_CHECK_DEFAULT_VALUES,
     payload: axiosInstance.get(requestUrl, {
       params: { page: ALL_RECORDS_PAGE }
     })

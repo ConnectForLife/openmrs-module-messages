@@ -4,7 +4,7 @@ import { IRootState } from '../../reducers';
 import './patient-template.scss';
 import Table from '@bit/soldevelo-omrs.cfl-components.table/table';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { getMessages } from '../../reducers/patient-template.reducer'
+import { getMessages } from '../../reducers/patient-template.reducer';
 import MessageDetails from '../../shared/model/message-details';
 import _ from 'lodash';
 import ActorSchedule from '../../shared/model/actor-schedule';

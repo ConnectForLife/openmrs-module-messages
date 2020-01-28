@@ -11,3 +11,14 @@
 .fields-form-title {
   border-bottom: 1px solid #eee;
 }
+
+.note-container {
+  span {
+    position: initial;
+  }
+
+  p {
+    position: initial !important;
+    vertical-align: super !important;
+  }
+}

@@ -50,7 +50,9 @@ export const PATIENT_ROLE = 'Patient';
 export const ISO_DATE_FORMAT = 'YYYY-MM-DD';
 export const DATE_FORMAT = 'dd MMM yyyy';
 
-// Patient template values
+// Patient template
+export const DEFAULT_VALUES_USED_MESSAGE = 'You are viewing the default message sending. Click SAVE to confirm and enable message sending.';
+
 export const SERVICE_TYPE_VALUES = ['Call', 'SMS', 'Deactivate service'];
 export const DAY_OF_WEEK_VALUES = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 export const MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY_VALUES = ['Daily', 'Weekly', 'Monthly'];
