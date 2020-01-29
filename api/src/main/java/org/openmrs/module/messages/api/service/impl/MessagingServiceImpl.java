@@ -93,25 +93,25 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
     }
 
     @Override
-    public ScheduledService registerResponseAndAttempt(Integer scheduledId,
-                                                       Integer questionId,
-                                                       Integer responseId,
-                                                       String textResponse,
-                                                       String status,
-                                                       Date timestamp,
-                                                       String executionId) throws PropertyValueException {
+    public ScheduledService registerResponseAndStatus(Integer scheduledId,
+                                                      Integer questionId,
+                                                      Integer responseId,
+                                                      String textResponse,
+                                                      String status,
+                                                      Date timestamp,
+                                                      String executionId) throws PropertyValueException {
         registerResponse(scheduledId, questionId, responseId, textResponse, timestamp);
         return registerAttempt(scheduledId, status, timestamp, executionId);
     }
 
     @Override
-    public ScheduledService registerResponseAndAttempt(Integer scheduledId,
-                                                       Integer questionId,
-                                                       Integer responseId,
-                                                       String textResponse,
-                                                       ServiceStatus status,
-                                                       Date timestamp,
-                                                       String executionId) throws PropertyValueException {
+    public ScheduledService registerResponseAndStatus(Integer scheduledId,
+                                                      Integer questionId,
+                                                      Integer responseId,
+                                                      String textResponse,
+                                                      ServiceStatus status,
+                                                      Date timestamp,
+                                                      String executionId) throws PropertyValueException {
         registerResponse(scheduledId, questionId, responseId, textResponse, timestamp);
         return registerAttempt(scheduledId, status, timestamp, executionId);
     }

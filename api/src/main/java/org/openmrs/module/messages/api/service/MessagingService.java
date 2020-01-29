@@ -91,13 +91,13 @@ public interface MessagingService extends BaseOpenmrsCriteriaDataService<Schedul
      *                                  and when is PENDING or FUTURE.
      *
      */
-    ScheduledService registerResponseAndAttempt(Integer scheduledId,
-                                                Integer questionId,
-                                                Integer responseId,
-                                                String textResponse,
-                                                String status,
-                                                Date timestamp,
-                                                String executionId);
+    ScheduledService registerResponseAndStatus(Integer scheduledId,
+                                               Integer questionId,
+                                               Integer responseId,
+                                               String textResponse,
+                                               String status,
+                                               Date timestamp,
+                                               String executionId);
 
     /**
      * The API to be called by other modules, such as callflows and sms, in order to create actor response and update
@@ -115,13 +115,13 @@ public interface MessagingService extends BaseOpenmrsCriteriaDataService<Schedul
      * @throws EntityNotFoundException when scheduled service with passed id does not exist.
      * @throws IllegalArgumentException when {@param status} is PENDING or FUTURE.
      */
-    ScheduledService registerResponseAndAttempt(Integer scheduledId,
-                                                Integer questionId,
-                                                Integer responseId,
-                                                String textResponse,
-                                                ServiceStatus status,
-                                                Date timestamp,
-                                                String executionId);
+    ScheduledService registerResponseAndStatus(Integer scheduledId,
+                                               Integer questionId,
+                                               Integer responseId,
+                                               String textResponse,
+                                               ServiceStatus status,
+                                               Date timestamp,
+                                               String executionId);
 
     /**
      * Retrieves all service executions bound to occur (or which occurred) in the given date range for a patient.

@@ -148,7 +148,7 @@ public class MessagingServiceTest extends BaseTest {
     }
 
     @Test
-    public void registerResponseAndAttemptShouldPersistAttemptAndResponse() {
+    public void registerResponseAndStatusShouldPersistAttemptAndResponse() {
         final ScheduledService scheduledService = new ScheduledServiceBuilder()
                 .withStatus(ServiceStatus.PENDING)
                 .withServiceExec("123")
@@ -160,14 +160,14 @@ public class MessagingServiceTest extends BaseTest {
         when(dao.getById(eq(scheduledService.getId()))).thenReturn(scheduledService);
         when(dao.saveOrUpdate(eq(scheduledService))).thenReturn(scheduledService);
 
-        messagingService.registerResponseAndAttempt(scheduledService.getId(), QUESTION_ID, RESPONSE_ID,
+        messagingService.registerResponseAndStatus(scheduledService.getId(), QUESTION_ID, RESPONSE_ID,
                 TEXT_RESPONSE, newStatus, timestamp, serviceExecution);
 
-        validateRegisterResponseAndAttemptResult(scheduledService, newStatus, serviceExecution, timestamp);
+        validateRegisterResponseAndStatusResult(scheduledService, newStatus, serviceExecution, timestamp);
     }
 
     @Test
-    public void registerResponseAndAttemptShouldPersistAttemptAndResponseWhenPassedServiceStatusAsString() {
+    public void registerResponseAndStatusShouldPersistAttemptAndResponseWhenPassedServiceStatusAsString() {
         final ScheduledService scheduledService = new ScheduledServiceBuilder()
                 .withStatus(ServiceStatus.PENDING)
                 .withServiceExec("123")
@@ -179,15 +179,15 @@ public class MessagingServiceTest extends BaseTest {
         when(dao.getById(eq(scheduledService.getId()))).thenReturn(scheduledService);
         when(dao.saveOrUpdate(eq(scheduledService))).thenReturn(scheduledService);
 
-        messagingService.registerResponseAndAttempt(scheduledService.getId(), QUESTION_ID, RESPONSE_ID,
+        messagingService.registerResponseAndStatus(scheduledService.getId(), QUESTION_ID, RESPONSE_ID,
                 TEXT_RESPONSE, newStatus, timestamp, serviceExecution);
 
-        validateRegisterResponseAndAttemptResult(scheduledService, ServiceStatus.valueOf(newStatus),
+        validateRegisterResponseAndStatusResult(scheduledService, ServiceStatus.valueOf(newStatus),
                 serviceExecution, timestamp);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void registerResponseAndAttemptShouldThrowExceptionIfStatusIsNotValidServiceStatus() {
+    public void registerResponseAndStatusShouldThrowExceptionIfStatusIsNotValidServiceStatus() {
         final ScheduledService scheduledService = new ScheduledServiceBuilder()
                 .withStatus(ServiceStatus.PENDING)
                 .withServiceExec("123")
@@ -199,12 +199,12 @@ public class MessagingServiceTest extends BaseTest {
         when(dao.getById(eq(scheduledService.getId()))).thenReturn(scheduledService);
         when(dao.saveOrUpdate(eq(scheduledService))).thenReturn(scheduledService);
 
-        messagingService.registerResponseAndAttempt(scheduledService.getId(), QUESTION_ID, RESPONSE_ID,
+        messagingService.registerResponseAndStatus(scheduledService.getId(), QUESTION_ID, RESPONSE_ID,
                 TEXT_RESPONSE, newStatus, timestamp, serviceExecution);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void registerResponseAndAttemptShouldThrowExceptionIfStatusIsPending() {
+    public void registerResponseAndStatusShouldThrowExceptionIfStatusIsPending() {
         final ScheduledService scheduledService = new ScheduledServiceBuilder()
                 .withStatus(ServiceStatus.PENDING)
                 .withServiceExec("123")
@@ -216,12 +216,12 @@ public class MessagingServiceTest extends BaseTest {
         when(dao.getById(eq(scheduledService.getId()))).thenReturn(scheduledService);
         when(dao.saveOrUpdate(eq(scheduledService))).thenReturn(scheduledService);
 
-        messagingService.registerResponseAndAttempt(scheduledService.getId(), QUESTION_ID, RESPONSE_ID,
+        messagingService.registerResponseAndStatus(scheduledService.getId(), QUESTION_ID, RESPONSE_ID,
                 TEXT_RESPONSE, newStatus, timestamp, serviceExecution);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void registerResponseAndAttemptShouldThrowExceptionIfStringStatusIsPending() {
+    public void registerResponseAndStatusShouldThrowExceptionIfStringStatusIsPending() {
         final ScheduledService scheduledService = new ScheduledServiceBuilder()
                 .withStatus(ServiceStatus.PENDING)
                 .withServiceExec("123")
@@ -233,12 +233,12 @@ public class MessagingServiceTest extends BaseTest {
         when(dao.getById(eq(scheduledService.getId()))).thenReturn(scheduledService);
         when(dao.saveOrUpdate(eq(scheduledService))).thenReturn(scheduledService);
 
-        messagingService.registerResponseAndAttempt(scheduledService.getId(), QUESTION_ID, RESPONSE_ID,
+        messagingService.registerResponseAndStatus(scheduledService.getId(), QUESTION_ID, RESPONSE_ID,
                 TEXT_RESPONSE, newStatus, timestamp, serviceExecution);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void registerResponseAndAttemptShouldThrowExceptionIfStatusIsFuture() {
+    public void registerResponseAndStatusShouldThrowExceptionIfStatusIsFuture() {
         final ScheduledService scheduledService = new ScheduledServiceBuilder()
                 .withStatus(ServiceStatus.PENDING)
                 .withServiceExec("123")
@@ -250,12 +250,12 @@ public class MessagingServiceTest extends BaseTest {
         when(dao.getById(eq(scheduledService.getId()))).thenReturn(scheduledService);
         when(dao.saveOrUpdate(eq(scheduledService))).thenReturn(scheduledService);
 
-        messagingService.registerResponseAndAttempt(scheduledService.getId(), QUESTION_ID, RESPONSE_ID,
+        messagingService.registerResponseAndStatus(scheduledService.getId(), QUESTION_ID, RESPONSE_ID,
                 TEXT_RESPONSE, newStatus, timestamp, serviceExecution);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void registerResponseAndAttemptShouldThrowExceptionIfStringStatusIsFuture() {
+    public void registerResponseAndStatusShouldThrowExceptionIfStringStatusIsFuture() {
         final ScheduledService scheduledService = new ScheduledServiceBuilder()
                 .withStatus(ServiceStatus.PENDING)
                 .withServiceExec("123")
@@ -267,22 +267,22 @@ public class MessagingServiceTest extends BaseTest {
         when(dao.getById(eq(scheduledService.getId()))).thenReturn(scheduledService);
         when(dao.saveOrUpdate(eq(scheduledService))).thenReturn(scheduledService);
 
-        messagingService.registerResponseAndAttempt(scheduledService.getId(), QUESTION_ID, RESPONSE_ID,
+        messagingService.registerResponseAndStatus(scheduledService.getId(), QUESTION_ID, RESPONSE_ID,
                 TEXT_RESPONSE, newStatus, timestamp, serviceExecution);
     }
 
     @Test(expected = EntityNotFoundException.class)
-    public void registerResponseAndAttemptShouldThrowExceptionIfScheduledServiceNotExists() {
+    public void registerResponseAndStatusShouldThrowExceptionIfScheduledServiceNotExists() {
         final String newStatus = "DELIVERED";
         final String serviceExecution = "321";
         final Date timestamp = new Date();
 
-        messagingService.registerResponseAndAttempt(Constant.NOT_EXISTING_ID, QUESTION_ID, RESPONSE_ID,
+        messagingService.registerResponseAndStatus(Constant.NOT_EXISTING_ID, QUESTION_ID, RESPONSE_ID,
                 TEXT_RESPONSE, newStatus, timestamp, serviceExecution);
     }
 
-    private void validateRegisterResponseAndAttemptResult(ScheduledService scheduledService, ServiceStatus newStatus,
-                                                          String serviceExecution, Date timestamp) {
+    private void validateRegisterResponseAndStatusResult(ScheduledService scheduledService, ServiceStatus newStatus,
+                                                         String serviceExecution, Date timestamp) {
         verify(responseDao).saveOrUpdate(responseCaptor.capture());
         verify(dao).saveOrUpdate(serviceCaptor.capture());
 
