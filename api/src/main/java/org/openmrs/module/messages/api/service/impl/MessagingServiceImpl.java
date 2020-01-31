@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.transaction.Transactional;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.PropertyValueException;
 import org.openmrs.Concept;
 import org.openmrs.api.ConceptService;
@@ -35,6 +37,8 @@ import org.openmrs.module.messages.domain.criteria.PatientTemplateCriteria;
 
 @Transactional
 public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledService> implements MessagingService {
+
+    private static final Log LOGGER = LogFactory.getLog(MessagingServiceImpl.class);
 
     private ConceptService conceptService;
     private ActorResponseDao actorResponseDao;
@@ -117,8 +121,7 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
     }
 
     @Override
-    public List<ServiceResultList> retrieveAllServiceExecutions(Integer patientId, Date startDate, Date endDate)
-            throws ExecutionException {
+    public List<ServiceResultList> retrieveAllServiceExecutions(Integer patientId, Date startDate, Date endDate) {
 
         PatientTemplateCriteria patientTemplateCriteria = PatientTemplateCriteria.forPatientId(patientId);
         return retrieveAllServiceExecutions(patientTemplateService.findAllByCriteria(patientTemplateCriteria),
@@ -126,8 +129,7 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
     }
 
     @Override
-    public List<ServiceResultList> retrieveAllServiceExecutions(Date startDate, Date endDate)
-            throws ExecutionException {
+    public List<ServiceResultList> retrieveAllServiceExecutions(Date startDate, Date endDate) {
         return retrieveAllServiceExecutions(patientTemplateService.getAll(false), startDate, endDate);
     }
 
@@ -175,14 +177,22 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
     }
 
     private List<ServiceResultList> retrieveAllServiceExecutions(List<PatientTemplate> patientTemplates, Date startDate,
-                                                                 Date endDate)
-            throws ExecutionException {
+                                                                 Date endDate) {
 
         Range<Date> dateRange = new Range<>(startDate, endDate);
 
         List<ServiceResultList> results = new ArrayList<>();
         for (PatientTemplate patientTemplate : patientTemplates) {
-            results.add(serviceExecutor.execute(patientTemplate, dateRange));
+            try {
+                results.add(serviceExecutor.execute(patientTemplate, dateRange));
+            } catch (ExecutionException e) {
+                LOGGER.error(String.format(
+                                "Cannot execute query for patientTemplate with id %d (template with id %d - '%s')",
+                                patientTemplate.getId(),
+                                patientTemplate.getTemplate().getId(),
+                                patientTemplate.getTemplate().getName()),
+                        e);
+            }
         }
 
         return results;

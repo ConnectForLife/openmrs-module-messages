@@ -9,28 +9,25 @@
 
 package org.openmrs.module.messages.api.scheduler.job;
 
+import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Person;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.messages.api.service.ConfigService;
 import org.openmrs.module.messages.api.constants.MessagesConstants;
-import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
-import org.openmrs.module.messages.api.execution.ExecutionException;
 import org.openmrs.module.messages.api.execution.GroupedServiceResultList;
 import org.openmrs.module.messages.api.execution.ServiceResultGroupHelper;
 import org.openmrs.module.messages.api.execution.ServiceResultList;
 import org.openmrs.module.messages.api.mappers.ScheduledGroupMapper;
 import org.openmrs.module.messages.api.model.PersonStatus;
-import org.openmrs.module.messages.api.model.ScheduledServiceGroup;
 import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
+import org.openmrs.module.messages.api.model.ScheduledServiceGroup;
+import org.openmrs.module.messages.api.service.ConfigService;
 import org.openmrs.module.messages.api.service.MessagesDeliveryService;
 import org.openmrs.module.messages.api.service.MessagingGroupService;
 import org.openmrs.module.messages.api.service.MessagingService;
 import org.openmrs.module.messages.api.util.DateUtil;
-
-import java.util.List;
 
 public class MessageDeliveriesJobDefinition extends JobDefinition {
 
@@ -40,22 +37,17 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
     @Override
     public void execute() {
         LOGGER.info(getTaskName() + " started");
-        try {
-            List<ServiceResultList> results =
-                getMessagingService().retrieveAllServiceExecutions(DateUtil.now(),
-                DateUtil.getDatePlusSeconds(getTaskDefinition().getRepeatInterval()));
-            logNumberOfResults(results);
+        List<ServiceResultList> results =
+            getMessagingService().retrieveAllServiceExecutions(DateUtil.now(),
+            DateUtil.getDatePlusSeconds(getTaskDefinition().getRepeatInterval()));
+        logNumberOfResults(results);
 
-            List<GroupedServiceResultList> groupedResults = ServiceResultGroupHelper
-                .groupByActorAndExecutionDate(results, true);
-            LOGGER.debug(String.format("Converted to %d groups to execute", groupedResults.size()));
+        List<GroupedServiceResultList> groupedResults = ServiceResultGroupHelper
+            .groupByActorAndExecutionDate(results, true);
+        LOGGER.debug(String.format("Converted to %d groups to execute", groupedResults.size()));
 
-            for (GroupedServiceResultList groupedResult : groupedResults) {
-                scheduleTaskForActivePerson(groupedResult);
-            }
-        } catch (ExecutionException e) {
-            LOGGER.error("Failed to execute task: " + getTaskName());
-            throw new MessagesRuntimeException("Failed to execute task: " + getTaskName(), e);
+        for (GroupedServiceResultList groupedResult : groupedResults) {
+            scheduleTaskForActivePerson(groupedResult);
         }
     }
 
