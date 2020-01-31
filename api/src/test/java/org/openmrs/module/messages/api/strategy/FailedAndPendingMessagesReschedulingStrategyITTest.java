@@ -15,25 +15,24 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.Test;
 import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
 import org.openmrs.scheduler.TaskDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-public class FailedAndItsPendingMessagesReschedulingStrategyITTest extends BaseReschedulingStrategyITTest {
+public class FailedAndPendingMessagesReschedulingStrategyITTest extends BaseReschedulingStrategyITTest {
 
     @Autowired
-    @Qualifier("messages.failedAndItsPendingMessagesReschedulingStrategy")
+    @Qualifier("messages.failedAndPendingMessagesReschedulingStrategy")
     private ReschedulingStrategy reschedulingStrategy;
 
     @Test
     public void shouldRescheduleFailedDeliveryTogetherWithPendingMessagesOfTheSameChannel() throws Exception {
         addDeliveryAttempts(failedScheduledService, MAX_ATTEMPTS - 1);
+        addDeliveryAttempts(pendingScheduledService, MAX_ATTEMPTS - 1);
 
-        reschedulingStrategy.execute(failedScheduledService);
+        reschedulingStrategy.execute(failedScheduledService.getGroup(), failedScheduledService.getChannelType());
 
         TaskDefinition task = getCreatedTask();
         assertNotNull(task);
@@ -51,11 +50,5 @@ public class FailedAndItsPendingMessagesReschedulingStrategyITTest extends BaseR
     @Override
     protected ReschedulingStrategy getStrategy() {
         return reschedulingStrategy;
-    }
-
-    private List<Integer> wrap(Integer id) {
-        ArrayList<Integer> ids = new ArrayList<>();
-        ids.add(id);
-        return ids;
     }
 }

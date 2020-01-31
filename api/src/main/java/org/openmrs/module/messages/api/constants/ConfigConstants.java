@@ -112,12 +112,12 @@ public final class ConfigConstants {
     public static final String DAYS_NUMBER_BEFORE_VISIT_REMINDER_DESCRIPTION =
             "Used to determine the how many days before visit reminder should be schedule";
 
-    public static final String DEFAULT_RESCHEDULING_STRATEGY = "messages.failedMessageReschedulingStrategy";
+    public static final String DEFAULT_RESCHEDULING_STRATEGY = "messages.failedAndPendingMessagesReschedulingStrategy";
 
     public static final String RESCHEDULING_STRATEGY_KEY = "messages.reschedulingStrategy";
     public static final String RESCHEDULING_STRATEGY_DEFAULT_VALUE =
-            "SMS:messages.failedMessageReschedulingStrategy,"
-            + "Call:messages.failedAndItsPendingMessagesReschedulingStrategy";
+            "SMS:messages.failedAndPendingMessagesReschedulingStrategy,"
+            + "Call:messages.failedAndPendingMessagesReschedulingStrategy";
     public static final String RESCHEDULING_STRATEGY_DESCRIPTION =
             "Used to determine the name of the Spring Bean which should be used to handle the reschedule logic. The "
             + "value could represent multiple strategies. Each of them is dedicated to a specific channel type. The "

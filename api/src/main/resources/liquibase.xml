@@ -3086,4 +3086,29 @@
                 ]]>
         </sql>
     </changeSet>
+
+    <changeSet id="messages-54" author="Daniel Serkowski">
+        <preConditions>
+            <tableExists tableName="global_property"/>
+        </preConditions>
+
+        <comment>Resets messages.reschedulingStrategy to the default value (the property structure and its description
+            have been changed). It is in order to apply the new changes to all already existing environments. The
+            migration can be removed if the liquibase refactor will be conducted (eg. replacing all changes by one
+            changeSet).</comment>
+
+        <delete tableName="global_property">
+            <where>property='messages.reschedulingStrategy'</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="messages-55" author="Daniel Serkowski">
+        <comment>Removes the not null constraint on service_execution_id in messages_delivery_attempt. In some cases,
+            the attempts can fail before executor invokes eg. real call. The failure may be caused by temporary internal
+            server error, so in order to register it in this table, we need to get rid of the not null requirement.</comment>
+
+        <dropNotNullConstraint tableName="messages_delivery_attempt"
+                               columnName="service_execution_id"
+                               columnDataType="varchar(255)"/>
+    </changeSet>
 </databaseChangeLog>

@@ -252,15 +252,15 @@ public class MessagingServiceITTest extends ContextSensitiveTest {
     }
 
     @Test
-    public void registerAttemptShouldRescheduleFailedAttempt() throws Exception {
+    public void registerAttemptShouldNotRescheduleFailedAttempt() throws Exception {
         scheduledService = messagingService.registerAttempt(scheduledService.getId(), ServiceStatus.FAILED,
                 new Date(), UUID.randomUUID().toString());
 
-        verify(schedulerService, times(1)).scheduleTask(any());
+        verify(schedulerService, times(0)).scheduleTask(any());
     }
 
     @Test
-    public void registerAttemptShouldRescheduleSuccessfulAttempt() throws Exception {
+    public void registerAttemptShouldNotRescheduleSuccessfulAttempt() throws Exception {
         scheduledService = messagingService.registerAttempt(scheduledService.getId(), ServiceStatus.DELIVERED,
                 new Date(), UUID.randomUUID().toString());
 

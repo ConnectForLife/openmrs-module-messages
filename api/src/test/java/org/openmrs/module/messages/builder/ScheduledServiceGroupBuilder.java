@@ -9,6 +9,7 @@
 
 package org.openmrs.module.messages.builder;
 
+import java.util.ArrayList;
 import org.openmrs.module.messages.api.model.ScheduledService;
 import org.openmrs.module.messages.api.model.ScheduledServiceGroup;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
@@ -23,7 +24,7 @@ public class ScheduledServiceGroupBuilder extends AbstractBuilder<ScheduledServi
     private Integer patientId;
     private Integer actorId;
     private ServiceStatus status;
-    private List<ScheduledService> scheduledServices;
+    private List<ScheduledService> scheduledServices = new ArrayList<>();
 
     public ScheduledServiceGroupBuilder() {
     }

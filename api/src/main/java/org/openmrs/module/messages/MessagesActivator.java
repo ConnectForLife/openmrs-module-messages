@@ -23,7 +23,9 @@ import org.openmrs.module.DaemonTokenAware;
 import org.openmrs.module.Module;
 import org.openmrs.module.ModuleFactory;
 import org.openmrs.module.messages.api.constants.MessagesConstants;
-import org.openmrs.module.messages.api.event.listener.PeopleActionListener;
+import org.openmrs.module.messages.api.event.AbstractMessagesEventListener;
+import org.openmrs.module.messages.api.event.listener.MessagesEventListenerFactory;
+import org.openmrs.module.messages.api.event.listener.subscribable.PeopleActionListener;
 import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
 import org.openmrs.module.messages.api.scheduler.job.JobRepeatInterval;
 import org.openmrs.module.messages.api.scheduler.job.MessageDeliveriesJobDefinition;
@@ -50,6 +52,7 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
         try {
             createConfig();
             scheduleMessageDeliveries();
+            MessagesEventListenerFactory.registerEventListeners();
         } catch (APIException e) {
             safeShutdownModule();
             LOGGER.error("Failed to setup the required modules");
@@ -62,6 +65,7 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
      */
     public void shutdown() {
         LOGGER.info("Shutdown Messages");
+        MessagesEventListenerFactory.unRegisterEventListeners();
     }
 
     /**
@@ -70,14 +74,23 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
     @Override
     public void stopped() {
         LOGGER.info("Stopped Messages");
+        MessagesEventListenerFactory.unRegisterEventListeners();
     }
 
     @Override
     public void setDaemonToken(DaemonToken token) {
+        LOGGER.info("Set daemon token to Messages Module event listeners");
         getSchedulerService().setDaemonToken(token);
+
         List<PeopleActionListener> listeners = Context.getRegisteredComponents(PeopleActionListener.class);
         for (PeopleActionListener peopleActionListener : listeners) {
             peopleActionListener.setDaemonToken(token);
+        }
+
+        List<AbstractMessagesEventListener> eventComponents =
+                Context.getRegisteredComponents(AbstractMessagesEventListener.class);
+        for (AbstractMessagesEventListener eventListener : eventComponents) {
+            eventListener.setDaemonToken(token);
         }
     }
 

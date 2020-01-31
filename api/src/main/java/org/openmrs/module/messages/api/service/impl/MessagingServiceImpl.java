@@ -6,7 +6,7 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
- 
+
 package org.openmrs.module.messages.api.service.impl;
 
 import java.util.ArrayList;
@@ -27,7 +27,6 @@ import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.Range;
 import org.openmrs.module.messages.api.model.ScheduledService;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
-import org.openmrs.module.messages.api.service.ConfigService;
 import org.openmrs.module.messages.api.service.MessagingService;
 import org.openmrs.module.messages.api.service.PatientTemplateService;
 import org.openmrs.module.messages.api.util.DateUtil;
@@ -41,7 +40,6 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
     private ActorResponseDao actorResponseDao;
     private ServiceExecutor serviceExecutor;
     private PatientTemplateService patientTemplateService;
-    private ConfigService configService;
 
     @Override
     public ActorResponse registerResponse(Integer scheduledId,
@@ -74,7 +72,12 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
                                             String executionId) {
         checkIfStatusIsNotPendingOrFuture(status);
         ScheduledService service = HibernateUtil.getNotNull(scheduledServiceId, this);
+        return registerAttempt(service, status, timestamp, executionId);
+    }
 
+    @Override
+    public ScheduledService registerAttempt(ScheduledService service, ServiceStatus status, Date timestamp,
+                                            String executionId) {
         DeliveryAttempt deliveryAttempt = new DeliveryAttempt();
         deliveryAttempt.setServiceExecution(executionId);
         deliveryAttempt.setAttemptNumber(service.getNumberOfAttempts() + 1);
@@ -84,14 +87,9 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
 
         service.setStatus(status);
         service.setLastServiceExecution(executionId);
-
         service.getDeliveryAttempts().add(deliveryAttempt);
-        service = saveOrUpdate(service);
 
-        configService.getReschedulingStrategy(service.getChannelType())
-                .execute(service);
-
-        return service;
+        return saveOrUpdate(service);
     }
 
     @Override
@@ -167,10 +165,6 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
 
     public void setPatientTemplateService(PatientTemplateService patientTemplateService) {
         this.patientTemplateService = patientTemplateService;
-    }
-
-    public void setConfigService(ConfigService configService) {
-        this.configService = configService;
     }
 
     private void throwExceptionIfMissing(Object entity, Integer id, String entityName) throws EntityNotFoundException {

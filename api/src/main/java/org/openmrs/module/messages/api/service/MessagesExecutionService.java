@@ -7,11 +7,8 @@
  * graphic logo is a trademark of OpenMRS Inc.
  */
 
-package org.openmrs.module.messages.api.strategy;
+package org.openmrs.module.messages.api.service;
 
-import org.openmrs.module.messages.api.model.ScheduledServiceGroup;
-
-public interface ReschedulingStrategy {
-
-    void execute(ScheduledServiceGroup group, String channelType);
+public interface MessagesExecutionService {
+    void executionCompleted(Integer groupId, String executionId, String channelType);
 }

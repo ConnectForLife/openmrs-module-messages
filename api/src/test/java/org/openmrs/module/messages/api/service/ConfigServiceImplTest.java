@@ -9,6 +9,13 @@
 
 package org.openmrs.module.messages.api.service;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
+
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.messages.ContextSensitiveTest;
@@ -20,14 +27,6 @@ import org.openmrs.module.messages.api.strategy.ReschedulingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
-
 public class ConfigServiceImplTest extends ContextSensitiveTest {
 
     private static final String XML_DATASET_PATH = "datasets/";
@@ -37,9 +36,10 @@ public class ConfigServiceImplTest extends ContextSensitiveTest {
     private static final String EXPECTED_ACTOR_CONFIGURATION =
             "1286b4bc-2d35-46d6-b645-a1b563aaf62a:A,5b82938d-5cab-43b7-a8f1-e4d6fbb484cc:B";
 
-    private static final String SMS_CHANNEL_RESCHEDULING_STRATEGY = "messages.failedMessageReschedulingStrategy";
+    private static final String SMS_CHANNEL_RESCHEDULING_STRATEGY =
+            "messages.failedAndPendingMessagesReschedulingStrategy";
     private static final String CALL_CHANNEL_RESCHEDULING_STRATEGY =
-            "messages.failedAndItsPendingMessagesReschedulingStrategy";
+            "messages.failedAndPendingMessagesReschedulingStrategy";
     private static final String SMS_CHANNEL_NAME = "SMS";
     private static final String CALL_CHANNEL_NAME = "Call";
     private static final String CHANNEL_NAME_WITHOUT_RESCHEDULING_STRATEGY = "channelNameWithoutReschedulingStrategy";

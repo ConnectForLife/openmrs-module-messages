@@ -11,8 +11,10 @@ package org.openmrs.module.messages.api.strategy.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
 import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
 import org.openmrs.module.messages.api.model.ScheduledService;
+import org.openmrs.module.messages.api.model.ScheduledServiceGroup;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
 import org.openmrs.module.messages.api.service.ConfigService;
 import org.openmrs.module.messages.api.service.MessagesDeliveryService;
@@ -27,16 +29,22 @@ public abstract class AbstractReschedulingStrategy implements ReschedulingStrate
     private final Log logger = LogFactory.getLog(getClass());
 
     private ConfigService configService;
-
     private MessagesDeliveryService deliveryService;
 
     @Override
-    public void execute(ScheduledService service) {
-        if (!shouldReschedule(service)) {
+    public void execute(ScheduledServiceGroup group, String channelType) {
+        List<ScheduledService> servicesToExecute = extractServiceListToExecute(group, channelType);
+        if (servicesToExecute.isEmpty()) {
+            logger.debug(String.format(
+                    "The group %s have been fully delivered, so the rescheduling logic will not be run",
+                    group.getId()));
             return;
         }
 
-        List<ScheduledService> servicesToExecute = extractServiceListToExecute(service);
+        ScheduledService service = validateAndGetFirstServiceToRetry(servicesToExecute, group);
+        if (!shouldReschedule(service)) {
+            return;
+        }
 
         deliveryService.scheduleDelivery(new ScheduledExecutionContext(
                 servicesToExecute,
@@ -74,7 +82,32 @@ public abstract class AbstractReschedulingStrategy implements ReschedulingStrate
         return shouldReschedule;
     }
 
-    protected abstract List<ScheduledService> extractServiceListToExecute(ScheduledService service);
+    protected ScheduledService validateAndGetFirstServiceToRetry(List<ScheduledService> servicesToExecute,
+                                                               ScheduledServiceGroup group) {
+        // There are additional validation, which make sure that data is DB is valid.
+        if (servicesToExecute.isEmpty()) {
+            throw new MessagesRuntimeException(String.format(
+                    "Rescheduling will not be conducted for the group %s, because of lack of services to retry",
+                    group.getId()));
+        }
+        int numberOfAttempts = servicesToExecute.get(0).getNumberOfAttempts();
+        for (ScheduledService ss : servicesToExecute) {
+            if (ss.getNumberOfAttempts() != numberOfAttempts) {
+                throw new MessagesRuntimeException(String.format("Group rescheduling assumes that all entries to retry"
+                                + " have the same number of attempts, but they not in the group %s",
+                        group.getId()
+                ));
+            }
+        }
+        return servicesToExecute.get(0);
+    }
+
+    protected Log getLogger() {
+        return logger;
+    }
+
+    protected abstract List<ScheduledService> extractServiceListToExecute(ScheduledServiceGroup group,
+                                                                          String channelType);
 
     private Date getRescheduleDate() {
         return DateUtil.getDatePlusSeconds(

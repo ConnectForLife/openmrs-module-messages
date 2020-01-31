@@ -7,7 +7,7 @@
  * graphic logo is a trademark of OpenMRS Inc.
  */
 
-package org.openmrs.module.messages.api.event.listener;
+package org.openmrs.module.messages.api.event.listener.subscribable;
 
 import org.openmrs.Person;
 import org.openmrs.PersonAttribute;

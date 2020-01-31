@@ -23,7 +23,7 @@ public interface ConfigService {
 
     /**
      * Provides execution strategy {@link ReschedulingStrategy} for specific channel type
-     * @param channelType - name of specific channel type (case sensitive)
+     * @param channelType - name of specific channel type (case insensitive)
      * @return - the specified strategy or default
      *      {@link ConfigConstants#DEFAULT_RESCHEDULING_STRATEGY} if missing
      *      value for specified channel type

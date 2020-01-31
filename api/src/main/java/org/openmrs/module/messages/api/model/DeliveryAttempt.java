@@ -46,7 +46,7 @@ public class DeliveryAttempt extends AbstractBaseOpenmrsData {
     @Column(name = "attempt_number", nullable = false)
     private int attemptNumber;
     
-    @Column(name = "service_execution_id", nullable = false)
+    @Column(name = "service_execution_id")
     private String serviceExecution;
     
     @Override

@@ -23,8 +23,7 @@ public interface MessagingService extends BaseOpenmrsCriteriaDataService<Schedul
 
     /**
      * The API to be called by other modules, such as callflows and sms from non-Java environment, in order to update
-     * the delivery status of a given service scheduled. The method also invokes rescheduling strategy (determined by
-     * Global Property) for all attempts.
+     * the delivery status of a given service scheduled.
      * The method checks if the parameter status (provided as string) could by parsed to {@link ServiceStatus}.
      *
      * @param scheduledServiceId is an id of the ScheduledService for which the status should be updated
@@ -41,8 +40,7 @@ public interface MessagingService extends BaseOpenmrsCriteriaDataService<Schedul
 
     /**
      * The API to be called by other modules, such as callflows and sms, in order to update the delivery status of a
-     * given service scheduled. The method also invokes rescheduling strategy (determined by Global Property)
-     * for all attempts.
+     * given service scheduled.
      *
      * @param scheduledServiceId is an id of the ScheduledService for which the status should be updated
      * @param status             is a new value of a service delivery which should be set (eg. delivered, failed)
@@ -53,6 +51,19 @@ public interface MessagingService extends BaseOpenmrsCriteriaDataService<Schedul
      * @throws IllegalArgumentException when {@param status} is PENDING or FUTURE.
      */
     ScheduledService registerAttempt(int scheduledServiceId, ServiceStatus status, Date timestamp, String executionId);
+
+    /**
+     * The API to be called in order to update the delivery status of a given {@param scheduledService}.
+     *
+     * @param scheduledService is an id of the ScheduledService for which the status should be updated
+     * @param status           is a new value of a service delivery which should be set (eg. delivered, failed)
+     * @param timestamp        describes the time when the update took place
+     * @param executionId      is the id coming in from the module that is doing the messaging (eg. from the sms module)
+     * @return the updated scheduled service
+     * @throws IllegalArgumentException when {@param status} is PENDING or FUTURE.
+     */
+    ScheduledService registerAttempt(ScheduledService scheduledService, ServiceStatus status, Date timestamp,
+                                     String executionId);
 
     /**
      * The API to be called by other modules, such as callflows and sms, in order to create actor response.

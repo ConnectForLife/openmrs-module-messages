@@ -13,6 +13,7 @@ import java.io.Serializable;
 import org.openmrs.BaseOpenmrsData;
 import org.openmrs.module.messages.api.exception.EntityNotFoundException;
 import org.openmrs.module.messages.api.service.OpenmrsDataService;
+import org.springframework.aop.support.AopUtils;
 
 public final class HibernateUtil {
 
@@ -20,9 +21,15 @@ public final class HibernateUtil {
         T entity = service.getById(id);
         if (entity == null) {
             throw new EntityNotFoundException(String.format(
-                    "Cannot get the object with id %s from %s. Entity not found.", id, service.getClass()));
+                    "Cannot get the object with id %s from %s. Entity not found.",
+                    id, extractClassName(service)));
         }
         return entity;
+    }
+
+    private static <T extends BaseOpenmrsData> String extractClassName(OpenmrsDataService<T> service) {
+        // the method works for proxies and non-proxy objects
+        return AopUtils.getTargetClass(service).getName();
     }
 
     private HibernateUtil() {
