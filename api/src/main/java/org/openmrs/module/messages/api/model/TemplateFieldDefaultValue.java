@@ -1,5 +1,6 @@
 package org.openmrs.module.messages.api.model;
 
+import javax.persistence.Transient;
 import org.openmrs.RelationshipType;
 
 import javax.persistence.Column;
@@ -11,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import org.openmrs.module.messages.api.util.ActorUtil;
 
 @Entity(name = "messages.TemplateFieldDefaultValue")
 @Table(name = "messages_template_field_default_values")
@@ -79,4 +81,18 @@ public class TemplateFieldDefaultValue extends AbstractBaseOpenmrsData {
     public void setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
     }
+
+    @Transient
+    public boolean isRelatedTo(Actor actor) {
+        RelationshipTypeDirection actorDirection =
+            ActorUtil.getRelationShipTypeDirection(actor);
+        String actorRelationshipName = actor.getRelationship().getRelationshipType().getaIsToB();
+
+        boolean isDirectionsMatches = this.getDirection().equals(actorDirection);
+
+        return isDirectionsMatches ?
+            this.getRelationshipType().getaIsToB().equals(actorRelationshipName) :
+            this.getRelationshipType().getbIsToA().equals(actorRelationshipName);
+    }
+
 }

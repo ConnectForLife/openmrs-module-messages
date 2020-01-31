@@ -37,6 +37,8 @@ export const AFTER_DAYS_BEFORE = 'After';
 export const AFTER_DAYS_AFTER = 'times';
 export const BEST_CONTACT_TIME_LABEL = 'Best Contact Time';
 export const CALENDAR_OVERVIEW_LABEL = 'Calendar Overview';
+export const BEST_CONTACT_TIME_SAVE_SUCCESS = 'The best contact time section has been succesfully saved.';
+export const BEST_CONTACT_TIME_SAVE_FAILURE = 'Cannot save the best contact time section.';
 
 // Admin settings 
 export const DEFAULT_SETTINGS = 'Default settings';
@@ -65,6 +67,8 @@ export const CATEGORIES_MAP = {
   'HT_PREVENTION': 'Prevention',
   'HT_SPREAD': 'Spread'
 };
+export const DEFAULT_GENERATION_SUCCESS = 'The default values of the templates have been successfully saved to patient.';
+export const DEFAULT_GENERATION_FAILURE = 'Cannot save the default values of the templates';
 
 // Person status
 export const PERSON_STATUS_NO_CONSENT = 'No consent';

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
 import BestContactTime from './best-contact-time';
 import ScheduledMessages from './scheduled-messages';
-import { checkIfDefaultValuesUsed } from '../../reducers/patient-template.reducer';
+import { checkIfDefaultValuesUsed, generateDefaultPatientTemplates } from '../../reducers/patient-template.reducer';
 import { IRootState } from '../../reducers';
 import * as Msg from '../../shared/utils/messages';
 import './patient-template.scss';
@@ -18,6 +18,12 @@ class ManageMessages extends React.PureComponent<IManageMessagesProps, IManageMe
 
   componentDidMount() {
     this.props.checkIfDefaultValuesUsed(parseInt(this.props.match.params.patientId, 10));
+  }
+
+  handleSave() {
+    if (!!this.props.defaultValuesUsed) {
+      this.props.generateDefaultPatientTemplates(parseInt(this.props.match.params.patientId, 10));
+    }
   }
 
   private renderDefaultValuesNotificationIfNeeded() {
@@ -43,8 +49,14 @@ class ManageMessages extends React.PureComponent<IManageMessagesProps, IManageMe
         <h2>Manage messages</h2>
         {this.renderDefaultValuesNotificationIfNeeded()}
         <div className="panel-body">
-          <BestContactTime patientId={parseInt(patientId)} patientUuid={patientUuid} />
-          <ScheduledMessages patientId={patientId} patientUuid={patientUuid} />
+          <BestContactTime
+            patientId={parseInt(patientId)}
+            patientUuid={patientUuid}
+            onSaveClickCallback={() => this.handleSave()}
+          />
+          <ScheduledMessages
+            patientId={patientId}
+            patientUuid={patientUuid} />
         </div>
       </>
     );
@@ -56,7 +68,8 @@ const mapStateToProps = ({ patientTemplate }: IRootState) => ({
 });
 
 const mapDispatchToProps = ({
-  checkIfDefaultValuesUsed
+  checkIfDefaultValuesUsed,
+  generateDefaultPatientTemplates
 });
 
 type StateProps = ReturnType<typeof mapStateToProps>;

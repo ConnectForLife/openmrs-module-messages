@@ -14,12 +14,13 @@ import MessageDetails from '../shared/model/message-details';
 export const ACTION_TYPES = {
   GET_TEMPLATES: 'patientTemplateReducer/GET_TEMPLATES',
   GET_PATIENT_TEMPLATES: 'patientTemplateReducer/GET_PATIENT_TEMPLATES',
-  GET_PATIENT_TEMPLATES_TO_CHECK_DEFAULT_VALUES: 'patientTemplateReducer/GET_PATIENT_TEMPLATES_TO_CHECK_DEFAULT_VALUES',
+  CHECK_DEFAULT_VALUES: 'patientTemplateReducer/CHECK_DEFAULT_VALUES',
   PUT_PATIENT_TEMPLATES: 'patientTemplateReducer/PUT_PATIENT_TEMPLATES',
   RESET: 'patientTemplateReducer/RESET',
   UPDATE_PATIENT_TEMPLATE: 'patientTemplateReducer/UPDATE_PATIENT_TEMPLATE',
   UPDATE_PATIENT_TEMPLATES: 'patientTemplateReducer/UPDATE_PATIENT_TEMPLATES',
-  GET_MESSAGE_DETAILS: 'patientTemplateReducer/GET_MESSAGE_DETAILS'
+  GET_MESSAGE_DETAILS: 'patientTemplateReducer/GET_MESSAGE_DETAILS',
+  GENERATE_DEFAULT_PATIENT_TEMPLATES: 'patientTemplateReducer/GENERATE_DEFAULT_PATIENT_TEMPLATES'
 };
 
 const initialState = {
@@ -66,7 +67,8 @@ export default (state = initialState, action) => {
       return {
         ...state,
         messageDetailsLoading: false,
-        messageDetails: action.payload.data
+        messageDetails: state.defaultValuesUsed === true ? //don't overwrite if defaults used
+          state.defaultValuesUsed : action.payload.data
       };
     case REQUEST(ACTION_TYPES.GET_PATIENT_TEMPLATES):
       return {
@@ -85,18 +87,35 @@ export default (state = initialState, action) => {
         ...state,
         patientTemplatesLoading: false,
         patientTemplates: _.map(action.payload.data.content, PatientTemplateUI.fromModel),
-        defaultValuesUsed: action.payload.data.content.length === 0
       };
-    case REQUEST(ACTION_TYPES.GET_PATIENT_TEMPLATES_TO_CHECK_DEFAULT_VALUES):
-    case FAILURE(ACTION_TYPES.GET_PATIENT_TEMPLATES_TO_CHECK_DEFAULT_VALUES):
+    case REQUEST(ACTION_TYPES.CHECK_DEFAULT_VALUES):
       return {
         ...state,
+        messageDetailsLoading: true,
         defaultValuesUsed: undefined
       };
-    case SUCCESS(ACTION_TYPES.GET_PATIENT_TEMPLATES_TO_CHECK_DEFAULT_VALUES):
+    case FAILURE(ACTION_TYPES.CHECK_DEFAULT_VALUES):
       return {
         ...state,
-        defaultValuesUsed: action.payload.data.content.length === 0
+        messageDetailsLoading: false,
+        defaultValuesUsed: undefined
+      };
+    case SUCCESS(ACTION_TYPES.CHECK_DEFAULT_VALUES):
+      return {
+        ...state,
+        defaultValuesUsed: action.payload.data.defaultValuesUsed,
+        messageDetailsLoading: false,
+        messageDetails: action.payload.data.details
+      };
+    case REQUEST(ACTION_TYPES.GENERATE_DEFAULT_PATIENT_TEMPLATES):
+    case FAILURE(ACTION_TYPES.GENERATE_DEFAULT_PATIENT_TEMPLATES):
+      return {
+        ...state
+      };
+    case SUCCESS(ACTION_TYPES.GENERATE_DEFAULT_PATIENT_TEMPLATES):
+      return {
+        ...state,
+        defaultValuesUsed: false
       };
     case REQUEST(ACTION_TYPES.PUT_PATIENT_TEMPLATES):
       return {
@@ -167,13 +186,20 @@ export const getPatientTemplates = (patientId: number) => async (dispatch) => {
 };
 
 export const checkIfDefaultValuesUsed = (patientId: number) => async (dispatch) => {
-  const requestUrl = `${patientTemplatesUrl}/patient/${patientId}`
+  const requestUrl = `${messagesUrl}/defaults/${patientId}/check`
   await dispatch({
-    type: ACTION_TYPES.GET_PATIENT_TEMPLATES_TO_CHECK_DEFAULT_VALUES,
-    payload: axiosInstance.get(requestUrl, {
-      params: { page: ALL_RECORDS_PAGE }
-    })
+    type: ACTION_TYPES.CHECK_DEFAULT_VALUES,
+    payload: axiosInstance.get(requestUrl)
   });
+};
+
+export const generateDefaultPatientTemplates = (patientId: number) => async (dispatch) => {
+  const requestUrl = `${messagesUrl}/defaults/${patientId}/generate-and-save`;
+  const body = {
+    type: ACTION_TYPES.GENERATE_DEFAULT_PATIENT_TEMPLATES,
+    payload: axiosInstance.post(requestUrl)
+  }
+  await handleRequest(dispatch, body, Msg.DEFAULT_GENERATION_SUCCESS, Msg.DEFAULT_GENERATION_FAILURE);
 };
 
 export const reset = () => ({

@@ -18,6 +18,7 @@ import { IContactTime } from '../../shared/model/contact-time.model';
 interface IBestContactTimeProps extends DispatchProps, StateProps {
   patientId: number,
   patientUuid: string
+  onSaveClickCallback?: Function
 };
 
 interface IBestContactTimeState {
@@ -55,6 +56,9 @@ class BestContactTime extends React.PureComponent<IBestContactTimeProps, IBestCo
   handleSave = () => {
     if (!!this.props.bestContactTimes && !!this.props.patientId) {
       this.props.postBestContactTime(this.applyDefaultValuesIfNeeded(this.props.bestContactTimes));
+      if (!!this.props.onSaveClickCallback) {
+        this.props.onSaveClickCallback();
+      }
     }
   }
 

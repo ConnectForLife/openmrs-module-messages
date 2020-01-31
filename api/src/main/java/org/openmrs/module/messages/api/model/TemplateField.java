@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.Transient;
 
 @Entity(name = "messages.TemplateField")
 @Table(name = "messages_template_field")
@@ -117,5 +118,25 @@ public class TemplateField extends AbstractBaseOpenmrsData {
 
     public void setDefaultValues(List<TemplateFieldDefaultValue> defaultValues) {
         this.defaultValues = defaultValues;
+    }
+
+    @Transient
+    public String getDefaultValueForSpecificActorOrGeneral(Actor actor) {
+        String defaultActorValue = getDefaultValue(actor);
+        if (defaultActorValue == null) {
+            defaultActorValue = getDefaultValue();
+        }
+        return defaultActorValue;
+    }
+
+    @Transient
+    public String getDefaultValue(Actor actor) {
+        String defaultActorValue = null;
+        for (TemplateFieldDefaultValue d : getDefaultValues()) {
+            if (d.isRelatedTo(actor)) {
+                defaultActorValue = d.getDefaultValue();
+            }
+        }
+        return defaultActorValue;
     }
 }

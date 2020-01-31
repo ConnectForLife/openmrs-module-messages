@@ -55,7 +55,9 @@ class ScheduledMessages extends React.PureComponent<IScheduledMessagesProps, ISc
   }
 
   private getMessages = () => {
-    this.props.getMessages(this.props.patientId);
+    if (!this.props.messageDetailsLoading) {
+      this.props.getMessages(this.props.patientId);
+    }
   }
 
   private renderMessagesTable = () => {
@@ -161,6 +163,7 @@ class ScheduledMessages extends React.PureComponent<IScheduledMessagesProps, ISc
 const mapStateToProps = ({ patientTemplate, actor }: IRootState) => ({
   messageDetails: patientTemplate.messageDetails,
   loading: patientTemplate.messageDetailsLoading || actor.actorResultListLoading,
+  messageDetailsLoading: patientTemplate.messageDetailsLoading,
   actorResultList: actor.actorResultList
 });
 

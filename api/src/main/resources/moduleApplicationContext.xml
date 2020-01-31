@@ -155,6 +155,39 @@
         </property>
     </bean>
 
+
+    <bean id="messages.defaultPatientTemplateService"
+          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="transactionManager">
+            <ref bean="transactionManager" />
+        </property>
+        <property name="target">
+            <bean class="org.openmrs.module.messages.api.service.impl.DefaultPatientTemplateServiceImpl">
+                <property name="patientTemplateService">
+                    <ref local="messages.patientTemplateService"/>
+                </property>
+
+                <property name="templateService">
+                    <ref local="messages.templateService"/>
+                </property>
+
+                <property name="actorService">
+                    <ref local="messages.actorService"/>
+                </property>
+
+                <property name="messageDetailsMapper">
+                    <ref local="messages.MessageDetailsMapper"/>
+                </property>
+            </bean>
+        </property>
+        <property name="preInterceptors">
+            <ref bean="serviceInterceptors" />
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource" />
+        </property>
+    </bean>
+
     <bean name="messages.ExecutionEngineManager"
           class="org.openmrs.module.messages.api.execution.impl.ExecutionEngineManager"/>
 

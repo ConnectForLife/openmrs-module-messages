@@ -30,6 +30,16 @@ public class TemplateFieldValue extends AbstractBaseOpenmrsData {
     @JoinColumn(name = "patient_template_id", nullable = false)
     private PatientTemplate patientTemplate;
 
+    public TemplateFieldValue() {
+    }
+
+    public TemplateFieldValue(String value, TemplateField templateField,
+                              PatientTemplate patientTemplate) {
+        this.value = value;
+        this.templateField = templateField;
+        this.patientTemplate = patientTemplate;
+    }
+
     @Override
     public Integer getId() {
         return id;

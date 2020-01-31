@@ -86,7 +86,7 @@ export const postBestContactTime = (bestContactTimes: Array<IBestContactTime>) =
     type: ACTION_TYPES.POST_BEST_CONTACT_TIME,
     payload: axiosInstance.post(contactTimeUrl, _.map(bestContactTimes, mapToRequest))
   }
-  await handleRequest(dispatch, body, Msg.GENERIC_SUCCESS, Msg.GENERIC_FAILURE);
+  await handleRequest(dispatch, body, Msg.BEST_CONTACT_TIME_SAVE_SUCCESS, Msg.BEST_CONTACT_TIME_SAVE_FAILURE);
 };
 
 export const updateBestConstactTime = (newValue: Array<IBestContactTime>) => async (dispatch) => {
