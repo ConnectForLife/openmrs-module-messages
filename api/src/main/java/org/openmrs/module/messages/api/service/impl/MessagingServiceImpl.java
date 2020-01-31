@@ -17,6 +17,7 @@ import org.hibernate.PropertyValueException;
 import org.openmrs.Concept;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.messages.api.dao.ActorResponseDao;
+import org.openmrs.module.messages.api.exception.EntityNotFoundException;
 import org.openmrs.module.messages.api.execution.ExecutionException;
 import org.openmrs.module.messages.api.execution.ServiceExecutor;
 import org.openmrs.module.messages.api.execution.ServiceResultList;
@@ -29,6 +30,7 @@ import org.openmrs.module.messages.api.model.types.ServiceStatus;
 import org.openmrs.module.messages.api.service.ConfigService;
 import org.openmrs.module.messages.api.service.MessagingService;
 import org.openmrs.module.messages.api.service.PatientTemplateService;
+import org.openmrs.module.messages.api.util.DateUtil;
 import org.openmrs.module.messages.api.util.HibernateUtil;
 import org.openmrs.module.messages.domain.criteria.PatientTemplateCriteria;
 
@@ -131,6 +133,26 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
         return retrieveAllServiceExecutions(patientTemplateService.getAll(false), startDate, endDate);
     }
 
+    @Override
+    public ActorResponse updateActorResponse(Integer actorResponseId, Integer newResponseId, String newResponseTxt)
+            throws EntityNotFoundException {
+        if (actorResponseId == null) {
+            throw new EntityNotFoundException("Actor response identifier cannot be null!");
+        }
+        ActorResponse current = actorResponseDao.getById(actorResponseId);
+        throwExceptionIfMissing(current, actorResponseId, ActorResponse.class.getName());
+
+        if (newResponseId != null) {
+            Concept newResponse = conceptService.getConcept(newResponseId);
+            throwExceptionIfMissing(newResponse, newResponseId, Concept.class.getName());
+            current.setResponse(newResponse);
+        }
+
+        current.setAnsweredTime(DateUtil.now());
+        current.setTextResponse(newResponseTxt);
+        return actorResponseDao.saveOrUpdate(current);
+    }
+
     public void setConceptService(ConceptService conceptService) {
         this.conceptService = conceptService;
     }
@@ -151,6 +173,13 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
         this.configService = configService;
     }
 
+    private void throwExceptionIfMissing(Object entity, Integer id, String entityName) throws EntityNotFoundException {
+        if (entity == null) {
+            throw new EntityNotFoundException(String.format(
+                    "Could not find %s with identifier: %s", entityName, id));
+        }
+    }
+
     private List<ServiceResultList> retrieveAllServiceExecutions(List<PatientTemplate> patientTemplates, Date startDate,
                                                                  Date endDate)
             throws ExecutionException {
@@ -158,7 +187,7 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
         Range<Date> dateRange = new Range<>(startDate, endDate);
 
         List<ServiceResultList> results = new ArrayList<>();
-        for (PatientTemplate patientTemplate  : patientTemplates) {
+        for (PatientTemplate patientTemplate : patientTemplates) {
             results.add(serviceExecutor.execute(patientTemplate, dateRange));
         }
 

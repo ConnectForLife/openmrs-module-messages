@@ -11,6 +11,7 @@ package org.openmrs.module.messages.api.service;
 
 import java.util.Date;
 import java.util.List;
+
 import org.openmrs.module.messages.api.exception.EntityNotFoundException;
 import org.openmrs.module.messages.api.execution.ExecutionException;
 import org.openmrs.module.messages.api.execution.ServiceResultList;
@@ -141,4 +142,14 @@ public interface MessagingService extends BaseOpenmrsCriteriaDataService<Schedul
      */
     List<ServiceResultList> retrieveAllServiceExecutions(Date startDate, Date endDate)
             throws ExecutionException;
+
+    /**
+     * Updates specific ActorResponse entity.
+     * @param actorResponseId database identifier of actor response which will be updated
+     * @param newResponseId new response concept
+     * @param newResponseTxt new response text
+     * @return new version of actor response persisted by database.
+     */
+    ActorResponse updateActorResponse(Integer actorResponseId, Integer newResponseId, String newResponseTxt)
+            throws EntityNotFoundException;
 }

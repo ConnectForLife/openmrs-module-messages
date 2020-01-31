@@ -13,6 +13,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.reset;
@@ -50,13 +51,21 @@ public class MessagingServiceITTest extends ContextSensitiveTest {
 
     private static final String RESPONSE_UUID = "9b251fd0-b900-4b11-9b77-b5174a0368b8";
 
+    private static final String UPDATED_RESPONSE_UUID = "4e483341-a52e-427a-8653-7379367a7450";
+
     private static final String SCHEDULE_UUID = "b3de6d76-3e31-41cf-955d-ad14b9db07ff";
+
+    private static final String NEW_TEXT_RESPONSE = "NEW_TEXT_RESPONSE";
+
+    private static final int NON_EXISTING_ACTOR_RESPONSE = 999999999;
 
     private static final Date TIMESTAMP = new Date(2019, Calendar.NOVEMBER, 21);
 
     private Concept question;
 
     private Concept response;
+
+    private Concept newResponse;
 
     private ScheduledService scheduledService;
 
@@ -83,6 +92,7 @@ public class MessagingServiceITTest extends ContextSensitiveTest {
         executeDataSet(XML_DATA_SET_PATH + "MessageDataSet.xml");
         question = Context.getConceptService().getConceptByUuid(QUESTION_UUID);
         response = Context.getConceptService().getConceptByUuid(RESPONSE_UUID);
+        newResponse = Context.getConceptService().getConceptByUuid(UPDATED_RESPONSE_UUID);
         scheduledService = messagingDao.getByUuid(SCHEDULE_UUID);
 
         reset(schedulerService);
@@ -255,5 +265,139 @@ public class MessagingServiceITTest extends ContextSensitiveTest {
                 new Date(), UUID.randomUUID().toString());
 
         verify(schedulerService, times(0)).scheduleTask(any());
+    }
+
+    @Test
+    public void shouldReturnUpdatedRegisteredActorResponseUsingConcept() {
+        ActorResponseBuilder builder = new ActorResponseBuilder();
+        ActorResponse expected = builder.withScheduledService(scheduledService)
+                .withQuestion(question)
+                .withResponse(newResponse)
+                .withTextResponse(scheduledService.getPatientTemplate().getTemplateFieldValues().get(0).getValue())
+                .build();
+        ActorResponse previous = messagingService.registerResponse(scheduledService.getId(),
+                question.getId(),
+                response.getId(),
+                scheduledService.getPatientTemplate().getTemplateFieldValues().get(0).getValue(),
+                TIMESTAMP);
+
+        ActorResponse actual = messagingService.updateActorResponse(previous.getId(), newResponse.getId(), null);
+
+        assertThat(actual, not(nullValue()));
+        assertThat(actual.getId(), not(nullValue()));
+        assertThat(actorResponseDao.getByUuid(actual.getUuid()), not(nullValue()));
+        assertNotNull(actual.getAnsweredTime()); // We cannot compare dates (before, after) at integration test
+
+        assertThat(actual.getQuestion().getConceptId(),
+                is(expected.getQuestion().getConceptId()));
+        assertThat(actual.getQuestion().getPreferredName(Locale.ENGLISH),
+                is(expected.getQuestion().getPreferredName(Locale.ENGLISH)));
+
+        assertThat(actual.getResponse().getConceptId(),
+                is(expected.getResponse().getConceptId()));
+        assertThat(actual.getResponse().getPreferredName(Locale.ENGLISH),
+                is(expected.getResponse().getPreferredName(Locale.ENGLISH)));
+
+        assertThat(actual.getScheduledService().getId(),
+                is(expected.getScheduledService().getId()));
+        assertThat(actual.getScheduledService().getLastServiceExecution(),
+                is(expected.getScheduledService().getLastServiceExecution()));
+        assertThat(actual.getScheduledService().getStatus(),
+                is(expected.getScheduledService().getStatus()));
+    }
+
+    @Test
+    public void shouldReturnUpdatedRegisteredActorResponseUsingText() {
+        ActorResponseBuilder builder = new ActorResponseBuilder();
+        ActorResponse expected = builder.withScheduledService(scheduledService)
+                .withQuestion(question)
+                .withTextResponse(NEW_TEXT_RESPONSE)
+                .build();
+        ActorResponse previous = messagingService.registerResponse(scheduledService.getId(),
+                question.getId(),
+                response.getId(),
+                scheduledService.getPatientTemplate().getTemplateFieldValues().get(0).getValue(),
+                TIMESTAMP);
+
+        ActorResponse actual = messagingService.updateActorResponse(previous.getId(), null, NEW_TEXT_RESPONSE);
+
+        assertThat(actual, not(nullValue()));
+        assertThat(actual.getId(), not(nullValue()));
+        assertThat(actorResponseDao.getByUuid(actual.getUuid()), not(nullValue()));
+        assertThat(actual.getTextResponse(), is(expected.getTextResponse()));
+        assertNotNull(actual.getAnsweredTime()); // We cannot compare dates (before, after) at integration test
+
+        assertThat(actual.getQuestion().getConceptId(),
+                is(expected.getQuestion().getConceptId()));
+        assertThat(actual.getQuestion().getPreferredName(Locale.ENGLISH),
+                is(expected.getQuestion().getPreferredName(Locale.ENGLISH)));
+
+        assertThat(actual.getScheduledService().getId(),
+                is(expected.getScheduledService().getId()));
+        assertThat(actual.getScheduledService().getLastServiceExecution(),
+                is(expected.getScheduledService().getLastServiceExecution()));
+        assertThat(actual.getScheduledService().getStatus(),
+                is(expected.getScheduledService().getStatus()));
+    }
+
+    @Test
+    public void shouldReturnUpdatedRegisteredActorResponseUsingConceptAndText() {
+        ActorResponseBuilder builder = new ActorResponseBuilder();
+        ActorResponse expected = builder.withScheduledService(scheduledService)
+                .withQuestion(question)
+                .withResponse(newResponse)
+                .withTextResponse(NEW_TEXT_RESPONSE)
+                .build();
+        ActorResponse previous = messagingService.registerResponse(scheduledService.getId(),
+                question.getId(),
+                response.getId(),
+                scheduledService.getPatientTemplate().getTemplateFieldValues().get(0).getValue(),
+                TIMESTAMP);
+
+        ActorResponse actual = messagingService.updateActorResponse(previous.getId(), newResponse.getId(),
+                NEW_TEXT_RESPONSE);
+
+        assertThat(actual, not(nullValue()));
+        assertThat(actual.getId(), not(nullValue()));
+        assertThat(actorResponseDao.getByUuid(actual.getUuid()), not(nullValue()));
+        assertThat(actual.getTextResponse(), is(expected.getTextResponse()));
+        assertNotNull(actual.getAnsweredTime()); // We cannot compare dates (before, after) at integration test
+
+        assertThat(actual.getQuestion().getConceptId(),
+                is(expected.getQuestion().getConceptId()));
+        assertThat(actual.getQuestion().getPreferredName(Locale.ENGLISH),
+                is(expected.getQuestion().getPreferredName(Locale.ENGLISH)));
+
+        assertThat(actual.getResponse().getConceptId(),
+                is(expected.getResponse().getConceptId()));
+        assertThat(actual.getResponse().getPreferredName(Locale.ENGLISH),
+                is(expected.getResponse().getPreferredName(Locale.ENGLISH)));
+
+        assertThat(actual.getScheduledService().getId(),
+                is(expected.getScheduledService().getId()));
+        assertThat(actual.getScheduledService().getLastServiceExecution(),
+                is(expected.getScheduledService().getLastServiceExecution()));
+        assertThat(actual.getScheduledService().getStatus(),
+                is(expected.getScheduledService().getStatus()));
+    }
+
+    @Test(expected = EntityNotFoundException.class)
+    public void shouldThrowExceptionWhenActorResponseIdIsNull() {
+        messagingService.updateActorResponse(null, newResponse.getId(), NEW_TEXT_RESPONSE);
+    }
+
+    @Test(expected = EntityNotFoundException.class)
+    public void shouldThrowExceptionWhenActorResponseDoesNotExistsWhenUsingConceptAndText() {
+        messagingService.updateActorResponse(NON_EXISTING_ACTOR_RESPONSE, newResponse.getId(), NEW_TEXT_RESPONSE);
+    }
+
+    @Test(expected = EntityNotFoundException.class)
+    public void shouldThrowExceptionWhenActorResponseDoesNotExistsWhenUsingText() {
+        messagingService.updateActorResponse(NON_EXISTING_ACTOR_RESPONSE, null, NEW_TEXT_RESPONSE);
+    }
+
+    @Test(expected = EntityNotFoundException.class)
+    public void shouldThrowExceptionWhenActorResponseDoesNotExistsWhenUsingConcept() {
+        messagingService.updateActorResponse(NON_EXISTING_ACTOR_RESPONSE, newResponse.getId(), null);
     }
 }
