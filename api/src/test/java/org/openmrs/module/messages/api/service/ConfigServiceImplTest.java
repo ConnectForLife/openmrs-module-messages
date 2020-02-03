@@ -10,7 +10,10 @@
 package org.openmrs.module.messages.api.service;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 
@@ -62,6 +65,8 @@ public class ConfigServiceImplTest extends ContextSensitiveTest {
             "background-color: #EEA616; border-color: #EEA616; color: #f5f5f5;";
 
     private static final int EXPECTED_SIE_OF_PERSON_STATUS_REASONS = 6;
+
+    private static final int EXPECTED_SIZE_OF_STATUSES_ENDING_CALLFLOW = 11;
 
     private PersonStatusConfigDTO noConsentConfig;
 
@@ -163,6 +168,16 @@ public class ConfigServiceImplTest extends ContextSensitiveTest {
         List<String> actual = configService.getPersonStatusPossibleChangeReasons();
         assertThat(actual, is(notNullValue()));
         assertThat(actual.size(), is(EXPECTED_SIE_OF_PERSON_STATUS_REASONS));
+    }
+
+    @Test
+    public void shouldReturnExpectedStatusesEndingCallflow() {
+        List<String> actual = configService.getStatusesEndingCallflow();
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.size(), is(EXPECTED_SIZE_OF_STATUSES_ENDING_CALLFLOW));
+        assertThat(actual, hasItems("COMPLETED", "FAILED", "NO_ANSWER"));
+        assertThat(actual, not(hasItem("IN_PROGRESS")));
     }
 
     private void buildExpectedStatusConfig() {

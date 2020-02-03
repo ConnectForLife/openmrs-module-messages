@@ -167,6 +167,14 @@ public final class ConfigConstants {
     public static final String NUMBER_OF_HEALTH_TIPS_PLAYED_PER_CALL_DEFAULT_VALUE = "3";
     public static final String NUMBER_OF_HEALTH_TIPS_PLAYED_PER_CALL_DESCRIPTION =
             "Used to specify a number of health tips that should be played per one call";
+
+    public static final String STATUSES_ENDING_CALLFLOW =
+            "messages.statusesEndingCallflow";
+    public static final String STATUSES_ENDING_CALLFLOW_DEFAULT_VALUE =
+            "ANSWERED,UNANSWERED,MACHINE,BUSY,CANCELLED,FAILED,REJECTED,NO_ANSWER,TIMEOUT,COMPLETED,UNKNOWN";
+    public static final String STATUSES_ENDING_CALLFLOW_DESCRIPTION =
+            "Comma-separated values which points statuses describing "
+            + "call which have ended flow in the Callflow module.";
     
     private ConfigConstants() {
     }

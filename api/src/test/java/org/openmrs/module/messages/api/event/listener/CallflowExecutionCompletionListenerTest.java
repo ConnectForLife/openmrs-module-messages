@@ -11,20 +11,25 @@ package org.openmrs.module.messages.api.event.listener;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.BaseTest;
 import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
+import org.openmrs.module.messages.api.service.ConfigService;
 import org.openmrs.module.messages.api.service.DatasetConstants;
 import org.openmrs.module.messages.api.service.MessagesExecutionService;
 import org.openmrs.module.messages.api.util.Properties;
@@ -41,17 +46,28 @@ public class CallflowExecutionCompletionListenerTest extends BaseTest {
 
     private static final String EXPECTED_CHANNEL_TYPE = "Call";
     private static final String DEFAULT_CALL_ID = "123";
+    private static final String PARAM_STATUS = "status";
+
+    private static final String IN_PROGRESS_STATUS = "IN_PROGRESS";
+    private static final String COMPLETED_STATUS = "COMPLETED";
 
     private CallflowExecutionCompletionListener listener;
 
     @Mock
     private MessagesExecutionService messagesExecutionService;
 
+    @Mock
+    private ConfigService configService;
+
     @Before
     public void setUp() throws Exception {
         mockStatic(Context.class);
         when(Context.getRegisteredComponent(anyString(), eq(MessagesExecutionService.class)))
             .thenReturn(messagesExecutionService);
+        when(Context.getRegisteredComponent(anyString(), eq(ConfigService.class)))
+                .thenReturn(configService);
+
+        when(configService.getStatusesEndingCallflow()).thenReturn(wrap(COMPLETED_STATUS));
 
         listener = new CallflowExecutionCompletionListener();
     }
@@ -68,10 +84,10 @@ public class CallflowExecutionCompletionListenerTest extends BaseTest {
         final int expectedGroupId = DatasetConstants.SCHEDULED_SERVICE_GROUP;
         final String expectedExecutionId = DEFAULT_CALL_ID;
 
-        Properties properties = getProperties(refKey, callId);
+        Properties properties = getProperties(refKey, callId, COMPLETED_STATUS);
         listener.handleEvent(properties);
 
-        Mockito.verify(messagesExecutionService).executionCompleted(
+        verify(messagesExecutionService).executionCompleted(
                 eq(expectedGroupId),
                 eq(expectedExecutionId),
                 eq(EXPECTED_CHANNEL_TYPE));
@@ -84,12 +100,33 @@ public class CallflowExecutionCompletionListenerTest extends BaseTest {
     }
 
     @Test(expected = MessagesRuntimeException.class)
+    public void handleEventShouldThrowExceptionWhenRefKeyIsNotSet() {
+        Properties properties = getProperties(null, DEFAULT_CALL_ID, COMPLETED_STATUS);
+        listener.handleEvent(properties);
+    }
+
+    @Test(expected = MessagesRuntimeException.class)
+    public void handleEventShouldThrowExceptionWhenStatusIsNotSet() {
+        Properties properties = getProperties(DatasetConstants.SCHEDULED_SERVICE_GROUP, DEFAULT_CALL_ID, null);
+        listener.handleEvent(properties);
+    }
+
+    @Test(expected = MessagesRuntimeException.class)
     public void handleEventShouldThrowExceptionWhenRefKeyIsNull() {
         final Object refKey = null;
         final Object callId = DEFAULT_CALL_ID;
 
-        Properties properties = getProperties(refKey, callId);
+        Properties properties = getProperties(refKey, callId, COMPLETED_STATUS);
         listener.handleEvent(properties);
+    }
+
+    @Test
+    public void handleEventShouldBeSkippedWhenStatusHasEndingValue() {
+        Properties properties = getProperties(DatasetConstants.SCHEDULED_SERVICE_GROUP,
+                DEFAULT_CALL_ID, IN_PROGRESS_STATUS);
+        listener.handleEvent(properties);
+
+        verify(messagesExecutionService, times(0)).executionCompleted(anyInt(), anyString(), anyString());
     }
 
     @Test
@@ -99,10 +136,10 @@ public class CallflowExecutionCompletionListenerTest extends BaseTest {
         final int expectedGroupId = DatasetConstants.SCHEDULED_SERVICE_GROUP;
         final String expectedExecutionId = null;
 
-        Properties properties = getProperties(refKey, callId);
+        Properties properties = getProperties(refKey, callId, COMPLETED_STATUS);
         listener.handleEvent(properties);
 
-        Mockito.verify(messagesExecutionService).executionCompleted(
+        verify(messagesExecutionService).executionCompleted(
                 eq(expectedGroupId),
                 eq(expectedExecutionId),
                 eq(EXPECTED_CHANNEL_TYPE));
@@ -115,22 +152,29 @@ public class CallflowExecutionCompletionListenerTest extends BaseTest {
         final int expectedGroupId = DatasetConstants.SCHEDULED_SERVICE_GROUP;
         final String expectedExecutionId = null;
 
-        Properties properties = getProperties(refKey, callId);
+        Properties properties = getProperties(refKey, callId, COMPLETED_STATUS);
         listener.handleEvent(properties);
 
-        Mockito.verify(messagesExecutionService).executionCompleted(
+        verify(messagesExecutionService).executionCompleted(
                 eq(expectedGroupId),
                 eq(expectedExecutionId),
                 eq(EXPECTED_CHANNEL_TYPE));
     }
 
-    public Properties getProperties(Object refKey, Object callId) {
-        HashMap<String, Object> params = new HashMap<>();
-        params.put(PARAM_REF_KEY, refKey);
+    public Properties getProperties(Object refKey, Object callId, Object status) {
+        HashMap<String, Object> nestedParams = new HashMap<>();
+        nestedParams.put(PARAM_REF_KEY, refKey);
 
         HashMap<String, Object> map = new HashMap<>();
         map.put(PARAM_CALL_ID, callId);
-        map.put(PARAM_PARAMS, params);
+        map.put(PARAM_STATUS, status);
+        map.put(PARAM_PARAMS, nestedParams);
         return new Properties(map);
+    }
+
+    private <T> List<T> wrap(T toWrap) {
+        ArrayList<T> list = new ArrayList<>();
+        list.add(toWrap);
+        return list;
     }
 }

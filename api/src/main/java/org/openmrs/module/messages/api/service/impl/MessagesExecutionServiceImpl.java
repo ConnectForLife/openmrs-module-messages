@@ -65,6 +65,12 @@ public class MessagesExecutionServiceImpl implements MessagesExecutionService {
                                                      ScheduledServiceGroup group) {
         for (ScheduledService ss : group.getScheduledServicesByChannel(channelType)) {
             if (!ss.getStatus().equals(ServiceStatus.DELIVERED)) {
+                if (LOGGER.isTraceEnabled()) {
+                    LOGGER.trace(String.format(
+                            "Registering failed attempt for not delivered ScheduledService %d (%s)",
+                            ss.getId(),
+                            ss.getPatientTemplate().getTemplate().getName()));
+                }
                 messagingService.registerAttempt(ss, ServiceStatus.FAILED, date, executionId);
             }
         }

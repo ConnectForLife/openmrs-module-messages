@@ -115,6 +115,7 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
         createPersonStatusConfig();
         createAdherenceFeedbackConfig();
         createHealthTipConfig();
+        createStatusesEndingCallflowConfig();
     }
 
     private void createActorTypeConfig() {
@@ -169,6 +170,12 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
         createGlobalSettingIfNotExists(ConfigConstants.NUMBER_OF_HEALTH_TIPS_PLAYED_PER_CALL_KEY,
                 ConfigConstants.NUMBER_OF_HEALTH_TIPS_PLAYED_PER_CALL_DEFAULT_VALUE,
                 ConfigConstants.NUMBER_OF_HEALTH_TIPS_PLAYED_PER_CALL_DESCRIPTION);
+    }
+
+    private void createStatusesEndingCallflowConfig() {
+        createGlobalSettingIfNotExists(ConfigConstants.STATUSES_ENDING_CALLFLOW,
+                ConfigConstants.STATUSES_ENDING_CALLFLOW_DEFAULT_VALUE,
+                ConfigConstants.STATUSES_ENDING_CALLFLOW_DESCRIPTION);
     }
 
     private void createBestContactTimeAttributeType() {

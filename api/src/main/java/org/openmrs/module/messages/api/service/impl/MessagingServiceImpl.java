@@ -82,6 +82,15 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
     @Override
     public ScheduledService registerAttempt(ScheduledService service, ServiceStatus status, Date timestamp,
                                             String executionId) {
+        if (LOGGER.isTraceEnabled()) {
+            LOGGER.trace(String.format(
+                    "Called registerAttempt with scheduledServiceId=%d, status=%s, timestamp=%s, executionId=%s",
+                    service.getId(),
+                    status.name(),
+                    timestamp,
+                    executionId));
+        }
+
         DeliveryAttempt deliveryAttempt = new DeliveryAttempt();
         deliveryAttempt.setServiceExecution(executionId);
         deliveryAttempt.setAttemptNumber(service.getNumberOfAttempts() + 1);

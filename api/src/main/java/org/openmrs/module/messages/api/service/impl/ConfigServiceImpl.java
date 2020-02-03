@@ -143,6 +143,13 @@ public class ConfigServiceImpl implements ConfigService {
         return GlobalPropertyUtil.parseList(getGp(ConfigConstants.PERSON_STATUS_POSSIBLE_REASONS_KEY), COMMA_DELIMITER);
     }
 
+    @Override
+    public List<String> getStatusesEndingCallflow() {
+        return GlobalPropertyUtil.parseList(
+                getGp(ConfigConstants.STATUSES_ENDING_CALLFLOW),
+                COMMA_DELIMITER);
+    }
+
     private String getGp(String propertyName) {
         return Context.getAdministrationService().getGlobalProperty(propertyName);
     }

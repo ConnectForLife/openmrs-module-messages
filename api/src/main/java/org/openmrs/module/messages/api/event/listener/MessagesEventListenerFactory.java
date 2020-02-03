@@ -37,13 +37,13 @@ public final class MessagesEventListenerFactory {
     }
 
     private static void subscribeListener(AbstractMessagesEventListener callFlowEventListener) {
-        LOGGER.debug(String.format("The Call Flow module subscribe %s listener on the %s subject.",
+        LOGGER.debug(String.format("The Message Module has subscribed %s listener on the %s subject.",
                 callFlowEventListener.getClass().toString(), callFlowEventListener.getSubject()));
         Event.subscribe(callFlowEventListener.getSubject(), callFlowEventListener);
     }
 
     private static void unSubscribeListener(AbstractMessagesEventListener callFlowEventListener) {
-        LOGGER.debug(String.format("The Call Flow module unsubscribe %s listener on the %s subject.",
+        LOGGER.debug(String.format("The Messages Module has unsubscribed %s listener on the %s subject.",
                 callFlowEventListener.getClass().toString(), callFlowEventListener.getSubject()));
         Event.unsubscribe(callFlowEventListener.getSubject(), callFlowEventListener);
     }

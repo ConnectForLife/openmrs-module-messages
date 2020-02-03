@@ -16,6 +16,7 @@ import org.openmrs.module.messages.api.event.AbstractMessagesEventListener;
 import org.openmrs.module.messages.api.event.CallFlowParamConstants;
 import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
 import org.openmrs.module.messages.api.model.ChannelType;
+import org.openmrs.module.messages.api.service.ConfigService;
 import org.openmrs.module.messages.api.service.MessagesExecutionService;
 import org.openmrs.module.messages.api.util.Properties;
 
@@ -23,27 +24,50 @@ public class CallflowExecutionCompletionListener extends AbstractMessagesEventLi
 
     private static final Log LOGGER = LogFactory.getLog(CallflowExecutionCompletionListener.class);
 
-    public static final String CALLFLOWS_CALL_STATUS = "callflows-call-status";
+    public static final String CALLFLOWS_CALL_STATUS_SUBJECT = "callflows-call-status";
 
     public static final String PARAM_CALL_ID = "callId";
     public static final String UNKNOWN_CALL_ID = "unknown";
+
+    public static final String PARAM_STATUS = "status";
 
     private static final String CHANNEL_TYPE = ChannelType.CALL.getName();
 
     @Override
     public String getSubject() {
-        return CALLFLOWS_CALL_STATUS;
+        return CALLFLOWS_CALL_STATUS_SUBJECT;
     }
 
     @Override
     protected void handleEvent(Properties properties) {
-        LOGGER.trace(String.format("Handling event: %s with properties %s", getSubject(), properties.toString()));
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(String.format("Handling event: %s with properties %s", getSubject(), properties.toString()));
+        }
+
+        String status = getStatus(properties);
+        if (!getConfigService().getStatusesEndingCallflow().contains(status)) {
+            if (LOGGER.isTraceEnabled()) {
+                LOGGER.trace(String.format(
+                        "Skipped handling event with the status %s - it is not the end of a callflow: %s",
+                        status,
+                        properties.toString()));
+            }
+            return;
+        }
 
         int groupId = getGroupId(properties);
         String executionId = getExecutionId(properties);
 
         getComponent("messages.messagesExecutionService", MessagesExecutionService.class)
             .executionCompleted(groupId, executionId, CHANNEL_TYPE);
+    }
+
+    private String getStatus(Properties properties) {
+        String result = properties.getString(PARAM_STATUS);
+        if (result == null) {
+            throw new MessagesRuntimeException("Status cannot be null - it must be passed by callflow");
+        }
+        return result;
     }
 
     private int getGroupId(Properties properties) {
@@ -65,5 +89,9 @@ public class CallflowExecutionCompletionListener extends AbstractMessagesEventLi
             callId = null;
         }
         return callId;
+    }
+
+    private ConfigService getConfigService() {
+        return getComponent("messages.configService", ConfigService.class);
     }
 }

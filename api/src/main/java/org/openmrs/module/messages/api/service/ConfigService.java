@@ -82,4 +82,10 @@ public interface ConfigService {
      * @return - the possible reasons
      */
     List<String> getPersonStatusPossibleChangeReasons();
+
+    /**
+     * Provides the list of the Callflow module statuses which describes ended flows.
+     * @return - statuses ending callflow
+     */
+    List<String> getStatusesEndingCallflow();
 }
