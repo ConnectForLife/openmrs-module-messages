@@ -53,8 +53,8 @@ export const ISO_DATE_FORMAT = 'YYYY-MM-DD';
 export const DATE_FORMAT = 'dd MMM yyyy';
 
 // Patient template
-export const DEFAULT_VALUES_USED_MESSAGE = 'You are viewing the default message sending. Click SAVE to confirm and enable message sending.';
-
+export const ALL_DEFAULT_VALUES_USED_MESSAGE = 'This is the default schedule for messages. Click Save to confirm and start messages sending.';
+export const SOME_DEFAULT_VALUES_USED_MESSAGE = 'There are new messages scheduled by default. Click Save to confirm and start sending new messages.';
 export const SERVICE_TYPE_VALUES = ['Call', 'SMS', 'Deactivate service'];
 export const DAY_OF_WEEK_VALUES = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 export const MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY_VALUES = ['Daily', 'Weekly', 'Monthly'];

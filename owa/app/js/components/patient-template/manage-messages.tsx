@@ -21,24 +21,29 @@ class ManageMessages extends React.PureComponent<IManageMessagesProps, IManageMe
   }
 
   handleSave() {
-    if (!!this.props.defaultValuesUsed) {
+    if (!!this.props.defaultValuesState.defaultValuesUsed) {
       this.props.generateDefaultPatientTemplates(parseInt(this.props.match.params.patientId, 10));
     }
   }
 
   private renderDefaultValuesNotificationIfNeeded() {
-    if (this.props.defaultValuesUsed) {
+    if (this.props.defaultValuesState.defaultValuesUsed) {
       return (
         <div className="note-container">
           <div className="note warning">
             <div className="text">
               <span className="toast-item-image toast-item-image-alert" />
-              <p>{Msg.DEFAULT_VALUES_USED_MESSAGE}</p>
+              <p>{this.getDefaultValuesMessage()}</p>
             </div>
           </div>
         </div>
       );
     } else return null;
+  }
+
+  private getDefaultValuesMessage(): string {
+    return this.props.defaultValuesState.allValuesDefault ?
+      Msg.ALL_DEFAULT_VALUES_USED_MESSAGE : Msg.SOME_DEFAULT_VALUES_USED_MESSAGE;
   }
 
   render() {
@@ -64,7 +69,7 @@ class ManageMessages extends React.PureComponent<IManageMessagesProps, IManageMe
 }
 
 const mapStateToProps = ({ patientTemplate }: IRootState) => ({
-  defaultValuesUsed: patientTemplate.defaultValuesUsed
+  defaultValuesState: patientTemplate.defaultValuesState
 });
 
 const mapDispatchToProps = ({

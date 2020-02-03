@@ -12,6 +12,8 @@ public class DefaultPatientTemplateStateDTO implements Serializable {
 
     private boolean defaultValuesUsed = true;
 
+    private boolean allValuesDefault = true;
+
     private List<PatientTemplateDTO> lackingPatientTemplates = new ArrayList<>();
 
     private MessageDetailsDTO details;
@@ -19,9 +21,12 @@ public class DefaultPatientTemplateStateDTO implements Serializable {
     public DefaultPatientTemplateStateDTO() {
     }
 
-    public DefaultPatientTemplateStateDTO(List<PatientTemplateDTO> lacking, MessageDetailsDTO details) {
+    public DefaultPatientTemplateStateDTO(List<PatientTemplateDTO> lacking,
+                                          MessageDetailsDTO details,
+                                          boolean anyPatientTemplateSaved) {
         this.lackingPatientTemplates = lacking;
         this.defaultValuesUsed = lacking.size() > 0;
+        this.allValuesDefault = defaultValuesUsed && !anyPatientTemplateSaved;
         this.details = details;
     }
 
@@ -34,8 +39,26 @@ public class DefaultPatientTemplateStateDTO implements Serializable {
         return this;
     }
 
+    public boolean isAllValuesDefault() {
+        return allValuesDefault;
+    }
+
+    public DefaultPatientTemplateStateDTO setAllValuesDefault(boolean allValuesDefault) {
+        this.allValuesDefault = allValuesDefault;
+        return this;
+    }
+
     public List<PatientTemplateDTO> getLackingPatientTemplates() {
         return lackingPatientTemplates;
+    }
+
+    public MessageDetailsDTO getDetails() {
+        return details;
+    }
+
+    public DefaultPatientTemplateStateDTO setDetails(MessageDetailsDTO details) {
+        this.details = details;
+        return this;
     }
 
     @Override
@@ -54,14 +77,5 @@ public class DefaultPatientTemplateStateDTO implements Serializable {
     @Override
     public int hashCode() {
         return HashCodeBuilder.reflectionHashCode(this);
-    }
-
-    public MessageDetailsDTO getDetails() {
-        return details;
-    }
-
-    public DefaultPatientTemplateStateDTO setDetails(MessageDetailsDTO details) {
-        this.details = details;
-        return this;
     }
 }

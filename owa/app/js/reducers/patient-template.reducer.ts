@@ -1,6 +1,5 @@
 import _ from 'lodash';
 
-import { REQUEST, SUCCESS, FAILURE } from './action-type.util';
 import 'react-toastify/dist/ReactToastify.css';
 import { PatientTemplateUI } from '../shared/model/patient-template-ui';
 import { TemplateUI } from '../shared/model/template-ui';
@@ -10,6 +9,11 @@ import * as Msg from '../shared/utils/messages';
 import { history } from '../config/redux-store';
 import axiosInstance, { ALL_RECORDS_PAGE } from '../config/axios';
 import MessageDetails from '../shared/model/message-details';
+import {
+  getDefaultValue as getDefaultValuesInitialState,
+  IDefaultValuesState
+} from '../shared/model/default-values-state';
+import { REQUEST, SUCCESS, FAILURE } from './action-type.util';
 
 export const ACTION_TYPES = {
   GET_TEMPLATES: 'patientTemplateReducer/GET_TEMPLATES',
@@ -30,7 +34,7 @@ const initialState = {
   patientTemplatesLoading: false,
   messageDetails: null as unknown as MessageDetails,
   messageDetailsLoading: false,
-  defaultValuesUsed: undefined as boolean | undefined
+  defaultValuesState: getDefaultValuesInitialState() as IDefaultValuesState
 };
 
 export type PatientTemplateState = Readonly<typeof initialState>;
@@ -67,20 +71,20 @@ export default (state = initialState, action) => {
       return {
         ...state,
         messageDetailsLoading: false,
-        messageDetails: state.defaultValuesUsed === true ? //don't overwrite if defaults used
-          state.defaultValuesUsed : action.payload.data
+        messageDetails: state.defaultValuesState.defaultValuesUsed === true ? //don't overwrite if defaults used
+          state.messageDetails : action.payload.data
       };
     case REQUEST(ACTION_TYPES.GET_PATIENT_TEMPLATES):
       return {
         ...state,
         patientTemplatesLoading: true,
-        defaultValuesUsed: undefined
+        defaultValuesState: initialState.defaultValuesState
       };
     case FAILURE(ACTION_TYPES.GET_PATIENT_TEMPLATES):
       return {
         ...state,
         patientTemplatesLoading: false,
-        defaultValuesUsed: undefined
+        defaultValuesState: initialState.defaultValuesState
       };
     case SUCCESS(ACTION_TYPES.GET_PATIENT_TEMPLATES):
       return {
@@ -92,20 +96,21 @@ export default (state = initialState, action) => {
       return {
         ...state,
         messageDetailsLoading: true,
-        defaultValuesUsed: undefined
+        defaultValuesState: initialState.defaultValuesState
       };
     case FAILURE(ACTION_TYPES.CHECK_DEFAULT_VALUES):
       return {
         ...state,
         messageDetailsLoading: false,
-        defaultValuesUsed: undefined
+        defaultValuesState: initialState.defaultValuesState
       };
     case SUCCESS(ACTION_TYPES.CHECK_DEFAULT_VALUES):
+      const defaultValuesState: IDefaultValuesState = action.payload.data;
       return {
         ...state,
-        defaultValuesUsed: action.payload.data.defaultValuesUsed,
+        defaultValuesState,
         messageDetailsLoading: false,
-        messageDetails: action.payload.data.details
+        messageDetails: defaultValuesState.details
       };
     case REQUEST(ACTION_TYPES.GENERATE_DEFAULT_PATIENT_TEMPLATES):
     case FAILURE(ACTION_TYPES.GENERATE_DEFAULT_PATIENT_TEMPLATES):
@@ -115,7 +120,12 @@ export default (state = initialState, action) => {
     case SUCCESS(ACTION_TYPES.GENERATE_DEFAULT_PATIENT_TEMPLATES):
       return {
         ...state,
-        defaultValuesUsed: false
+        defaultValuesState: {
+          defaultValuesUsed: false,
+          allValuesDefault: false,
+          lackingPatientTemplates: [],
+          details: state.messageDetails
+        }
       };
     case REQUEST(ACTION_TYPES.PUT_PATIENT_TEMPLATES):
       return {

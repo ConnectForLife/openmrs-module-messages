@@ -11,6 +11,9 @@ public interface DefaultPatientTemplateService {
 
     List<PatientTemplate> findLackingPatientTemplates(Patient patient);
 
+    List<PatientTemplate> findLackingPatientTemplates(Patient patient,
+                                                      List<PatientTemplate> existing);
+
     MessageDetailsDTO getDetailsForRealAndDefault(Patient patient);
 
     MessageDetailsDTO getDetailsForRealAndDefault(Patient patientById, List<PatientTemplate> lacking);

@@ -42,11 +42,17 @@ public class DefaultPatientTemplateServiceImpl extends BaseOpenmrsService implem
 
     @Override
     public List<PatientTemplate> findLackingPatientTemplates(Patient patient) {
-        List<PatientTemplate> patientTemplates =
+        List<PatientTemplate> existing =
             patientTemplateService.findAllByCriteria(PatientTemplateCriteria.forPatientId(patient.getId()));
 
+        return findLackingPatientTemplates(patient, existing);
+    }
+
+    @Override
+    public List<PatientTemplate> findLackingPatientTemplates(Patient patient,
+                                                             List<PatientTemplate> existing) {
         List<DefaultPatientTemplateWrapper> actual =
-            DefaultPatientTemplateWrapper.wrapToList(patientTemplates);
+            DefaultPatientTemplateWrapper.wrapToList(existing);
 
         List<DefaultPatientTemplateWrapper> expected =
             DefaultPatientTemplateWrapper.wrapToList(getPatientTemplatesWithDefaultValues(patient));

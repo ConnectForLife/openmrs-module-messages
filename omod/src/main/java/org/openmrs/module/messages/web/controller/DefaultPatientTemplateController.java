@@ -10,6 +10,8 @@ import org.openmrs.module.messages.api.exception.ValidationException;
 import org.openmrs.module.messages.api.mappers.PatientTemplateMapper;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.service.DefaultPatientTemplateService;
+import org.openmrs.module.messages.api.service.PatientTemplateService;
+import org.openmrs.module.messages.domain.criteria.PatientTemplateCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -29,6 +31,10 @@ public class DefaultPatientTemplateController extends BaseRestController {
     private PatientService patientService;
 
     @Autowired
+    @Qualifier("messages.patientTemplateService")
+    private PatientTemplateService patientTemplateService;
+
+    @Autowired
     @Qualifier("messages.defaultPatientTemplateService")
     private DefaultPatientTemplateService defaultPatientTemplateService;
 
@@ -40,13 +46,17 @@ public class DefaultPatientTemplateController extends BaseRestController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public DefaultPatientTemplateStateDTO checkDefaultValuesUsed(@PathVariable("patientId") Integer id) {
+        Patient patient = getPatientById(id);
+        List<PatientTemplate> existing = patientTemplateService
+            .findAllByCriteria(new PatientTemplateCriteria(patient));
+
         List<PatientTemplate> lacking =
-            defaultPatientTemplateService.findLackingPatientTemplates(getPatientById(id));
+            defaultPatientTemplateService.findLackingPatientTemplates(patient, existing);
 
         MessageDetailsDTO details = defaultPatientTemplateService
-            .getDetailsForRealAndDefault(getPatientById(id), lacking);
+            .getDetailsForRealAndDefault(patient, lacking);
 
-        return new DefaultPatientTemplateStateDTO(mapper.toDtos(lacking), details);
+        return new DefaultPatientTemplateStateDTO(mapper.toDtos(lacking), details, existing.size() > 0);
     }
 
     @RequestMapping(value = "{patientId}/generate-and-save", method = RequestMethod.POST)

@@ -67,6 +67,7 @@ public class DefaultPatientTemplateControllerTest extends BaseModuleWebContextSe
             .andExpect(status().is(HttpStatus.OK.value()))
             .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.defaultValuesUsed").value(true))
+            .andExpect(jsonPath("$.allValuesDefault").value(true))
             .andExpect(jsonPath("$.details.messages.length()").value(TWO))
             .andExpect(jsonPath("$.details.messages.[0].actorSchedules.length()").value(THREE))
             .andExpect(jsonPath("$.details.messages.[1].actorSchedules.length()").value(THREE))
@@ -79,6 +80,7 @@ public class DefaultPatientTemplateControllerTest extends BaseModuleWebContextSe
             .andExpect(status().is(HttpStatus.OK.value()))
             .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.defaultValuesUsed").value(true))
+            .andExpect(jsonPath("$.allValuesDefault").value(false))
             .andExpect(jsonPath("$.details.messages.length()").value(TWO))
             .andExpect(jsonPath("$.details.messages.[0].actorSchedules.length()").value(ONE))
             .andExpect(jsonPath("$.details.messages.[1].actorSchedules.length()").value(ONE))
@@ -91,6 +93,7 @@ public class DefaultPatientTemplateControllerTest extends BaseModuleWebContextSe
             .andExpect(status().is(HttpStatus.OK.value()))
             .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.defaultValuesUsed").value(false))
+            .andExpect(jsonPath("$.allValuesDefault").value(false))
             .andReturn();
     }
 
