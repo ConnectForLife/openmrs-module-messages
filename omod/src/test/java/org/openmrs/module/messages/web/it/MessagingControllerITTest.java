@@ -15,13 +15,18 @@ import org.openmrs.module.messages.api.dao.TemplateDao;
 import org.openmrs.module.messages.api.dto.ActorScheduleDTO;
 import org.openmrs.module.messages.api.dto.MessageDTO;
 import org.openmrs.module.messages.api.dto.MessageDetailsDTO;
-import org.openmrs.module.messages.api.model.ChannelType;
 import org.openmrs.module.messages.api.execution.ServiceResult;
 import org.openmrs.module.messages.api.execution.ServiceResultList;
+import org.openmrs.module.messages.api.model.ChannelType;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.Template;
+import org.openmrs.module.messages.api.model.TemplateField;
+import org.openmrs.module.messages.api.model.TemplateFieldType;
+import org.openmrs.module.messages.api.model.TemplateFieldValue;
 import org.openmrs.module.messages.builder.PatientTemplateBuilder;
 import org.openmrs.module.messages.builder.TemplateBuilder;
+import org.openmrs.module.messages.builder.TemplateFieldBuilder;
+import org.openmrs.module.messages.builder.TemplateFieldValueBuilder;
 import org.openmrs.module.messages.util.TestUtil;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +38,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -99,17 +105,17 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
     }
 
     @Test
-    public void testFetchingMessagesForPatient() throws Exception {
+    public void testFetchingMessagesForPatientWithDeactivatedMessageWhenServiceIsDeactivated() throws Exception {
         Relationship relationship = personService.getAllRelationships().get(0);
         Relationship otherRelationship = personService.getAllRelationships().get(1);
         PatientTemplate template1 = createPatientTemplate(patient1, relationship.getPersonA(),
-                relationship, QUERY_1, QUERY_TYPE_1, MESSAGE_TEMPLATE_NAME + "1");
+                relationship, QUERY_1, QUERY_TYPE_1, MESSAGE_TEMPLATE_NAME + "1", false);
 
         createPatientTemplate(patient2, otherRelationship.getPersonA(),
-                otherRelationship, QUERY_1, QUERY_TYPE_2, MESSAGE_TEMPLATE_NAME + "2");
+                otherRelationship, QUERY_1, QUERY_TYPE_2, MESSAGE_TEMPLATE_NAME + "2", false);
 
         PatientTemplate template2 = createPatientTemplate(patient1, relationship.getPersonA(),
-                relationship, QUERY_2, QUERY_TYPE_2, MESSAGE_TEMPLATE_NAME + "3");
+                relationship, QUERY_2, QUERY_TYPE_2, MESSAGE_TEMPLATE_NAME + "3", false);
 
         Patient patientWithId = new Patient();
         patientWithId.setId(patient1.getId());
@@ -303,22 +309,37 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
     private PatientTemplate createPatientTemplate(Patient patient, Person person,
                                                   Relationship relationship,
                                                   String query, String queryType,
-                                                  String templateName) {
-        return patientTemplateDao.saveOrUpdate(new PatientTemplateBuilder()
+                                                  String templateName,
+                                                  boolean isServiceActive) {
+        Template template = createTemplate(templateName);
+        PatientTemplate patientTemplate = new PatientTemplateBuilder()
                 .withActor(person)
                 .withActorType(relationship)
                 .withPatient(patient)
                 .withServiceQuery(query)
                 .withServiceQueryType(queryType)
-                .withTemplate(createTemplate(templateName))
-                .buildAsNew());
+                .withTemplate(template)
+                .buildAsNew();
+        if (isServiceActive) {
+            TemplateFieldValue templateFieldValue = crateTemplateFieldValue(template, patientTemplate);
+            patientTemplate.setTemplateFieldValues(Collections.singletonList(templateFieldValue));
+        }
+        return patientTemplateDao.saveOrUpdate(patientTemplate);
+    }
+
+    private TemplateFieldValue crateTemplateFieldValue(Template template, PatientTemplate patientTemplate) {
+        return new TemplateFieldValueBuilder()
+                    .withTemplateField(template.getTemplateFields().get(0))
+                    .withValue(ChannelType.CALL.getName())
+                    .withPatientTemplate(patientTemplate)
+                    .buildAsNew();
     }
 
     private PatientTemplate createPatientTemplate(Patient patient, Person person,
                                                   Relationship relationship,
                                                   String query, String queryType) {
         return createPatientTemplate(patient, person, relationship, query, queryType,
-            MESSAGE_TEMPLATE_NAME);
+            MESSAGE_TEMPLATE_NAME, true);
     }
 
     private Template createTemplate(String templateName) {
@@ -327,7 +348,17 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
                 .withServiceQueryType("SQL")
                 .setName(templateName)
                 .buildAsNew();
+        template.setTemplateFields(createTemplateFields(template));
         return templateDao.saveOrUpdate(template);
+    }
+
+    private List<TemplateField> createTemplateFields(Template template) {
+        TemplateField templateField = new TemplateFieldBuilder()
+                .withTemplateFieldType(TemplateFieldType.SERVICE_TYPE)
+                .withDefaultValue(ChannelType.CALL.getName())
+                .withTemplate(template)
+                .buildAsNew();
+        return Collections.singletonList(templateField);
     }
 
     private void assertIsRelatedToExistingPatientTemplate(MessageDTO messageDTO) {

@@ -9,7 +9,13 @@
 
 package org.openmrs.module.messages.api.model;
 
-import static org.openmrs.module.messages.api.constants.MessagesConstants.PATIENT_DEFAULT_ACTOR_TYPE;
+import org.apache.commons.lang.StringUtils;
+import org.openmrs.Patient;
+import org.openmrs.Person;
+import org.openmrs.Relationship;
+import org.openmrs.module.messages.api.util.FieldDateUtil;
+import org.openmrs.module.messages.api.util.PatientTemplateFieldUtil;
+import validate.annotation.ValidPatientTemplate;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,12 +31,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import org.apache.commons.lang.StringUtils;
-import org.openmrs.Patient;
-import org.openmrs.Person;
-import org.openmrs.Relationship;
-import org.openmrs.module.messages.api.util.FieldDateUtil;
-import validate.annotation.ValidPatientTemplate;
+
+import static org.openmrs.module.messages.api.constants.MessagesConstants.PATIENT_DEFAULT_ACTOR_TYPE;
 
 @Entity(name = "messages.PatientTemplate")
 @Table(name = "messages_patient_template")
@@ -162,6 +164,11 @@ public class PatientTemplate extends AbstractBaseOpenmrsData {
     @Transient
     public Date getEndOfMessages() {
         return FieldDateUtil.getEndDate(getTemplateFieldValues(), getTemplate().getName());
+    }
+
+    @Transient
+    public boolean isDeactivated() {
+        return PatientTemplateFieldUtil.isDeactivated(this);
     }
 
     @Transient

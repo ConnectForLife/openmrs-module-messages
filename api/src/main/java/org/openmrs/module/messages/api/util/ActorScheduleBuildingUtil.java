@@ -9,20 +9,19 @@
 
 package org.openmrs.module.messages.api.util;
 
-import static org.openmrs.module.messages.api.model.ChannelType.DEACTIVATED;
-
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Relationship;
 import org.openmrs.module.messages.api.constants.MessagesConstants;
 import org.openmrs.module.messages.api.dto.ActorScheduleDTO;
-import org.openmrs.module.messages.api.model.ChannelType;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.TemplateFieldType;
-import org.openmrs.module.messages.api.model.TemplateFieldValue;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.openmrs.module.messages.api.util.PatientTemplateFieldUtil.getTemplateFieldValue;
 
 public final class ActorScheduleBuildingUtil {
 
@@ -47,12 +46,9 @@ public final class ActorScheduleBuildingUtil {
 
     private static String buildSchedule(PatientTemplate patientTemplate) {
         try {
-            String serviceType = getTemplateFieldValue(patientTemplate,
-                TemplateFieldType.SERVICE_TYPE, true);
-
             List<String> scheduleElements = new ArrayList<>();
 
-            if (isDeactivated(serviceType)) {
+            if (patientTemplate.isDeactivated()) {
                 addDeactivatedElement(scheduleElements);
             } else {
                 addFrequencyElement(scheduleElements, patientTemplate);
@@ -138,22 +134,6 @@ public final class ActorScheduleBuildingUtil {
         }
     }
 
-    private static String getTemplateFieldValue(PatientTemplate patientTemplate,
-                                                TemplateFieldType fieldType,
-                                                boolean setDefaultIfBlank) {
-        String value = null;
-        for (TemplateFieldValue templateFieldValue : patientTemplate.getTemplateFieldValues()) {
-            if (templateFieldValue.getTemplateField().getTemplateFieldType().equals(fieldType)) {
-                value = templateFieldValue.getValue();
-                if (setDefaultIfBlank && StringUtils.isBlank(value)) {
-                    value = templateFieldValue.getTemplateField().getDefaultValue();
-                }
-                break;
-            }
-        }
-        return value;
-    }
-
     private static String getFormattedDateString(String date) {
         try {
             return DateUtil.convertServerSideDateFormatToFrontend(date);
@@ -167,11 +147,6 @@ public final class ActorScheduleBuildingUtil {
         return patientId.equals(actorType.getPersonA().getId()) ?
             actorType.getPersonB().getId() :
             actorType.getPersonA().getId();
-    }
-
-    private static boolean isDeactivated(String serviceType) {
-        return StringUtils.isBlank(serviceType)
-            || DEACTIVATED.equals(ChannelType.fromName(serviceType));
     }
 
     private static String getCategoriesText(String categories) {

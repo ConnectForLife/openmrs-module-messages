@@ -9,10 +9,6 @@
 
 package org.openmrs.module.messages.api.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import javax.transaction.Transactional;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.PropertyValueException;
@@ -34,6 +30,11 @@ import org.openmrs.module.messages.api.service.PatientTemplateService;
 import org.openmrs.module.messages.api.util.DateUtil;
 import org.openmrs.module.messages.api.util.HibernateUtil;
 import org.openmrs.module.messages.domain.criteria.PatientTemplateCriteria;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import javax.transaction.Transactional;
 
 @Transactional
 public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledService> implements MessagingService {
@@ -193,7 +194,15 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
         List<ServiceResultList> results = new ArrayList<>();
         for (PatientTemplate patientTemplate : patientTemplates) {
             try {
-                results.add(serviceExecutor.execute(patientTemplate, dateRange));
+                if (patientTemplate.isDeactivated()) {
+                    if (LOGGER.isTraceEnabled()) {
+                        LOGGER.trace(String.format(
+                                "Execution query for PatientTemplate %d has been skipped, because it is disabled",
+                                patientTemplate.getId()));
+                    }
+                } else {
+                    results.add(serviceExecutor.execute(patientTemplate, dateRange));
+                }
             } catch (ExecutionException e) {
                 LOGGER.error(String.format(
                                 "Cannot execute query for patientTemplate with id %d (template with id %d - '%s')",
