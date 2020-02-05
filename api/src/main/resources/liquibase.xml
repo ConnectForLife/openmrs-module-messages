@@ -3473,4 +3473,151 @@
             ]]>
         </sql>
     </changeSet>
+
+    <changeSet id="messages-58" author="Arkadiusz Lalo">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="messages_actor_response" />
+            <not>
+                <tableExists tableName="messages_actor_response_type" />
+            </not>
+            <not>
+                <columnExists tableName="messages_actor_response" columnName="actor_id" />
+            </not>
+            <not>
+                <columnExists tableName="messages_actor_response" columnName="patient_id" />
+            </not>
+            <not>
+                <columnExists tableName="messages_actor_response" columnName="source_id" />
+            </not>
+            <not>
+                <columnExists tableName="messages_actor_response" columnName="source_type" />
+            </not>
+            <not>
+                <columnExists tableName="messages_actor_response" columnName="text_question" />
+            </not>
+        </preConditions>
+        <comment>
+            Adds new columns which will be used in next migration in order to change
+            the structure of messages_actor_response. Additionally creates messages_actor_response_type
+            table which will be used by new messages_actor_response table.
+        </comment>
+        <createTable tableName="messages_actor_response_type">
+            <column name="name" type="varchar(255)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+        <insert tableName="messages_actor_response_type">
+            <column name="name" value="SCHEDULED_SERVICE" />
+        </insert>
+        <insert tableName="messages_actor_response_type">
+            <column name="name" value="SCHEDULED_SERVICE_GROUP" />
+        </insert>
+        <insert tableName="messages_actor_response_type">
+            <column name="name" value="OTHER" />
+        </insert>
+        <addColumn tableName="messages_actor_response">
+            <column name="actor_id" type="int"/>
+            <column name="patient_id" type="int"/>
+            <column name="source_id" type="varchar(255)"/>
+            <column name="source_type" type="varchar(255)" />
+            <column name="text_question" type="TEXT" />
+        </addColumn>
+        <addForeignKeyConstraint constraintName="messages_actor_response_actor_fk"
+                                 baseTableName="messages_actor_response" baseColumnNames="actor_id"
+                                 referencedTableName="person" referencedColumnNames="person_id"/>
+        <addForeignKeyConstraint constraintName="messages_actor_response_patient_fk"
+                                 baseTableName="messages_actor_response" baseColumnNames="patient_id"
+                                 referencedTableName="patient" referencedColumnNames="patient_id"/>
+        <addForeignKeyConstraint constraintName="messages_actor_response_source_type_fk"
+                                 baseTableName="messages_actor_response" baseColumnNames="source_type"
+                                 referencedTableName="messages_actor_response_type" referencedColumnNames="name"/>
+    </changeSet>
+
+    <changeSet id="messages-59" author="Arkadiusz Lalo">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="messages_actor_response" />
+            <tableExists tableName="messages_actor_response_type" />
+            <columnExists tableName="messages_actor_response" columnName="actor_id" />
+            <columnExists tableName="messages_actor_response" columnName="patient_id" />
+            <columnExists tableName="messages_actor_response" columnName="source_id" />
+            <columnExists tableName="messages_actor_response" columnName="source_type" />
+            <columnExists tableName="messages_actor_response" columnName="text_question" />
+            <columnExists tableName="messages_actor_response" columnName="scheduled_service_id" />
+            <columnExists tableName="messages_actor_response" columnName="text_question" />
+        </preConditions>
+        <comment>
+            Updates already existing data in database according to new changes (messages-54).
+            Insert scheduled_service_group_id into new source id column.
+        </comment>
+        <sql>
+            UPDATE messages_actor_response ar
+                LEFT JOIN messages_scheduled_service ss ON ar.scheduled_service_id = ss.messages_scheduled_service_id
+                LEFT JOIN messages_scheduled_service_group ssg ON ss.group_id = ssg.messages_scheduled_service_group_id
+            SET ar.patient_id = ssg.patient_id, ar.actor_id = ssg.actor_id,
+                ar.source_id = ssg.messages_scheduled_service_group_id,
+                ar.source_type = 'SCHEDULED_SERVICE_GROUP'
+        </sql>
+    </changeSet>
+
+    <changeSet id="messages-60" author="Arkadiusz Lalo">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="messages_actor_response" />
+            <columnExists tableName="messages_actor_response" columnName="source_type" />
+            <columnExists tableName="messages_actor_response" columnName="scheduled_service_id" />
+        </preConditions>
+        <comment>
+            Removes the unnecessary column from messages_actor_response table according to changes from messages-54.
+            Additionally adds missing constraint for source_type column.
+        </comment>
+        <addNotNullConstraint tableName="messages_actor_response" columnName="source_type" columnDataType="varchar(255)"/>
+        <dropForeignKeyConstraint baseTableName="messages_actor_response"
+                          constraintName="messages_actor_response_scheduled_service_fk" />
+        <dropColumn tableName="messages_actor_response" columnName="scheduled_service_id" />
+    </changeSet>
+
+    <changeSet id="messages-61" author="Arkadiusz Lalo" runOnChange="true">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="messages_template"/>
+            <tableExists tableName="messages_template_field"/>
+            <tableExists tableName="messages_scheduled_service"/>
+            <sqlCheck expectedResult="1">SELECT COUNT(*) FROM messages_template WHERE name = 'Health tip'</sqlCheck>
+        </preConditions>
+        <comment>
+            Brings the latest changes in the Health Tip service.
+        </comment>
+        <sql>
+            DROP FUNCTION IF EXISTS GET_PREDICTION_START_DATE_FOR_HEALTH_TIP;
+        </sql>
+        <sqlFile encoding="UTF-8"
+                 path="mysql/services/HealthTipStartDateFunction.sql"
+                 splitStatements="false"
+                 stripComments="false"/>
+        <sqlFile encoding="UTF-8"
+                 path="mysql/services/HealthTip.sql"
+                 splitStatements="false"
+                 stripComments="false"/>
+    </changeSet>
+
+    <changeSet id="messages-62" author="Arkadiusz Lalo" runOnChange="true">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="messages_template"/>
+            <tableExists tableName="messages_template_field"/>
+            <tableExists tableName="messages_scheduled_service"/>
+            <sqlCheck expectedResult="1">SELECT COUNT(*) FROM messages_template WHERE name = 'Adherence feedback'</sqlCheck>
+        </preConditions>
+        <comment>
+            Brings the latest changes in the Adherence feedback service.
+        </comment>
+        <sql>
+            DROP FUNCTION IF EXISTS GET_PREDICTION_START_DATE_FOR_ADHERENCE_FEEDBACK;
+        </sql>
+        <sqlFile encoding="UTF-8"
+                 path="mysql/services/AdherenceFeedbackStartDateFunction.sql"
+                 splitStatements="false"
+                 stripComments="false"/>
+        <sqlFile encoding="UTF-8"
+                 path="mysql/services/AdherenceFeedback.sql"
+                 splitStatements="false"
+                 stripComments="false"/>
+    </changeSet>
 </databaseChangeLog>

@@ -9,7 +9,6 @@
 
 package org.openmrs.module.messages.builder;
 
-import org.openmrs.module.messages.api.model.ActorResponse;
 import org.openmrs.module.messages.api.model.DeliveryAttempt;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.ScheduledService;
@@ -36,7 +35,6 @@ public class ScheduledServiceBuilder extends AbstractBuilder<ScheduledService> {
     private String serviceExec;
     private List<DeliveryAttempt> deliveryAttempts;
     private List<ScheduledServiceParameter> scheduledServiceParameters;
-    private List<ActorResponse> actorResponses;
 
     public ScheduledServiceBuilder() {
         this.id = getInstanceNumber();
@@ -48,7 +46,6 @@ public class ScheduledServiceBuilder extends AbstractBuilder<ScheduledService> {
         this.serviceExec = DUMMY_SERVICE_EXEC;
         this.deliveryAttempts = new ArrayList<>();
         this.scheduledServiceParameters = new ArrayList<>();
-        this.actorResponses = new ArrayList<>();
     }
 
     @Override
@@ -61,7 +58,6 @@ public class ScheduledServiceBuilder extends AbstractBuilder<ScheduledService> {
         scheduled.setLastServiceExecution(serviceExec);
         scheduled.setDeliveryAttempts(deliveryAttempts);
         scheduled.setScheduledServiceParameters(scheduledServiceParameters);
-        scheduled.setActorResponses(actorResponses);
         return scheduled;
     }
 
@@ -113,11 +109,6 @@ public class ScheduledServiceBuilder extends AbstractBuilder<ScheduledService> {
     public ScheduledServiceBuilder withScheduledServiceParameters(
             List<ScheduledServiceParameter> scheduledServiceParameters) {
         this.scheduledServiceParameters = scheduledServiceParameters;
-        return this;
-    }
-
-    public ScheduledServiceBuilder withActorResponses(List<ActorResponse> actorResponses) {
-        this.actorResponses = actorResponses;
         return this;
     }
 }

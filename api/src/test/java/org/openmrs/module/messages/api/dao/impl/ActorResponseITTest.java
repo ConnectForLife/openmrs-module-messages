@@ -3,6 +3,8 @@ package org.openmrs.module.messages.api.dao.impl;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
+import org.openmrs.Patient;
+import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.ContextSensitiveTest;
 import org.openmrs.module.messages.api.dao.ActorResponseDao;
@@ -34,7 +36,9 @@ public class ActorResponseITTest extends ContextSensitiveTest {
     private static final String RESPONSE_UUID = "9b251fd0-b900-4b11-9b77-b5174a0368b8";
     
     private static final String SCHEDULE_UUID = "b3de6d76-3e31-41cf-955d-ad14b9db07ff";
-    
+
+    private static final String EXPECTED_PATIENT_UUID = "7321f17d-bdef-4571-8f9b-c2ec868dc251";
+
     private static final Date TIMESTAMP = new Date(2019, Calendar.NOVEMBER, 21);
     
     private static final int GET_ALL_EXPECTED_LIST_SIZE = 0;
@@ -46,7 +50,9 @@ public class ActorResponseITTest extends ContextSensitiveTest {
     private Concept question;
     
     private Concept response;
-    
+
+    private Patient patient;
+
     private ScheduledService scheduledService;
     
     @Autowired
@@ -56,6 +62,10 @@ public class ActorResponseITTest extends ContextSensitiveTest {
     @Autowired
     @Qualifier("messages.ActorResponseDao")
     private ActorResponseDao actorResponseDao;
+
+    @Autowired
+    @Qualifier("patientService")
+    private PatientService patientService;
     
     @Before
     public void setUp() throws Exception {
@@ -63,6 +73,7 @@ public class ActorResponseITTest extends ContextSensitiveTest {
         executeDataSet(XML_DATA_SET_PATH + "MessageDataSet.xml");
         question = Context.getConceptService().getConceptByUuid(QUESTION_UUID);
         response = Context.getConceptService().getConceptByUuid(RESPONSE_UUID);
+        patient = patientService.getPatientByUuid(EXPECTED_PATIENT_UUID);
         scheduledService = messagingDao.getByUuid(SCHEDULE_UUID);
     }
     
@@ -74,8 +85,12 @@ public class ActorResponseITTest extends ContextSensitiveTest {
         
         assertThat(actual, not(nullValue()));
         assertThat(actual.getId(), not(nullValue()));
-        
-        assertThat(actual, hasProperty("scheduledService", is(expected.getScheduledService())));
+
+        assertThat(actual, hasProperty("actor", is(expected.getActor())));
+        assertThat(actual, hasProperty("patient", is(expected.getPatient())));
+        assertThat(actual, hasProperty("sourceId", is(expected.getSourceId())));
+        assertThat(actual, hasProperty("sourceType", is(expected.getSourceType())));
+        assertThat(actual, hasProperty("textQuestion", is(expected.getTextQuestion())));
         assertThat(actual, hasProperty("question", is(expected.getQuestion())));
         assertThat(actual, hasProperty("response", is(expected.getResponse())));
         assertThat(actual, hasProperty("textResponse", is(expected.getTextResponse())));
@@ -118,16 +133,14 @@ public class ActorResponseITTest extends ContextSensitiveTest {
                 "e3d2a6d1-9518-44f4-875c-40b8a83fd7e8");
         String updatedTextResponse = "updated text";
         Date updatedTimestamp = new Date(UPDATED_YEAR, Calendar.NOVEMBER, UPDATED_DAY);
-        
-        actor.setScheduledService(updatedService);
+
         actor.setQuestion(concept12);
         actor.setResponse(concept13);
         actor.setTextResponse(updatedTextResponse);
         actor.setAnsweredTime(updatedTimestamp);
         
         ActorResponse updated = actorResponseDao.saveOrUpdate(actor);
-        
-        assertThat(updated, hasProperty("scheduledService", is(updatedService)));
+
         assertThat(updated, hasProperty("question", is(concept12)));
         assertThat(updated, hasProperty("response", is(concept13)));
         assertThat(updated, hasProperty("textResponse", is(updatedTextResponse)));
@@ -135,11 +148,12 @@ public class ActorResponseITTest extends ContextSensitiveTest {
     }
     
     private ActorResponse createDefault() {
-        ActorResponseBuilder builder = new ActorResponseBuilder();
-        return builder.withScheduledService(scheduledService)
+        return new ActorResponseBuilder()
+                .withActor(patient)
+                .withPatient(patient)
+                .withSourceId(scheduledService.getId().toString())
                 .withQuestion(question)
                 .withResponse(response)
-                .withTextResponse(scheduledService.getPatientTemplate().getTemplateFieldValues().get(0).getValue())
                 .withAnsweredTime(TIMESTAMP)
                 .buildAsNew();
     }

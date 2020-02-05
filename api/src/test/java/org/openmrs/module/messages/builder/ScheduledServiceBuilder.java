@@ -9,7 +9,6 @@
 
 package org.openmrs.module.messages.builder;
 
-import org.openmrs.module.messages.api.model.ActorResponse;
 import org.openmrs.module.messages.api.model.DeliveryAttempt;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.ScheduledService;
@@ -26,6 +25,7 @@ public class ScheduledServiceBuilder extends AbstractBuilder<ScheduledService> {
     public static final String DEFAULT_CHANNEL_TYPE = "SMS";
     public static final String DUMMY_SERVICE = "service";
     public static final String DUMMY_SERVICE_EXEC = "service exec";
+    public static final int DUMMY_GROUP_ID = 5211;
 
     private Integer id;
     private ScheduledServiceGroup group;
@@ -36,11 +36,11 @@ public class ScheduledServiceBuilder extends AbstractBuilder<ScheduledService> {
     private String serviceExec;
     private List<DeliveryAttempt> deliveryAttempts;
     private List<ScheduledServiceParameter> scheduledServiceParameters;
-    private List<ActorResponse> actorResponses;
 
     public ScheduledServiceBuilder() {
         this.id = getInstanceNumber();
         this.group = new ScheduledServiceGroup();
+        this.group.setId(DUMMY_GROUP_ID);
         this.service = DUMMY_SERVICE;
         this.template = new PatientTemplate();
         this.channelType = DEFAULT_CHANNEL_TYPE;
@@ -48,7 +48,6 @@ public class ScheduledServiceBuilder extends AbstractBuilder<ScheduledService> {
         this.serviceExec = DUMMY_SERVICE_EXEC;
         this.deliveryAttempts = new ArrayList<>();
         this.scheduledServiceParameters = new ArrayList<>();
-        this.actorResponses = new ArrayList<>();
     }
 
     @Override
@@ -57,17 +56,18 @@ public class ScheduledServiceBuilder extends AbstractBuilder<ScheduledService> {
         scheduled.setId(id);
         scheduled.setService(service);
         scheduled.setChannelType(channelType);
+        scheduled.setGroup(group);
         scheduled.setStatus(status);
         scheduled.setPatientTemplate(template);
         scheduled.setLastServiceExecution(serviceExec);
         scheduled.setDeliveryAttempts(deliveryAttempts);
         scheduled.setScheduledServiceParameters(scheduledServiceParameters);
-        scheduled.setActorResponses(actorResponses);
         return scheduled;
     }
 
     @Override
     public ScheduledService buildAsNew() {
+        this.group.setId(null);
         return withId(null).build();
     }
 
@@ -117,8 +117,13 @@ public class ScheduledServiceBuilder extends AbstractBuilder<ScheduledService> {
         return this;
     }
 
-    public ScheduledServiceBuilder withActorResponses(List<ActorResponse> actorResponses) {
-        this.actorResponses = actorResponses;
+    public ScheduledServiceBuilder withActor(int actorId) {
+        this.group.setActor(new PersonBuilder().withId(actorId).build());
+        return this;
+    }
+
+    public ScheduledServiceBuilder withPatient(int patientId) {
+        this.group.setPatient(new PatientBuilder().withId(patientId).build());
         return this;
     }
 }

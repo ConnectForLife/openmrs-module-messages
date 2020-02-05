@@ -139,6 +139,8 @@
                 <property name="serviceExecutor">
                     <ref local="messages.ServiceExecutor"/>
                 </property>
+                <property name="personService" ref="personService"/>
+                <property name="patientService" ref="patientService"/>
             </bean>
         </property>
         <property name="transactionManager">

@@ -29,6 +29,9 @@ public final class Constant {
     public static final String STATUS_REASON_TRANSFERRED = "Transferred";
     public static final String STATUS_REASON_OTHER = "Other";
 
+    public static final String ACTOR_RESPONSE_TEXT_QUESTION = "Question?";
+    public static final String ACTOR_RESPONSE_TEXT_RESPONSE = "Response";
+
     private Constant() {
     }
 }

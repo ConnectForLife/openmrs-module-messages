@@ -60,6 +60,8 @@ public final class MessagesConstants {
 
     public static final String UUID_KEY = "uuid";
 
+    public static final String DEFAULT_ACTOR_RESPONSE_TYPE = "SCHEDULED_SERVICE_GROUP";
+
     private MessagesConstants() {
         // private. So can't be initialized
     }

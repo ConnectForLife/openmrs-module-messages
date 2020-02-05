@@ -1,16 +1,17 @@
 package org.openmrs.module.messages.api.model;
 
 import org.openmrs.Concept;
+import org.openmrs.Patient;
+import org.openmrs.Person;
 
+import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import java.util.Date;
 
 @Entity(name = "messages.ActorResponse")
 @Table(name = "messages_actor_response")
@@ -24,16 +25,30 @@ public class ActorResponse extends AbstractBaseOpenmrsData {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "scheduled_service_id", nullable = false)
-    private ScheduledService scheduledService;
+    @JoinColumn(name = "actor_id")
+    private Person actor;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "patient_id")
+    private Patient patient;
+
+    @Column(name = "source_id", columnDefinition = "text")
+    private String sourceId;
+
+    @ManyToOne
+    @JoinColumn(name = "source_type", nullable = false)
+    private ActorResponseType sourceType;
+
+    @ManyToOne
     @JoinColumn(name = "question")
     private Concept question;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "response")
     private Concept response;
+
+    @Column(name = "text_question", columnDefinition = "text")
+    private String textQuestion;
 
     @Column(name = "text_response", columnDefinition = "text")
     private String textResponse;
@@ -51,12 +66,36 @@ public class ActorResponse extends AbstractBaseOpenmrsData {
         this.id = id;
     }
 
-    public ScheduledService getScheduledService() {
-        return scheduledService;
+    public Person getActor() {
+        return actor;
     }
 
-    public void setScheduledService(ScheduledService scheduledService) {
-        this.scheduledService = scheduledService;
+    public void setActor(Person actor) {
+        this.actor = actor;
+    }
+
+    public Patient getPatient() {
+        return patient;
+    }
+
+    public void setPatient(Patient patient) {
+        this.patient = patient;
+    }
+
+    public String getSourceId() {
+        return sourceId;
+    }
+
+    public void setSourceId(String sourceId) {
+        this.sourceId = sourceId;
+    }
+
+    public ActorResponseType getSourceType() {
+        return sourceType;
+    }
+
+    public void setSourceType(ActorResponseType sourceType) {
+        this.sourceType = sourceType;
     }
 
     public Concept getQuestion() {
@@ -73,6 +112,14 @@ public class ActorResponse extends AbstractBaseOpenmrsData {
 
     public void setResponse(Concept response) {
         this.response = response;
+    }
+
+    public String getTextQuestion() {
+        return textQuestion;
+    }
+
+    public void setTextQuestion(String textQuestion) {
+        this.textQuestion = textQuestion;
     }
 
     public String getTextResponse() {

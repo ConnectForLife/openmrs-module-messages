@@ -9,30 +9,17 @@
 
 package org.openmrs.module.messages.api.service;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.openmrs.module.messages.api.service.DatasetConstants.XML_DATA_SET_PATH;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-import java.util.UUID;
 import org.hamcrest.Matchers;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
+import org.openmrs.Patient;
+import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.Constant;
 import org.openmrs.module.messages.ContextSensitiveTest;
+import org.openmrs.module.messages.api.constants.MessagesConstants;
 import org.openmrs.module.messages.api.dao.ActorResponseDao;
 import org.openmrs.module.messages.api.dao.MessagingDao;
 import org.openmrs.module.messages.api.exception.EntityNotFoundException;
@@ -44,6 +31,23 @@ import org.openmrs.module.messages.builder.ActorResponseBuilder;
 import org.openmrs.scheduler.SchedulerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.UUID;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.openmrs.module.messages.api.service.DatasetConstants.XML_DATA_SET_PATH;
 
 public class MessagingServiceITTest extends ContextSensitiveTest {
 
@@ -59,7 +63,11 @@ public class MessagingServiceITTest extends ContextSensitiveTest {
 
     private static final int NON_EXISTING_ACTOR_RESPONSE = 999999999;
 
+    private static final String EXPECTED_PATIENT_UUID = "7321f17d-bdef-4571-8f9b-c2ec868dc251";
+
     private static final Date TIMESTAMP = new Date(2019, Calendar.NOVEMBER, 21);
+
+    private static final String MISSING_ACTOR_RESPONSE_TYPE = "MISSING_TYPE";
 
     private Concept question;
 
@@ -68,6 +76,8 @@ public class MessagingServiceITTest extends ContextSensitiveTest {
     private Concept newResponse;
 
     private ScheduledService scheduledService;
+
+    private Patient patient;
 
     @Autowired
     @Qualifier("messages.messagingService")
@@ -85,6 +95,10 @@ public class MessagingServiceITTest extends ContextSensitiveTest {
     @Qualifier("schedulerService")
     private SchedulerService schedulerService; // this is mocked in xml - in does not work in testing env
 
+    @Autowired
+    @Qualifier("patientService")
+    private PatientService patientService;
+
     @Before
     public void setUp() throws Exception {
         executeDataSet(XML_DATA_SET_PATH + "ConfigDataset.xml");
@@ -94,24 +108,32 @@ public class MessagingServiceITTest extends ContextSensitiveTest {
         response = Context.getConceptService().getConceptByUuid(RESPONSE_UUID);
         newResponse = Context.getConceptService().getConceptByUuid(UPDATED_RESPONSE_UUID);
         scheduledService = messagingDao.getByUuid(SCHEDULE_UUID);
-
+        patient = patientService.getPatientByUuid(EXPECTED_PATIENT_UUID);
         reset(schedulerService);
     }
 
     @Test
     public void shouldReturnRegisteredActorResponse() {
         ActorResponseBuilder builder = new ActorResponseBuilder();
-        ActorResponse expected = builder.withScheduledService(scheduledService)
+        ActorResponse expected = builder
+                .withActor(patient)
+                .withPatient(patient)
+                .withSourceId(scheduledService.getId().toString())
                 .withQuestion(question)
                 .withResponse(response)
-                .withTextResponse(scheduledService.getPatientTemplate().getTemplateFieldValues().get(0).getValue())
+                .withTextResponse(Constant.ACTOR_RESPONSE_TEXT_RESPONSE)
                 .withAnsweredTime(TIMESTAMP)
                 .build();
 
-        ActorResponse actual = messagingService.registerResponse(scheduledService.getId(),
+        ActorResponse actual = messagingService.registerResponse(
+                patient.getId(),
+                patient.getId(),
+                scheduledService.getId().toString(),
+                MessagesConstants.DEFAULT_ACTOR_RESPONSE_TYPE,
                 question.getId(),
+                Constant.ACTOR_RESPONSE_TEXT_QUESTION,
                 response.getId(),
-                scheduledService.getPatientTemplate().getTemplateFieldValues().get(0).getValue(),
+                Constant.ACTOR_RESPONSE_TEXT_RESPONSE,
                 TIMESTAMP);
 
         assertThat(actual, not(nullValue()));
@@ -130,20 +152,38 @@ public class MessagingServiceITTest extends ContextSensitiveTest {
         assertThat(actual.getResponse().getPreferredName(Locale.ENGLISH),
                 is(expected.getResponse().getPreferredName(Locale.ENGLISH)));
 
-        assertThat(actual.getScheduledService().getId(),
-                is(expected.getScheduledService().getId()));
-        assertThat(actual.getScheduledService().getLastServiceExecution(),
-                is(expected.getScheduledService().getLastServiceExecution()));
-        assertThat(actual.getScheduledService().getStatus(),
-                is(expected.getScheduledService().getStatus()));
+        assertThat(actual.getActor(), is(expected.getActor()));
+        assertThat(actual.getPatient(), is(expected.getPatient()));
+        assertThat(actual.getSourceId(), is(expected.getSourceId()));
+        assertThat(actual.getSourceType(), is(expected.getSourceType()));
+        assertThat(actual.getTextQuestion(), is(expected.getTextQuestion()));
     }
 
-    @Test(expected = EntityNotFoundException.class)
-    public void shouldThrowExceptionWhenScheduledServiceIsNotSaved() {
-        messagingService.registerResponse(Constant.NOT_EXISTING_ID,
+    @Test(expected = Exception.class)
+    public void shouldThrowExceptionWhenMissingActorResponseType() {
+        messagingService.registerResponse(
+                patient.getId(),
+                patient.getId(),
+                scheduledService.getId().toString(),
+                MISSING_ACTOR_RESPONSE_TYPE,
                 question.getId(),
+                Constant.ACTOR_RESPONSE_TEXT_QUESTION,
                 response.getId(),
                 scheduledService.getPatientTemplate().getTemplateFieldValues().get(0).getValue(),
+                TIMESTAMP);
+    }
+
+    @Test
+    public void shouldRegisterResponseWithOptionalValues() {
+        messagingService.registerResponse(
+                null,
+                null,
+                null,
+                MessagesConstants.DEFAULT_ACTOR_RESPONSE_TYPE,
+                null,
+                null,
+                null,
+                null,
                 TIMESTAMP);
     }
 
@@ -270,15 +310,24 @@ public class MessagingServiceITTest extends ContextSensitiveTest {
     @Test
     public void shouldReturnUpdatedRegisteredActorResponseUsingConcept() {
         ActorResponseBuilder builder = new ActorResponseBuilder();
-        ActorResponse expected = builder.withScheduledService(scheduledService)
+        ActorResponse expected = builder
+                .withActor(patient)
+                .withPatient(patient)
+                .withSourceId(scheduledService.getId().toString())
                 .withQuestion(question)
                 .withResponse(newResponse)
-                .withTextResponse(scheduledService.getPatientTemplate().getTemplateFieldValues().get(0).getValue())
+                .withTextResponse(Constant.ACTOR_RESPONSE_TEXT_RESPONSE)
+                .withAnsweredTime(TIMESTAMP)
                 .build();
-        ActorResponse previous = messagingService.registerResponse(scheduledService.getId(),
+        ActorResponse previous = messagingService.registerResponse(
+                patient.getId(),
+                patient.getId(),
+                scheduledService.getId().toString(),
+                MessagesConstants.DEFAULT_ACTOR_RESPONSE_TYPE,
                 question.getId(),
+                Constant.ACTOR_RESPONSE_TEXT_QUESTION,
                 response.getId(),
-                scheduledService.getPatientTemplate().getTemplateFieldValues().get(0).getValue(),
+                Constant.ACTOR_RESPONSE_TEXT_RESPONSE,
                 TIMESTAMP);
 
         ActorResponse actual = messagingService.updateActorResponse(previous.getId(), newResponse.getId(), null);
@@ -297,26 +346,29 @@ public class MessagingServiceITTest extends ContextSensitiveTest {
                 is(expected.getResponse().getConceptId()));
         assertThat(actual.getResponse().getPreferredName(Locale.ENGLISH),
                 is(expected.getResponse().getPreferredName(Locale.ENGLISH)));
-
-        assertThat(actual.getScheduledService().getId(),
-                is(expected.getScheduledService().getId()));
-        assertThat(actual.getScheduledService().getLastServiceExecution(),
-                is(expected.getScheduledService().getLastServiceExecution()));
-        assertThat(actual.getScheduledService().getStatus(),
-                is(expected.getScheduledService().getStatus()));
     }
 
     @Test
     public void shouldReturnUpdatedRegisteredActorResponseUsingText() {
         ActorResponseBuilder builder = new ActorResponseBuilder();
-        ActorResponse expected = builder.withScheduledService(scheduledService)
+        ActorResponse expected = builder
+                .withActor(patient)
+                .withPatient(patient)
+                .withSourceId(scheduledService.getId().toString())
                 .withQuestion(question)
+                .withResponse(response)
                 .withTextResponse(NEW_TEXT_RESPONSE)
+                .withAnsweredTime(TIMESTAMP)
                 .build();
-        ActorResponse previous = messagingService.registerResponse(scheduledService.getId(),
+        ActorResponse previous = messagingService.registerResponse(
+                patient.getId(),
+                patient.getId(),
+                scheduledService.getId().toString(),
+                MessagesConstants.DEFAULT_ACTOR_RESPONSE_TYPE,
                 question.getId(),
+                Constant.ACTOR_RESPONSE_TEXT_QUESTION,
                 response.getId(),
-                scheduledService.getPatientTemplate().getTemplateFieldValues().get(0).getValue(),
+                Constant.ACTOR_RESPONSE_TEXT_RESPONSE,
                 TIMESTAMP);
 
         ActorResponse actual = messagingService.updateActorResponse(previous.getId(), null, NEW_TEXT_RESPONSE);
@@ -331,27 +383,29 @@ public class MessagingServiceITTest extends ContextSensitiveTest {
                 is(expected.getQuestion().getConceptId()));
         assertThat(actual.getQuestion().getPreferredName(Locale.ENGLISH),
                 is(expected.getQuestion().getPreferredName(Locale.ENGLISH)));
-
-        assertThat(actual.getScheduledService().getId(),
-                is(expected.getScheduledService().getId()));
-        assertThat(actual.getScheduledService().getLastServiceExecution(),
-                is(expected.getScheduledService().getLastServiceExecution()));
-        assertThat(actual.getScheduledService().getStatus(),
-                is(expected.getScheduledService().getStatus()));
     }
 
     @Test
     public void shouldReturnUpdatedRegisteredActorResponseUsingConceptAndText() {
         ActorResponseBuilder builder = new ActorResponseBuilder();
-        ActorResponse expected = builder.withScheduledService(scheduledService)
+        ActorResponse expected = builder
+                .withActor(patient)
+                .withPatient(patient)
+                .withSourceId(scheduledService.getId().toString())
                 .withQuestion(question)
                 .withResponse(newResponse)
                 .withTextResponse(NEW_TEXT_RESPONSE)
+                .withAnsweredTime(TIMESTAMP)
                 .build();
-        ActorResponse previous = messagingService.registerResponse(scheduledService.getId(),
+        ActorResponse previous = messagingService.registerResponse(
+                patient.getId(),
+                patient.getId(),
+                scheduledService.getId().toString(),
+                MessagesConstants.DEFAULT_ACTOR_RESPONSE_TYPE,
                 question.getId(),
+                Constant.ACTOR_RESPONSE_TEXT_QUESTION,
                 response.getId(),
-                scheduledService.getPatientTemplate().getTemplateFieldValues().get(0).getValue(),
+                Constant.ACTOR_RESPONSE_TEXT_RESPONSE,
                 TIMESTAMP);
 
         ActorResponse actual = messagingService.updateActorResponse(previous.getId(), newResponse.getId(),
@@ -372,13 +426,6 @@ public class MessagingServiceITTest extends ContextSensitiveTest {
                 is(expected.getResponse().getConceptId()));
         assertThat(actual.getResponse().getPreferredName(Locale.ENGLISH),
                 is(expected.getResponse().getPreferredName(Locale.ENGLISH)));
-
-        assertThat(actual.getScheduledService().getId(),
-                is(expected.getScheduledService().getId()));
-        assertThat(actual.getScheduledService().getLastServiceExecution(),
-                is(expected.getScheduledService().getLastServiceExecution()));
-        assertThat(actual.getScheduledService().getStatus(),
-                is(expected.getScheduledService().getStatus()));
     }
 
     @Test(expected = EntityNotFoundException.class)

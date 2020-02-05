@@ -13,13 +13,19 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.PropertyValueException;
 import org.openmrs.Concept;
+import org.openmrs.Patient;
+import org.openmrs.Person;
 import org.openmrs.api.ConceptService;
+import org.openmrs.api.PatientService;
+import org.openmrs.api.PersonService;
+import org.openmrs.module.messages.api.constants.MessagesConstants;
 import org.openmrs.module.messages.api.dao.ActorResponseDao;
 import org.openmrs.module.messages.api.exception.EntityNotFoundException;
 import org.openmrs.module.messages.api.execution.ExecutionException;
 import org.openmrs.module.messages.api.execution.ServiceExecutor;
 import org.openmrs.module.messages.api.execution.ServiceResultList;
 import org.openmrs.module.messages.api.model.ActorResponse;
+import org.openmrs.module.messages.api.model.ActorResponseType;
 import org.openmrs.module.messages.api.model.DeliveryAttempt;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.Range;
@@ -45,21 +51,26 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
     private ActorResponseDao actorResponseDao;
     private ServiceExecutor serviceExecutor;
     private PatientTemplateService patientTemplateService;
+    private PersonService personService;
+    private PatientService patientService;
 
     @Override
-    public ActorResponse registerResponse(Integer scheduledId,
-                                          Integer questionId,
-                                          Integer responseId,
-                                          String textResponse,
-                                          Date timestamp) {
-
-        ScheduledService scheduled = HibernateUtil.getNotNull(scheduledId, this);
-        Concept question = conceptService.getConcept(questionId);
-        Concept response = conceptService.getConcept(responseId);
+    @SuppressWarnings("checkstyle:ParameterNumber")
+    public ActorResponse registerResponse(Integer actorId, Integer patientId, String sourceId, String sourceType,
+            Integer questionId, String textQuestion, Integer responseId, String textResponse, Date timestamp) {
+        Person actor = actorId == null ? null : personService.getPerson(actorId);
+        Patient patient = patientId == null ? null : patientService.getPatient(patientId);
+        Concept question = questionId == null ? null : conceptService.getConcept(questionId);
+        Concept response = responseId == null ? null : conceptService.getConcept(responseId);
+        ActorResponseType responseType = new ActorResponseType(sourceType);
 
         ActorResponse actorResponse = new ActorResponse();
-        actorResponse.setScheduledService(scheduled);
+        actorResponse.setActor(actor);
+        actorResponse.setPatient(patient);
+        actorResponse.setSourceId(sourceId);
+        actorResponse.setSourceType(responseType);
         actorResponse.setQuestion(question);
+        actorResponse.setTextQuestion(textQuestion);
         actorResponse.setResponse(response);
         actorResponse.setTextResponse(textResponse);
         actorResponse.setAnsweredTime(timestamp);
@@ -107,26 +118,30 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
     }
 
     @Override
+    @SuppressWarnings("checkstyle:ParameterNumber")
     public ScheduledService registerResponseAndStatus(Integer scheduledId,
                                                       Integer questionId,
+                                                      String textQuestion,
                                                       Integer responseId,
                                                       String textResponse,
                                                       String status,
                                                       Date timestamp,
                                                       String executionId) throws PropertyValueException {
-        registerResponse(scheduledId, questionId, responseId, textResponse, timestamp);
+        registerResponseForScheduledService(scheduledId, questionId, textQuestion, responseId, textResponse, timestamp);
         return registerAttempt(scheduledId, status, timestamp, executionId);
     }
 
     @Override
+    @SuppressWarnings("checkstyle:ParameterNumber")
     public ScheduledService registerResponseAndStatus(Integer scheduledId,
                                                       Integer questionId,
+                                                      String textQuestion,
                                                       Integer responseId,
                                                       String textResponse,
                                                       ServiceStatus status,
                                                       Date timestamp,
                                                       String executionId) throws PropertyValueException {
-        registerResponse(scheduledId, questionId, responseId, textResponse, timestamp);
+        registerResponseForScheduledService(scheduledId, questionId, textQuestion, responseId, textResponse, timestamp);
         return registerAttempt(scheduledId, status, timestamp, executionId);
     }
 
@@ -186,6 +201,14 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
         }
     }
 
+    public void setPersonService(PersonService personService) {
+        this.personService = personService;
+    }
+
+    public void setPatientService(PatientService patientService) {
+        this.patientService = patientService;
+    }
+
     private List<ServiceResultList> retrieveAllServiceExecutions(List<PatientTemplate> patientTemplates, Date startDate,
                                                                  Date endDate) {
 
@@ -221,5 +244,16 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
             throw new IllegalArgumentException(String.format(
                     "%s status cannot be registered", status.name()));
         }
+    }
+
+    private void registerResponseForScheduledService(Integer scheduledId, Integer questionId, String textQuestion,
+            Integer responseId, String textResponse, Date timestamp) {
+        ScheduledService scheduled = HibernateUtil.getNotNull(scheduledId, this);
+        Integer actorId = scheduled.getGroup().getActor().getPersonId();
+        Integer patientId = scheduled.getGroup().getPatient().getPatientId();
+        String sourceId = scheduled.getGroup().getId().toString();
+        String sourceType = MessagesConstants.DEFAULT_ACTOR_RESPONSE_TYPE;
+        registerResponse(actorId, patientId, sourceId, sourceType, questionId, textQuestion,
+                responseId, textResponse, timestamp);
     }
 }

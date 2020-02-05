@@ -9,13 +9,14 @@
 
 package org.openmrs.module.messages.api.service;
 
-import java.util.Date;
-import java.util.List;
 import org.openmrs.module.messages.api.exception.EntityNotFoundException;
 import org.openmrs.module.messages.api.execution.ServiceResultList;
 import org.openmrs.module.messages.api.model.ActorResponse;
 import org.openmrs.module.messages.api.model.ScheduledService;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
+
+import java.util.Date;
+import java.util.List;
 
 public interface MessagingService extends BaseOpenmrsCriteriaDataService<ScheduledService> {
 
@@ -66,16 +67,25 @@ public interface MessagingService extends BaseOpenmrsCriteriaDataService<Schedul
     /**
      * The API to be called by other modules, such as callflows and sms, in order to create actor response.
      *
-     * @param scheduledId  is an id of the ScheduledService for which ActorResponse should be created.
-     * @param questionId   is an id of a concept which describes a question.
-     * @param responseId   is an id of a concept which describes a response.
-     * @param textResponse is a response text for ActorResponse.
-     * @param timestamp    describes the time when the event took place.
+     * @param actorId is an id of the Person (actor) for which {@link ActorResponse} should be created.
+     * @param patientId is an id of the Patient which is related to this {@link ActorResponse}.
+     * @param sourceId is an string identifier of the response which is used to join this method with specific message.
+     * @param sourceType is an string value of {@link org.openmrs.module.messages.api.model.ActorResponseType}.
+     * @param questionId is an optional id of a concept which describes a question.
+     * @param textQuestion is an optional string value of question.
+     * @param responseId is an optional id of a concept which describes a response.
+     * @param textResponse is an optional response text for ActorResponse.
+     * @param timestamp describes the time when the event took place.
      * @return the created actor response.
      * @throws EntityNotFoundException when scheduled service with passed id does not exist.
      */
-    ActorResponse registerResponse(Integer scheduledId,
+    @SuppressWarnings("checkstyle:ParameterNumber")
+    ActorResponse registerResponse(Integer actorId,
+                                   Integer patientId,
+                                   String sourceId,
+                                   String sourceType,
                                    Integer questionId,
+                                   String textQuestion,
                                    Integer responseId,
                                    String textResponse,
                                    Date timestamp);
@@ -89,6 +99,7 @@ public interface MessagingService extends BaseOpenmrsCriteriaDataService<Schedul
      *
      * @param scheduledId  is an id of the ScheduledService for which ActorResponse should be created.
      * @param questionId   is an id of a concept which describes a question.
+     * @param textQuestion is an optional string value of question.
      * @param responseId   is an id of a concept which describes a response.
      * @param textResponse is a response text for ActorResponse.
      * @param status       is a new value of a service delivery which should be set
@@ -101,8 +112,10 @@ public interface MessagingService extends BaseOpenmrsCriteriaDataService<Schedul
      *                                  and when is PENDING or FUTURE.
      *
      */
+    @SuppressWarnings("checkstyle:ParameterNumber")
     ScheduledService registerResponseAndStatus(Integer scheduledId,
                                                Integer questionId,
+                                               String textQuestion,
                                                Integer responseId,
                                                String textResponse,
                                                String status,
@@ -116,6 +129,7 @@ public interface MessagingService extends BaseOpenmrsCriteriaDataService<Schedul
      *
      * @param scheduledId  is an id of the ScheduledService for which ActorResponse should be created.
      * @param questionId   is an id of a concept which describes a question.
+     * @param textQuestion is an optional string value of question.
      * @param responseId   is an id of a concept which describes a response.
      * @param textResponse is a response text for ActorResponse.
      * @param status       is a new value of a service delivery which should be set (eg. delivered, failed)
@@ -125,8 +139,10 @@ public interface MessagingService extends BaseOpenmrsCriteriaDataService<Schedul
      * @throws EntityNotFoundException when scheduled service with passed id does not exist.
      * @throws IllegalArgumentException when {@param status} is PENDING or FUTURE.
      */
+    @SuppressWarnings("checkstyle:ParameterNumber")
     ScheduledService registerResponseAndStatus(Integer scheduledId,
                                                Integer questionId,
+                                               String textQuestion,
                                                Integer responseId,
                                                String textResponse,
                                                ServiceStatus status,

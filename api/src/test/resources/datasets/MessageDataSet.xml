@@ -255,6 +255,12 @@
             voided="false"
             uuid="b9f91bf6-6d89-4da5-ad9d-735cd70ffc48"/>
 
+    <messages_actor_response_type name="SCHEDULED_SERVICE"/>
+
+    <messages_actor_response_type name="SCHEDULED_SERVICE_GROUP"/>
+
+    <messages_actor_response_type name="OTHER"/>
+
     <messages_template
             messages_template_id="51"
             service_query="select CAST('2019-12-01' as date) as EXECUTION_DATE, '1' as MESSAGE_ID, 'Call' as CHANNEL_ID, 'FUTURE' as STATUS_ID, '1' as visitTypeId, '1' as locationId

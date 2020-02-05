@@ -64,9 +64,6 @@ public class ScheduledService extends AbstractBaseOpenmrsData {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "scheduledMessage", orphanRemoval = true)
     private List<ScheduledServiceParameter> scheduledServiceParameters = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "scheduledService", orphanRemoval = true)
-    private List<ActorResponse> actorResponses = new ArrayList<>();
-
     @Column(name = "last_service_execution_id")
     private String lastServiceExecution;
     
@@ -148,14 +145,6 @@ public class ScheduledService extends AbstractBaseOpenmrsData {
         for (ScheduledServiceParameter parameter : scheduledServiceParameters) {
             parameter.setScheduledMessage(this);
         }
-    }
-
-    public List<ActorResponse> getActorResponses() {
-        return actorResponses;
-    }
-
-    public void setActorResponses(List<ActorResponse> actorResponses) {
-        this.actorResponses = actorResponses;
     }
 
     @Transient
