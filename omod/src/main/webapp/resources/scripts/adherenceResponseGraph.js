@@ -12,6 +12,7 @@ responseGraph.load = function(mainDiv, config) {
     success: function(data) {
         if(data && data.length) {
           var barChartConfig = {
+            fragmentId: config.fragmentId,
             mainDiv: mainDiv,
             colorRange: config.colorRange,
             data: responseGraph.extractChartData(data),

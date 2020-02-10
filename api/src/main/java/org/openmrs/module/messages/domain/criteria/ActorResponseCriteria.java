@@ -126,7 +126,7 @@ public class ActorResponseCriteria extends ReportCriteria implements Serializabl
         addNotNullCriteria(hibernateCriteria, "actor.personId", actorId);
         addNotNullCriteria(hibernateCriteria, "patient.personId", patientId);
         addNotNullCriteria(hibernateCriteria, "question.conceptId", questionId);
-        addNotNotBlankCriteria(hibernateCriteria, "text_question", textQuestion);
+        addNotNotBlankCriteria(hibernateCriteria, "textQuestion", textQuestion);
         createResponseWhereCondition(hibernateCriteria);
         addDateRangeCriteria(hibernateCriteria);
     }

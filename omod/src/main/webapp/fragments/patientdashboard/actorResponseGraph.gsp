@@ -29,6 +29,7 @@
         <script>
             
             var chartConfig = {
+                fragmentId: "${config.id}",
                 columnsInfo: <%= groovy.json.JsonOutput.toJson(config.columnsInfo) %>,
                 colorRange: <%= groovy.json.JsonOutput.toJson(config.colorRange) %>,
                  <% if (config.xAxisLabel) { %>

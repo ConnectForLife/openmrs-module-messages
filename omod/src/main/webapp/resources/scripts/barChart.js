@@ -46,6 +46,7 @@ function groupBarChart(config) {
     }
 
     function drawgroupBarChartChart(config) {
+      var fragmentId = config.fragmentId;
       var data = config.data;
       var columnsInfo = config.columnsInfo;
       var xAxis = config.xAxis;
@@ -140,22 +141,22 @@ function groupBarChart(config) {
       self.label = label;
       self.yAxis = yAxis;
       self.xAxis = xAxis;
-      barTooltip.addTooltips(self);
+      barTooltip.addTooltips(self, fragmentId);
 
       rect.on("mouseover", function () {
         var currentEl = d3.select(this);
         var index = currentEl.attr("data-index");
-        barTooltip.showTooltip(self, index);
+        barTooltip.showTooltip(self, index, fragmentId);
       });
 
       rect.on("mouseout", function () {
         var currentEl = d3.select(this);
         var index = currentEl.attr("data-index");
-        barTooltip.hideTooltip(self, index);
+        barTooltip.hideTooltip(self, index, fragmentId);
       });
 
       rect.on("mousemove", function () {
-        barTooltip.moveTooltip(self);
+        barTooltip.moveTooltip(self, fragmentId);
       });
 
       g.append("g")
@@ -204,7 +205,7 @@ function groupBarChart(config) {
       }
     }
     var barTooltip = {
-      addTooltips: function (pie) {
+      addTooltips: function (pie, fragmentId) {
         var keys = pie.keys;
         // group the label groups (label, percentage, value) into a single element for simpler positioning
         var element = pie.svg.append("g")
@@ -212,7 +213,7 @@ function groupBarChart(config) {
           .data(pie.data)
           .enter().append("g")
           .attr("class", function (d, i) {
-            return pie.cssPrefix + "tooltips" + "_" + i
+            return pie.cssPrefix + "tooltips" + "_" + i + "-" + fragmentId
           });
 
         tooltips = element.selectAll("g")
@@ -223,9 +224,9 @@ function groupBarChart(config) {
           })
           .enter()
           .append("g")
-          .attr("class", pie.cssPrefix + "tooltip")
+          .attr("class", pie.cssPrefix + "tooltip" + "-" + fragmentId)
           .attr("id", function (d, i) {
-            return pie.cssPrefix + "tooltip" + escapeSpaces(d.index);
+            return pie.cssPrefix + "tooltip" + escapeSpaces(d.index) + "-" + fragmentId;
           })
           .style("opacity", 0)
           .append("rect")
@@ -260,27 +261,27 @@ function groupBarChart(config) {
 
         element.selectAll("g rect")
           .attr("width", function (d, i) {
-            var dims = helpers.getDimensions(pie.cssPrefix + "tooltip" + escapeSpaces(d.index));
+            var dims = helpers.getDimensions(pie.cssPrefix + "tooltip" + escapeSpaces(d.index) + "-" + fragmentId);
             return dims.w + (2 * 4);
           })
           .attr("height", function (d, i) {
-            var dims = helpers.getDimensions(pie.cssPrefix + "tooltip" + escapeSpaces(d.index));
+            var dims = helpers.getDimensions(pie.cssPrefix + "tooltip" + escapeSpaces(d.index) + "-" + fragmentId);
             return dims.h + (2 * 4);
           })
           .attr("y", function (d, i) {
-            var dims = helpers.getDimensions(pie.cssPrefix + "tooltip" + escapeSpaces(d.index));
+            var dims = helpers.getDimensions(pie.cssPrefix + "tooltip" + escapeSpaces(d.index) + "-" + fragmentId);
             return -(dims.h / 2) + 1;
           });
       },
 
-      showTooltip: function (pie, index) {
+      showTooltip: function (pie, index, fragmentId) {
         var fadeInSpeed = 250;
-        if (barTooltip.currentTooltip === index) {
+        if (barTooltip.currentTooltip === index + "-" + fragmentId) {
           fadeInSpeed = 1;
         }
 
-        barTooltip.currentTooltip = index;
-        d3.select("#" + pie.cssPrefix + "tooltip" + escapeSpaces(index))
+        barTooltip.currentTooltip = index + "-" + fragmentId;
+        d3.select("#" + pie.cssPrefix + "tooltip" + escapeSpaces(index) + "-" + fragmentId)
           .transition()
           .duration(fadeInSpeed)
           .style("opacity", function () {
@@ -290,7 +291,7 @@ function groupBarChart(config) {
         barTooltip.moveTooltip(pie);
       },
 
-      moveTooltip: function (pie) {
+      moveTooltip: function (pie, fragmentId) {
         d3.selectAll("#" + pie.cssPrefix + "tooltip" + escapeSpaces(barTooltip.currentTooltip))
           .attr("transform", function (d) {
             var mouseCoords = d3.mouse(this.parentNode);
@@ -300,8 +301,8 @@ function groupBarChart(config) {
           });
       },
 
-      hideTooltip: function (pie, index) {
-        d3.select("#" + pie.cssPrefix + "tooltip" + escapeSpaces(index))
+      hideTooltip: function (pie, index, fragmentId) {
+        d3.select("#" + pie.cssPrefix + "tooltip" + escapeSpaces(index) + "-" + fragmentId)
           .style("opacity", function () {
             return 0;
           });
