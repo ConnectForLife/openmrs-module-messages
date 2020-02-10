@@ -6,6 +6,8 @@ public final class PrivilegeConstants {
 
     public static final String MANAGE_PRIVILEGE = "Messages manage privilege";
 
+    public static final String VIEW_PATIENTS_PRIVILEGE = "View Patients";
+
     private PrivilegeConstants() {
     }
 }

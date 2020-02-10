@@ -1,0 +1,29 @@
+[
+  {
+    "id":"messages.patientDashboard",
+    "description":"Adds some modifications in the patient dashboard",
+    "extensions": [
+      {
+        "id": "messages.patientDashboard.actorResponse",
+        "order": 5,
+        "extensionPointId": "patientDashboard.firstColumnFragments",
+        "icon": "icon-medical",
+        "extensionParams": {
+          "provider": "messages",
+          "fragment": "patientdashboard/actorResponseGraph",
+          "fragmentConfig": {
+            "label": "messages.dashboard.actorResponse.title",
+            "additionalTitle": "messages.dashboard.actorResponse.additionalTitle",
+            "xAxisLabel": "messages.dashboard.actorResponse.xAxisLabel",
+            "yAxisLabel": "messages.dashboard.actorResponse.yAxisLabel",
+            "colorRange": ["#009384", "#5B57A6"],
+            "columnsInfo": { "2": "Yes", "3": "No" },
+            "responseMode": "CONCEPT",
+            "dataDateRange": 4,
+            "questionId": 1
+          }
+        }
+      }
+    ]
+  }
+]

@@ -85,7 +85,7 @@ public abstract class BaseOpenmrsDataDao<T extends BaseOpenmrsData> extends Hibe
         return rows;
     }
 
-    private DbSession getSession() {
+    protected DbSession getSession() {
         return sessionFactory.getCurrentSession();
     }
 }

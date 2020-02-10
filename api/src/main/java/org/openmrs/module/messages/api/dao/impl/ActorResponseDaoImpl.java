@@ -9,11 +9,12 @@
 
 package org.openmrs.module.messages.api.dao.impl;
 
-import org.openmrs.api.db.hibernate.HibernateOpenmrsDataDAO;
 import org.openmrs.module.messages.api.dao.ActorResponseDao;
+import org.openmrs.module.messages.api.dao.BaseOpenmrsDataDao;
 import org.openmrs.module.messages.api.model.ActorResponse;
 
-public class ActorResponseDaoImpl extends HibernateOpenmrsDataDAO<ActorResponse> implements ActorResponseDao {
+public class ActorResponseDaoImpl extends BaseOpenmrsDataDao<ActorResponse> implements ActorResponseDao {
+
     public ActorResponseDaoImpl() {
         super(ActorResponse.class);
     }

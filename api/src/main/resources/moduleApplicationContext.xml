@@ -69,8 +69,12 @@
             <ref bean="dbSessionFactory"/>
         </property>
     </bean>
-    <bean id="messages.ActorResponseDao" class="org.openmrs.module.messages.api.dao.impl.ActorResponseDaoImpl"/>
 
+    <bean id="messages.ActorResponseDao" class="org.openmrs.module.messages.api.dao.impl.ActorResponseDaoImpl">
+        <property name="dbSessionFactory">
+            <ref bean="dbSessionFactory"/>
+        </property>
+    </bean>
 
     <bean id="messages.patientTemplateService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="transactionManager">
@@ -447,4 +451,21 @@
     </bean>
 
     <bean id="messages.actorTypeMapper" class="org.openmrs.module.messages.api.mappers.ActorTypeMapper"/>
+
+    <bean id="messages.actorResponseService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="target">
+            <bean class="org.openmrs.module.messages.api.service.impl.ActorResponseServiceImpl">
+                <property name="daoBeanName" value="messages.ActorResponseDao"/>
+            </bean>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="preInterceptors">
+            <ref bean="serviceInterceptors"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
 </beans>

@@ -9,8 +9,7 @@
 
 package org.openmrs.module.messages.api.dao;
 
-import org.openmrs.api.db.OpenmrsDataDAO;
 import org.openmrs.module.messages.api.model.ActorResponse;
 
-public interface ActorResponseDao extends OpenmrsDataDAO<ActorResponse> {
+public interface ActorResponseDao extends BaseOpenmrsPageableDao<ActorResponse> {
 }
