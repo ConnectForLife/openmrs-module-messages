@@ -17,14 +17,14 @@
             <span class="actor-response-graph-title"> ${ ui.message(config.additionalTitle) }</span>
             <br />
         <% } %>
-        <span id="adherence-chart-loading" style="display: none;">
+        <span id="adherence-chart-loading-${config.id}" style="display: none;">
             ${ ui.message("messages.loading") }
             <i class="icon-spinner icon-spin icon-2x" style="margin-left: 10px;"></i>
         </span>
-        <span id="adherence-chart-no-content" style="display: none;">
+        <span id="adherence-chart-no-content-${config.id}" style="display: none;">
             ${ ui.message("messages.noContent") }
         </span>
-        <div id="chart">
+        <div id="chart-${config.id}">
         </div>
         <script>
             
@@ -37,12 +37,12 @@
                 <% if (config.yAxisLabel) { %>
                     yAxisLabel: "${ ui.message(config.yAxisLabel) }",
                 <% } %>
-                loadingMessage: "#adherence-chart-loading",
-                noContentMessage: "#adherence-chart-no-content",
+                loadingMessage: "#adherence-chart-loading-${config.id}",
+                noContentMessage: "#adherence-chart-no-content-${config.id}",
                 requestConfig: <%= groovy.json.JsonOutput.toJson(requestConfiguration) %>
             };
 
-            responseGraph.load("#chart", chartConfig);
+            responseGraph.load("#chart-${config.id}", chartConfig);
         </script>
     </div>
 </div>

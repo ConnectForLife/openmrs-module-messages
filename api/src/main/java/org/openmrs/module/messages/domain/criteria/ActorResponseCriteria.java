@@ -66,7 +66,7 @@ public class ActorResponseCriteria extends ReportCriteria implements Serializabl
 
     private List<Integer> possibleResponses = new ArrayList<>();
 
-    private List<String> possibleTestResponses = new ArrayList<>();
+    private List<String> possibleTextResponses = new ArrayList<>();
 
     private String responseMode;
 
@@ -102,8 +102,8 @@ public class ActorResponseCriteria extends ReportCriteria implements Serializabl
         return this;
     }
 
-    public ActorResponseCriteria setPossibleTestResponses(List<String> possibleTestResponses) {
-        this.possibleTestResponses = possibleTestResponses;
+    public ActorResponseCriteria setPossibleTextResponses(List<String> possibleTextResponses) {
+        this.possibleTextResponses = possibleTextResponses;
         return this;
     }
 
@@ -127,8 +127,7 @@ public class ActorResponseCriteria extends ReportCriteria implements Serializabl
         addNotNullCriteria(hibernateCriteria, "patient.personId", patientId);
         addNotNullCriteria(hibernateCriteria, "question.conceptId", questionId);
         addNotNotBlankCriteria(hibernateCriteria, "text_question", textQuestion);
-        addNotNotEmptyCriteria(hibernateCriteria, "response.conceptId", possibleResponses);
-        addNotNotEmptyCriteria(hibernateCriteria, "text_response", possibleTestResponses);
+        createResponseWhereCondition(hibernateCriteria);
         addDateRangeCriteria(hibernateCriteria);
     }
 
@@ -173,6 +172,14 @@ public class ActorResponseCriteria extends ReportCriteria implements Serializabl
                 return collection;
             }
         };
+    }
+
+    private void createResponseWhereCondition(Criteria hibernateCriteria) {
+        if (isConceptResponseMode()) {
+            addNotNotEmptyCriteria(hibernateCriteria, "response.conceptId", possibleResponses);
+        } else {
+            addNotNotEmptyCriteria(hibernateCriteria, "textResponse", possibleTextResponses);
+        }
     }
 
     private void createResponseProjections(ProjectionList projectionList) {
