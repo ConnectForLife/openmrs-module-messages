@@ -133,7 +133,7 @@ public class ActorResponseCriteria extends ReportCriteria implements Serializabl
 
     @Override
     protected void loadOrderBy(Criteria hibernateCriteria) {
-        hibernateCriteria.addOrder(Order.asc("answeredTime"));
+        hibernateCriteria.addOrder(Order.desc("answeredTime"));
     }
 
     @Override

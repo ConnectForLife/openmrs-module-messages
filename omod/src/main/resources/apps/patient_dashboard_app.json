@@ -16,11 +16,12 @@
             "additionalTitle": "messages.dashboard.actorResponse.additionalTitle",
             "xAxisLabel": "messages.dashboard.actorResponse.xAxisLabel",
             "yAxisLabel": "messages.dashboard.actorResponse.yAxisLabel",
-            "colorRange": ["#009384", "#5B57A6"],
-            "columnsInfo": { "2": "Yes", "3": "No" },
+            "colorRange": ["#009384", "#5B57A6", "#4eaaba", "#8c66b0"],
+            "columnsInfo": { "165319": "Taken on Time", "165317": "Taken late",
+              "165296": "Not Taken But will take", "165310": "Will not take" },
             "responseMode": "CONCEPT",
             "dataDateRange": 4,
-            "questionId": 1
+            "questionId": 165280
           }
         }
       }

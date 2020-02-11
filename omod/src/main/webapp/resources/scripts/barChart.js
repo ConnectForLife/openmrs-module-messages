@@ -33,7 +33,7 @@ function groupBarChart(config) {
         .range(colorRange);
       var mainDivName = mainDiv.substr(1, mainDiv.length);
       jq(mainDiv).before("<div id='Legend_" + mainDivName + "' class='pmd-card-body'\
-        style='margin: 0; display: flex; justify-content: center; align-items: center;'></div>");
+        style='margin: 0;'></div>");
       var keys = Object.keys(columnsInfo);
       keys.forEach(function (d) {
         var cloloCode = z(d);
