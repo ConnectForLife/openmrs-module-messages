@@ -1,17 +1,17 @@
 [
   {
-    "id":"messages.patientDashboard",
+    "id":"messages.patientDashboard.graph",
     "description":"Adds some modifications in the patient dashboard",
     "extensions": [
       {
-        "id": "messages.patientDashboard.actorResponse",
-        "order": 5,
+        "id": "messages.patientDashboard.graph.actorResponse",
+        "order": 6,
         "extensionPointId": "patientDashboard.firstColumnFragments",
-        "icon": "icon-medical",
         "extensionParams": {
           "provider": "messages",
           "fragment": "patientdashboard/actorResponseGraph",
           "fragmentConfig": {
+            "icon": "icon-bar-chart",
             "label": "messages.dashboard.actorResponse.title",
             "additionalTitle": "messages.dashboard.actorResponse.additionalTitle",
             "xAxisLabel": "messages.dashboard.actorResponse.xAxisLabel",

@@ -12,15 +12,15 @@ import org.openmrs.RelationshipType;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.messages.api.service.ActorService;
-import org.openmrs.module.messages.api.service.ConfigService;
+import org.openmrs.module.messages.api.constants.ConfigConstants;
 import org.openmrs.module.messages.api.dto.ContactTimeDTO;
 import org.openmrs.module.messages.api.exception.ValidationException;
 import org.openmrs.module.messages.api.model.Actor;
 import org.openmrs.module.messages.api.model.ActorType;
 import org.openmrs.module.messages.api.model.ErrorMessage;
 import org.openmrs.module.messages.api.model.RelationshipTypeDirection;
-import org.openmrs.module.messages.api.constants.ConfigConstants;
+import org.openmrs.module.messages.api.service.ActorService;
+import org.openmrs.module.messages.api.service.ConfigService;
 import org.openmrs.module.messages.api.util.PersonAttributeUtil;
 
 import java.util.Collections;
@@ -53,14 +53,7 @@ public class ActorServiceImpl implements ActorService {
 
     @Override
     public List<Actor> getAllActorsForPatient(Patient patient) {
-        List<ActorType> actorTypes = getAllActorTypes();
-        Set<Actor> results = new LinkedHashSet<>();
-        if (patient != null) {
-            for (ActorType actorType : actorTypes) {
-                results.addAll(getRelationshipsBasedOnType(patient, actorType));
-            }
-        }
-        return new LinkedList<>(results);
+        return getAllActorsForPerson(patient, true);
     }
 
     @Override
@@ -69,7 +62,28 @@ public class ActorServiceImpl implements ActorService {
         if (patient == null) {
             throw new ValidationException(String.format("Patient with %s id doesn't exist.", patientId));
         }
-        return getAllActorsForPatient(patient);
+        return getAllActorsForPerson(patient, true);
+    }
+
+    @Override
+    public List<Actor> getAllActorsForPerson(Person person, boolean isPatient) {
+        List<ActorType> actorTypes = getAllActorTypes();
+        Set<Actor> results = new LinkedHashSet<>();
+        if (person != null) {
+            for (ActorType actorType : actorTypes) {
+                results.addAll(getRelationshipsBasedOnType(person, actorType, isPatient));
+            }
+        }
+        return new LinkedList<>(results);
+    }
+
+    @Override
+    public List<Actor> getAllActorsForPersonId(Integer personId, boolean isPatient) {
+        Person person = personService.getPerson(personId);
+        if (person == null) {
+            throw new ValidationException(String.format("Person with %s id doesn't exist.", personId));
+        }
+        return getAllActorsForPerson(person, isPatient);
     }
 
     @Override
@@ -129,29 +143,34 @@ public class ActorServiceImpl implements ActorService {
         return this;
     }
 
-    private Set<Actor> getRelationshipsBasedOnType(Patient patient, ActorType actorType) {
+    private Set<Actor> getRelationshipsBasedOnType(Person person, ActorType actorType, boolean isPatient) {
         Set<Actor> results = Collections.emptySet();
-        if (RelationshipTypeDirection.A.equals(actorType.getDirection())) {
-            results = getRelationshipsByToPerson(patient, actorType.getRelationshipType());
-        } else if (RelationshipTypeDirection.B.equals(actorType.getDirection())) {
-            results = getRelationshipsByFromPerson(patient, actorType.getRelationshipType());
+        RelationshipType relationshipType = actorType.getRelationshipType();
+        if (RelationshipTypeDirection.A == actorType.getDirection()) {
+            results = isPatient ?
+                    this.getByToPerson(person, relationshipType) :
+                    this.getByFromPerson(person, relationshipType);
+        } else if (RelationshipTypeDirection.B == actorType.getDirection()) {
+            results = isPatient ?
+                    this.getByFromPerson(person, relationshipType) :
+                    this.getByToPerson(person, relationshipType);
         }
         return results;
     }
 
-    private Set<Actor> getRelationshipsByToPerson(Patient patient, RelationshipType relationshipType) {
+    private Set<Actor> getByToPerson(Person person, RelationshipType relationshipType) {
         Set<Actor> results = new LinkedHashSet<>();
         List<Relationship> relationships = Context.getPersonService().getRelationships(null,
-                patient, relationshipType);
+                person, relationshipType);
         for (Relationship relationship : relationships) {
             results.add(new Actor(relationship.getPersonA(), relationship));
         }
         return results;
     }
 
-    private Set<Actor> getRelationshipsByFromPerson(Patient patient, RelationshipType relationshipType) {
+    private Set<Actor> getByFromPerson(Person person, RelationshipType relationshipType) {
         Set<Actor> results = new LinkedHashSet<>();
-        List<Relationship> relationships = Context.getPersonService().getRelationships(patient,
+        List<Relationship> relationships = Context.getPersonService().getRelationships(person,
                 null, relationshipType);
         for (Relationship relationship : relationships) {
             results.add(new Actor(relationship.getPersonB(), relationship));

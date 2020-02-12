@@ -5,7 +5,11 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.openmrs.Person;
 import org.openmrs.Relationship;
 
-public class Actor {
+import java.io.Serializable;
+
+public class Actor implements Serializable {
+
+    private static final long serialVersionUID = -8622732985364281175L;
 
     private Person target;
 

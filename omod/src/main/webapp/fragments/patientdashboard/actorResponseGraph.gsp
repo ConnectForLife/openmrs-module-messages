@@ -9,6 +9,7 @@
 %>
 <div class="info-section">
     <div class="info-header">
+        <i class="${config.icon}"></i>
         <h3>${ ui.message(config.label) }</h3>
     </div>
 

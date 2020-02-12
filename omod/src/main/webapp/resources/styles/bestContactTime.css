@@ -1,0 +1,27 @@
+.best-contact-title {
+    font-weight: bold;
+}
+
+#best-contact-times {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+#best-contact-times .time-entry {
+    display: block;
+    margin: 5px;
+}
+
+#best-contact-times .time-label {
+    display: block;
+    text-align: left;
+    padding: 0;
+    margin: 0;
+    width: auto;
+}
+
+#best-contact-times .time-value {
+    display: block;
+    padding: 0;
+}

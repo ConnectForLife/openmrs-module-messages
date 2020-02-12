@@ -112,6 +112,20 @@ public class ActorServiceImplTest extends ContextSensitiveTest {
     }
 
     @Test
+    public void shouldSuccessfullyReturnActorsByPersonWhenIsPatient() {
+        List<Actor> actual = actorService.getAllActorsForPerson(patient, true);
+        assertThat(actual, hasItems(caregiverPerson, fatherPerson));
+    }
+
+    @Test
+    public void shouldSuccessfullyReturnActorsByPersonWhenIsNotPatient() {
+        List<Actor> actual = actorService.getAllActorsForPerson(caregiverPerson.getTarget(), false);
+        assertThat(actual, hasItems(new Actor(patient, caregiverPerson.getRelationship())));
+        actual = actorService.getAllActorsForPerson(fatherPerson.getTarget(), false);
+        assertThat(actual, hasItems(new Actor(patient, fatherPerson.getRelationship())));
+    }
+
+    @Test
     public void shouldReturnEmptyListOfTypesWhenTheConfigIsEmpty() {
         Context.getAdministrationService().setGlobalProperty(ConfigConstants.ACTOR_TYPES_KEY, EMPTY_CONFIGURATION);
         List<ActorType> actual = actorService.getAllActorTypes();
@@ -126,9 +140,30 @@ public class ActorServiceImplTest extends ContextSensitiveTest {
     }
 
     @Test
+    public void shouldReturnEmptyListOfActorsByPersonWhenTheConfigIsEmpty() {
+        Context.getAdministrationService().setGlobalProperty(ConfigConstants.ACTOR_TYPES_KEY, EMPTY_CONFIGURATION);
+        List<Actor> actual = actorService.getAllActorsForPerson(patient, true);
+        assertThat(actual, is(empty()));
+    }
+
+    @Test
+    public void shouldReturnEmptyListOfActorsByPersonWhenTheConfigIsEmptyWhenIsNotPatient() {
+        Context.getAdministrationService().setGlobalProperty(ConfigConstants.ACTOR_TYPES_KEY, EMPTY_CONFIGURATION);
+        List<Actor> actual = actorService.getAllActorsForPerson(caregiverPerson.getTarget(), false);
+        assertThat(actual, is(empty()));
+    }
+
+    @Test
     public void shouldReturnEmptyListOfActorWhenRelationNotExist() {
         Context.getAdministrationService().setGlobalProperty(ConfigConstants.ACTOR_TYPES_KEY, WRONG_CONFIGURATION);
         List<Actor> actual = actorService.getAllActorsForPatient(patient);
+        assertThat(actual, is(empty()));
+    }
+
+    @Test
+    public void shouldReturnEmptyListOfActorByPersonWhenRelationNotExist() {
+        Context.getAdministrationService().setGlobalProperty(ConfigConstants.ACTOR_TYPES_KEY, WRONG_CONFIGURATION);
+        List<Actor> actual = actorService.getAllActorsForPerson(patient, false);
         assertThat(actual, is(empty()));
     }
 
@@ -252,14 +287,36 @@ public class ActorServiceImplTest extends ContextSensitiveTest {
         assertThat(actual, hasItems(caregiverPerson, fatherPerson));
     }
 
+    @Test
+    public void shouldSuccessfullyReturnActorsForPersonId() {
+        List<Actor> actual = actorService.getAllActorsForPersonId(patient.getPatientId(), true);
+        assertThat(actual, hasItems(caregiverPerson, fatherPerson));
+    }
+
+    @Test
+    public void shouldSuccessfullyReturnActorsForPersonIdWhenIsNotPatient() {
+        List<Actor> actual = actorService.getAllActorsForPersonId(caregiverPerson.getTarget().getId(), false);
+        assertThat(actual, hasItems(new Actor(patient, caregiverPerson.getRelationship())));
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowExceptionForEmptyPatientId() {
         actorService.getAllActorsForPatientId(null);
     }
 
     @Test(expected = ValidationException.class)
+    public void shouldThrowExceptionForEmptyPersonId() {
+        actorService.getAllActorsForPersonId(null, false);
+    }
+
+    @Test(expected = ValidationException.class)
     public void shouldThrowExceptionForNotExistingPatientId() {
         actorService.getAllActorsForPatientId(NOT_EXIST_PERSON_ID);
+    }
+
+    @Test(expected = ValidationException.class)
+    public void shouldThrowExceptionForNotExistingPersonId() {
+        actorService.getAllActorsForPersonId(NOT_EXIST_PERSON_ID, false);
     }
 
     private ActorType createActorType(RelationshipType relationshipType, RelationshipTypeDirection direction) {

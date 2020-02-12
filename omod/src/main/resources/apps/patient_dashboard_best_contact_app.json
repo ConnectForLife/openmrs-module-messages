@@ -1,0 +1,22 @@
+[
+  {
+    "id":"messages.patientDashboard.bestContact",
+    "description":"Adds some modifications in the patient dashboard",
+    "extensions": [
+      {
+        "id": "messages.patientDashboard.bestContact",
+        "order": 4,
+        "extensionPointId": "patientDashboard.secondColumnFragments",
+        "icon": "icon-comment",
+        "extensionParams": {
+          "provider": "messages",
+          "fragment": "patientdashboard/bestContactTime",
+          "fragmentConfig": {
+            "icon": "icon-comment",
+            "personActorTypeLabel": "Caregiver"
+          }
+        }
+      }
+    ]
+  }
+]
