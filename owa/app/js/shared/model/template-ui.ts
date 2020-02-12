@@ -7,6 +7,7 @@ import * as Yup from "yup";
 import * as Msg from '../../shared/utils/messages';
 import { IActorType } from './actor-type.model';
 import { findDefaultValue } from '../utils/end-date-util';
+import { TemplateFieldType} from './template-field-type';
 
 export class TemplateUI extends ObjectUI<ITemplate> implements ITemplate {
   id: number | null;
@@ -54,8 +55,9 @@ export class TemplateUI extends ObjectUI<ITemplate> implements ITemplate {
     return new TemplateUI(model);
   }
 
-  static fromModelWithActorTypes(model: ITemplate, actorTypes: ReadonlyArray<IActorType>) {
+  static fromModelWithActorTypesExcludingStartOfMessagesField(model: ITemplate, actorTypes: ReadonlyArray<IActorType>) {
     if (!!actorTypes) {
+      model.templateFields = _.filter(model.templateFields, (f) => f.type != TemplateFieldType.START_OF_MESSAGES);
       actorTypes.forEach(actorType => {
         model.templateFields.forEach(tf => {
           const defaultValue = findDefaultValue(tf.defaultValues, actorType.relationshipTypeId, 

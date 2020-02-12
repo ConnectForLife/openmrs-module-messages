@@ -56,7 +56,7 @@ export default (state = initialState, action): AdminSettingsState => {
         ...state,
         loading: false,
         defaultTemplates: _.map(action.payload.data.content, template =>
-          TemplateUI.fromModelWithActorTypes(template, state.actorTypes))
+          TemplateUI.fromModelWithActorTypesExcludingStartOfMessagesField(template, state.actorTypes))
       };
     case SUCCESS(ACTION_TYPES.GET_ACTOR_TYPES):
       return {
