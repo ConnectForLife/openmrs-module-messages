@@ -25,10 +25,10 @@ import { PersonStatusUI } from '../../../shared/model/person-status.model-ui';
 
 interface IPersonStatusProps extends DispatchProps, StateProps {
     patientUuid: string
-};
+}
 
 interface IPersonStatusState {
-};
+}
 
 class PersonStatus extends React.PureComponent<IPersonStatusProps, IPersonStatusState> {
 
@@ -68,11 +68,26 @@ class PersonStatus extends React.PureComponent<IPersonStatusProps, IPersonStatus
         );
     };
 
+    renderDeactivatedStatusNotificationIfNeeded = () => {
+        if (this.props.personStatus.status.value !== Msg.PERSON_STATUSES.ACTIVATED.value) {
+            return (
+              <div className="note-container">
+                  <div className="note danger">
+                      <div className="text">
+                          <span className="toast-item-image toast-item-image-alert" />
+                          <p>{Msg.DEACTIVATED_STATUS_NOTIFICATION}</p>
+                      </div>
+                  </div>
+              </div>
+            );
+        } else return null;
+    };
+
     prepereStatusForModal = (status: PersonStatusUI): PersonStatusUI => {
         const modalStatus = _.cloneDeep(status);
         modalStatus.value = this.getInitialValue(modalStatus);
         return modalStatus;
-    }
+    };
 
     getInitialValue = (status: PersonStatusUI) =>  (!!status.value &&
         status.value != Msg.MISSING_VALUE_KEY && status.value != Msg.NO_CONSENT_KEY) ? status.value : Msg.ACTIVATED_KEY;
@@ -92,6 +107,7 @@ class PersonStatus extends React.PureComponent<IPersonStatusProps, IPersonStatus
                 <div className="person-status" style={statusStyle} onClick={this.handleChangeStatus}>
                     {!personStatusLoading && this.renderStatus()}
                 </div>
+                {this.renderDeactivatedStatusNotificationIfNeeded()}
             </>
         );
     };

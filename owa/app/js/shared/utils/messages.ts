@@ -105,6 +105,7 @@ export const PERSON_STATUSES = {
 
 export const CANCEL = 'Cancel';
 export const CONFIRM = 'Confirm';
+export const DEACTIVATED_STATUS_NOTIFICATION = 'Person status is deactivated. The scheduled messages won\'t be sent to this person.';
 
 // Edit messages
 export const EDIT_MESSAGES_TITLE = 'Create messages';

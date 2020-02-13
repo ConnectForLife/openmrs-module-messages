@@ -165,3 +165,13 @@ header .logo img {
     -moz-transition: opacity 0.2s ease-in-out;
     transition: opacity 0.2s ease-in-out;
 }
+
+.note-container .note.danger {
+    color: red;
+    background: #FFFDF0;
+    border: 1px solid red;
+}
+
+.note.danger .toast-item-image {
+    color: red !important;
+}
