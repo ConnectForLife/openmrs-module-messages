@@ -41,11 +41,17 @@ interface ICalendarViewState {
   patientId: number;
 }
 
+interface ICalendarMessageEventService {
+  name: string,
+  status: ServiceStatus
+}
+
 interface ICalendarMessageEvent {
   serviceName: string;
   status: ServiceStatus;
   executionDate: Moment;
   messageId: Object;
+  services: Array<ICalendarMessageEventService>
 }
 
 interface IActorIdWithEvents {
@@ -173,7 +179,11 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
         if (index !== -1) {
           actorEvents[index] = {
             ...actorEvents[index],
-            serviceName: `${actorEvents[index].serviceName},\n${resultList.serviceName}`
+            serviceName: `${actorEvents[index].serviceName},\n${resultList.serviceName}`,
+            services: [...actorEvents[index].services, {
+              name: resultList.serviceName,
+              status: result.serviceStatus
+            }]
           };
           // or push new one
         } else {
@@ -181,7 +191,11 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
             serviceName: resultList.serviceName,
             status: result.serviceStatus,
             executionDate: result.executionDate,
-            messageId: result.messageId
+            messageId: result.messageId,
+            services: [{
+              name: resultList.serviceName,
+              status: result.serviceStatus
+            }]
           });
         }
       }
@@ -193,9 +207,10 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
       id: `${entry.messageId.toString()}-${entry.executionDate.valueOf().toString()}`,
       title: '\n' + entry.serviceName,
       status: entry.status,
-      start: entry.executionDate.toISOString()
+      start: entry.executionDate.toISOString(),
+      services: entry.services
     }))
-  }
+  };
 
   private tabSelected = (key) => this.setState({ activeTabKey: key })
 
