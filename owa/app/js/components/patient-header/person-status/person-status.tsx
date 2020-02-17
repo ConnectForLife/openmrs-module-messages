@@ -68,32 +68,6 @@ class PersonStatus extends React.PureComponent<IPersonStatusProps, IPersonStatus
         );
     };
 
-    renderDeactivatedStatusNotificationIfNeeded = () => {
-        switch (this.props.personStatus.status.value) {
-            case Msg.PERSON_STATUSES.DEACTIVATED.value:
-                return this.renderNotification(Msg.DEACTIVATED_STATUS_NOTIFICATION);
-            case Msg.PERSON_STATUSES.NO_CONSENT.value:
-                return this.renderNotification(Msg.NO_CONSENT_STATUS_NOTIFICATION);
-            case Msg.PERSON_STATUSES.MISSING_VALUE.value:
-                return this.renderNotification(Msg.MISSING_VALUE_STATUS_NOTIFICATION);
-            default:
-              return null;
-        }
-    };
-
-    renderNotification = (message: string) => {
-        return (
-          <div className="note-container">
-              <div className="note danger">
-                  <div className="text">
-                      <span className="toast-item-image toast-item-image-alert" />
-                      <p>{message}</p>
-                  </div>
-              </div>
-          </div>
-        );
-    }
-
     prepereStatusForModal = (status: PersonStatusUI): PersonStatusUI => {
         const modalStatus = _.cloneDeep(status);
         modalStatus.value = this.getInitialValue(modalStatus);
@@ -118,11 +92,10 @@ class PersonStatus extends React.PureComponent<IPersonStatusProps, IPersonStatus
                 <div className="person-status" style={statusStyle} onClick={this.handleChangeStatus}>
                     {!personStatusLoading && this.renderStatus()}
                 </div>
-                {this.renderDeactivatedStatusNotificationIfNeeded()}
             </>
         );
     };
-};
+}
 
 const mapStateToProps = ({ personStatus }: IRootState) => ({
     personStatus

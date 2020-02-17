@@ -13,10 +13,8 @@ import {
   Modal,
   Button,
   Form,
-  ControlLabel,
   FormGroup,
-  FormControl,
-  Col
+  FormControl
 } from 'react-bootstrap';
 import ErrorDesc from '@bit/soldevelo-omrs.cfl-components.error-description';
 import FormLabel from '@bit/soldevelo-omrs.cfl-components.form-label';
@@ -63,10 +61,14 @@ class ChangeStatusModal extends React.PureComponent<IChangeStatusProps, IChangeS
   };
   
   handleChange = (newValue, prop: string) => {
-    const cloned = _.cloneDeep(this.state);
+    let cloned = _.cloneDeep(this.state);
     cloned[prop] = newValue;
-    this.setState(cloned);
-  }
+    const newState = {
+      ...cloned,
+      statusReason: this.obtainStatusReason(cloned)
+    };
+    this.setState(newState);
+  };
 
   renderDropdown = (label: string, fieldName: string, options: Array<React.ReactFragment>, required?: boolean) =>
     <FormGroup controlId={fieldName}>
@@ -78,7 +80,7 @@ class ChangeStatusModal extends React.PureComponent<IChangeStatusProps, IChangeS
         {options}
       </FormControl>
       {<ErrorDesc field={this.state.errors[fieldName]} />}
-    </FormGroup>
+    </FormGroup>;
 
   renderStatusField = () =>
     this.renderDropdown(Msg.PERSON_STATUS_MODAL_FIELD_LABEL, 'statusValue',
@@ -107,7 +109,7 @@ class ChangeStatusModal extends React.PureComponent<IChangeStatusProps, IChangeS
   buildTitle = () => {
     return (
       <>
-        <i className="icon-user"></i>
+        <i className="icon-user" />
         {Msg.PERSON_STATUS_MODAL_LABEL}
       </>
     );
@@ -135,7 +137,7 @@ class ChangeStatusModal extends React.PureComponent<IChangeStatusProps, IChangeS
     if (this.state.statusValue === Msg.DEACTIVATED_KEY && !this.state.statusReason) {
       errors['statusReason'] = Msg.FIELD_REQUIRED;
     }
-  }
+  };
 
   isFormValid = (errors): boolean =>
     _.isEmpty(Object.keys(errors));
@@ -163,7 +165,7 @@ class ChangeStatusModal extends React.PureComponent<IChangeStatusProps, IChangeS
           {this.buildContext()}
           <Button bsClass="button confirm right"
             onClick={this.handleConfirm}
-            disabled={submitDisabled ? true : false}>
+            disabled={submitDisabled}>
             {this.buildConfirmButton()}
           </Button>
           <Button bsClass="button cancel" onClick={this.props.cancel}>
@@ -172,6 +174,18 @@ class ChangeStatusModal extends React.PureComponent<IChangeStatusProps, IChangeS
         </Modal.Body>
       </Modal>
     );
+  };
+
+  private obtainStatusReason = (newStatus: IChangeStatusState) => {
+    if (newStatus.statusValue === Msg.ACTIVATED_KEY) {
+      return undefined;
+    } else if (!!newStatus.statusReason) {
+      return newStatus.statusReason;
+    } else if (newStatus.statusValue === Msg.DEACTIVATED_KEY && this.props.possibleResults.length) {
+        return this.props.possibleResults[0];
+    } else {
+      return undefined;
+    }
   };
 
   render() {
@@ -183,6 +197,5 @@ class ChangeStatusModal extends React.PureComponent<IChangeStatusProps, IChangeS
     );
   };
 }
-
 
 export default ChangeStatusModal;

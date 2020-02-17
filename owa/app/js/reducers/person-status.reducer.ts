@@ -112,7 +112,7 @@ export const putPersonStatus = (personStatus: PersonStatusUI) => async (dispatch
         type: ACTION_TYPES.PUT_PERSON_STATUS,
         payload: axiosInstance.put(personStatusUrl + personStatus.personId, personStatus.toModel())
     };
-    await handleRequest(dispatch, body, Msg.GENERIC_SUCCESS, Msg.GENERIC_FAILURE);
+    await handleRequest(dispatch, body, Msg.PERSON_STATUS_CHANGE_SUCCESS, Msg.PERSON_STATUS_CHANGE_FAILURE);
 };
 
 export const openModal = (id) => ({

@@ -108,6 +108,8 @@ export const CONFIRM = 'Confirm';
 export const DEACTIVATED_STATUS_NOTIFICATION = 'Person status is deactivated. The scheduled messages won\'t be sent to this person.';
 export const NO_CONSENT_STATUS_NOTIFICATION = 'Person status is no consent. The scheduled messages won\'t be sent to this person.';
 export const MISSING_VALUE_STATUS_NOTIFICATION = 'Person status is missing value. The scheduled messages won\'t be sent to this person.';
+export const PERSON_STATUS_CHANGE_SUCCESS = 'The person status has been successfully changed.';
+export const PERSON_STATUS_CHANGE_FAILURE = 'Unable to change the person status.';
 
 // Edit messages
 export const EDIT_MESSAGES_TITLE = 'Create messages';

@@ -1,5 +1,6 @@
-import Header from '../patient-header/header'
-import React from 'react'
+import Header from '../patient-header/header';
+import PatientStatusNotification from '../person-status-notification/person-status-notification';
+import React from 'react';
 import CalendarView from '../calendar/calendar';
 import PatientTemplateEdit from '../patient-template/patient-template-edit';
 import { RouteComponentProps } from 'react-router-dom';
@@ -15,6 +16,7 @@ const withPatientHeader = (WrappedComponent) => {
       return (
           <div className="body-wrapper">
             <Header patientUuid={this.props.match.params.patientUuid} />
+            <PatientStatusNotification />
             <div className="content">
               <WrappedComponent  {...this.props}/>
             </div>
