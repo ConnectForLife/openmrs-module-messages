@@ -36,9 +36,6 @@ UPDATE messages_template SET service_query =
                                 FROM concept_name cn
                                 WHERE :Categories_of_the_message LIKE concat(\'%\', cn.name, \'%\')
                             )
-                -- checking if actor response has been registered for specific health tip (health tip id = concept_id) and for specific patient and status
-                -- if health tip has been played, the actor response has been registered with health tip id saved in question column
-                -- to choose health tip ids which should be played in the next call, concept_id are checked which do not occur in actor response table in proper date range
                             AND concept_id not IN (
                                 SELECT question
                                 FROM (SELECT question, source_id, answered_time FROM messages_actor_response mar WHERE source_type like \'SCHEDULED_SERVICE_GROUP\') mar
@@ -50,10 +47,6 @@ UPDATE messages_template SET service_query =
                                         AND mpt.patient_id = :patientId
                                         AND mss.status = \'DELIVERED\'
                                     AND mar.answered_time >
-                -- checking if number of played health tips is less than number of all health tips assigned to patient
-                -- if less -> all health tips have not yet been played so return answered_time > '1900-01-01' - date is low enough to be sure that covers entire database date range
-                -- if greater or equals -> health tips should be played from the beginning
-                -- so return answered_time > answered_time of the last health tip played for patient from all health tips list assigned to patient
                                         IF( (SELECT COUNT(*) FROM
                                         (SELECT question, source_id, answered_time FROM messages_actor_response mar WHERE source_type like \'SCHEDULED_SERVICE_GROUP\') mar
                                         JOIN messages_scheduled_service_group mssg on mar.source_id = mssg.messages_scheduled_service_group_id
