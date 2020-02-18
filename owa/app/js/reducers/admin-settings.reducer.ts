@@ -140,7 +140,7 @@ export const saveConfig = (templates: Array<TemplateUI>, contactTimes: Array<IDe
   const toastId = initRequestHandling();
   await dispatch(putDefaultContactTimes(contactTimes)).then(
     response => dispatch(putTemplates(templates)).then(
-      response => continueRequestHandling(toastId, dispatch, getConfig(), Msg.GENERIC_SUCCESS, Msg.GENERIC_FAILURE),
+      response => continueRequestHandling(toastId, dispatch, getConfig(), Msg.SETTINGS_SAVE_SUCCESS, Msg.GENERIC_FAILURE),
       error => handleRequestFailure(error, toastId, Msg.GENERIC_FAILURE)),
     error => handleRequestFailure(error, toastId, Msg.GENERIC_FAILURE))
 }

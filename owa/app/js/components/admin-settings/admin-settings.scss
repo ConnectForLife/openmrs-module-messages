@@ -1,0 +1,40 @@
+.admin-settings {
+  .page-header {
+    margin-bottom: 20px;
+  }
+
+  .fields-form {
+    border-bottom: 1px solid #eee;
+    margin-bottom: 20px;
+    overflow: visible;
+  }
+
+  .fields-form-title {
+    border-bottom: 1px solid #eee;
+  }
+
+  .form-control {
+    border: solid 1px #eeeeee;
+  }
+
+  .note-container {
+    span {
+      position: initial;
+    }
+
+    p {
+      position: initial !important;
+      vertical-align: super !important;
+    }
+  }
+
+  h4 {
+    border-bottom: solid 1px #e4e4e4;
+  }
+
+  .one-column {
+    border-bottom: solid 1px #e4e4e4;
+    margin-top: 40px;
+    margin-bottom: 40px;
+  }
+}

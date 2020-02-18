@@ -254,7 +254,7 @@ export class TemplateForm extends React.Component<IProps> {
     const templateName = template ? template.name : '';
     return (
       <Form className="one-column">
-        <strong><h4>{templateName}</h4></strong>
+        <strong><h4>{`${templateName} - ${this.props.actorType.display}`}</h4></strong>
         {template.templateFields.map(this.renderField)}
       </Form>
     );

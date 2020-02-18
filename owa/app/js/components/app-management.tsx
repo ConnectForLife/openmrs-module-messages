@@ -8,16 +8,18 @@
  */
 
 import React from 'react';
-import DefaultSettingsTable from './default-settings/default-settings-table';
 import { connect } from 'react-redux';
-import { Button } from 'react-bootstrap';
 
 import { IRootState } from '../reducers';
 import { getConfig, saveConfig } from '../reducers/admin-settings.reducer';
 import * as Msg from '../shared/utils/messages';
 import BestContactTime from './default-settings/default-best-contact-time';
+import AdminSettings from "./admin-settings/admin-settings";
+import {RouteComponentProps} from "react-router-dom";
 
-interface IProps extends StateProps, DispatchProps { }
+interface IProps extends StateProps, DispatchProps, RouteComponentProps<{
+    activeSection?: string
+}> { }
 
 class AppManagement extends React.Component<IProps> {
 
@@ -33,17 +35,12 @@ class AppManagement extends React.Component<IProps> {
                     loading={this.props.loading}
                     bestContactTimes={this.props.defaultBestContactTimes}
                     actorTypes={this.props.actorTypes} />
-                <DefaultSettingsTable templates={this.props.templates} />
-                <div className="flex-justify-end u-mt-8">
-                    <Button
-                        className="btn btn-success btn-md"
-                        onClick={this.handleSave}>
-                        {Msg.SAVE_BUTTON_LABEL}
-                    </Button>
-                </div>
+                <AdminSettings templates={this.props.templates}
+                               activeSection={this.props.match.params.activeSection}
+                               onSaveCallback={this.handleSave} />
             </div>
         </div>
-};
+}
 
 const mapStateToProps = ({ adminSettings }: IRootState) => ({
     templates: adminSettings.defaultTemplates,

@@ -71,7 +71,7 @@ public class TemplateMapper extends AbstractMapper<TemplateDTO, Template> implem
             TemplateField field = iterator.next();
             TemplateField newField = getFieldById(field.getId(), newTemplate.getTemplateFields());
             if (newField == null) {
-                existingTemplate.getTemplateFields().remove(field);
+                field.setVoided(true);
             } else {
                 updateTemplateField(field, newField);
             }
