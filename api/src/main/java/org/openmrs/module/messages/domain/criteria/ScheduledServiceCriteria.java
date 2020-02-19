@@ -49,7 +49,7 @@ public class ScheduledServiceCriteria extends BaseCriteria implements Serializab
         scheduledServiceCriteria.actorId = actorId;
         return scheduledServiceCriteria;
     }
-
+    
     public List<Integer> getIds() {
         return Collections.unmodifiableList(ids);
     }

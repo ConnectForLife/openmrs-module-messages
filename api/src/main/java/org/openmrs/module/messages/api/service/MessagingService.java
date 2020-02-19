@@ -175,4 +175,43 @@ public interface MessagingService extends BaseOpenmrsCriteriaDataService<Schedul
      */
     ActorResponse updateActorResponse(Integer actorResponseId, Integer newResponseId, String newResponseTxt)
             throws EntityNotFoundException;
+    
+    /**
+     * Retrieves the specified number of last actor responses for question that is a concept type.
+     * @param patientId id of patient
+     * @param actorId id of actor
+     * @param conceptQuestionId id of concept type question
+     * @param pageSize specifies number of records to return
+     * @return list of actor responses for specified concept question
+     */
+    List<ActorResponse> getLastActorResponsesForConceptQuestion(Integer patientId,
+                                                                Integer actorId,
+                                                                Integer conceptQuestionId,
+                                                                Integer pageSize);
+    
+    /**
+     * Retrieves the specified number of last actor responses for question that is a String type.
+     * @param patientId id of patient
+     * @param actorId id of actor
+     * @param textQuestion value of string type question
+     * @param pageSize specifies number of records to return
+     * @return list of actor responses for specified String question
+     */
+    List<ActorResponse> getLastActorResponsesForTextQuestion(Integer patientId,
+                                                             Integer actorId,
+                                                             String textQuestion,
+                                                             Integer pageSize);
+    
+    /**
+     * Retrieves the specified number of last actor responses for service type.
+     * @param patientId id of patient
+     * @param actorId id of actor
+     * @param serviceType service type name e.g. Health tip
+     * @param limit specifies number of records to return
+     * @return
+     */
+    List<ActorResponse> getLastActorResponsesForServiceType(Integer patientId,
+                                                            Integer actorId,
+                                                            String serviceType,
+                                                            Integer limit);
 }

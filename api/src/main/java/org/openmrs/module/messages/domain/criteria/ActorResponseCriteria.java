@@ -120,7 +120,7 @@ public class ActorResponseCriteria extends ReportCriteria implements Serializabl
         }
         return this;
     }
-
+    
     @Override
     protected void loadWhereStatements(Criteria hibernateCriteria) {
         addNotNullCriteria(hibernateCriteria, "actor.personId", actorId);
