@@ -37,6 +37,7 @@ import org.openmrs.module.messages.api.util.DateUtil;
 import org.openmrs.module.messages.api.util.HibernateUtil;
 import org.openmrs.module.messages.domain.criteria.LastResponseCriteria;
 import org.openmrs.module.messages.domain.criteria.PatientTemplateCriteria;
+import org.openmrs.module.messages.domain.criteria.ScheduledServiceCriteria;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -216,6 +217,17 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
                         .setServiceType(serviceType)
                         .setLimit(limit)
                         , null);
+    }
+    
+    @Override
+    public List<ScheduledService> getScheduledServicesByGroupId(Integer groupId) {
+        return findAllByCriteria(ScheduledServiceCriteria.forGroupId(groupId));
+    }
+    
+    @Override
+    public List<ScheduledService> getScheduledServicesByPatientIdAndActorId(Integer patientId, Integer actorId) {
+        return findAllByCriteria(ScheduledServiceCriteria
+                .forPatientTemplateActorId(actorId).forPatientTemplatePatientId(patientId));
     }
     
     public void setConceptService(ConceptService conceptService) {

@@ -214,4 +214,19 @@ public interface MessagingService extends BaseOpenmrsCriteriaDataService<Schedul
                                                             Integer actorId,
                                                             String serviceType,
                                                             Integer limit);
+    
+    /**
+     * Retrieves all scheduled services assigned to group.
+     * @param groupId id of the group
+     * @return list of all scheduled services from particular group
+     */
+    List<ScheduledService> getScheduledServicesByGroupId(Integer groupId);
+    
+    /**
+     * Retrieves all scheduled services by patient and actor id.
+     * @param patientId id of patient
+     * @param actorId id of actor
+     * @return list of all scheduled services for particular patient and actor id
+     */
+    List<ScheduledService> getScheduledServicesByPatientIdAndActorId(Integer patientId, Integer actorId);
 }

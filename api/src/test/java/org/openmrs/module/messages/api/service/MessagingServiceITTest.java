@@ -34,6 +34,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -68,6 +69,18 @@ public class MessagingServiceITTest extends ContextSensitiveTest {
     private static final Date TIMESTAMP = new Date(2019, Calendar.NOVEMBER, 21);
 
     private static final String MISSING_ACTOR_RESPONSE_TYPE = "MISSING_TYPE";
+    
+    private static final int PATIENT_1_ID = 1;
+    
+    private static final int ACTOR_1_ID = 1;
+    
+    private static final int PATIENT_2_ID = 2;
+    
+    private static final int GROUP_ID = 1;
+    
+    private static final int SCHEDULED_SERVICES_SIZE = 2;
+    
+    private static final int SCHEDULED_SERVICES_SIZE_2 = 3;
 
     private Concept question;
 
@@ -104,6 +117,7 @@ public class MessagingServiceITTest extends ContextSensitiveTest {
         executeDataSet(XML_DATA_SET_PATH + "ConfigDataset.xml");
         executeDataSet(XML_DATA_SET_PATH + "ConceptDataSet.xml");
         executeDataSet(XML_DATA_SET_PATH + "MessageDataSet.xml");
+        executeDataSet(XML_DATA_SET_PATH + "ActorResponsesDataSet.xml");
         question = Context.getConceptService().getConceptByUuid(QUESTION_UUID);
         response = Context.getConceptService().getConceptByUuid(RESPONSE_UUID);
         newResponse = Context.getConceptService().getConceptByUuid(UPDATED_RESPONSE_UUID);
@@ -446,5 +460,28 @@ public class MessagingServiceITTest extends ContextSensitiveTest {
     @Test(expected = EntityNotFoundException.class)
     public void shouldThrowExceptionWhenActorResponseDoesNotExistsWhenUsingConcept() {
         messagingService.updateActorResponse(NON_EXISTING_ACTOR_RESPONSE, newResponse.getId(), null);
+    }
+    
+    @Test
+    public void shouldReturnScheduledServicesByGroupId() {
+        List<ScheduledService> scheduledServices = messagingService.getScheduledServicesByGroupId(GROUP_ID);
+        
+        assertEquals(SCHEDULED_SERVICES_SIZE, scheduledServices.size());
+    }
+    
+    @Test
+    public void shouldReturnScheduledServicesByTheSamePatientIdAndActorId() {
+        List<ScheduledService> scheduledServices = messagingService.getScheduledServicesByPatientIdAndActorId(
+                PATIENT_1_ID, ACTOR_1_ID);
+        
+        assertEquals(SCHEDULED_SERVICES_SIZE_2, scheduledServices.size());
+    }
+    
+    @Test
+    public void shouldReturnScheduledServicesByDifferentPatientIdAndActorId() {
+        List<ScheduledService> scheduledServices = messagingService.getScheduledServicesByPatientIdAndActorId(
+                PATIENT_2_ID, ACTOR_1_ID);
+    
+        assertEquals(SCHEDULED_SERVICES_SIZE, scheduledServices.size());
     }
 }

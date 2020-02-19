@@ -81,6 +81,30 @@
             voided="false"
             uuid="e8e2ea41-13ca-403a-b05d-9128d2b085b3"/>
 
+    <messages_patient_template
+            messages_patient_template_id="4"
+            actor_id="1"
+            template_id="3"
+            patient_id="2"
+            service_query_type=""
+            service_query=""
+            creator="1"
+            date_created="2019-11-20 00:00:00.1"
+            voided="false"
+            uuid="e8e2ea41-13ca-403a-b05d-9128d2b085b4"/>
+
+    <messages_patient_template
+            messages_patient_template_id="5"
+            actor_id="1"
+            template_id="3"
+            patient_id="2"
+            service_query_type=""
+            service_query=""
+            creator="1"
+            date_created="2019-11-20 00:00:00.1"
+            voided="false"
+            uuid="e8e2ea41-13ca-403a-b05d-9128d2b085b5"/>
+
     <messages_scheduled_service_group
             messages_scheduled_service_group_id="1"
             patient_id="1"
@@ -146,6 +170,32 @@
             date_created="2019-11-20 00:00:00.0"
             voided="false"
             uuid="b3de6d76-3e31-41cf-955d-ad14b9db07b3"/>
+
+    <messages_scheduled_service
+            messages_scheduled_service_id="4"
+            group_id="2"
+            service="1"
+            patient_template_id="4"
+            channel_type="Call"
+            status="DELIVERED"
+            last_service_execution_id="111111111111"
+            creator="1"
+            date_created="2019-11-20 00:00:00.0"
+            voided="false"
+            uuid="b3de6d76-3e31-41cf-955d-ad14b9db07b4"/>
+
+    <messages_scheduled_service
+            messages_scheduled_service_id="5"
+            group_id="2"
+            service="1"
+            patient_template_id="5"
+            channel_type="Call"
+            status="DELIVERED"
+            last_service_execution_id="111111111111"
+            creator="1"
+            date_created="2019-11-20 00:00:00.0"
+            voided="false"
+            uuid="b3de6d76-3e31-41cf-955d-ad14b9db07b5"/>
 
     <messages_actor_response
             messages_actor_response_id="1"
