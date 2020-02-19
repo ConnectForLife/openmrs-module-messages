@@ -52,6 +52,7 @@ export const PATIENT_ROLE = 'Patient';
 export const ISO_DATE_FORMAT = 'YYYY-MM-DD';
 export const DATE_FORMAT = 'dd MMM yyyy';
 export const SETTINGS_SAVE_SUCCESS = 'The settings have been saved successfully.';
+export const MESSAGES_SETTINGS_LABEL = 'Messages settings';
 
 // Patient template
 export const ALL_DEFAULT_VALUES_USED_MESSAGE = 'This is the default schedule for messages. Click Save to confirm and start messages sending.';

@@ -28,13 +28,13 @@
     }
   }
 
-  h4 {
-    border-bottom: solid 1px #e4e4e4;
-  }
-
   .one-column {
     border-bottom: solid 1px #e4e4e4;
     margin-top: 40px;
     margin-bottom: 40px;
+
+    h4 {
+      border-bottom: solid 1px #e4e4e4;
+    }
   }
 }
