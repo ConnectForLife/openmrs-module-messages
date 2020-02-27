@@ -17,7 +17,9 @@ UPDATE messages_template SET service_query =
        (SELECT property_value
        FROM global_property
        WHERE property = \'messages.benchmarkPeriod\') as BENCHMARK_PERIOD,
-       IFNULL((SELECT sum(text_response = \'YES\') FROM (SELECT * FROM messages_actor_response mar WHERE source_type like \'SCHEDULED_SERVICE_GROUP\') mar
+       IFNULL((SELECT sum(text_response = \'YES\')
+       FROM (SELECT * FROM messages_actor_response mar WHERE source_type like \'SCHEDULED_SERVICE_GROUP\'
+       AND    patient_id = :patientId AND actor_id = :actorId) mar
        JOIN   messages_scheduled_service_group mssg on mar.source_id = mssg.messages_scheduled_service_group_id
        JOIN   messages_scheduled_service mss on mssg.messages_scheduled_service_group_id = mss.group_id
        JOIN   messages_patient_template mpt
@@ -29,7 +31,8 @@ UPDATE messages_template SET service_query =
        OR     mt.name = \'Adherence report weekly\' and mar.answered_time >= (select date_add(now(), interval -
               (select property_value from global_property where property = \'messages.benchmarkPeriod\') day)) and mar.answered_time <= now()), 0) as NUMBER_OF_DAYS_USER_GAVE_YES_RESPONSE,
        IFNULL((SELECT sum(text_response = \'YES\' or text_response = \'NO\')
-       FROM   (SELECT * FROM messages_actor_response mar WHERE source_type like \'SCHEDULED_SERVICE_GROUP\') mar
+       FROM   (SELECT * FROM messages_actor_response mar WHERE source_type like \'SCHEDULED_SERVICE_GROUP\'
+       AND    patient_id = :patientId AND actor_id = :actorId) mar
        JOIN   messages_scheduled_service_group mssg on mar.source_id = mssg.messages_scheduled_service_group_id
        JOIN   messages_scheduled_service mss on mssg.messages_scheduled_service_group_id = mss.group_id
        JOIN   messages_patient_template mpt
@@ -41,7 +44,8 @@ UPDATE messages_template SET service_query =
        OR     mt.name = \'Adherence report weekly\' and mar.answered_time >= (select date_add(now(), interval -
               (select property_value from global_property where property = \'messages.benchmarkPeriod\') day)) and mar.answered_time <= now()), 0) as NUMBER_OF_DAYS_USER_GAVE_RESPONSE,
        IFNULL((SELECT sum(text_response = \'YES\') / sum(text_response = \'YES\' or text_response = \'NO\')
-       FROM   (SELECT * FROM messages_actor_response mar WHERE source_type like \'SCHEDULED_SERVICE_GROUP\') mar
+       FROM   (SELECT * FROM messages_actor_response mar WHERE source_type like \'SCHEDULED_SERVICE_GROUP\'
+       AND    patient_id = :patientId AND actor_id = :actorId) mar
        JOIN   messages_scheduled_service_group mssg on mar.source_id = mssg.messages_scheduled_service_group_id
        JOIN   messages_scheduled_service mss on mssg.messages_scheduled_service_group_id = mss.group_id
        JOIN   messages_patient_template mpt
@@ -55,7 +59,8 @@ UPDATE messages_template SET service_query =
               (select 2 * (select property_value from global_property where property = \'messages.benchmarkPeriod\')) day))
        AND    mar.answered_time <= (select date_add(now(), interval - (select property_value from global_property where property = \'messages.benchmarkPeriod\') day))), 0) as ADHERENCE_LEVEL_TWO_BENCHMARK_PERIODS_AGO,
        IFNULL((SELECT sum(text_response = \'YES\') / sum(text_response = \'YES\' or text_response = \'NO\')
-       FROM   (SELECT * FROM messages_actor_response mar WHERE source_type like \'SCHEDULED_SERVICE_GROUP\') mar
+       FROM   (SELECT * FROM messages_actor_response mar WHERE source_type like \'SCHEDULED_SERVICE_GROUP\'
+       AND    patient_id = :patientId AND actor_id = :actorId) mar
        JOIN   messages_scheduled_service_group mssg on mar.source_id = mssg.messages_scheduled_service_group_id
        JOIN   messages_scheduled_service mss on mssg.messages_scheduled_service_group_id = mss.group_id
        JOIN   messages_patient_template mpt
@@ -100,7 +105,8 @@ JOIN
                                                         SELECT property_value
                                                         FROM   global_property
                                                         WHERE  property = \'messages.cutOffScoreForMediumLowAdherenceLevel\') / 100), \'MEDIUM\', \'LOW\')
-                            FROM   (SELECT * FROM messages_actor_response mar WHERE source_type like \'SCHEDULED_SERVICE_GROUP\') mar
+                            FROM   (SELECT * FROM messages_actor_response mar WHERE source_type like \'SCHEDULED_SERVICE_GROUP\'
+                            AND    patient_id = :patientId AND actor_id = :actorId) mar
                             JOIN   messages_scheduled_service_group mssg on mar.source_id = mssg.messages_scheduled_service_group_id
                             JOIN   messages_scheduled_service mss on mssg.messages_scheduled_service_group_id = mss.group_id
                             JOIN   messages_patient_template mpt
@@ -125,7 +131,8 @@ JOIN
                                                         FROM   global_property
                                                         WHERE  property = \'messages.benchmarkPeriod\') day))
                             AND    mar.answered_time <= now())) AS ADHERENCE_LEVEL
-              FROM   (SELECT * FROM messages_actor_response mar WHERE source_type like \'SCHEDULED_SERVICE_GROUP\') mar
+              FROM   (SELECT * FROM messages_actor_response mar WHERE source_type like \'SCHEDULED_SERVICE_GROUP\'
+              AND    patient_id = :patientId AND actor_id = :actorId) mar
               JOIN   messages_scheduled_service_group mssg on mar.source_id = mssg.messages_scheduled_service_group_id
               JOIN   messages_scheduled_service mss on mssg.messages_scheduled_service_group_id = mss.group_id
               JOIN   messages_patient_template mpt
@@ -157,7 +164,8 @@ JOIN
                      (
                             SELECT sum(text_response = \'YES\') / sum(text_response = \'YES\'
                             OR     text_response = \'NO\')
-                            FROM   (SELECT * FROM messages_actor_response mar WHERE source_type like \'SCHEDULED_SERVICE_GROUP\') mar
+                            FROM   (SELECT * FROM messages_actor_response mar WHERE source_type like \'SCHEDULED_SERVICE_GROUP\'
+                            AND    patient_id = :patientId AND actor_id = :actorId) mar
                             JOIN   messages_scheduled_service_group mssg on mar.source_id = mssg.messages_scheduled_service_group_id
                             JOIN   messages_scheduled_service mss on mssg.messages_scheduled_service_group_id = mss.group_id
                             JOIN   messages_patient_template mpt
@@ -210,7 +218,8 @@ JOIN
                                    (
                                           SELECT sum(text_response = \'YES\') / sum(text_response = \'YES\'
                                           OR     text_response = \'NO\')
-                                          FROM   (SELECT * FROM messages_actor_response mar WHERE source_type like \'SCHEDULED_SERVICE_GROUP\') mar
+                                          FROM   (SELECT * FROM messages_actor_response mar WHERE source_type like \'SCHEDULED_SERVICE_GROUP\'
+                                          AND    patient_id = :patientId AND actor_id = :actorId) mar
                                           JOIN   messages_scheduled_service_group mssg on mar.source_id = mssg.messages_scheduled_service_group_id
                                           JOIN   messages_scheduled_service mss on mssg.messages_scheduled_service_group_id = mss.group_id
                                           JOIN   messages_patient_template mpt
@@ -257,7 +266,8 @@ JOIN
                                                         SELECT property_value
                                                         FROM   global_property
                                                         WHERE  property = \'messages.cutOffScoreForAdherenceTrend\') / 100), \'FALLING\', \'STABLE\'))) AS ADHERENCE_TREND
-              FROM (SELECT * FROM messages_actor_response mar WHERE source_type like \'SCHEDULED_SERVICE_GROUP\') mar
+              FROM (SELECT * FROM messages_actor_response mar WHERE source_type like \'SCHEDULED_SERVICE_GROUP\'
+              AND    patient_id = :patientId AND actor_id = :actorId) mar
               JOIN   messages_scheduled_service_group mssg on mar.source_id = mssg.messages_scheduled_service_group_id
               JOIN   messages_scheduled_service mss on mssg.messages_scheduled_service_group_id = mss.group_id
               JOIN   messages_patient_template mpt
