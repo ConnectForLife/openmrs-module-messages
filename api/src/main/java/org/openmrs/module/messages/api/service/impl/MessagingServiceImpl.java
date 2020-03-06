@@ -263,21 +263,22 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
     
     private List<ServiceResultList> retrieveAllServiceExecutions(List<PatientTemplate> patientTemplates, Date startDate,
                                                                  Date endDate) {
-        
-        Range<Date> dateRange = new Range<>(startDate, endDate);
-        
         List<ServiceResultList> results = new ArrayList<>();
         for (PatientTemplate patientTemplate : patientTemplates) {
             try {
+                Range<Date> dateRange = new Range<>(startDate, endDate);
                 if (patientTemplate.isDeactivated()) {
+                    dateRange = new Range<>(startDate, DateUtil.now());
                     if (LOGGER.isTraceEnabled()) {
                         LOGGER.trace(String.format(
-                                "Execution query for PatientTemplate %d has been skipped, because it is disabled",
-                                patientTemplate.getId()));
+                                "PatientTemplate %d is disabled, so applying the current date as the end date "
+                                        + "(%s instead of %s)",
+                                patientTemplate.getId(),
+                                DateUtil.convertToServerSideDateTime(dateRange.getEnd()),
+                                DateUtil.convertToServerSideDateTime(endDate)));
                     }
-                } else {
-                    results.add(serviceExecutor.execute(patientTemplate, dateRange));
                 }
+                results.add(serviceExecutor.execute(patientTemplate, dateRange));
             } catch (ExecutionException e) {
                 LOGGER.error(String.format(
                         "Cannot execute query for patientTemplate with id %d (template with id %d - '%s')",

@@ -39,18 +39,13 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
-import static org.openmrs.module.messages.api.service.DatasetConstants.CAREGIVER_ID_WITH_ACTIVATED_SERVICE;
-import static org.openmrs.module.messages.api.service.DatasetConstants.CAREGIVER_ID_WITH_DEACTIVATED_SERVICE;
-import static org.openmrs.module.messages.api.service.DatasetConstants.CAREGIVER_PATIENT_TEMPLATE_ID_WITH_ACTIVATED_STATUS;
 import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_CAREGIVER_ID;
+import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_CAREGIVER_PATIENT_TEMPLATE_ID;
 import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_NO_CONSENT_CAREGIVER_ID;
 import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_PATIENT_ID;
 import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_PATIENT_TEMPLATE_ID;
 import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_TEMPLATE;
 import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_TEMPLATE_NAME;
-import static org.openmrs.module.messages.api.service.DatasetConstants.TEMPLATE_NAME_WITH_ACTIVATED_STATUS;
-import static org.openmrs.module.messages.api.service.DatasetConstants.TEMPLATE_WITH_ACTIVATED_STATUS;
-import static org.openmrs.module.messages.api.service.DatasetConstants.TEMPLATE_WITH_DEACTIVATED_STATUS;
 import static org.openmrs.module.messages.api.service.DatasetConstants.XML_DATA_SET_PATH;
 
 @SuppressWarnings("checkstyle:magicnumber")
@@ -87,8 +82,6 @@ public class MessageDeliveriesJobDefinitionTest extends ContextSensitiveTest {
 
     private MessageDeliveriesJobDefinition job = new MessageDeliveriesJobDefinition();
     private Template defaultTemplate;
-    private Template activatedTemplate;
-    private Template deactivatedTemplate;
 
     @Before
     public void setUp() throws Exception {
@@ -100,8 +93,6 @@ public class MessageDeliveriesJobDefinitionTest extends ContextSensitiveTest {
         job.initialize(taskDefinition);
 
         defaultTemplate = templateService.getById(DEFAULT_TEMPLATE);
-        activatedTemplate = templateService.getById(TEMPLATE_WITH_ACTIVATED_STATUS);
-        deactivatedTemplate = templateService.getById(TEMPLATE_WITH_DEACTIVATED_STATUS);
     }
 
     @Test
@@ -111,15 +102,13 @@ public class MessageDeliveriesJobDefinitionTest extends ContextSensitiveTest {
 
     @Test
     public void shouldSaveScheduledServicesGroupWithServicesForPatient() {
-        ScheduledService expectedSmsService = getSmsService(DEFAULT_PATIENT_TEMPLATE_ID,
-                TEMPLATE_NAME_WITH_ACTIVATED_STATUS);
-        ScheduledService expectedCallService = getCallService(DEFAULT_PATIENT_TEMPLATE_ID,
-                TEMPLATE_NAME_WITH_ACTIVATED_STATUS);
+        ScheduledService expectedSmsService = getSmsService(DEFAULT_PATIENT_TEMPLATE_ID);
+        ScheduledService expectedCallService = getCallService(DEFAULT_PATIENT_TEMPLATE_ID);
 
-        List<ScheduledService> listBeforeSave = findScheduledServicesByActorId(DEFAULT_PATIENT_ID);
+        List<ScheduledService> listBeforeSave = findScheduledServicesByDefaultPatientAndActorId(DEFAULT_PATIENT_ID);
         job.execute();
         List<ScheduledService> newlySaved = getNewlyAddedObjects(
-                listBeforeSave, findScheduledServicesByActorId(DEFAULT_PATIENT_ID));
+                listBeforeSave, findScheduledServicesByDefaultPatientAndActorId(DEFAULT_PATIENT_ID));
 
         assertEquals(2, newlySaved.size());
         assertServiceIsCorrect(expectedSmsService, newlySaved.get(0));
@@ -127,49 +116,29 @@ public class MessageDeliveriesJobDefinitionTest extends ContextSensitiveTest {
     }
 
     @Test
-    public void shouldNotSaveScheduledServicesGroupWithServicesForCaregiverIfServiceIfMissingServiceStatusField() {
-        List<ScheduledService> listBeforeSave = findScheduledServicesByActorId(DEFAULT_CAREGIVER_ID);
+    public void shouldSaveScheduledServicesGroupWithServicesForCaregiver() {
+        ScheduledService expectedSmsService = getSmsService(DEFAULT_CAREGIVER_PATIENT_TEMPLATE_ID);
+        ScheduledService expectedCallService = getCallService(DEFAULT_CAREGIVER_PATIENT_TEMPLATE_ID);
+
+        List<ScheduledService> listBeforeSave = findScheduledServicesByDefaultPatientAndActorId(DEFAULT_CAREGIVER_ID);
         job.execute();
         List<ScheduledService> newlySaved = getNewlyAddedObjects(
-                listBeforeSave, findScheduledServicesByActorId(DEFAULT_CAREGIVER_ID));
-
-        assertEquals(0, newlySaved.size());
-    }
-
-    @Test
-    public void shouldSaveScheduledServicesGroupWithServicesForCaregiverIfServiceActivated() {
-        ScheduledService expectedSmsService = getSmsService(CAREGIVER_PATIENT_TEMPLATE_ID_WITH_ACTIVATED_STATUS,
-                TEMPLATE_NAME_WITH_ACTIVATED_STATUS);
-        ScheduledService expectedCallService = getCallService(CAREGIVER_PATIENT_TEMPLATE_ID_WITH_ACTIVATED_STATUS,
-                TEMPLATE_NAME_WITH_ACTIVATED_STATUS);
-
-        List<ScheduledService> listBeforeSave = findScheduledServicesByActorId(CAREGIVER_ID_WITH_ACTIVATED_SERVICE);
-        job.execute();
-        List<ScheduledService> newlySaved = getNewlyAddedObjects(
-                listBeforeSave, findScheduledServicesByActorId(CAREGIVER_ID_WITH_ACTIVATED_SERVICE));
+                listBeforeSave, findScheduledServicesByDefaultPatientAndActorId(DEFAULT_CAREGIVER_ID));
 
         assertEquals(2, newlySaved.size());
         assertServiceIsCorrect(expectedSmsService, newlySaved.get(0));
         assertServiceIsCorrect(expectedCallService, newlySaved.get(1));
-    }
-
-    @Test
-    public void shouldNotSaveScheduledServicesGroupWithServicesForCaregiverIfServiceDeactivated() {
-        List<ScheduledService> listBeforeSave = findScheduledServicesByActorId(CAREGIVER_ID_WITH_DEACTIVATED_SERVICE);
-        job.execute();
-        List<ScheduledService> newlySaved = getNewlyAddedObjects(
-                listBeforeSave, findScheduledServicesByActorId(CAREGIVER_ID_WITH_DEACTIVATED_SERVICE));
-
-        assertEquals(0, newlySaved.size());
     }
 
     @Test
     public void shouldSaveScheduledServicesGroupForActorWithNoConsentWhenConsentControlNotEnabled() {
         Context.getAdministrationService().setGlobalProperty(ConfigConstants.CONSENT_CONTROL_KEY, "false");
-        List<ScheduledService> listBeforeSave = findScheduledServicesByActorId(DEFAULT_NO_CONSENT_CAREGIVER_ID);
+        List<ScheduledService> listBeforeSave = findScheduledServicesByDefaultPatientAndActorId(
+                DEFAULT_NO_CONSENT_CAREGIVER_ID);
         job.execute();
         List<ScheduledService> newlySaved = getNewlyAddedObjects(
-                listBeforeSave, findScheduledServicesByActorId(DEFAULT_NO_CONSENT_CAREGIVER_ID));
+                listBeforeSave, findScheduledServicesByDefaultPatientAndActorId(
+                        DEFAULT_NO_CONSENT_CAREGIVER_ID));
 
         assertThat(newlySaved.size(), greaterThan(0));
     }
@@ -178,10 +147,12 @@ public class MessageDeliveriesJobDefinitionTest extends ContextSensitiveTest {
     public void shouldNotSaveScheduledServicesGroupForActorWithNoConsentWhenConsentControlIsEnabled() throws Exception {
         executeDataSet(XML_DATA_SET_PATH + "ConfigDataset.xml"); // loading GP which enables consent control
 
-        List<ScheduledService> listBeforeSave = findScheduledServicesByActorId(DEFAULT_NO_CONSENT_CAREGIVER_ID);
+        List<ScheduledService> listBeforeSave = findScheduledServicesByDefaultPatientAndActorId(
+                DEFAULT_NO_CONSENT_CAREGIVER_ID);
         job.execute();
         List<ScheduledService> newlySaved = getNewlyAddedObjects(
-                listBeforeSave, findScheduledServicesByActorId(DEFAULT_NO_CONSENT_CAREGIVER_ID));
+                listBeforeSave, findScheduledServicesByDefaultPatientAndActorId(
+                        DEFAULT_NO_CONSENT_CAREGIVER_ID));
 
         assertEquals(0, newlySaved.size());
     }
@@ -189,16 +160,12 @@ public class MessageDeliveriesJobDefinitionTest extends ContextSensitiveTest {
     @Test
     public void shouldNotSaveScheduledServiceGroupIfNoTasksToSchedule() {
         defaultTemplate.setServiceQuery(EMPTY_RESULT_SQL);
-        templateService.saveOrUpdateTemplate(defaultTemplate);
-        activatedTemplate.setServiceQuery(EMPTY_RESULT_SQL);
-        templateService.saveOrUpdate(activatedTemplate);
-        deactivatedTemplate.setServiceQuery(EMPTY_RESULT_SQL);
-        templateService.saveOrUpdate(deactivatedTemplate);
+        defaultTemplate = templateService.saveOrUpdateTemplate(defaultTemplate);
 
         List<ScheduledServiceGroup> listBeforeSave = messagingGroupService.getAll(false);
         job.execute();
-        List<ScheduledServiceGroup> newlySaved = getNewlyAddedObjects(
-                listBeforeSave, messagingGroupService.getAll(false));
+        List<ScheduledServiceGroup> newlySaved = filterByDefaultPatient(
+                getNewlyAddedObjects(listBeforeSave, messagingGroupService.getAll(false)));
 
         assertEquals(0, newlySaved.size());
     }
@@ -209,8 +176,8 @@ public class MessageDeliveriesJobDefinitionTest extends ContextSensitiveTest {
         ScheduledServiceParameter expectedParam2 = getParam("INTPARAM", "1");
         ScheduledServiceParameter expectedParam3 = getParam("STRINGPARAM", "testString");
 
-        activatedTemplate.setServiceQuery(SERVICE_QUERY_WITH_ADDITIONAL_PARAMS);
-        templateService.saveOrUpdateTemplate(activatedTemplate);
+        defaultTemplate.setServiceQuery(SERVICE_QUERY_WITH_ADDITIONAL_PARAMS);
+        templateService.saveOrUpdateTemplate(defaultTemplate);
 
         List<ScheduledServiceParameter> listBeforeSave = messagingParameterService.getAll(false);
         job.execute();
@@ -223,8 +190,9 @@ public class MessageDeliveriesJobDefinitionTest extends ContextSensitiveTest {
         assertParameterIsCorrect(expectedParam3, newlySaved.get(2));
     }
 
-    private List<ScheduledService> findScheduledServicesByActorId(int actorId) {
-        return messagingService.findAllByCriteria(ScheduledServiceCriteria.forActorId(actorId));
+    private List<ScheduledService> findScheduledServicesByDefaultPatientAndActorId(int actorId) {
+        return messagingService.findAllByCriteria(
+                ScheduledServiceCriteria.forActorAndPatientIds(actorId, DEFAULT_PATIENT_ID));
     }
 
     private ScheduledServiceParameter getParam(String key, String value) {
@@ -258,24 +226,25 @@ public class MessageDeliveriesJobDefinitionTest extends ContextSensitiveTest {
         return result;
     }
 
+    private List<ScheduledServiceGroup> filterByDefaultPatient(List<ScheduledServiceGroup> groups) {
+        List<ScheduledServiceGroup> result = new ArrayList<>();
+
+        for (ScheduledServiceGroup group : groups) {
+            if (group.getActor().getId().equals(DEFAULT_PATIENT_ID)
+                    && group.getPatient().getId().equals(DEFAULT_PATIENT_ID)) {
+                result.add(group);
+            }
+        }
+
+        return result;
+    }
+
     private ScheduledService getCallService(int patientTemplateId) {
         return getService("Call", patientTemplateId);
     }
 
-    private ScheduledService getCallService(int patientTemplateId, String serviceName) {
-        ScheduledService service = getService("Call", patientTemplateId);
-        service.setService(serviceName);
-        return service;
-    }
-
     private ScheduledService getSmsService(int patientTemplateId) {
         return getService("SMS", patientTemplateId);
-    }
-
-    private ScheduledService getSmsService(int patientTemplateId, String serviceName) {
-        ScheduledService service = getService("SMS", patientTemplateId);
-        service.setService(serviceName);
-        return service;
     }
 
     private ScheduledService getService(String channelType, int patientTemplateId) {

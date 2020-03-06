@@ -106,52 +106,6 @@
             void_reason=""
             uuid="18277feb-f5c5-451c-bb4a-235723c7a3c6"/>
 
-    <!-- Active Caregiver with activated service -->
-    <person
-            person_id="1000"
-            gender="M"
-            dead="false"
-            creator="1"
-            date_created="2010-11-16 15:57:09.0"
-            voided="false"
-            uuid="33c092dc-8aa3-40a4-896c-07c7eacb0091"/>
-
-    <person_name
-            person_name_id="1000"
-            preferred="true"
-            person_id="1000"
-            given_name="Robert"
-            middle_name=""
-            family_name="Caregiver"
-            creator="1"
-            date_created="2010-11-16 15:57:09.0"
-            voided="false"
-            void_reason=""
-            uuid="c0d019e3-9dfa-4a70-9582-929e0ac718fd"/>
-
-    <!-- Active Caregiver with activated service -->
-    <person
-            person_id="1001"
-            gender="M"
-            dead="false"
-            creator="1"
-            date_created="2010-11-16 15:57:09.0"
-            voided="false"
-            uuid="ba87177a-454f-4717-aaee-0ca580da7773"/>
-
-    <person_name
-            person_name_id="1001"
-            preferred="true"
-            person_id="1001"
-            given_name="Bob"
-            middle_name=""
-            family_name="Caregiver"
-            creator="1"
-            date_created="2010-11-16 15:57:09.0"
-            voided="false"
-            void_reason=""
-            uuid="0b734249-6503-4d71-a4d4-b0ff38461abd"/>
-
     <person_attribute
             person_attribute_id="999"
             person_id="999"
@@ -162,26 +116,6 @@
             voided="false"
             uuid="a7deb6dd-49da-4568-a24a-e6f0dae4133c"/>
 
-    <person_attribute
-            person_attribute_id="1000"
-            person_id="1000"
-            value="ACTIVE"
-            person_attribute_type_id="710"
-            creator="1"
-            date_created="2010-11-16"
-            voided="false"
-            uuid="733abffc-8500-4ff2-9d8c-3a1fc4fdcad8"/>
-
-    <person_attribute
-            person_attribute_id="1001"
-            person_id="1001"
-            value="ACTIVE"
-            person_attribute_type_id="710"
-            creator="1"
-            date_created="2010-11-16"
-            voided="false"
-            uuid="bb05e3d4-9298-4d4b-a12a-f4bb6435f6cc"/>
-
     <relationship
             relationship_id="999"
             person_a="997"
@@ -191,26 +125,6 @@
             date_created="2019-11-20 00:00:00.0"
             voided="false"
             uuid="d8f91bf6-6d89-4da5-ad9d-735cd70ffc48"/>
-
-    <relationship
-            relationship_id="1000"
-            person_a="997"
-            relationship="2500"
-            person_b="999"
-            creator="1"
-            date_created="2019-11-20 00:00:00.0"
-            voided="false"
-            uuid="d6adedd3-b69c-48e2-a1d7-8af53fcccb21"/>
-
-    <relationship
-            relationship_id="1001"
-            person_a="997"
-            relationship="2500"
-            person_b="999"
-            creator="1"
-            date_created="2019-11-20 00:00:00.0"
-            voided="false"
-            uuid="41e785a1-48e7-4dff-8cd5-f3414de62835"/>
 
     <!-- No consent Caregiver -->
     <person
@@ -272,28 +186,6 @@
             voided="false"
             uuid="dc28e6db-db92-440a-a2db-3d9060d52911"/>
 
-    <messages_template
-            messages_template_id="52"
-            service_query="select CAST('2019-12-01' as date) as EXECUTION_DATE, '1' as MESSAGE_ID, 'Call' as CHANNEL_ID, 'FUTURE' as STATUS_ID, '1' as visitTypeId, '1' as locationId
-                UNION select CAST('2019-12-01' as date) as EXECUTION_DATE, '1' as MESSAGE_ID, 'SMS' as CHANNEL_ID, 'FUTURE' as STATUS_ID, '1' as visitTypeId, '1' as locationId;"
-            service_query_type="SQL"
-            name="Dummy Visit Reminder with Activated status"
-            creator="1"
-            date_created="2010-11-16 00:00:00.0"
-            voided="false"
-            uuid="e8a7b00b-fbe0-4ab0-aa29-804c94e00a03"/>
-
-    <messages_template
-            messages_template_id="53"
-            service_query="select CAST('2019-12-01' as date) as EXECUTION_DATE, '1' as MESSAGE_ID, 'Call' as CHANNEL_ID, 'FUTURE' as STATUS_ID, '1' as visitTypeId, '1' as locationId
-                UNION select CAST('2019-12-01' as date) as EXECUTION_DATE, '1' as MESSAGE_ID, 'SMS' as CHANNEL_ID, 'FUTURE' as STATUS_ID, '1' as visitTypeId, '1' as locationId;"
-            service_query_type="SQL"
-            name="Dummy Visit Reminder with Deactivated status"
-            creator="1"
-            date_created="2010-11-16 00:00:00.0"
-            voided="false"
-            uuid="55a4432f-7ef6-4259-afb0-fea89f150cf5"/>
-
     <messages_template_field
             messages_template_field_id="61"
             name="test template"
@@ -306,35 +198,11 @@
             voided="false"
             uuid="5e776c48-3a0d-4585-b234-1673a71b91d6"/>
 
-    <messages_template_field
-            messages_template_field_id="62"
-            name="Activated Service type"
-            mandatory="true"
-            default_value="Call"
-            template_field_type="SERVICE_TYPE"
-            template_id="52"
-            creator="1"
-            date_created="2010-11-16 00:00:00.0"
-            voided="false"
-            uuid="aedab89b-2e74-41da-9969-a6ee345e45ff"/>
-
-    <messages_template_field
-            messages_template_field_id="63"
-            name="Deactivated Service type"
-            mandatory="true"
-            default_value="Deactivate service"
-            template_field_type="SERVICE_TYPE"
-            template_id="53"
-            creator="1"
-            date_created="2010-11-16 00:00:00.0"
-            voided="false"
-            uuid="da89b183-5a52-4651-8338-a35a7c5cdf75"/>
-
     <!--  Patient  -->
     <messages_patient_template
             messages_patient_template_id="71"
             actor_id="997"
-            template_id="52"
+            template_id="51"
             patient_id="997"
             service_query_type=""
             service_query=""
@@ -362,7 +230,7 @@
             messages_patient_template_id="73"
             actor_id="998"
             actor_type="998"
-            template_id="52"
+            template_id="51"
             patient_id="997"
             service_query_type=""
             service_query=""
@@ -370,34 +238,6 @@
             date_created="2019-11-20 00:00:00.1"
             voided="false"
             uuid="1232ea41-13ca-403a-b05d-9128d2b085cd"/>
-
-    <!-- Caregiver - Activated service  -->
-    <messages_patient_template
-            messages_patient_template_id="74"
-            actor_id="1000"
-            actor_type="1000"
-            template_id="52"
-            patient_id="997"
-            service_query_type=""
-            service_query=""
-            creator="1"
-            date_created="2019-11-20 00:00:00.1"
-            voided="false"
-            uuid="17ba83ff-02df-471f-81f4-207784cb7674"/>
-
-    <!-- Caregiver - Deactivated service  -->
-    <messages_patient_template
-            messages_patient_template_id="75"
-            actor_id="1001"
-            actor_type="1001"
-            template_id="53"
-            patient_id="997"
-            service_query_type=""
-            service_query=""
-            creator="1"
-            date_created="2019-11-20 00:00:00.1"
-            voided="false"
-            uuid="24febaf6-05b3-4da7-b1a1-9707c76dc5d8"/>
 
     <messages_template_field_value
             messages_template_field_value_id="81"
@@ -408,46 +248,6 @@
             date_created="2019-11-20 00:00:00.2"
             voided="false"
             uuid="0309e34d-f863-4f7b-9116-7d4e41b45671"/>
-
-    <messages_template_field_value
-            messages_template_field_value_id="82"
-            value="Call"
-            patient_template_id="71"
-            template_field_id="62"
-            creator="1"
-            date_created="2019-10-16 00:00:00.2"
-            voided="false"
-            uuid="d6737702-f767-48fa-81b6-b1fd62146e21"/>
-
-    <messages_template_field_value
-            messages_template_field_value_id="83"
-            value="Call"
-            patient_template_id="73"
-            template_field_id="62"
-            creator="1"
-            date_created="2019-10-16 00:00:00.2"
-            voided="false"
-            uuid="292e3d0e-2529-4341-92b3-e9d8dbcbd61d"/>
-
-    <messages_template_field_value
-            messages_template_field_value_id="84"
-            value="Call"
-            patient_template_id="74"
-            template_field_id="62"
-            creator="1"
-            date_created="2019-10-16 00:00:00.2"
-            voided="false"
-            uuid="8896ce29-749a-4266-9c7d-bf5a31147046"/>
-
-    <messages_template_field_value
-            messages_template_field_value_id="85"
-            value="Deactivate service"
-            patient_template_id="75"
-            template_field_id="63"
-            creator="1"
-            date_created="2019-10-16 00:00:00.2"
-            voided="false"
-            uuid="64acac2b-7672-4d90-8fcf-0da96fb29f03"/>
 
     <messages_scheduled_service_group
             messages_scheduled_service_group_id="91"

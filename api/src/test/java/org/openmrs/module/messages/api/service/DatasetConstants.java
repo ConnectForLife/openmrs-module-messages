@@ -17,30 +17,19 @@ public final class DatasetConstants {
     public static final int DEFAULT_PERSON_ID = 997;
 
     public static final int DEFAULT_PATIENT_ID = DEFAULT_PERSON_ID;
+    public static final int DEFAULT_PATIENT_TEMPLATE_ID = 71;
+    public static final int DEFAULT_TEMPLATE = 51;
 
     //Pablo Caregiver
     public static final int DEFAULT_CAREGIVER_ID = 999;
-    //Robert Caregiver
-    public static final int CAREGIVER_ID_WITH_ACTIVATED_SERVICE = 1000;
-    //Bob Caregiver
-    public static final int CAREGIVER_ID_WITH_DEACTIVATED_SERVICE = 1001;
+    public static final int DEFAULT_CAREGIVER_PATIENT_TEMPLATE_ID = 72;
+    public static final int DEFAULT_CAREGIVER_TEMPLATE_ID = 51;
 
     //John Caregiver - no consent
     public static final int DEFAULT_NO_CONSENT_CAREGIVER_ID = 998;
 
-    public static final int DEFAULT_PATIENT_TEMPLATE_ID = 71;
-    public static final int CAREGIVER_PATIENT_TEMPLATE_ID_WITH_ACTIVATED_STATUS = 74;
-
     //Dummy Visit Reminder
-    public static final int DEFAULT_TEMPLATE = 51;
     public static final String DEFAULT_TEMPLATE_NAME = "Dummy Visit Reminder";
-
-    //Dummy Visit Reminder with Activated status
-    public static final int TEMPLATE_WITH_ACTIVATED_STATUS = 52;
-    public static final String TEMPLATE_NAME_WITH_ACTIVATED_STATUS = "Dummy Visit Reminder with Activated status";
-
-    //Dummy Visit Reminder with Deactivated status
-    public static final int TEMPLATE_WITH_DEACTIVATED_STATUS = 53;
 
     public static final int SCHEDULED_SERVICE_GROUP = 91;
 

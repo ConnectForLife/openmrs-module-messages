@@ -9,12 +9,12 @@
 
 package org.openmrs.module.messages.domain.criteria;
 
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
+
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
-
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
 
 /**
  * Represents a criteria for searching service/message in DB.
@@ -25,8 +25,6 @@ public class ScheduledServiceCriteria extends BaseCriteria implements Serializab
 
     private List<Integer> ids;
 
-    private Integer actorId;
-    
     private Integer patientTemplatePatientId;
     
     private Integer patientTemplateActorId;
@@ -50,11 +48,6 @@ public class ScheduledServiceCriteria extends BaseCriteria implements Serializab
         if (ids != null) {
             hibernateCriteria.add(Restrictions.in(ID_FIELD, ids));
         }
-        if (actorId != null) {
-            hibernateCriteria
-                    .createAlias(GROUP_FIELD + "." + ACTOR_FIELD, ACTOR_FIELD)
-                    .add(Restrictions.eq(ACTOR_FIELD + "." + PERSON_ID_FIELD, actorId));
-        }
         if (patientTemplatePatientId != null) {
             hibernateCriteria
                     .createAlias(PATIENT_TEMPLATE_FIELD + "." + PATIENT_FIELD, PATIENT_FIELD)
@@ -76,9 +69,10 @@ public class ScheduledServiceCriteria extends BaseCriteria implements Serializab
         return scheduledServiceCriteria;
     }
 
-    public static ScheduledServiceCriteria forActorId(Integer actorId) {
+    public static ScheduledServiceCriteria forActorAndPatientIds(Integer actorId, Integer patientId) {
         ScheduledServiceCriteria scheduledServiceCriteria = new ScheduledServiceCriteria();
-        scheduledServiceCriteria.actorId = actorId;
+        scheduledServiceCriteria.patientTemplateActorId = actorId;
+        scheduledServiceCriteria.patientTemplatePatientId = patientId;
         return scheduledServiceCriteria;
     }
     
@@ -102,9 +96,5 @@ public class ScheduledServiceCriteria extends BaseCriteria implements Serializab
     
     public List<Integer> getIds() {
         return Collections.unmodifiableList(ids);
-    }
-
-    public Integer getActorId() {
-        return actorId;
     }
 }
