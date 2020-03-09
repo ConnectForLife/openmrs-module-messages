@@ -182,6 +182,21 @@ public final class ConfigConstants {
     public static final String NOTIFICATION_TEMPLATE_ADHERENCE_DAILY_DESCRIPTION =
             "The notification template for adherence report daily message type.";
 
+    public static final String NOTIFICATION_TEMPLATE_VISIT_REMINDER =
+            "messages.notificationTemplate.visit-reminder";
+    public static final String NOTIFICATION_TEMPLATE_VISIT_REMINDER_DEFAULT_VALUE =
+            "#set ($integerClazz = $openmrsContext.loadClass('java.lang.Integer'))\n"
+                    + "#set ($stringClazz = $openmrsContext.loadClass('java.lang.String'))\n"
+                    + "#set ($simpleDateFormat = $openmrsContext.loadClass('java.text.SimpleDateFormat')"
+                    + ".getDeclaredConstructor($stringClazz).newInstance('yyyy-MM-dd'))\n"
+                    + "#set ($visitTypeIdInteger = $integerClazz.parseInt($visitTypeId))\n"
+                    + "#set ($visitPurpose = $openmrsContext.getVisitService()"
+                    + ".getVisitType($visitTypeIdInteger).getName())\n"
+                    + "Hello $patient.getPersonName().toString(), You have a visit scheduled for $simpleDateFormat"
+                    + ".format($simpleDateFormat.parse($dateStarted)) for the purpose of $visitPurpose.";
+    public static final String NOTIFICATION_TEMPLATE_VISIT_REMINDER_DESCRIPTION =
+            "The notification template for visit reminder message type.";
+
     private ConfigConstants() {
     }
 }

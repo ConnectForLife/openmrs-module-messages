@@ -61,6 +61,7 @@ public class VelocityNotificationTemplateServiceImpl extends NotificationTemplat
                 LOGGER.error("Error retrieving the contents : ", ioe);
             }
         }
+        LOGGER.debug(String.format("Notification outcome message %s", outcomeMessage));
         return outcomeMessage;
     }
 }

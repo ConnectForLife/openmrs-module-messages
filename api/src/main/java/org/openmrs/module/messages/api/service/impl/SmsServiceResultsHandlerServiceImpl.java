@@ -14,7 +14,10 @@ import org.openmrs.module.messages.api.event.MessagesEvent;
 import org.openmrs.module.messages.api.event.SmsEventParamConstants;
 import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
 import org.openmrs.module.messages.api.model.ScheduledService;
+import org.openmrs.module.messages.api.model.types.ServiceStatus;
+import org.openmrs.module.messages.api.service.MessagingService;
 import org.openmrs.module.messages.api.service.NotificationTemplateService;
+import org.openmrs.module.messages.api.util.DateUtil;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -29,6 +32,8 @@ public class SmsServiceResultsHandlerServiceImpl extends AbstractServiceResultsH
 
     private NotificationTemplateService notificationTemplateService;
 
+    private MessagingService messagingService;
+
     @Override
     public void handle(List<ScheduledService> smsServices, ScheduledExecutionContext executionContext) {
         for (ScheduledService service : smsServices) {
@@ -38,6 +43,10 @@ public class SmsServiceResultsHandlerServiceImpl extends AbstractServiceResultsH
 
     public void setNotificationTemplateService(NotificationTemplateService notificationTemplateService) {
         this.notificationTemplateService = notificationTemplateService;
+    }
+
+    public void setMessagingService(MessagingService messagingService) {
+        this.messagingService = messagingService;
     }
 
     private void triggerEvent(ScheduledService smsService, ScheduledExecutionContext executionContext) {
@@ -57,7 +66,7 @@ public class SmsServiceResultsHandlerServiceImpl extends AbstractServiceResultsH
         }
         params.put(SmsEventParamConstants.MESSAGE, message);
         params.put(SmsEventParamConstants.CUSTOM_PARAMS, smsService.getParameters());
-
+        messagingService.registerAttempt(smsService, ServiceStatus.DELIVERED, DateUtil.now(), null);
         return new MessagesEvent(SMS_INITIATE_EVENT, params);
     }
 
