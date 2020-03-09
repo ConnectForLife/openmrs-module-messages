@@ -116,6 +116,13 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
         createAdherenceFeedbackConfig();
         createHealthTipConfig();
         createStatusesEndingCallflowConfig();
+        createNotificationTemplateConfig();
+    }
+
+    private void createNotificationTemplateConfig() {
+        createGlobalSettingIfNotExists(ConfigConstants.NOTIFICATION_TEMPLATE_INJECTED_SERVICES,
+                ConfigConstants.NOTIFICATION_TEMPLATE_INJECTED_SERVICES_DEFAULT_VALUE,
+                ConfigConstants.NOTIFICATION_TEMPLATE_INJECTED_SERVICES_DESCRIPTION);
     }
 
     private void createActorTypeConfig() {
@@ -133,8 +140,6 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
         createBestContactTimeAttributeType();
         createGlobalSettingIfNotExists(ConfigConstants.BEST_CONTACT_TIME_KEY,
                 ConfigConstants.BEST_CONTACT_TIME_DEFAULT_VALUE, ConfigConstants.BEST_CONTACT_TIME_DESCRIPTION);
-        createGlobalSettingIfNotExists(ConfigConstants.ACTOR_BEST_CONTACT_TIME_KEY,
-                ConfigConstants.ACTOR_BEST_CONTACT_TIME_DEFAULT_VALUE, ConfigConstants.ACTOR_BEST_CONTACT_TIME_DESCRIPTION);
         createGlobalSettingIfNotExists(ConfigConstants.CONSENT_CONTROL_KEY,
                 ConfigConstants.CONSENT_CONTROL_DEFAULT_VALUE, ConfigConstants.CONSENT_CONTROL_DESCRIPTION);
     }

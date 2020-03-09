@@ -341,7 +341,11 @@
 
     <bean id="messages.smsServiceResultHandlerService"
           class="org.openmrs.module.messages.api.service.impl.SmsServiceResultsHandlerServiceImpl"
-          parent="messages.abstractServiceResultHandlerService"/>
+          parent="messages.abstractServiceResultHandlerService">
+        <property name="notificationTemplateService">
+            <ref local="messages.velocityNotificationTemplateServiceImpl"/>
+        </property>
+    </bean>
 
     <bean id="messages.scheduledParamsMapper" class="org.openmrs.module.messages.api.mappers.ScheduledParamsMapper"/>
 
@@ -468,4 +472,17 @@
             <ref bean="transactionAttributeSource"/>
         </property>
     </bean>
+
+    <bean id="messages.GPNotificationTemplateDao"
+          class="org.openmrs.module.messages.api.dao.impl.GPNotificationTemplateDaoImpl">
+        <property name="administrationService" ref="adminService"/>
+    </bean>
+
+    <bean id="messages.velocityNotificationTemplateServiceImpl"
+          class="org.openmrs.module.messages.api.service.impl.VelocityNotificationTemplateServiceImpl">
+        <property name="notificationTemplateDao">
+            <ref local="messages.GPNotificationTemplateDao"/>
+        </property>
+    </bean>
+
 </beans>

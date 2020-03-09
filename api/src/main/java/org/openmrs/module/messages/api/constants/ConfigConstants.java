@@ -98,15 +98,6 @@ public final class ConfigConstants {
     public static final String BEST_CONTACT_TIME_DESCRIPTION = "Map of actor types and their default contact times" +
             " for services for different actor types. Example of usage: " + BEST_CONTACT_TIME_DEFAULT_VALUE;
 
-    public static final String ACTOR_BEST_CONTACT_TIME_KEY = "message.bestContactTime.actor";
-
-    public static final String ACTOR_BEST_CONTACT_TIME_DEFAULT_VALUE =
-            "{\"acec590b-825e-45d2-876a-0028f174903d\": \"10:00\"}";
-
-    public static final String ACTOR_BEST_CONTACT_TIME_DESCRIPTION = "Map of actor types and their default contact times" +
-            " for services for different actor types. Example of usage: "
-            + "{\"relationshipTypeUuid\": \"10:00\", \"secondRelationshipTypeUuid\": \"12:20\"}";
-
     public static final String DAYS_NUMBER_BEFORE_VISIT_REMINDER_KEY = "message.daysToCallBeforeVisit.default";
     public static final String DAYS_NUMBER_BEFORE_VISIT_REMINDER_DEFAULT_VALUE = "1,7";
     public static final String DAYS_NUMBER_BEFORE_VISIT_REMINDER_DESCRIPTION =
@@ -175,7 +166,15 @@ public final class ConfigConstants {
     public static final String STATUSES_ENDING_CALLFLOW_DESCRIPTION =
             "Comma-separated values which points statuses describing "
             + "call which have ended flow in the Callflow module.";
-    
+
+    public static final String NOTIFICATION_TEMPLATE_INJECTED_SERVICES =
+            "messages.notificationTemplate.injectedServices";
+    public static final String NOTIFICATION_TEMPLATE_INJECTED_SERVICES_DEFAULT_VALUE =
+            "";
+    public static final String NOTIFICATION_TEMPLATE_INJECTED_SERVICES_DESCRIPTION =
+            "Comma-separated values which represent the map of services which should be injected into "
+                    + "the messaging notification template.";
+
     private ConfigConstants() {
     }
 }

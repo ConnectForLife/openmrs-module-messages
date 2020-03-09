@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <global_property
+            property="messages.notificationTemplate.injectedServices"
+            property_value="administrationService:adminService,notExisting:notExisting"
+            uuid="98dbf5f2-a365-47a3-9e2f-498bfc105cd2"/>
+
+    <global_property
+            property="messages.notificationTemplate.test"
+            property_value="This is test message."
+            uuid="36cdd856-464b-4b63-849f-20eec120b704"/>
+
+    <global_property
+            property="messages.notificationTemplate.test-service2"
+            property_value="This is test messages. For patient $patient.getPatientId(). Value of injected services is $administrationService.getGlobalProperty('messages.notificationTemplate.injectedServices'). This is input service param `$test`"
+            uuid="e6a44379-bb18-4339-a457-930c9043cc56"/>
+</dataset>
