@@ -46,9 +46,10 @@ import java.util.List;
 
 @Transactional
 public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledService> implements MessagingService {
-    
+
     private static final Log LOGGER = LogFactory.getLog(MessagingServiceImpl.class);
-    
+    public static final int ONE = 1;
+
     private ConceptService conceptService;
     private ActorResponseDao actorResponseDao;
     private ServiceExecutor serviceExecutor;
@@ -268,11 +269,11 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
             try {
                 Range<Date> dateRange = new Range<>(startDate, endDate);
                 if (patientTemplate.isDeactivated()) {
-                    dateRange = new Range<>(startDate, DateUtil.now());
+                    dateRange = new Range<>(startDate, getMaxExecutionDate(patientTemplate));
                     if (LOGGER.isTraceEnabled()) {
                         LOGGER.trace(String.format(
-                                "PatientTemplate %d is disabled, so applying the current date as the end date "
-                                        + "(%s instead of %s)",
+                                "PatientTemplate %d is disabled, so applying the max execution date or now as " +
+                                        "the end date (%s instead of %s)",
                                 patientTemplate.getId(),
                                 DateUtil.convertToServerSideDateTime(dateRange.getEnd()),
                                 DateUtil.convertToServerSideDateTime(endDate)));
@@ -291,7 +292,27 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
         
         return results;
     }
-    
+
+    private Date getMaxExecutionDate(PatientTemplate patientTemplate) {
+        List<ScheduledService> services = findAllByCriteria(
+                ScheduledServiceCriteria.forLastExecution(patientTemplate.getId()));
+        if (services.size() > ONE) {
+            LOGGER.warn("Found more then 1 service for the ScheduledServiceCriteria.forLastExecution criteria");
+        }
+        if (services.size() >= ONE
+                && services.get(0).getGroup() != null
+                && services.get(0).getGroup().getMsgSendTime() != null) {
+            if (LOGGER.isTraceEnabled()) {
+                LOGGER.trace(String.format("PatientTemplate %d ('%s') has got already scheduled tasks at the future, "
+                                + "so the last execution date will be applied as the end date",
+                        patientTemplate.getId(),
+                        patientTemplate.getTemplate().getName()));
+            }
+            return services.get(0).getGroup().getMsgSendTime();
+        }
+        return DateUtil.now();
+    }
+
     private void checkIfStatusIsNotPendingOrFuture(ServiceStatus status) {
         if (ServiceStatus.PENDING.equals(status) || ServiceStatus.FUTURE.equals(status)) {
             throw new IllegalArgumentException(String.format(
