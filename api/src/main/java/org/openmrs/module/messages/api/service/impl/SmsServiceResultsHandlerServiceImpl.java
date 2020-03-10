@@ -9,12 +9,15 @@
 
 package org.openmrs.module.messages.api.service.impl;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.module.messages.api.event.MessagesEvent;
 import org.openmrs.module.messages.api.event.SmsEventParamConstants;
+import org.openmrs.module.messages.api.model.ChannelType;
 import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
 import org.openmrs.module.messages.api.model.ScheduledService;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
+import org.openmrs.module.messages.api.service.MessagesExecutionService;
 import org.openmrs.module.messages.api.service.MessagingService;
 import org.openmrs.module.messages.api.service.NotificationTemplateService;
 import org.openmrs.module.messages.api.util.DateUtil;
@@ -30,14 +33,23 @@ public class SmsServiceResultsHandlerServiceImpl extends AbstractServiceResultsH
 
     private static final String DEFAULT_MESSAGE = "Not yet specified";
 
+    private static final String CHANNEL_TYPE = ChannelType.SMS.getName();
+
     private NotificationTemplateService notificationTemplateService;
 
     private MessagingService messagingService;
 
+    private MessagesExecutionService messagesExecutionService;
+
     @Override
     public void handle(List<ScheduledService> smsServices, ScheduledExecutionContext executionContext) {
         for (ScheduledService service : smsServices) {
-            triggerEvent(service, executionContext);
+            this.triggerEvent(service, executionContext);
+            this.messagingService.registerAttempt(service, ServiceStatus.DELIVERED, DateUtil.now(), null);
+        }
+        if (CollectionUtils.isNotEmpty(smsServices)) {
+            int groupId = executionContext.getGroupId();
+            this.messagesExecutionService.executionCompleted(groupId, null, CHANNEL_TYPE);
         }
     }
 
@@ -47,6 +59,10 @@ public class SmsServiceResultsHandlerServiceImpl extends AbstractServiceResultsH
 
     public void setMessagingService(MessagingService messagingService) {
         this.messagingService = messagingService;
+    }
+
+    public void setMessagesExecutionService(MessagesExecutionService messagesExecutionService) {
+        this.messagesExecutionService = messagesExecutionService;
     }
 
     private void triggerEvent(ScheduledService smsService, ScheduledExecutionContext executionContext) {
@@ -66,7 +82,6 @@ public class SmsServiceResultsHandlerServiceImpl extends AbstractServiceResultsH
         }
         params.put(SmsEventParamConstants.MESSAGE, message);
         params.put(SmsEventParamConstants.CUSTOM_PARAMS, smsService.getParameters());
-        messagingService.registerAttempt(smsService, ServiceStatus.DELIVERED, DateUtil.now(), null);
         return new MessagesEvent(SMS_INITIATE_EVENT, params);
     }
 

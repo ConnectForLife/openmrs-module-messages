@@ -348,6 +348,9 @@
         <property name="messagingService">
             <ref local="messages.messagingService"/>
         </property>
+        <property name="messagesExecutionService">
+            <ref local="messages.messagesExecutionService"/>
+        </property>
     </bean>
 
     <bean id="messages.scheduledParamsMapper" class="org.openmrs.module.messages.api.mappers.ScheduledParamsMapper"/>
