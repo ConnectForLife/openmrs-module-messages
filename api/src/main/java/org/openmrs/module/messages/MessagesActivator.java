@@ -132,6 +132,9 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
         createGlobalSettingIfNotExists(ConfigConstants.NOTIFICATION_TEMPLATE_HEALTH_TIP,
                 ConfigConstants.NOTIFICATION_TEMPLATE_HEALTH_TIP_DEFAULT_VALUE,
                 ConfigConstants.NOTIFICATION_TEMPLATE_HEALTH_TIP_DESCRIPTION);
+        createGlobalSettingIfNotExists(ConfigConstants.NOTIFICATION_TEMPLATE_ADHERENCE_FEEDBACK,
+                ConfigConstants.NOTIFICATION_TEMPLATE_ADHERENCE_FEEDBACK_DEFAULT_VALUE,
+                ConfigConstants.NOTIFICATION_TEMPLATE_ADHERENCE_FEEDBACK_DESCRIPTION);
     }
 
     private void createActorTypeConfig() {
