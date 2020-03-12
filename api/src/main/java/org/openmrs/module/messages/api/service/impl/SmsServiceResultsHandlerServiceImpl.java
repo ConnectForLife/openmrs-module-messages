@@ -16,6 +16,7 @@ import org.openmrs.module.messages.api.event.SmsEventParamConstants;
 import org.openmrs.module.messages.api.model.ChannelType;
 import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
 import org.openmrs.module.messages.api.model.ScheduledService;
+import org.openmrs.module.messages.api.model.ScheduledServiceGroup;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
 import org.openmrs.module.messages.api.service.MessagesExecutionService;
 import org.openmrs.module.messages.api.service.MessagingService;
@@ -88,6 +89,10 @@ public class SmsServiceResultsHandlerServiceImpl extends AbstractServiceResultsH
     private Map<String, String> buildServiceParams(ScheduledService smsService) {
         Map<String, String> serviceParams = new HashMap<>(smsService.getParameters());
         serviceParams.put(SmsEventParamConstants.MESSAGE_ID, smsService.getId().toString());
+        ScheduledServiceGroup group = smsService.getGroup();
+        if (null != group && null != group.getId()) {
+            serviceParams.put(SmsEventParamConstants.MESSAGE_GROUP_ID, smsService.getGroup().getId().toString());
+        }
         return serviceParams;
     }
 }

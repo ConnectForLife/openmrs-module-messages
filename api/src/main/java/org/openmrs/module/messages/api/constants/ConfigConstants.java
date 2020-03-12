@@ -197,6 +197,20 @@ public final class ConfigConstants {
     public static final String NOTIFICATION_TEMPLATE_VISIT_REMINDER_DESCRIPTION =
             "The notification template for visit reminder message type.";
 
+    public static final String NOTIFICATION_TEMPLATE_HEALTH_TIP =
+            "messages.notificationTemplate.health-tip";
+    public static final String NOTIFICATION_TEMPLATE_HEALTH_TIP_DEFAULT_VALUE =
+            "#set ($healthTipId = $HEALTH_TIP_ID.split(',').get(0))\n"
+                    + "#set ($healthTipId = $Integer.parseInt($healthTipId)) \n"
+                    + "#set ($healthTip = $conceptDAO.getConcept($healthTipId))\n"
+                    + "#set ($localeClass = $conceptDAO.getClass().forName(\"java.util.Locale\"))\n"
+                    + "#set ($healthTipText = $healthTip.getDescription().getDescription())\n"
+                    + "$healthTipText\n"
+                    + "#set ($dummy = $messagesService.registerResponse($personId, $personId, $message_group_id, "
+                    + "'SCHEDULED_SERVICE_GROUP', $healthTipId, '', 165270, '', $DateUtil.now()))";
+    public static final String NOTIFICATION_TEMPLATE_HEALTH_TIP_DESCRIPTION =
+            "The notification template for health tip message type.";
+
     private ConfigConstants() {
     }
 }

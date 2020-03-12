@@ -18,9 +18,14 @@ public final class SmsEventParamConstants {
     public static final String CUSTOM_PARAMS = "custom_params";
 
     /**
-     * Message id of the call
+     * Message id of the scheduled service
      */
     public static final String MESSAGE_ID = "message_id";
+
+    /**
+     * Message group id of the scheduled service
+     */
+    public static final String MESSAGE_GROUP_ID = "message_group_id";
 
     /**
      * Used service name

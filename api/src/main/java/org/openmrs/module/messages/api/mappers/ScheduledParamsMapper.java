@@ -9,15 +9,20 @@
 
 package org.openmrs.module.messages.api.mappers;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
 import org.openmrs.module.messages.api.execution.ServiceResult;
 import org.openmrs.module.messages.api.model.ScheduledServiceParameter;
 import org.springframework.beans.BeanUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ScheduledParamsMapper implements ListMapper<ServiceResult, ScheduledServiceParameter> {
+
+    private static final Log LOGGER = LogFactory.getLog(ScheduledParamsMapper.class);
 
     @Override
     public ServiceResult toDto(List<ScheduledServiceParameter> daos) {
@@ -31,6 +36,10 @@ public class ScheduledParamsMapper implements ListMapper<ServiceResult, Schedule
 
         for (String key : dao.getAdditionalParams().keySet()) {
             Object value = dao.getAdditionalParams().get(key);
+            if (null == value) {
+                LOGGER.warn(String.format("Null value for `%s` key was noticed. This key will be skipped.", key));
+                continue;
+            }
             if (!BeanUtils.isSimpleValueType(value.getClass())) { // if not primitive value or String
                 throw new MessagesRuntimeException("Complex object cannot be cast to ScheduledServiceParameter");
             }

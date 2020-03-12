@@ -18,8 +18,12 @@ import org.openmrs.module.messages.api.dao.NotificationTemplateDao;
 import org.openmrs.module.messages.api.model.NotificationTemplate;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.service.NotificationTemplateService;
+import org.openmrs.module.messages.api.util.DateUtil;
 import org.openmrs.module.messages.api.util.MessagesUtils;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -109,6 +113,7 @@ public abstract class NotificationTemplateServiceImpl extends BaseOpenmrsService
         }
         Map<String, Object> templateInputProperties = serviceParam == null ? new HashMap<String, Object>()
                 : new HashMap<String, Object>(serviceParam);
+        this.loadBaseClasses(templateInputProperties);
         this.addDataBasedOnPatientTemplate(patientTemplate, templateInputProperties);
         Map<String, String> servicesMap = MessagesUtils.parseStringToMap(injectedServices);
         this.loadServices(templateInputProperties, servicesMap);
@@ -142,6 +147,23 @@ public abstract class NotificationTemplateServiceImpl extends BaseOpenmrsService
         if (null != value) {
             map.put(key, value);
         }
+    }
+
+    /**
+     * Loads some classes have very useful static methods that are useful for templates
+     * @param templateInputProperties - the map of template properties
+     */
+    private void loadBaseClasses(Map<String, Object> templateInputProperties) {
+        templateInputProperties.put("String", String.class);
+        templateInputProperties.put("Integer", Integer.class);
+        templateInputProperties.put("Long", Long.class);
+        templateInputProperties.put("Float", Float.class);
+        templateInputProperties.put("Double", Double.class);
+        templateInputProperties.put("Date", Date.class);
+        templateInputProperties.put("SimpleDateFormat", SimpleDateFormat.class);
+        templateInputProperties.put("Calendar", Calendar.class);
+        templateInputProperties.put("DateUtil", DateUtil.class);
+        templateInputProperties.put("Math", Math.class);
     }
 
     /**
