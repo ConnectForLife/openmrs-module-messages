@@ -221,6 +221,14 @@ public final class ConfigConstants {
     public static final String NOTIFICATION_TEMPLATE_ADHERENCE_FEEDBACK_DESCRIPTION =
             "The notification template for adherence feedback message type.";
 
+    public static final String NOTIFICATION_TEMPLATE_ADHERENCE_WEEKLY =
+            "messages.notificationTemplate.adherence-report-weekly";
+    public static final String NOTIFICATION_TEMPLATE_ADHERENCE_WEEKLY_DEFAULT_VALUE =
+            "Hello $patient.getPersonName().toString(), Your dosage is scheduled to be taken. "
+                    + "Please take your dosage as prescribed.";
+    public static final String NOTIFICATION_TEMPLATE_ADHERENCE_WEEKLY_DESCRIPTION =
+            "The notification template for adherence report weekly message type.";
+
     private ConfigConstants() {
     }
 }
