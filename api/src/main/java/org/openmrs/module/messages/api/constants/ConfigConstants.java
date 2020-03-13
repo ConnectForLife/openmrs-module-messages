@@ -178,7 +178,7 @@ public final class ConfigConstants {
     public static final String NOTIFICATION_TEMPLATE_ADHERENCE_DAILY =
             "messages.notificationTemplate.adherence-report-daily";
     public static final String NOTIFICATION_TEMPLATE_ADHERENCE_DAILY_DEFAULT_VALUE =
-            "Hello $patient.getPersonName().toString(), Your dosage is scheduled to be taken now. Please take your dosage.";
+            "Hello $patient.getPatientId(), Your dosage is scheduled to be taken now. Please take your dosage.";
     public static final String NOTIFICATION_TEMPLATE_ADHERENCE_DAILY_DESCRIPTION =
             "The notification template for adherence report daily message type.";
 
