@@ -1,12 +1,5 @@
 package validate.validator;
 
-import static org.openmrs.module.messages.ValidationMessagesConstants.PATIENT_TEMPLATE_REQUIRED_FIELD_IS_EMPTY;
-import static org.openmrs.module.messages.api.model.TemplateFieldType.SERVICE_TYPE;
-
-import java.util.ArrayList;
-import java.util.List;
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
@@ -21,9 +14,19 @@ import org.openmrs.module.messages.api.service.TemplateService;
 import org.springframework.util.StringUtils;
 import validate.annotation.ValidPatientTemplate;
 
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.openmrs.module.messages.ValidationMessagesConstants.PATIENT_TEMPLATE_REQUIRED_FIELD_IS_EMPTY;
+import static org.openmrs.module.messages.ValidationMessagesConstants.TEMPLATE_WITH_ID_NOT_FOUND;
+import static org.openmrs.module.messages.api.model.TemplateFieldType.SERVICE_TYPE;
+
 public class PatientTemplateValidator implements ConstraintValidator<ValidPatientTemplate, PatientTemplate> {
 
     private static final String TEMPLATE_FIELD_VALUES_PATH = "patientTemplate.templateFieldValues";
+    private static final String TEMPLATE_ID_PATH = "patientTemplate.templateId";
     private final Log logger = LogFactory.getLog(getClass());
 
     @Override
@@ -38,6 +41,11 @@ public class PatientTemplateValidator implements ConstraintValidator<ValidPatien
         for (TemplateFieldValue templateFieldValue : patientTemplate.getTemplateFieldValues()) {
             validateFieldNotEmpty(emptyButRequired, templateFieldValue);
             Template template = getTemplateService().getById(patientTemplate.getTemplate().getId());
+            if (template == null) {
+                addErrorToContext(ctx, TEMPLATE_ID_PATH,
+                        String.format(TEMPLATE_WITH_ID_NOT_FOUND, patientTemplate.getTemplate().getId()));
+                return false;
+            }
             validateTemplateFieldValue(templateFieldValue, template.getTemplateFields());
         }
 
