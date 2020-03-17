@@ -45,7 +45,20 @@ function groupBarChart(config) {
 
     }
 
-    function drawgroupBarChartChart(config) {
+function getNumberOfTicks(data, keys) {
+    const maxNumberOfTicks = 4;
+    var ticksNumber = d3.max(data, function (d) {
+        return d3.max(keys, function (key) {
+          return d[key];
+        });
+    });
+    if (!ticksNumber) {
+        ticksNumber = 1;
+    }
+    return ticksNumber > maxNumberOfTicks ? maxNumberOfTicks : ticksNumber;
+}
+
+function drawgroupBarChartChart(config) {
       var fragmentId = config.fragmentId;
       var data = config.data;
       var columnsInfo = config.columnsInfo;
@@ -92,7 +105,7 @@ function groupBarChart(config) {
           return d[key];
         });
       })]).nice();
-
+      var ticksNumber = getNumberOfTicks(data, keys);
       var element = g.append("g")
         .selectAll("g")
         .data(data)
@@ -180,7 +193,7 @@ function groupBarChart(config) {
 
       g.append("g")
         .attr("class", "axis")
-        .call(d3.axisLeft(y).ticks(4, "s"))
+        .call(d3.axisLeft(y).tickFormat(d3.format("d")).ticks(ticksNumber, "s"))
         .append("text")
         .attr("x", 10)
         .attr("y", -30)

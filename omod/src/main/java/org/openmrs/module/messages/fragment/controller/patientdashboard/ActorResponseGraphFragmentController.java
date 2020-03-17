@@ -29,6 +29,8 @@ public class ActorResponseGraphFragmentController {
 
     private static final String RESPONSE_MODE = "responseMode";
 
+    private static final String AGGREGATE_MODE = "aggregateMode";
+
     private static final String DATA_DATE_RANGE = "dataDateRange";
 
     private static final String REQUEST_CONFIGURATION = "requestConfiguration";
@@ -48,6 +50,7 @@ public class ActorResponseGraphFragmentController {
             @RequestParam(value = POSSIBLE_RESPONSES + "[]", required = false) List<Integer> possibleResponses,
             @RequestParam(value = POSSIBLE_TEXT_RESPONSES + "[]", required = false) List<String> possibleTestResponses,
             @RequestParam(value = RESPONSE_MODE, required = false) String responseMode,
+            @RequestParam(value = AGGREGATE_MODE, required = false) String aggregateMode,
             @RequestParam(value = DATA_DATE_RANGE, required = false) Integer dataDateRange,
             @SpringBean("messages.actorResponseService") ActorResponseService actorResponseService) {
         return actorResponseService.findAllByCriteria(new ActorResponseCriteria()
@@ -58,6 +61,7 @@ public class ActorResponseGraphFragmentController {
             .setPossibleResponses(possibleResponses)
             .setPossibleTextResponses(possibleTestResponses)
             .setResponseMode(responseMode)
+            .setAggregateMode(aggregateMode)
             .setDataDateRange(dataDateRange));
     }
 
@@ -69,6 +73,7 @@ public class ActorResponseGraphFragmentController {
         requestConfiguration.put(QUESTION_ID, configuration.getAttribute(QUESTION_ID));
         requestConfiguration.put(DATA_DATE_RANGE, configuration.getAttribute(DATA_DATE_RANGE));
         requestConfiguration.put(RESPONSE_MODE, configuration.getAttribute(RESPONSE_MODE));
+        requestConfiguration.put(AGGREGATE_MODE, configuration.getAttribute(AGGREGATE_MODE));
         requestConfiguration.put(TEXT_QUESTION, configuration.getAttribute(TEXT_QUESTION));
         requestConfiguration.put(POSSIBLE_RESPONSES, configuration.getAttribute(POSSIBLE_RESPONSES));
         requestConfiguration.put(POSSIBLE_TEXT_RESPONSES, configuration.getAttribute(POSSIBLE_TEXT_RESPONSES));

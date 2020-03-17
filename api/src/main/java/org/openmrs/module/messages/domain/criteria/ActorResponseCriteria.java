@@ -26,25 +26,17 @@ public class ActorResponseCriteria extends ReportCriteria implements Serializabl
     /**
      * The MySQL specific statement which is used to create over label (used to aggregate by week).
      * Based on the answeredTime.
-     * The label is created by String concatenation where:
-     * - The first string determine the beginning of period (the '-2' in MOD function because of I used Monday
-     *      as first day of the week instead of Sunday which would be -1).
-     * - The second string its '-' used to join values
-     * - The third value determine end day of the period (with month and year)
      */
-    private static final String AGGREGATE_BY_WEEK_SQL =
-            "CONCAT("
-            + "DATE_FORMAT("
-            + "     FROM_DAYS("
-            + "        TO_DAYS({alias}.answered_time) - MOD(TO_DAYS({alias}.answered_time) -2, 7)),"
-            + "        '%d'),"
-            + "'-', "
-            + "DATE_FORMAT("
-                    + "FROM_DAYS("
-                    + " TO_DAYS({alias}.answered_time + INTERVAL 1 WEEK) - "
-                    + "     MOD(TO_DAYS({alias}.answered_time + INTERVAL 1 WEEK) -2, 7) -1),"
-                    + "'%d %b %Y')"
-            + ") AS over";
+    private static final String AGGREGATE_BY_WEEK_SQL = "WEEK({alias}.answered_time, 1) AS over";
+
+    private static final String WEEK_DATE_RANGE_SQL =
+            "{alias}.answered_time > DATE(CURRENT_DATE() - DAYOFWEEK(CURRENT_DATE() - 1) - INTERVAL ? WEEK)";
+
+    private static final String MONTH_DATE_RANGE_SQL =
+            "{alias}.answered_time > DATE(CURRENT_DATE() - DAYOFWEEK(CURRENT_DATE() - 1) - INTERVAL ? MONTH)";
+
+    private static final String AGGREGATE_BY_MONTH_SQL =
+            "DATE_FORMAT({alias}.answered_time, '%b %Y') AS over";
 
     private static final String CONCEPT_RESPONSE_MODE = "CONCEPT";
 
@@ -55,6 +47,8 @@ public class ActorResponseCriteria extends ReportCriteria implements Serializabl
     private static final int COUNT_VALUE_INDEX = 1;
 
     private static final int RESPONSE_VALUE_INDEX = 2;
+
+    private static final String WEEK_AGGREGATION_MODE = "WEEK";
 
     private Integer actorId;
 
@@ -71,6 +65,8 @@ public class ActorResponseCriteria extends ReportCriteria implements Serializabl
     private String responseMode;
 
     private Integer dataDateRange;
+
+    private String aggregateMode;
 
     public ActorResponseCriteria() {
         this.responseMode = CONCEPT_RESPONSE_MODE;
@@ -120,7 +116,14 @@ public class ActorResponseCriteria extends ReportCriteria implements Serializabl
         }
         return this;
     }
-    
+
+    public ActorResponseCriteria setAggregateMode(String aggregateMode) {
+        if (StringUtils.isNotBlank(responseMode)) {
+            this.aggregateMode = aggregateMode;
+        }
+        return this;
+    }
+
     @Override
     protected void loadWhereStatements(Criteria hibernateCriteria) {
         addNotNullCriteria(hibernateCriteria, "actor.personId", actorId);
@@ -144,7 +147,7 @@ public class ActorResponseCriteria extends ReportCriteria implements Serializabl
     protected ProjectionList createProjectionList() {
         ProjectionList projectionList = Projections.projectionList();
         projectionList.add(Projections.sqlGroupProjection(
-                AGGREGATE_BY_WEEK_SQL, "over", new String[]{"over"}, new Type[]{ StandardBasicTypes.STRING }));
+                getAggregateSql(), "over", new String[]{"over"}, new Type[]{ StandardBasicTypes.STRING }));
         projectionList.add(Projections.count("textResponse").as("responseCount"));
         createResponseProjections(projectionList);
         return projectionList;
@@ -216,7 +219,27 @@ public class ActorResponseCriteria extends ReportCriteria implements Serializabl
 
     private void addDateRangeCriteria(Criteria hibernateCriteria) {
         hibernateCriteria.add(Restrictions.sqlRestriction(
-                "{alias}.answered_time > DATE(CURRENT_DATE() - DAYOFWEEK(CURRENT_DATE() - 1) - INTERVAL ? WEEK)",
+                getDateRangeBasedOnAggregationMode(),
                 new Integer[]{dataDateRange}, new Type[]{ StandardBasicTypes.INTEGER }));
+    }
+
+    private String getAggregateSql() {
+        String result;
+        if (StringUtils.isBlank(aggregateMode) || aggregateMode.equals(WEEK_AGGREGATION_MODE)) {
+            result = AGGREGATE_BY_WEEK_SQL;
+        } else {
+            result = AGGREGATE_BY_MONTH_SQL;
+        }
+        return result;
+    }
+
+    private String getDateRangeBasedOnAggregationMode() {
+        String result;
+        if (StringUtils.isBlank(aggregateMode) || aggregateMode.equals(WEEK_AGGREGATION_MODE)) {
+            result = WEEK_DATE_RANGE_SQL;
+        } else {
+            result = MONTH_DATE_RANGE_SQL;
+        }
+        return result;
     }
 }
