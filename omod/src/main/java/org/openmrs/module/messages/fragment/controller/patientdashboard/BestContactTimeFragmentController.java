@@ -31,6 +31,8 @@ public class BestContactTimeFragmentController {
 
     private static final String PERSON_ID = "personId";
 
+    private static final String PERSON_UUID = "personUuid";
+
     private static final String MESSAGES_ACTOR_SERVICE = "messages.actorService";
 
     private static final String PATIENT = "Patient";
@@ -46,7 +48,8 @@ public class BestContactTimeFragmentController {
             List<SimpleObject> bestContactTimes = this.createContactTimes(person, actors, actorService);
             model.addAttribute(BEST_CONTACT_TIMES, bestContactTimes);
         }
-        model.addAttribute(PERSON_ID, (person == null) ? null : person.getPersonId());
+        model.addAttribute(PERSON_ID, (null == person) ? null : person.getPersonId());
+        model.addAttribute(PERSON_UUID, (null == person) ? null : person.getUuid());
     }
 
     private List<SimpleObject> createContactTimes(Person person, Map<Integer, String> actors, ActorService actorService) {

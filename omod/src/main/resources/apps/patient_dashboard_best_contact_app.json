@@ -13,7 +13,8 @@
           "fragment": "patientdashboard/bestContactTime",
           "fragmentConfig": {
             "icon": "icon-comment",
-            "personActorTypeLabel": "Caregiver"
+            "personActorTypeLabel": "Caregiver",
+            "detailsUrl": "/owa/messages/index.html#/messages/{{person.id}}&patientUuid={{person.uuid}}/patient-template"
           }
         }
       }
