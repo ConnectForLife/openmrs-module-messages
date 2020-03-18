@@ -11,6 +11,7 @@ package org.openmrs.module.messages.api.execution.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.exception.SQLGrammarException;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.messages.api.execution.ExecutionContext;
 import org.openmrs.module.messages.api.execution.ExecutionEngine;
@@ -34,7 +35,7 @@ public class ServiceExecutorImpl extends BaseOpenmrsService implements ServiceEx
         this.executionEngineManager = executionEngineManager;
     }
 
-    @Transactional
+    @Transactional(noRollbackFor = {RuntimeException.class, SQLGrammarException.class}, readOnly = true)
     @Override
     public ServiceResultList execute(PatientTemplate patientTemplate, Range<Date> dateTimeRange)
             throws ExecutionException {

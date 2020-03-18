@@ -12,6 +12,7 @@ package org.openmrs.module.messages.api.service.impl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.PropertyValueException;
+import org.hibernate.exception.SQLGrammarException;
 import org.openmrs.Concept;
 import org.openmrs.Patient;
 import org.openmrs.Person;
@@ -21,7 +22,6 @@ import org.openmrs.api.PersonService;
 import org.openmrs.module.messages.api.constants.MessagesConstants;
 import org.openmrs.module.messages.api.dao.ActorResponseDao;
 import org.openmrs.module.messages.api.exception.EntityNotFoundException;
-import org.openmrs.module.messages.api.execution.ExecutionException;
 import org.openmrs.module.messages.api.execution.ServiceExecutor;
 import org.openmrs.module.messages.api.execution.ServiceResultList;
 import org.openmrs.module.messages.api.model.ActorResponse;
@@ -38,8 +38,8 @@ import org.openmrs.module.messages.api.util.HibernateUtil;
 import org.openmrs.module.messages.domain.criteria.LastResponseCriteria;
 import org.openmrs.module.messages.domain.criteria.PatientTemplateCriteria;
 import org.openmrs.module.messages.domain.criteria.ScheduledServiceCriteria;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -149,6 +149,7 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
     }
     
     @Override
+    @Transactional(noRollbackFor = {RuntimeException.class, SQLGrammarException.class}, readOnly = true)
     public List<ServiceResultList> retrieveAllServiceExecutions(Integer patientId, Date startDate, Date endDate) {
         
         PatientTemplateCriteria patientTemplateCriteria = PatientTemplateCriteria.forPatientId(patientId);
@@ -157,6 +158,7 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
     }
     
     @Override
+    @Transactional(noRollbackFor = {RuntimeException.class, SQLGrammarException.class}, readOnly = true)
     public List<ServiceResultList> retrieveAllServiceExecutions(Date startDate, Date endDate) {
         return retrieveAllServiceExecutions(patientTemplateService.getAll(false), startDate, endDate);
     }
@@ -280,13 +282,8 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
                     }
                 }
                 results.add(serviceExecutor.execute(patientTemplate, dateRange));
-            } catch (ExecutionException e) {
-                LOGGER.error(String.format(
-                        "Cannot execute query for patientTemplate with id %d (template with id %d - '%s')",
-                        patientTemplate.getId(),
-                        patientTemplate.getTemplate().getId(),
-                        patientTemplate.getTemplate().getName()),
-                        e);
+            } catch (Exception e) {
+                logException(patientTemplate, e);
             }
         }
         
@@ -329,5 +326,25 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
         String sourceType = MessagesConstants.DEFAULT_ACTOR_RESPONSE_TYPE;
         registerResponse(actorId, patientId, sourceId, sourceType, questionId, textQuestion,
                 responseId, textResponse, timestamp);
+    }
+
+    private void logException(PatientTemplate patientTemplate, Exception e) {
+        try {
+            LOGGER.error(String.format(
+                    "Cannot execute query for patientTemplate with id %d (template with id %d - '%s'), " +
+                            "related to patient %s (uuid: %s)" +
+                            "The execution of this particular patient template will be skipped.",
+                    patientTemplate.getId(),
+                    patientTemplate.getTemplate().getId(),
+                    patientTemplate.getTemplate().getName(),
+                    patientTemplate.getPatient().getPersonName().getFullName(),
+                    patientTemplate.getPatient().getUuid()),
+                    e);
+        } catch (Exception ex) {
+            LOGGER.error(String.format(
+                    "Cannot execute query for patientTemplate with id %d. The details couldn't be extracted." +
+                     "The execution of this particular patient template will be skipped.",
+                    patientTemplate.getId()), e);
+        }
     }
 }
