@@ -3637,4 +3637,16 @@
             <where>property='messages.notificationTemplate.injectedServices'</where>
         </delete>
     </changeSet>
+
+    <changeSet id="messages-64" author="Arkadiusz Lalo">
+        <preConditions>
+            <tableExists tableName="messages_template"/>
+        </preConditions>
+
+        <comment>
+            Adds the unique constraint on `name` column in the `messages_template` table.
+        </comment>
+
+        <addUniqueConstraint tableName="messages_template" columnNames="name"/>
+    </changeSet>
 </databaseChangeLog>
