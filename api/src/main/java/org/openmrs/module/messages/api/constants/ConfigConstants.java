@@ -170,7 +170,10 @@ public final class ConfigConstants {
     public static final String NOTIFICATION_TEMPLATE_INJECTED_SERVICES =
             "messages.notificationTemplate.injectedServices";
     public static final String NOTIFICATION_TEMPLATE_INJECTED_SERVICES_DEFAULT_VALUE =
-            "";
+            "patientService:patientService,cflPersonService:cflPersonService,messagesService:messages.messagingService,"
+                    + "personService:personService,personDAO:personDAO,conceptDAO:conceptDAO,"
+                    + "locationService:locationService,messagingGroupService:messages.messagingGroupService,"
+                    + "openmrsContext:context,patientTemplateService:messages.patientTemplateService";
     public static final String NOTIFICATION_TEMPLATE_INJECTED_SERVICES_DESCRIPTION =
             "Comma-separated values which represent the map of services which should be injected into "
                     + "the messaging notification template.";
