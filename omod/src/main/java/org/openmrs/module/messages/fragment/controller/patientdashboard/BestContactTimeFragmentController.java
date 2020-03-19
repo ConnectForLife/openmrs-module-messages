@@ -1,7 +1,11 @@
 package org.openmrs.module.messages.fragment.controller.patientdashboard;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openmrs.Patient;
 import org.openmrs.Person;
+import org.openmrs.PersonAttribute;
+import org.openmrs.PersonAttributeType;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.api.dto.ContactTimeDTO;
 import org.openmrs.module.messages.api.model.Actor;
 import org.openmrs.module.messages.api.service.ActorService;
@@ -38,7 +42,9 @@ public class BestContactTimeFragmentController {
     private static final String PATIENT = "Patient";
 
     private static final String PERSON_ACTOR_TYPE_LABEL = "personActorTypeLabel";
-
+    
+    private static final String PERSON_IDENTIFIER_ATTRIBUTE_KEY = "cfl.person.attribute.identifier";
+    
     public void controller(FragmentModel model, FragmentConfiguration configuration, UiUtils uiUtils,
             @RequestParam(PATIENT_ID) Person person, @SpringBean(MESSAGES_ACTOR_SERVICE) ActorService actorService) {
         if (person != null) {
@@ -65,8 +71,9 @@ public class BestContactTimeFragmentController {
 
     private SimpleObject createContactTimeEntry(Person person, Map<Integer, String> actors, ContactTimeDTO contactTime) {
         String actorType = actors.get(contactTime.getPersonId());
+        String identifier = getPersonOrPatientIdentifier(Context.getPersonService().getPerson(contactTime.getPersonId()));
         String label = (person.getId().equals(contactTime.getPersonId())) ? actorType :
-                String.format("%s %d", actorType, contactTime.getPersonId());
+                String.format("%s %s", actorType, identifier);
         SimpleObject entry = new SimpleObject();
         entry.put(LABEL_KEY, label);
         entry.put(TIME_KEY, contactTime.getTime());
@@ -92,5 +99,37 @@ public class BestContactTimeFragmentController {
             result = uiUtils.message((String) attribute);
         }
         return result;
+    }
+    
+    private String getPersonOrPatientIdentifier(Person person) {
+        if (person.isPatient()) {
+            Patient patient = Context.getPatientService().getPatient(person.getId());
+            String patientIdentifier = patient.getPatientIdentifier().getIdentifier();
+            return org.apache.commons.lang3.StringUtils.isNotBlank(patientIdentifier)  ? patientIdentifier : "";
+        } else {
+            String personIdentifier = getPersonIdentifier(person);
+            return org.apache.commons.lang3.StringUtils.isNotBlank(personIdentifier) ? personIdentifier : "";
+        }
+    }
+    
+    private String getPersonIdentifier(Person person) {
+        String personIdentifier = null;
+        PersonAttributeType identifierAttributeType = getPersonIdentifierAttributeType();
+        if (identifierAttributeType != null) {
+            PersonAttribute attribute = person.getAttribute(identifierAttributeType);
+            if (attribute != null) {
+                personIdentifier = attribute.getValue();
+            }
+        }
+        return personIdentifier;
+    }
+    
+    private PersonAttributeType getPersonIdentifierAttributeType() {
+        PersonAttributeType type = null;
+        String attributeTypeUUID = Context.getAdministrationService().getGlobalProperty(PERSON_IDENTIFIER_ATTRIBUTE_KEY);
+        if (org.apache.commons.lang3.StringUtils.isNotBlank(attributeTypeUUID)) {
+            type = Context.getPersonService().getPersonAttributeTypeByUuid(attributeTypeUUID);
+        }
+        return type;
     }
 }
