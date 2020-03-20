@@ -163,7 +163,9 @@ public class ActorServiceImpl implements ActorService {
         List<Relationship> relationships = Context.getPersonService().getRelationships(null,
                 person, relationshipType);
         for (Relationship relationship : relationships) {
-            results.add(new Actor(relationship.getPersonA(), relationship));
+            if (!relationship.getPersonA().isVoided()) {
+                results.add(new Actor(relationship.getPersonA(), relationship));
+            }
         }
         return results;
     }
@@ -173,7 +175,9 @@ public class ActorServiceImpl implements ActorService {
         List<Relationship> relationships = Context.getPersonService().getRelationships(person,
                 null, relationshipType);
         for (Relationship relationship : relationships) {
-            results.add(new Actor(relationship.getPersonB(), relationship));
+            if (!relationship.getPersonB().isVoided()) {
+                results.add(new Actor(relationship.getPersonB(), relationship));
+            }
         }
         return results;
     }
