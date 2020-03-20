@@ -95,6 +95,11 @@ public class PatientTemplate extends AbstractBaseOpenmrsData {
         this.id = id;
     }
 
+    @Override
+    public String toString() {
+        return "PatientTemplate#" + id;
+    }
+
     public Person getActor() {
         return actor;
     }
@@ -177,19 +182,5 @@ public class PatientTemplate extends AbstractBaseOpenmrsData {
                 getPatient().getId().equals(actorType.getPersonA().getId()) ?
                         actorType.getRelationshipType().getbIsToA() :
                         actorType.getRelationshipType().getaIsToB();
-    }
-
-    @Override
-    public String toString() {
-        return "PatientTemplate{" +
-                "id=" + id +
-                ", actor=" + actor +
-                ", actorType=" + actorType +
-                ", serviceQuery='" + serviceQuery + '\'' +
-                ", serviceQueryType='" + serviceQueryType + '\'' +
-                ", patient=" + patient +
-                ", templateFieldValues=" + templateFieldValues +
-                ", template=" + template +
-                '}';
     }
 }

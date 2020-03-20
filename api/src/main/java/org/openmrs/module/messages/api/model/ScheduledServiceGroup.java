@@ -9,7 +9,6 @@
 
 package org.openmrs.module.messages.api.model;
 
-import javax.persistence.Transient;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Patient;
 import org.openmrs.Person;
@@ -26,6 +25,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -58,37 +58,42 @@ public class ScheduledServiceGroup extends AbstractBaseOpenmrsData {
 
     @OneToMany(mappedBy = "group", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<ScheduledService> scheduledServices = new ArrayList<>();
-    
+
     @Override
     public Integer getId() {
         return id;
     }
-    
+
     @Override
     public void setId(Integer id) {
         this.id = id;
     }
-    
+
+    @Override
+    public String toString() {
+        return "ScheduledServiceGroup#" + id;
+    }
+
     public Date getMsgSendTime() {
         return msgSendTime;
     }
-    
+
     public void setMsgSendTime(Date msgSendTime) {
         this.msgSendTime = msgSendTime;
     }
-    
+
     public Patient getPatient() {
         return patient;
     }
-    
+
     public void setPatient(Patient patient) {
         this.patient = patient;
     }
-    
+
     public ServiceStatus getStatus() {
         return status;
     }
-    
+
     public void setStatus(ServiceStatus status) {
         this.status = status;
     }

@@ -3,11 +3,11 @@ package org.openmrs.module.messages.api.model;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 @Entity(name = "messages.ActorResponseType")
 @Table(name = "messages_actor_response_type")
@@ -49,5 +49,10 @@ public class ActorResponseType implements Serializable {
     @Override
     public int hashCode() {
         return HashCodeBuilder.reflectionHashCode(this);
+    }
+
+    @Override
+    public String toString() {
+        return "ActorResponseType#" + name;
     }
 }

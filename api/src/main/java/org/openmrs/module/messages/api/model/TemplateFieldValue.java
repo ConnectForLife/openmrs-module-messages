@@ -73,4 +73,9 @@ public class TemplateFieldValue extends AbstractBaseOpenmrsData {
     public void setPatientTemplate(PatientTemplate patientTemplate) {
         this.patientTemplate = patientTemplate;
     }
+
+    @Override
+    public String toString() {
+        return "TemplateFieldValue#" + id;
+    }
 }

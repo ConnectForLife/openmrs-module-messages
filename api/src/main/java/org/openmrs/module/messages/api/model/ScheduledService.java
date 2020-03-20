@@ -9,9 +9,6 @@
 
 package org.openmrs.module.messages.api.model;
 
-import java.util.HashMap;
-import java.util.Map;
-import javax.persistence.Transient;
 import org.openmrs.logic.LogicException;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
 
@@ -26,8 +23,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity(name = "messages.ScheduledService")
 @Table(name = "messages_scheduled_service")
@@ -66,7 +66,7 @@ public class ScheduledService extends AbstractBaseOpenmrsData {
 
     @Column(name = "last_service_execution_id")
     private String lastServiceExecution;
-    
+
     @Override
     public Integer getId() {
         return id;
@@ -75,6 +75,11 @@ public class ScheduledService extends AbstractBaseOpenmrsData {
     @Override
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "ScheduledService#" + id;
     }
 
     public ScheduledServiceGroup getGroup() {
@@ -123,7 +128,7 @@ public class ScheduledService extends AbstractBaseOpenmrsData {
     public String getLastServiceExecution() {
         return lastServiceExecution;
     }
-    
+
     public void setLastServiceExecution(String lastServiceExecution) {
         this.lastServiceExecution = lastServiceExecution;
     }

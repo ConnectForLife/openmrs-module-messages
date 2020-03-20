@@ -9,7 +9,8 @@
 
 package org.openmrs.module.messages.api.model;
 
-import java.util.Date;
+import org.openmrs.module.messages.api.model.types.ServiceStatus;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -19,7 +20,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import org.openmrs.module.messages.api.model.types.ServiceStatus;
+import java.util.Date;
 
 @Entity(name = "messages.DeliveryAttempt")
 @Table(name = "messages_delivery_attempt")
@@ -42,59 +43,64 @@ public class DeliveryAttempt extends AbstractBaseOpenmrsData {
     @Column(name = "new_status", nullable = false)
     @Enumerated(EnumType.STRING)
     private ServiceStatus status;
-    
+
     @Column(name = "attempt_number", nullable = false)
     private int attemptNumber;
-    
+
     @Column(name = "service_execution_id")
     private String serviceExecution;
-    
+
     @Override
     public Integer getId() {
         return id;
     }
-    
+
     @Override
     public void setId(Integer id) {
         this.id = id;
     }
-    
+
+    @Override
+    public String toString() {
+        return "DeliveryAttempt#" + id;
+    }
+
     public ScheduledService getScheduledService() {
         return scheduledService;
     }
-    
+
     public void setScheduledService(ScheduledService scheduledService) {
         this.scheduledService = scheduledService;
     }
-    
+
     public Date getTimestamp() {
         return timestamp;
     }
-    
+
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
-    
+
     public ServiceStatus getStatus() {
         return status;
     }
-    
+
     public void setStatus(ServiceStatus status) {
         this.status = status;
     }
-    
+
     public int getAttemptNumber() {
         return attemptNumber;
     }
-    
+
     public void setAttemptNumber(int attemptNumber) {
         this.attemptNumber = attemptNumber;
     }
-    
+
     public String getServiceExecution() {
         return serviceExecution;
     }
-    
+
     public void setServiceExecution(String serviceExecution) {
         this.serviceExecution = serviceExecution;
     }

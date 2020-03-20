@@ -4,7 +4,6 @@ import org.openmrs.Concept;
 import org.openmrs.Patient;
 import org.openmrs.Person;
 
-import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.util.Date;
 
 @Entity(name = "messages.ActorResponse")
 @Table(name = "messages_actor_response")
@@ -136,5 +136,10 @@ public class ActorResponse extends AbstractBaseOpenmrsData {
 
     public void setAnsweredTime(Date answeredTime) {
         this.answeredTime = answeredTime;
+    }
+
+    @Override
+    public String toString() {
+        return "ActorResponse#" + id;
     }
 }

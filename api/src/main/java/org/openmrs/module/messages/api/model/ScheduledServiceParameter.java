@@ -55,27 +55,32 @@ public class ScheduledServiceParameter extends AbstractBaseOpenmrsData {
     public void setId(Integer id) {
         this.id = id;
     }
-    
+
+    @Override
+    public String toString() {
+        return "ScheduledServiceParameter#" + id;
+    }
+
     public ScheduledService getScheduledMessage() {
         return scheduledMessage;
     }
-    
+
     public void setScheduledMessage(ScheduledService scheduledMessage) {
         this.scheduledMessage = scheduledMessage;
     }
-    
+
     public String getParameterType() {
         return parameterType;
     }
-    
+
     public void setParameterType(String parameterType) {
         this.parameterType = parameterType;
     }
-    
+
     public String getParameterValue() {
         return parameterValue;
     }
-    
+
     public void setParameterValue(String parameterValue) {
         this.parameterValue = parameterValue;
     }

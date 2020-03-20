@@ -11,9 +11,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.Transient;
 
 @Entity(name = "messages.TemplateField")
 @Table(name = "messages_template_field")
@@ -66,40 +66,45 @@ public class TemplateField extends AbstractBaseOpenmrsData {
     public Integer getId() {
         return id;
     }
-    
+
     @Override
     public void setId(Integer id) {
         this.id = id;
     }
-    
+
+    @Override
+    public String toString() {
+        return "TemplateField#" + id;
+    }
+
     public String getName() {
         return name;
     }
-    
+
     public void setName(String name) {
         this.name = name;
     }
-    
+
     public Boolean getMandatory() {
         return mandatory;
     }
-    
+
     public void setMandatory(Boolean mandatory) {
         this.mandatory = mandatory;
     }
-    
+
     public String getDefaultValue() {
         return defaultValue;
     }
-    
+
     public void setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
     }
-    
+
     public Template getTemplate() {
         return template;
     }
-    
+
     public void setTemplate(Template template) {
         this.template = template;
     }
