@@ -16,10 +16,6 @@ public class ScheduledServiceMapper extends AbstractMapper<ServiceResult, Schedu
                 "is not implemented yet");
     }
 
-    public void setParamsMapper(ScheduledParamsMapper paramsMapper) {
-        this.paramsMapper = paramsMapper;
-    }
-
     @Override
     public ScheduledService fromDto(ServiceResult dto) {
         ScheduledService result = new ScheduledService();
@@ -30,5 +26,14 @@ public class ScheduledServiceMapper extends AbstractMapper<ServiceResult, Schedu
         result.setChannelType(dto.getChannelType().getName());
         result.setScheduledServiceParameters(paramsMapper.fromDto(dto));
         return result;
+    }
+
+    @Override
+    public void updateFromDto(ServiceResult source, ScheduledService target) {
+        throw new NotImplementedException("update from DTO is not implemented yet");
+    }
+
+    public void setParamsMapper(ScheduledParamsMapper paramsMapper) {
+        this.paramsMapper = paramsMapper;
     }
 }

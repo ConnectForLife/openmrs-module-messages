@@ -75,13 +75,14 @@ public class PatientTemplateController extends BaseRestController {
     @RequestMapping(value = "/patient/{id}", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public PatientTemplatesWrapper updatePatientTemplates(@PathVariable("id") Integer id,
+    public PatientTemplatesWrapper updatePatientTemplates(@PathVariable("id") Integer patientId,
                                                           @RequestBody PatientTemplatesWrapper wrapper)
             throws ValidationException, APIException, StaleStateException {
-        validateConsistency(id, wrapper.getPatientTemplates());
-        List<PatientTemplate> patientTemplates = mapper.fromDtos(wrapper.getPatientTemplates());
+        List<PatientTemplateDTO> patientTemplates = wrapper.getPatientTemplates();
+        validateConsistency(patientId, patientTemplates);
         validationComponent.validateList(patientTemplates);
-        List<PatientTemplate> saved = patientTemplateService.batchSave(patientTemplates, id);
+
+        List<PatientTemplate> saved = patientTemplateService.batchSave(patientTemplates, patientId);
         return new PatientTemplatesWrapper(mapper.toDtos(saved));
     }
 

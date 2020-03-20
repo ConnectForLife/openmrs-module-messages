@@ -2,6 +2,7 @@ package org.openmrs.module.messages.api.mappers;
 
 import org.openmrs.module.messages.api.dto.TemplateFieldDTO;
 import org.openmrs.module.messages.api.model.TemplateField;
+import org.openmrs.module.messages.api.model.TemplateFieldDefaultValue;
 import org.openmrs.module.messages.api.model.TemplateFieldType;
 
 /**
@@ -39,7 +40,22 @@ public class TemplateFieldMapper extends AbstractMapper<TemplateFieldDTO, Templa
             templateField.setUuid(dto.getUuid());
         }
         templateField.setDefaultValues(templateFieldDefaultValueMapper.fromDtos(dto.getDefaultValues()));
+        for (TemplateFieldDefaultValue defaultValue : templateField.getDefaultValues()) {
+            defaultValue.setTemplateField(templateField);
+        }
         return templateField;
+    }
+
+    @Override
+    public void updateFromDto(TemplateFieldDTO source, TemplateField target) {
+        target.setName(source.getName());
+        target.setMandatory(source.getMandatory());
+        target.setDefaultValue(source.getDefaultValue());
+        target.setTemplateFieldType(TemplateFieldType.valueOf(source.getType()));
+        templateFieldDefaultValueMapper.updateFromDtos(source.getDefaultValues(), target.getDefaultValues());
+        for (TemplateFieldDefaultValue defaultValue : target.getDefaultValues()) {
+            defaultValue.setTemplateField(target);
+        }
     }
 
     public TemplateFieldMapper setTemplateFieldDefaultValueMapper(

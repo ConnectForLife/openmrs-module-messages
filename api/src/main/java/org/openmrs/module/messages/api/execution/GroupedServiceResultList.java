@@ -1,11 +1,15 @@
 package org.openmrs.module.messages.api.execution;
 
+import org.apache.commons.lang.NotImplementedException;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.openmrs.module.messages.api.dto.DTO;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-public class GroupedServiceResultList {
+public class GroupedServiceResultList implements DTO {
 
     private ActorWithDate actorWithExecutionDate;
 
@@ -14,6 +18,12 @@ public class GroupedServiceResultList {
     public GroupedServiceResultList(ActorWithDate actorWithExecutionDate, ServiceResultList group) {
         this.actorWithExecutionDate = actorWithExecutionDate;
         this.group = group;
+    }
+
+    @Override
+    @JsonIgnore
+    public Integer getId() {
+        throw new NotImplementedException("not implemented yet");
     }
 
     public static List<GroupedServiceResultList> fromServiceResultLists(Collection<ServiceResultList> input) {

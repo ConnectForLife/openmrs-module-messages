@@ -1,7 +1,11 @@
 package org.openmrs.module.messages.builder;
 
 import org.openmrs.module.messages.api.dto.TemplateFieldDTO;
+import org.openmrs.module.messages.api.dto.TemplateFieldDefaultValueDTO;
 import org.openmrs.module.messages.api.model.TemplateField;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class TemplateFieldDTOBuilder extends AbstractBuilder<TemplateFieldDTO> {
 
@@ -16,6 +20,8 @@ public final class TemplateFieldDTOBuilder extends AbstractBuilder<TemplateField
     private String type;
 
     private String uuid;
+
+    private List<TemplateFieldDefaultValueDTO> defaultValues = new ArrayList<>();
 
     public TemplateFieldDTOBuilder() {
         super();
@@ -36,7 +42,8 @@ public final class TemplateFieldDTOBuilder extends AbstractBuilder<TemplateField
                 .setMandatory(mandatory)
                 .setDefaultValue(defaultValue)
                 .setType(type)
-                .setUuid(uuid);
+                .setUuid(uuid)
+                .setDefaultValues(defaultValues);
     }
 
     @Override
@@ -71,6 +78,11 @@ public final class TemplateFieldDTOBuilder extends AbstractBuilder<TemplateField
 
     public TemplateFieldDTOBuilder withUuid(String uuid) {
         this.uuid = uuid;
+        return this;
+    }
+
+    public TemplateFieldDTOBuilder withDefaultValues(List<TemplateFieldDefaultValueDTO> defaultValues) {
+        this.defaultValues = defaultValues;
         return this;
     }
 }

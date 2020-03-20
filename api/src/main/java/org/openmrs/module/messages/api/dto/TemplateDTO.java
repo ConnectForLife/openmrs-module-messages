@@ -4,14 +4,14 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.validator.constraints.NotBlank;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
-import javax.validation.Valid;
 
 /**
  * Represent the DTO for the {@link org.openmrs.module.messages.api.model.Template}
  */
-public class TemplateDTO {
+public class TemplateDTO implements DTO {
 
     private Integer id;
 

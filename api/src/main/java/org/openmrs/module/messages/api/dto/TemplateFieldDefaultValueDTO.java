@@ -4,12 +4,16 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.openmrs.module.messages.api.model.RelationshipTypeDirection;
 
-public class TemplateFieldDefaultValueDTO {
+import javax.validation.constraints.NotNull;
+
+public class TemplateFieldDefaultValueDTO implements DTO {
 
     private Integer id;
 
+    @NotNull
     private Integer relationshipTypeId;
 
+    @NotNull
     private RelationshipTypeDirection direction;
 
     private Integer templateFieldId;

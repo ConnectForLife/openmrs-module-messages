@@ -5,11 +5,9 @@ import org.openmrs.module.messages.api.dto.TemplateFieldDefaultValueDTO;
 import org.openmrs.module.messages.api.model.TemplateField;
 import org.openmrs.module.messages.api.model.TemplateFieldDefaultValue;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class TemplateFieldDefaultValueMapper extends AbstractMapper<TemplateFieldDefaultValueDTO,
-        TemplateFieldDefaultValue> {
+        TemplateFieldDefaultValue> implements UpdateMapper<TemplateFieldDefaultValueDTO, TemplateFieldDefaultValue> {
+
     @Override
     public TemplateFieldDefaultValueDTO toDto(TemplateFieldDefaultValue dao) {
         return new TemplateFieldDefaultValueDTO()
@@ -18,15 +16,6 @@ public class TemplateFieldDefaultValueMapper extends AbstractMapper<TemplateFiel
                 .setDirection(dao.getDirection())
                 .setTemplateFieldId(dao.getTemplateField().getId())
                 .setDefaultValue(dao.getDefaultValue());
-    }
-
-    @Override
-    public List<TemplateFieldDefaultValueDTO> toDtos(List<TemplateFieldDefaultValue> daos) {
-        List<TemplateFieldDefaultValueDTO> dtos = new ArrayList<TemplateFieldDefaultValueDTO>();
-        for (TemplateFieldDefaultValue dao : daos) {
-            dtos.add(toDto(dao));
-        }
-        return dtos;
     }
 
     @Override
@@ -41,11 +30,10 @@ public class TemplateFieldDefaultValueMapper extends AbstractMapper<TemplateFiel
     }
 
     @Override
-    public List<TemplateFieldDefaultValue> fromDtos(List<TemplateFieldDefaultValueDTO> dtos) {
-        List<TemplateFieldDefaultValue> daos = new ArrayList<TemplateFieldDefaultValue>();
-        for (TemplateFieldDefaultValueDTO dto : dtos) {
-            daos.add(fromDto(dto));
-        }
-        return daos;
+    public void updateFromDto(TemplateFieldDefaultValueDTO source, TemplateFieldDefaultValue target) {
+        target.setRelationshipType(new RelationshipType(source.getRelationshipTypeId()));
+        target.setDirection(source.getDirection());
+        target.setTemplateField(new TemplateField(source.getTemplateFieldId()));
+        target.setDefaultValue(source.getDefaultValue());
     }
 }

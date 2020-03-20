@@ -17,9 +17,6 @@ import org.openmrs.module.messages.api.util.FieldDateUtil;
 import org.openmrs.module.messages.api.util.PatientTemplateFieldUtil;
 import validate.annotation.ValidPatientTemplate;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,6 +28,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import static org.openmrs.module.messages.api.constants.MessagesConstants.PATIENT_DEFAULT_ACTOR_TYPE;
 

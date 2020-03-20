@@ -4,11 +4,15 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.RelationshipType;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.ApiConstant;
 import org.openmrs.module.messages.api.dto.PageDTO;
 import org.openmrs.module.messages.api.dto.TemplateDTO;
 import org.openmrs.module.messages.api.dto.TemplateFieldDTO;
+import org.openmrs.module.messages.api.dto.TemplateFieldDefaultValueDTO;
 import org.openmrs.module.messages.api.mappers.TemplateMapper;
+import org.openmrs.module.messages.api.model.RelationshipTypeDirection;
 import org.openmrs.module.messages.api.model.Template;
 import org.openmrs.module.messages.api.model.TemplateField;
 import org.openmrs.module.messages.api.service.TemplateService;
@@ -45,7 +49,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 public class TemplateControllerITTest extends BaseModuleWebContextSensitiveTest {
 
-    private static final String TEMPLATES_DATA_SET_PATH = "datasets/TemplateDataset.xml";
+    private static final String TEMPLATES_DATA_SET_PATH = "datasets/TemplateWithDefaultValuesDataset.xml";
 
     private static final String BASE_URL = "/messages/templates";
 
@@ -78,6 +82,8 @@ public class TemplateControllerITTest extends BaseModuleWebContextSensitiveTest 
     private static final String UPDATED_DEFAULT_VALUE = "test_value_updated";
 
     private static final int EXPECTED_NUMBER_OF_FIELDS = 3;
+
+    private static final int RANDOM_NUMBER = 1234;
 
     private MockMvc mockMvc;
 
@@ -182,7 +188,10 @@ public class TemplateControllerITTest extends BaseModuleWebContextSensitiveTest 
         Template existingTemplate = templateService.getById(EXISTING_TEMPLATE_ID);
         TemplateDTO templateDTO = templateMapper.toDto(existingTemplate);
         templateDTO.setName(UPDATED_NAME);
-        templateDTO.getTemplateFields().add(new TemplateFieldDTOBuilder().buildAsNew());
+        templateDTO.getTemplateFields().add(new TemplateFieldDTOBuilder()
+                .withDefaultValues(getDefaultValues())
+                .buildAsNew());
+
         mockMvc.perform(put(BASE_URL + "/" + existingTemplate.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json(templateDTO)))
@@ -217,6 +226,16 @@ public class TemplateControllerITTest extends BaseModuleWebContextSensitiveTest 
                 fieldToUpdate.getId());
 
         assertThat(fieldUpdated.getDefaultValue(), is(UPDATED_DEFAULT_VALUE));
+    }
+
+    private List<TemplateFieldDefaultValueDTO> getDefaultValues() {
+        RelationshipType relationshipType = Context.getPersonService().getAllRelationshipTypes().get(0);
+        TemplateFieldDefaultValueDTO defaultValue = new TemplateFieldDefaultValueDTO()
+                .setDefaultValue("defaultValue")
+                .setTemplateFieldId(RANDOM_NUMBER)
+                .setDirection(RelationshipTypeDirection.A)
+                .setRelationshipTypeId(relationshipType.getId());
+        return Collections.singletonList(defaultValue);
     }
 
     private PageDTO<TemplateDTO> getDtoFromResult(MvcResult result) throws IOException {

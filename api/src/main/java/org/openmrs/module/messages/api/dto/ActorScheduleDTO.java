@@ -1,10 +1,12 @@
 package org.openmrs.module.messages.api.dto;
 
+import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
-public class ActorScheduleDTO implements Comparable<ActorScheduleDTO> {
+public class ActorScheduleDTO implements Comparable<ActorScheduleDTO>, DTO {
 
     private Integer actorId;
 
@@ -40,6 +42,12 @@ public class ActorScheduleDTO implements Comparable<ActorScheduleDTO> {
 
     public String getSchedule() {
         return schedule;
+    }
+
+    @Override
+    @JsonIgnore
+    public Integer getId() {
+        throw new NotImplementedException("not implemented yet");
     }
 
     @Override

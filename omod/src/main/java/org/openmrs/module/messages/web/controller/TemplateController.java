@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -69,41 +68,36 @@ public class TemplateController extends BaseRestController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public TemplateDTO updateTemplate(@PathVariable Integer templateId,
-                                      @RequestBody TemplateDTO templateDTO) {
+                                      @RequestBody TemplateDTO templateDto) {
         validateTemplateId(templateId);
-        Template oldTemplate = templateService.getById(templateId);
-        validateTemplate(templateDTO, oldTemplate, templateId);
-        Template updatedTemplate = updateTemplate(templateDTO, oldTemplate);
-        return templateMapper.toDto(templateService.saveOrUpdateTemplate(updatedTemplate));
+        Template existing = templateService.getById(templateId);
+        validateTemplate(templateDto, existing, templateId);
+
+        Template updated = templateService.saveOrUpdateByDto(templateDto);
+        return templateMapper.toDto(updated);
     }
 
     @RequestMapping(method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public TemplateWrapper updateTemplates(@RequestBody TemplateWrapper templateWrapper) {
-        List<Template> updatedTemplates = validateTemplates(templateWrapper.getTemplates());
-        return new TemplateWrapper(templateMapper.toDtos(templateService.saveOrUpdate(updatedTemplates)));
+        validateTemplates(templateWrapper.getTemplates());
+        return new TemplateWrapper(templateMapper.toDtos(
+                templateService.saveOrUpdateByDtos(templateWrapper.getTemplates())));
     }
 
-    private List<Template> validateTemplates(List<TemplateDTO> templateDTOS) {
-        List<Template> templates = new ArrayList<>();
-        for (TemplateDTO dto : templateDTOS) {
+    private void validateTemplates(List<TemplateDTO> templateDtos) {
+        for (TemplateDTO dto : templateDtos) {
             Integer templateId = dto.getId();
             validateTemplateId(templateId);
             Template oldTemplate = templateService.getById(templateId);
             validateTemplate(dto, oldTemplate, templateId);
-            templates.add(updateTemplate(dto, oldTemplate));
         }
-        return templates;
     }
 
     private void validateTemplate(TemplateDTO templateDTO, Template oldTemplate, Integer templateId) {
         validationComponent.validate(templateDTO);
         validateOldTemplate(templateId, oldTemplate);
-    }
-
-    private Template updateTemplate(TemplateDTO newTemplate, Template oldTemplate) {
-        return templateMapper.update(oldTemplate, templateMapper.fromDto(newTemplate));
     }
 
     private void validateIfNewTemplate(TemplateDTO templateDTO) {

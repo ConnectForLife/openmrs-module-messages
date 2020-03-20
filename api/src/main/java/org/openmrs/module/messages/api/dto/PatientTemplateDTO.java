@@ -1,21 +1,27 @@
 package org.openmrs.module.messages.api.dto;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PatientTemplateDTO implements Serializable {
+public class PatientTemplateDTO implements Serializable, DTO {
 
     private static final long serialVersionUID = -6043667008851204408L;
 
     private Integer id;
 
+    @Valid
     private List<TemplateFieldValueDTO> templateFieldValues = new ArrayList<TemplateFieldValueDTO>();
 
+    @NotNull
     private Integer patientId;
 
+    @NotNull
     private Integer templateId;
 
+    @NotNull
     private Integer actorId;
 
     private Integer actorTypeId;
@@ -25,6 +31,7 @@ public class PatientTemplateDTO implements Serializable {
     public PatientTemplateDTO() {
     }
 
+    @Override
     public Integer getId() {
         return id;
     }

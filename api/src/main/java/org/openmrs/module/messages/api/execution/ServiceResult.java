@@ -9,22 +9,26 @@
 
 package org.openmrs.module.messages.api.execution;
 
+import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang3.StringUtils;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.openmrs.module.messages.api.dto.DTO;
+import org.openmrs.module.messages.api.model.ChannelType;
+import org.openmrs.module.messages.api.model.PatientTemplate;
+import org.openmrs.module.messages.api.model.types.ServiceStatus;
+import org.openmrs.module.messages.api.util.DateUtil;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.lang3.StringUtils;
-import org.openmrs.module.messages.api.model.ChannelType;
-import org.openmrs.module.messages.api.model.PatientTemplate;
-import org.openmrs.module.messages.api.model.types.ServiceStatus;
-import org.openmrs.module.messages.api.util.DateUtil;
 
 /**
  * Represents a single execution for a service/message.
  */
-public class ServiceResult implements Serializable {
+public class ServiceResult implements Serializable, DTO {
 
     private static final long serialVersionUID = 2598236499107927781L;
 
@@ -110,6 +114,12 @@ public class ServiceResult implements Serializable {
         this.channelType = channelType;
         this.serviceStatus = serviceStatus;
         this.additionalParams = additionalParams == null ? new HashMap<>() : additionalParams;
+    }
+
+    @Override
+    @JsonIgnore
+    public Integer getId() {
+        throw new NotImplementedException("not implemented yet");
     }
 
     public Date getExecutionDate() {

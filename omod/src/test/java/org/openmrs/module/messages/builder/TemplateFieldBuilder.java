@@ -2,7 +2,11 @@ package org.openmrs.module.messages.builder;
 
 import org.openmrs.module.messages.api.model.Template;
 import org.openmrs.module.messages.api.model.TemplateField;
+import org.openmrs.module.messages.api.model.TemplateFieldDefaultValue;
 import org.openmrs.module.messages.api.model.TemplateFieldType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class TemplateFieldBuilder extends AbstractBuilder<TemplateField> {
 
@@ -12,6 +16,7 @@ public final class TemplateFieldBuilder extends AbstractBuilder<TemplateField> {
     private String defaultValue;
     private Template template;
     private TemplateFieldType templateFieldType;
+    private List<TemplateFieldDefaultValue> defaultValues;
 
     public TemplateFieldBuilder() {
         super();
@@ -21,6 +26,7 @@ public final class TemplateFieldBuilder extends AbstractBuilder<TemplateField> {
         defaultValue = "default value";
         template = new TemplateBuilder().build();
         templateFieldType = TemplateFieldType.SERVICE_TYPE;
+        defaultValues = new ArrayList<>();
     }
 
     @Override
@@ -32,6 +38,7 @@ public final class TemplateFieldBuilder extends AbstractBuilder<TemplateField> {
         templateField.setDefaultValue(defaultValue);
         templateField.setTemplate(template);
         templateField.setTemplateFieldType(templateFieldType);
+        templateField.setDefaultValues(defaultValues);
         return templateField;
     }
 
@@ -67,6 +74,11 @@ public final class TemplateFieldBuilder extends AbstractBuilder<TemplateField> {
 
     public TemplateFieldBuilder withTemplateFieldType(TemplateFieldType templateFieldType) {
         this.templateFieldType = templateFieldType;
+        return this;
+    }
+
+    public TemplateFieldBuilder withDefaultValues(List<TemplateFieldDefaultValue> defaultValues) {
+        this.defaultValues = defaultValues;
         return this;
     }
 }

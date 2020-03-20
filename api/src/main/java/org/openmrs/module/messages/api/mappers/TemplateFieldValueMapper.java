@@ -34,4 +34,10 @@ public class TemplateFieldValueMapper extends AbstractMapper<TemplateFieldValueD
 
         return dao;
     }
+
+    @Override
+    public void updateFromDto(TemplateFieldValueDTO source, TemplateFieldValue target) {
+        target.setValue(source.getValue());
+        target.setTemplateField(new TemplateField(source.getTemplateFieldId()));
+    }
 }

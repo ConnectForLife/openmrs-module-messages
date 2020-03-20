@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Represent the DTO for the {@link org.openmrs.module.messages.api.model.TemplateField}
  */
-public class TemplateFieldDTO {
+public class TemplateFieldDTO implements DTO {
 
     private Integer id;
 

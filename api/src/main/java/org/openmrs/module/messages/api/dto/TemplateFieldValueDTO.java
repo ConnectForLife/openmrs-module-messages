@@ -2,14 +2,16 @@ package org.openmrs.module.messages.api.dto;
 
 import org.openmrs.BaseOpenmrsObject;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
-public class TemplateFieldValueDTO extends BaseOpenmrsObject implements Serializable {
+public class TemplateFieldValueDTO extends BaseOpenmrsObject implements Serializable, DTO {
 
     private static final long serialVersionUID = -1685385476367160219L;
 
     private Integer id;
 
+    @NotNull
     private Integer templateFieldId;
 
     private String value;
@@ -17,6 +19,7 @@ public class TemplateFieldValueDTO extends BaseOpenmrsObject implements Serializ
     public TemplateFieldValueDTO() {
     }
 
+    @Override
     public Integer getId() {
         return id;
     }

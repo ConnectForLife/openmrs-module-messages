@@ -31,6 +31,11 @@ public class ScheduledGroupMapper extends AbstractMapper<GroupedServiceResultLis
         return result;
     }
 
+    @Override
+    public void updateFromDto(GroupedServiceResultList source, ScheduledServiceGroup target) {
+        throw new NotImplementedException("update from DTO is not implemented yet");
+    }
+
     public void setServiceMapper(ScheduledServiceMapper serviceMapper) {
         this.serviceMapper = serviceMapper;
     }

@@ -16,11 +16,6 @@ public final class PatientTemplateMapper extends AbstractMapper<PatientTemplateD
 
     private TemplateFieldValueMapper valueMapper;
 
-    public PatientTemplateMapper setValueMapper(TemplateFieldValueMapper valueMapper) {
-        this.valueMapper = valueMapper;
-        return this;
-    }
-
     @Override
     public PatientTemplateDTO toDto(PatientTemplate dao) {
         PatientTemplateDTO dto = new PatientTemplateDTO()
@@ -64,11 +59,32 @@ public final class PatientTemplateMapper extends AbstractMapper<PatientTemplateD
         template.setId(dto.getTemplateId());
         dao.setTemplate(template);
 
-        // TODO: at this moment, it is safer to not update these fields by DTO - default values are used
+        // TODO: at this moment, it is safer to not update these fields by DTO
         dao.setServiceQuery("");
         dao.setServiceQueryType("");
 
         return dao;
+    }
+
+    @Override
+    public void updateFromDto(PatientTemplateDTO source, PatientTemplate target) {
+        valueMapper.updateFromDtos(source.getTemplateFieldValues(), target.getTemplateFieldValues());
+
+        target.setActor(new Person(source.getActorId()));
+        target.setActorType(source.getActorTypeId() != null
+                ? new Relationship(source.getActorTypeId())
+                : null);
+        target.setPatient(new Patient(source.getPatientId()));
+        target.setTemplate(new Template(source.getTemplateId()));
+
+        // TODO: at this moment, it is safer to not update these fields by DTO
+        // dao.setServiceQuery("");
+        // dao.setServiceQueryType("");
+    }
+
+    public PatientTemplateMapper setValueMapper(TemplateFieldValueMapper valueMapper) {
+        this.valueMapper = valueMapper;
+        return this;
     }
 
     private List<TemplateFieldValue> fromDtos(PatientTemplate parent, List<TemplateFieldValueDTO> dtos) {

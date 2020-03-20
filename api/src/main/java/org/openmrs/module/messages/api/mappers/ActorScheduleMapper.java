@@ -16,4 +16,9 @@ public class ActorScheduleMapper extends AbstractMapper<ActorScheduleDTO, Patien
     public PatientTemplate fromDto(ActorScheduleDTO dto) {
         throw new NotImplementedException("mapping from ActorScheduleDTO to PatientTemplate is not implemented yet");
     }
+
+    @Override
+    public void updateFromDto(ActorScheduleDTO source, PatientTemplate target) {
+        throw new NotImplementedException("update from DTO is not implemented yet");
+    }
 }
