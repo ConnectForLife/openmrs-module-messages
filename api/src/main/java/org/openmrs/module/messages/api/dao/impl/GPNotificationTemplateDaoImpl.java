@@ -79,11 +79,12 @@ public class GPNotificationTemplateDaoImpl implements NotificationTemplateDao {
     private String getGlobalPropertyName(String templateName) {
         String globalPropertyName = NOTIFICATION_TEMPLATE_PROPERTY_PREFIX
                 + templateName.trim().replaceAll(WHITESPACE_REGEX, DASH_SIGN);
+        globalPropertyName = globalPropertyName.toLowerCase();
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(String.format("Global property name `%s` was created based on `%s` template name",
                     globalPropertyName, templateName));
         }
-        return globalPropertyName.toLowerCase();
+        return globalPropertyName;
     }
 
     /**

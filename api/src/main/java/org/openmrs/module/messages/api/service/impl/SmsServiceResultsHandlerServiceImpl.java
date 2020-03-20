@@ -11,6 +11,8 @@ package org.openmrs.module.messages.api.service.impl;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.messages.api.event.MessagesEvent;
 import org.openmrs.module.messages.api.event.SmsEventParamConstants;
 import org.openmrs.module.messages.api.model.ChannelType;
@@ -30,6 +32,8 @@ import java.util.Map;
 
 public class SmsServiceResultsHandlerServiceImpl extends AbstractServiceResultsHandlerService {
 
+    private static final Log LOGGER = LogFactory.getLog(SmsServiceResultsHandlerServiceImpl.class);
+
     private static final String SMS_INITIATE_EVENT = "send_sms";
 
     private static final String DEFAULT_MESSAGE = "Not yet specified";
@@ -45,8 +49,17 @@ public class SmsServiceResultsHandlerServiceImpl extends AbstractServiceResultsH
     @Override
     public void handle(List<ScheduledService> smsServices, ScheduledExecutionContext executionContext) {
         for (ScheduledService service : smsServices) {
-            this.triggerEvent(service, executionContext);
-            this.messagingService.registerAttempt(service, ServiceStatus.DELIVERED, DateUtil.now(), null);
+            try {
+                this.triggerEvent(service, executionContext);
+                this.messagingService.registerAttempt(service, ServiceStatus.DELIVERED, DateUtil.now(), null);
+            } catch (Exception ex) {
+                LOGGER.warn(String.format("During handling the `%s` service the following exception noticed `%s`",
+                        service.getTemplateName(), ex.getMessage()));
+                if (LOGGER.isTraceEnabled()) {
+                    LOGGER.trace("Error details: ", ex);
+                }
+                this.messagingService.registerAttempt(service, ServiceStatus.FAILED, DateUtil.now(), null);
+            }
         }
         if (CollectionUtils.isNotEmpty(smsServices)) {
             int groupId = executionContext.getGroupId();
