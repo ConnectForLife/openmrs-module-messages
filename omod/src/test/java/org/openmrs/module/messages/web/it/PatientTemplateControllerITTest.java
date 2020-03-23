@@ -7,6 +7,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.openmrs.module.messages.ApiConstant.PAGE_PARAM;
 import static org.openmrs.module.messages.ApiConstant.ROWS_PARAM;
+import static org.openmrs.module.messages.util.TestUtil.loadSystemRelationshipsToActorTypes;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -98,7 +99,9 @@ public class PatientTemplateControllerITTest extends BaseModuleWebContextSensiti
     public void setUp() throws Exception {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         executeDataSet(XML_DATA_SET_PATH + "ConceptDataSet.xml");
+        executeDataSet(XML_DATA_SET_PATH + "ConfigDataset.xml");
         executeDataSet(XML_DATA_SET_PATH + "PatientTemplateDataSet.xml");
+        loadSystemRelationshipsToActorTypes();
     }
 
     @Test

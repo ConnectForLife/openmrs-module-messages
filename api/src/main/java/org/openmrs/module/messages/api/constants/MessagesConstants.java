@@ -23,6 +23,8 @@ public final class MessagesConstants {
 
     public static final String CONFIG_SERVICE = "messages.configService";
 
+    public static final String ACTOR_SERVICE = "messages.actorService";
+
     public static final String PERSON_SERVICE = "personService";
 
     public static final String EVENT_SERVICE = "messages.messagesEventService";

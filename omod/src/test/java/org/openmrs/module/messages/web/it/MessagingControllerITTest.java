@@ -47,11 +47,13 @@ import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.openmrs.module.messages.api.constants.MessagesConstants.PATIENT_DEFAULT_ACTOR_TYPE;
+import static org.openmrs.module.messages.util.TestUtil.loadSystemRelationshipsToActorTypes;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -102,6 +104,7 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         patient1 = patientService.getAllPatients().get(0);
         patient2 = patientService.getAllPatients().get(1);
+        loadSystemRelationshipsToActorTypes();
     }
 
     @Test
@@ -154,7 +157,7 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
         assertThat(messageDTO.getAuthor(), is(nullValue()));
         assertThat(messageDTO.getCreatedAt(), is(nullValue()));
         assertThat(dto.getMessages().get(2).getActorSchedules(),
-            contains(
+            hasItem(
                 new ActorScheduleDTO(null, PATIENT_DEFAULT_ACTOR_TYPE,
                     EXPECTED_DEACTIVATED_STATE)
             ));

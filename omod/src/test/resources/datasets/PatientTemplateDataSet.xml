@@ -11,7 +11,8 @@
             description="Relationship between Patient and Caregiver."
             creator="1"
             date_created="2019-11-20 00:00:00.0"
-            retired="false"/>
+            retired="false"
+            uuid="2b4e15af-0213-4402-813d-96ac4249c8aa" />
 
     <patient_identifier_type
             patient_identifier_type_id="100"
