@@ -239,7 +239,6 @@ public class PatientTemplateControllerITTest extends BaseModuleWebContextSensiti
         dtos.add(new PatientTemplateDTO()
                 .withId(null)
                 .withActorId(PATIENT_2_ACTOR_ID)
-                .withActorTypeId(PATIENT_2_ACTOR_TYPE_ID)
                 .withPatientId(PATIENT_2_ID)
                 .withTemplateId(TEMPLATE_1_ID)
                 .withUuid(null)); // new values from DE will have both ids set to null
@@ -253,9 +252,9 @@ public class PatientTemplateControllerITTest extends BaseModuleWebContextSensiti
 
         List<PatientTemplate> patientTemplates = patientTemplateService.findAllByCriteria(
                 PatientTemplateCriteria.forPatientId(PATIENT_2_ID));
+        assertThat(patientTemplates.size(), is(RESULT_SIZE_2));
         assertThat(patientTemplates.get(0).getId(), is(PATIENT_2_TEMPLATE_1_ID));
         assertThat(patientTemplates.get(1).getId(), not(PATIENT_2_TEMPLATE_2_ID));
-        assertThat(patientTemplates.size(), is(RESULT_SIZE_2));
     }
 
     @Test
@@ -361,7 +360,6 @@ public class PatientTemplateControllerITTest extends BaseModuleWebContextSensiti
         PatientTemplateDTO dto1 = new PatientTemplateDTO()
                 .withId(PATIENT_2_TEMPLATE_1_ID)
                 .withActorId(PATIENT_2_ACTOR_ID)
-                .withActorTypeId(PATIENT_2_ACTOR_TYPE_ID)
                 .withPatientId(PATIENT_2_ID)
                 .withTemplateId(TEMPLATE_1_ID)
                 .withUuid(PATIENT_2_TEMPLATE_1_UUID);
@@ -376,7 +374,6 @@ public class PatientTemplateControllerITTest extends BaseModuleWebContextSensiti
         PatientTemplateDTO dto2 = new PatientTemplateDTO()
                 .withId(PATIENT_2_TEMPLATE_2_ID)
                 .withActorId(PATIENT_2_ACTOR_ID)
-                .withActorTypeId(PATIENT_2_ACTOR_TYPE_ID)
                 .withPatientId(PATIENT_2_ID)
                 .withTemplateId(TEMPLATE_1_ID)
                 .withUuid(PATIENT_2_TEMPLATE_2_UUID);

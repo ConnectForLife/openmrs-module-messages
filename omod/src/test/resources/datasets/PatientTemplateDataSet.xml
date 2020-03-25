@@ -211,7 +211,6 @@
     <messages_patient_template
             messages_patient_template_id="1"
             actor_id="101"
-            actor_type="101"
             template_id="1"
             patient_id="101"
             service_query_type="SQL"
@@ -235,7 +234,6 @@
     <messages_patient_template
             messages_patient_template_id="2"
             actor_id="101"
-            actor_type="101"
             template_id="1"
             patient_id="101"
             service_query_type="SQL"
@@ -259,7 +257,6 @@
     <messages_patient_template
             messages_patient_template_id="3"
             actor_id="101"
-            actor_type="101"
             template_id="1"
             patient_id="101"
             service_query_type="SQL"
@@ -283,7 +280,6 @@
     <messages_patient_template
             messages_patient_template_id="4"
             actor_id="102"
-            actor_type="102"
             template_id="1"
             patient_id="102"
             service_query_type="SQL"
@@ -307,7 +303,6 @@
     <messages_patient_template
             messages_patient_template_id="5"
             actor_id="102"
-            actor_type="102"
             template_id="1"
             patient_id="102"
             service_query_type="SQL"
