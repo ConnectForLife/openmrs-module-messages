@@ -3,7 +3,7 @@ package org.openmrs.module.messages.api.util;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -53,12 +53,19 @@ public final class GlobalPropertyUtil {
     }
 
     public static List<String> parseList(String value, String delimiter) {
+        if (StringUtils.isBlank(value)) {
+            return Collections.emptyList();
+        }
         if (StringUtils.isNotBlank(delimiter) && value.contains(delimiter)) {
-            return Arrays.asList(value.split(delimiter));
+            List<String> splittedValues = new ArrayList<>();
+            for (String splittedValue : value.split(delimiter)) {
+                splittedValues.add(splittedValue.trim());
+            }
+            return splittedValues;
         }
         return Collections.singletonList(value);
     }
-
+    
     private GlobalPropertyUtil() {
     }
 }
