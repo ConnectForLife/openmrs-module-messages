@@ -17,6 +17,7 @@ interface IProps {
 
 interface IState {
   options: Array<MultiselectOption>,
+  formDivWrapperHeight: number,
 }
 
 export default class DynamicMultiselect extends React.Component<IProps, IState> {
@@ -30,7 +31,9 @@ export default class DynamicMultiselect extends React.Component<IProps, IState> 
     this.state = {
       options: this.props.options
         .map((optionName) => (new MultiselectOption(this.getCategoryOptionLabel(optionName), optionName))),
+      formDivWrapperHeight: 90
     }
+    this.handleSelectClick = this.handleSelectClick.bind(this);
   }
 
   getCategoryOptionLabel = (optionName: string) => {
@@ -53,24 +56,34 @@ export default class DynamicMultiselect extends React.Component<IProps, IState> 
     this.props.onSelectChange(newValue);
   }
 
+  handleSelectClick() {
+    const elem = document.getElementById('selectWrapper')!;
+    this.setState({ formDivWrapperHeight: elem.clientHeight + 60});
+  }
+
   render = () => {
     const selectedOptions = this.mapOptionsToMultiselectOptionsArray(this.props.selectedOptions);
     return (
-      <FormGroup
-        className="multiselect"
-        controlId={this.props.key}
-        key={this.props.key} >
-        <FormLabel label={this.props.label} mandatory={this.props.mandatory} />
-        <Select
-          defaultValue={this.state.options}
-          isMulti
-          options={this.state.options}
-          className="basic-multi-select"
-          classNamePrefix="select"
-          value={selectedOptions}
-          onChange={this.handleChange}
-        />
-      </FormGroup>
+      <div style={{ height: this.state.formDivWrapperHeight }}>
+        <FormGroup
+          className="multiselect"
+          controlId={this.props.key}
+          key={this.props.key} >
+          <FormLabel label={this.props.label} mandatory={this.props.mandatory} />
+          <div id="selectWrapper" onClick={this.handleSelectClick}>
+            <Select
+              defaultValue={this.state.options}
+              isMulti
+              options={this.state.options}
+              className="basic-multi-select"
+              classNamePrefix="select"
+              value={selectedOptions}
+              onChange={this.handleChange}
+            />
+          </div>
+        </FormGroup>
+      </div>
     )
   }
 }
+

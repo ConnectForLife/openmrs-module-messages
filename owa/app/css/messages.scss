@@ -150,6 +150,11 @@ header .logo img {
             flex-direction: column;
         }
     }
+
+    .multiselect.form-group {
+        position: absolute;
+        width: 100%;
+    }
 }
 
 .disable-element {
