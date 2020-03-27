@@ -3717,4 +3717,77 @@
                  splitStatements="false"
                  stripComments="false"/>
     </changeSet>
+
+    <changeSet id="messages-68" author="Daniel Serkowski" runOnChange="true">
+        <preConditions>
+            <tableExists tableName="messages_template"/>
+        </preConditions>
+
+        <comment>
+            Adding triggers and procedure which check patientTemplate uniqueness for
+            actor_id, patient_id and template_id columns with the support for voided entries.
+
+            This migration also provides the mechanism for automatic update of the procedure
+            when the sql file with its definition is changed.
+        </comment>
+
+        <sql>
+            DROP TRIGGER IF EXISTS messages_patient_template_insert_validation;
+            DROP TRIGGER IF EXISTS messages_patient_template_update_validation;
+            DROP PROCEDURE IF EXISTS validate_messages_patient_template;
+        </sql>
+
+        <sqlFile encoding="UTF-8"
+                 path="mysql/validators/PatientTemplateValidation.sql"
+                 splitStatements="false"
+                 stripComments="true"/>
+
+        <sql>
+            CREATE TRIGGER messages_patient_template_insert_validation
+            AFTER INSERT ON messages_patient_template
+            FOR EACH ROW CALL validate_messages_patient_template(NEW.actor_id, NEW.patient_id, NEW.template_id);
+
+            CREATE TRIGGER messages_patient_template_update_validation
+            AFTER UPDATE ON messages_patient_template
+            FOR EACH ROW CALL validate_messages_patient_template(NEW.actor_id, NEW.patient_id, NEW.template_id);
+        </sql>
+    </changeSet>
+
+    <changeSet id="messages-69" author="Daniel Serkowski">
+        <preConditions>
+            <tableExists tableName="messages_patient_template"/>
+            <foreignKeyConstraintExists foreignKeyName="messages_patient_template_actor_fk"/>
+            <foreignKeyConstraintExists foreignKeyName="messages_patient_template_patient_fk"/>
+            <foreignKeyConstraintExists foreignKeyName="messages_patient_template_template_fk"/>
+            <indexExists indexName="messages_patient_template_actor_id_patient_id_template_id_ux"/>
+        </preConditions>
+
+        <comment>
+            Remove the unique constraint because it have been replaced by the trigger
+            supporting voided entries (introduced in messages-68).
+        </comment>
+
+        <!-- removing these 3 constraints for a while -->
+        <dropForeignKeyConstraint baseTableName="messages_patient_template"
+                                  constraintName="messages_patient_template_actor_fk"/>
+        <dropForeignKeyConstraint baseTableName="messages_patient_template"
+                                  constraintName="messages_patient_template_patient_fk"/>
+        <dropForeignKeyConstraint baseTableName="messages_patient_template"
+                                  constraintName="messages_patient_template_template_fk"/>
+
+        <dropUniqueConstraint tableName="messages_patient_template"
+                              constraintName="messages_patient_template_actor_id_patient_id_template_id_ux"/>
+
+        <!-- the constraints restore -->
+        <addForeignKeyConstraint constraintName="messages_patient_template_actor_fk"
+                                 baseTableName="messages_patient_template" baseColumnNames="actor_id"
+                                 referencedTableName="person" referencedColumnNames="person_id"/>
+        <addForeignKeyConstraint constraintName="messages_patient_template_patient_fk"
+                                 baseTableName="messages_patient_template" baseColumnNames="patient_id"
+                                 referencedTableName="patient" referencedColumnNames="patient_id"/>
+        <addForeignKeyConstraint constraintName="messages_patient_template_template_fk"
+                                 baseTableName="messages_patient_template" baseColumnNames="template_id"
+                                 referencedTableName="messages_template"
+                                 referencedColumnNames="messages_template_id"/>
+    </changeSet>
 </databaseChangeLog>
