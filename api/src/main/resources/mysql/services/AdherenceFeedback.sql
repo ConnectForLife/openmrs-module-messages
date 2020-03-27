@@ -26,10 +26,10 @@ UPDATE messages_template SET service_query =
        ON     mss.patient_template_id = mpt.messages_patient_template_id
        JOIN   messages_template mt
        ON     mpt.template_id = mt.messages_template_id
-       WHERE  mt.name = \'Adherence report daily\' and mar.answered_time >= (select date_add(now(), interval -
-              (select property_value from global_property where property = \'messages.benchmarkPeriod\') day)) and mar.answered_time <= now()
-       OR     mt.name = \'Adherence report weekly\' and mar.answered_time >= (select date_add(now(), interval -
-              (select property_value from global_property where property = \'messages.benchmarkPeriod\') day)) and mar.answered_time <= now()), 0) as NUMBER_OF_DAYS_USER_GAVE_YES_RESPONSE,
+       WHERE  mt.name = \'Adherence report daily\' and mar.answered_time >= (select date_add(:executionStartDateTime, interval -
+              (select property_value from global_property where property = \'messages.benchmarkPeriod\') day)) and mar.answered_time <= :executionStartDateTime
+       OR     mt.name = \'Adherence report weekly\' and mar.answered_time >= (select date_add(:executionStartDateTime, interval -
+              (select property_value from global_property where property = \'messages.benchmarkPeriod\') day)) and mar.answered_time <= :executionStartDateTime), 0) as NUMBER_OF_DAYS_USER_GAVE_YES_RESPONSE,
        IFNULL((SELECT sum(text_response = \'YES\' or text_response = \'NO\')
        FROM   (SELECT * FROM messages_actor_response mar WHERE source_type like \'SCHEDULED_SERVICE_GROUP\'
        AND    patient_id = :patientId AND actor_id = :actorId) mar
@@ -39,10 +39,10 @@ UPDATE messages_template SET service_query =
        ON     mss.patient_template_id = mpt.messages_patient_template_id
        JOIN   messages_template mt
        ON     mpt.template_id = mt.messages_template_id
-       WHERE  mt.name = \'Adherence report daily\' and mar.answered_time >= (select date_add(now(), interval -
-              (select property_value from global_property where property = \'messages.benchmarkPeriod\') day)) and mar.answered_time <= now()
-       OR     mt.name = \'Adherence report weekly\' and mar.answered_time >= (select date_add(now(), interval -
-              (select property_value from global_property where property = \'messages.benchmarkPeriod\') day)) and mar.answered_time <= now()), 0) as NUMBER_OF_DAYS_USER_GAVE_RESPONSE,
+       WHERE  mt.name = \'Adherence report daily\' and mar.answered_time >= (select date_add(:executionStartDateTime, interval -
+              (select property_value from global_property where property = \'messages.benchmarkPeriod\') day)) and mar.answered_time <= :executionStartDateTime
+       OR     mt.name = \'Adherence report weekly\' and mar.answered_time >= (select date_add(:executionStartDateTime, interval -
+              (select property_value from global_property where property = \'messages.benchmarkPeriod\') day)) and mar.answered_time <= :executionStartDateTime), 0) as NUMBER_OF_DAYS_USER_GAVE_RESPONSE,
        IFNULL((SELECT sum(text_response = \'YES\') / sum(text_response = \'YES\' or text_response = \'NO\')
        FROM   (SELECT * FROM messages_actor_response mar WHERE source_type like \'SCHEDULED_SERVICE_GROUP\'
        AND    patient_id = :patientId AND actor_id = :actorId) mar
@@ -52,12 +52,12 @@ UPDATE messages_template SET service_query =
        ON     mss.patient_template_id = mpt.messages_patient_template_id
        JOIN   messages_template mt
        ON     mpt.template_id = mt.messages_template_id
-       WHERE  mt.name = \'Adherence report daily\' and mar.answered_time >= (select date_add(now(), interval -
+       WHERE  mt.name = \'Adherence report daily\' and mar.answered_time >= (select date_add(:executionStartDateTime, interval -
               (select 2 * (select property_value from global_property where property = \'messages.benchmarkPeriod\')) day))
-       AND    mar.answered_time <= (select date_add(now(), interval - (select property_value from global_property where property = \'messages.benchmarkPeriod\') day))
-       OR     mt.name = \'Adherence report weekly\' and mar.answered_time >= (select date_add(now(), interval -
+       AND    mar.answered_time <= (select date_add(:executionStartDateTime, interval - (select property_value from global_property where property = \'messages.benchmarkPeriod\') day))
+       OR     mt.name = \'Adherence report weekly\' and mar.answered_time >= (select date_add(:executionStartDateTime, interval -
               (select 2 * (select property_value from global_property where property = \'messages.benchmarkPeriod\')) day))
-       AND    mar.answered_time <= (select date_add(now(), interval - (select property_value from global_property where property = \'messages.benchmarkPeriod\') day))), 0) as ADHERENCE_LEVEL_TWO_BENCHMARK_PERIODS_AGO,
+       AND    mar.answered_time <= (select date_add(:executionStartDateTime, interval - (select property_value from global_property where property = \'messages.benchmarkPeriod\') day))), 0) as ADHERENCE_LEVEL_TWO_BENCHMARK_PERIODS_AGO,
        IFNULL((SELECT sum(text_response = \'YES\') / sum(text_response = \'YES\' or text_response = \'NO\')
        FROM   (SELECT * FROM messages_actor_response mar WHERE source_type like \'SCHEDULED_SERVICE_GROUP\'
        AND    patient_id = :patientId AND actor_id = :actorId) mar
@@ -67,10 +67,10 @@ UPDATE messages_template SET service_query =
        ON     mss.patient_template_id = mpt.messages_patient_template_id
        JOIN   messages_template mt
        ON     mpt.template_id = mt.messages_template_id
-       WHERE  mt.name = \'Adherence report daily\' and mar.answered_time >= (select date_add(now(), interval -
-              (select property_value from global_property where property = \'messages.benchmarkPeriod\') day)) and mar.answered_time <= now()
-       OR     mt.name = \'Adherence report weekly\' and mar.answered_time >= (select date_add(now(), interval -
-              (select property_value from global_property where property = \'messages.benchmarkPeriod\') day)) and mar.answered_time <= now()), 0) as ADHERENCE_LEVEL_BENCHMARK_PERIOD_AGO
+       WHERE  mt.name = \'Adherence report daily\' and mar.answered_time >= (select date_add(:executionStartDateTime, interval -
+              (select property_value from global_property where property = \'messages.benchmarkPeriod\') day)) and mar.answered_time <= :executionStartDateTime
+       OR     mt.name = \'Adherence report weekly\' and mar.answered_time >= (select date_add(:executionStartDateTime, interval -
+              (select property_value from global_property where property = \'messages.benchmarkPeriod\') day)) and mar.answered_time <= :executionStartDateTime), 0) as ADHERENCE_LEVEL_BENCHMARK_PERIOD_AGO
 FROM   (
               SELECT Timestamp(selected_date, times) AS EXECUTION_DATE,
                      1                               AS MESSAGE_ID,
@@ -116,21 +116,21 @@ JOIN
                             WHERE  mt.NAME = \'Adherence report daily\'
                             AND    mar.answered_time >=
                                    (
-                                          SELECT date_add(now(), interval -
+                                          SELECT date_add(:executionStartDateTime, interval -
                                                  (
                                                         SELECT property_value
                                                         FROM   global_property
                                                         WHERE  property = \'messages.benchmarkPeriod\') day))
-                            AND    mar.answered_time <= now()
+                            AND    mar.answered_time <= :executionStartDateTime
                             OR     mt.NAME = \'Adherence report weekly\'
                             AND    mar.answered_time >=
                                    (
-                                          SELECT date_add(now(), interval -
+                                          SELECT date_add(:executionStartDateTime, interval -
                                                  (
                                                         SELECT property_value
                                                         FROM   global_property
                                                         WHERE  property = \'messages.benchmarkPeriod\') day))
-                            AND    mar.answered_time <= now())) AS ADHERENCE_LEVEL
+                            AND    mar.answered_time <= :executionStartDateTime)) AS ADHERENCE_LEVEL
               FROM   (SELECT * FROM messages_actor_response mar WHERE source_type like \'SCHEDULED_SERVICE_GROUP\'
               AND    patient_id = :patientId AND actor_id = :actorId) mar
               JOIN   messages_scheduled_service_group mssg on mar.source_id = mssg.messages_scheduled_service_group_id
@@ -142,21 +142,21 @@ JOIN
               WHERE  mt.NAME = \'Adherence report daily\'
               AND    mar.answered_time >=
                      (
-                            SELECT date_add(now(), interval -
+                            SELECT date_add(:executionStartDateTime, interval -
                                    (
                                           SELECT property_value
                                           FROM   global_property
                                           WHERE  property = \'messages.benchmarkPeriod\') day))
-              AND    mar.answered_time <= now()
+              AND    mar.answered_time <= :executionStartDateTime
               OR     mt.NAME = \'Adherence report weekly\'
               AND    mar.answered_time >=
                      (
-                            SELECT date_add(now(), interval -
+                            SELECT date_add(:executionStartDateTime, interval -
                                    (
                                           SELECT property_value
                                           FROM   global_property
                                           WHERE  property = \'messages.benchmarkPeriod\') day))
-              AND    mar.answered_time <= now()) adhlev
+              AND    mar.answered_time <= :executionStartDateTime) adhlev
 JOIN
        (
               SELECT IF(sum(text_response = \'YES\') / sum(text_response = \'YES\'
@@ -175,7 +175,7 @@ JOIN
                             WHERE  mt.NAME = \'Adherence report daily\'
                             AND    mar.answered_time >=
                                    (
-                                          SELECT date_add(now(), interval -
+                                          SELECT date_add(:executionStartDateTime, interval -
                                                  (
                                                         SELECT 2 *
                                                                (
@@ -184,7 +184,7 @@ JOIN
                                                         WHERE  property = \'messages.benchmarkPeriod\')) day))
                             AND    mar.answered_time <=
                                    (
-                                          SELECT date_add(now(), interval -
+                                          SELECT date_add(:executionStartDateTime, interval -
                                                  (
                                                         SELECT property_value
                                                         FROM   global_property
@@ -192,7 +192,7 @@ JOIN
                             OR     mt.NAME = \'Adherence report weekly\'
                             AND    mar.answered_time >=
                                    (
-                                          SELECT date_add(now(), interval -
+                                          SELECT date_add(:executionStartDateTime, interval -
                                                  (
                                                         SELECT 2 *
                                                                (
@@ -201,7 +201,7 @@ JOIN
                                                                       WHERE  property = \'messages.benchmarkPeriod\')) day))
                             AND    mar.answered_time <=
                                    (
-                                          SELECT date_add(now(), interval -
+                                          SELECT date_add(:executionStartDateTime, interval -
                                                  (
                                                         SELECT property_value
                                                         FROM   global_property
@@ -229,7 +229,7 @@ JOIN
                                           WHERE  mt.NAME = \'Adherence report daily\'
                                           AND    mar.answered_time >=
                                                  (
-                                                        SELECT date_add(now(), interval -
+                                                        SELECT date_add(:executionStartDateTime, interval -
                                                                (
                                                                       SELECT 2 *
                                                                              (
@@ -238,7 +238,7 @@ JOIN
                                                                                     WHERE  property = \'messages.benchmarkPeriod\')) day))
                                           AND    mar.answered_time <=
                                                  (
-                                                        SELECT date_add(now(), interval -
+                                                        SELECT date_add(:executionStartDateTime, interval -
                                                                (
                                                                       SELECT property_value
                                                                       FROM   global_property
@@ -246,7 +246,7 @@ JOIN
                                           OR     mt.NAME = \'Adherence report weekly\'
                                           AND    mar.answered_time >=
                                                  (
-                                                        SELECT date_add(now(), interval -
+                                                        SELECT date_add(:executionStartDateTime, interval -
                                                                (
                                                                       SELECT 2 *
                                                                              (
@@ -255,7 +255,7 @@ JOIN
                                                                                     WHERE  property = \'messages.benchmarkPeriod\')) day))
                                           AND    mar.answered_time <=
                                                  (
-                                                        SELECT date_add(now(), interval -
+                                                        SELECT date_add(:executionStartDateTime, interval -
                                                                (
                                                                       SELECT property_value
                                                                       FROM   global_property
@@ -277,24 +277,24 @@ JOIN
               WHERE  mt.NAME = \'Adherence report daily\'
               AND    mar.answered_time >=
                      (
-                            SELECT date_add(now(), interval -
+                            SELECT date_add(:executionStartDateTime, interval -
                                    (
                                           SELECT property_value
                                           FROM   global_property
                                           WHERE  property = \'messages.benchmarkPeriod\') day))
-              AND    mar.answered_time <= now()
+              AND    mar.answered_time <= :executionStartDateTime
               OR     mt.NAME = \'Adherence report weekly\'
               AND    mar.answered_time >=
                      (
-                            SELECT date_add(now(), interval -
+                            SELECT date_add(:executionStartDateTime, interval -
                                    (
                                           SELECT property_value
                                           FROM   global_property
                                           WHERE  property = \'messages.benchmarkPeriod\') day))
-              AND    mar.answered_time <= now()) adhtre
+              AND    mar.answered_time <= :executionStartDateTime) adhtre
 WHERE  EXECUTION_DATE >= :startDateTime
 AND    EXECUTION_DATE <= :endDateTime
-AND    EXECUTION_DATE > get_prediction_start_date_for_adherence_feedback(:patientId, :actorId)
+AND    EXECUTION_DATE > get_prediction_start_date_for_adherence_feedback(:patientId, :actorId, :executionStartDateTime)
 AND    CHANNEL_ID != \'Deactivate service\'
 UNION
 SELECT   mssg.msg_send_time AS EXECUTION_DATE,

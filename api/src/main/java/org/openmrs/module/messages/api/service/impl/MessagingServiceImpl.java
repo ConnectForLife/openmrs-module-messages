@@ -267,6 +267,7 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
     private List<ServiceResultList> retrieveAllServiceExecutions(List<PatientTemplate> patientTemplates, Date startDate,
                                                                  Date endDate) {
         List<ServiceResultList> results = new ArrayList<>();
+        Date executionStartDateTime = DateUtil.now();
         for (PatientTemplate patientTemplate : patientTemplates) {
             try {
                 Range<Date> dateRange = new Range<>(startDate, endDate);
@@ -281,7 +282,7 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
                                 DateUtil.convertToServerSideDateTime(endDate)));
                     }
                 }
-                results.add(serviceExecutor.execute(patientTemplate, dateRange));
+                results.add(serviceExecutor.execute(patientTemplate, dateRange, executionStartDateTime));
             } catch (Exception e) {
                 logException(patientTemplate, e);
             }

@@ -3671,4 +3671,50 @@
                  splitStatements="false"
                  stripComments="false"/>
     </changeSet>
+
+    <changeSet id="messages-66" author="Arkadiusz Lalo" runOnChange="true">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="messages_template"/>
+            <tableExists tableName="messages_template_field"/>
+            <tableExists tableName="messages_scheduled_service"/>
+            <sqlCheck expectedResult="1">SELECT COUNT(*) FROM messages_template WHERE name = 'Adherence report weekly'</sqlCheck>
+        </preConditions>
+        <comment>
+            Brings the latest changes in the Adherence report weekly service.
+        </comment>
+        <sql>
+            DROP FUNCTION IF EXISTS GET_PREDICTION_START_DATE_FOR_ADHERENCE_WEEKLY;
+        </sql>
+        <sqlFile encoding="UTF-8"
+                 path="mysql/services/AdherenceReportWeeklyStartDateFunction.sql"
+                 splitStatements="false"
+                 stripComments="false"/>
+        <sqlFile encoding="UTF-8"
+                 path="mysql/services/AdherenceReportWeekly.sql"
+                 splitStatements="false"
+                 stripComments="false"/>
+    </changeSet>
+
+    <changeSet id="messages-67" author="Arkadiusz Lalo" runOnChange="true">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="messages_template"/>
+            <tableExists tableName="messages_template_field"/>
+            <tableExists tableName="messages_scheduled_service"/>
+            <sqlCheck expectedResult="1">SELECT COUNT(*) FROM messages_template WHERE name = 'Adherence report daily'</sqlCheck>
+        </preConditions>
+        <comment>
+            Brings the latest changes in the Adherence report daily service.
+        </comment>
+        <sql>
+            DROP FUNCTION IF EXISTS GET_PREDICTION_START_DATE_FOR_ADHERENCE_DAILY;
+        </sql>
+        <sqlFile encoding="UTF-8"
+                 path="mysql/services/AdherenceReportDailyStartDateFunction.sql"
+                 splitStatements="false"
+                 stripComments="false"/>
+        <sqlFile encoding="UTF-8"
+                 path="mysql/services/AdherenceReportDaily.sql"
+                 splitStatements="false"
+                 stripComments="false"/>
+    </changeSet>
 </databaseChangeLog>

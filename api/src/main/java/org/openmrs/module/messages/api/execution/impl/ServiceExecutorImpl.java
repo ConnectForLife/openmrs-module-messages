@@ -35,14 +35,41 @@ public class ServiceExecutorImpl extends BaseOpenmrsService implements ServiceEx
         this.executionEngineManager = executionEngineManager;
     }
 
+    /**
+     * Executes a patient template {@link PatientTemplate} and result result as a {@link ServiceResultList}.
+     *
+     * @param patientTemplate - provided patient template
+     * @param dateTimeRange - date time range for executed query
+     * @return - list of results. The result list contains the Service results according to provided dateTime range.
+     *      Services which weren't executed should have the status set as FUTURE.
+     * @throws ExecutionException - exception occurred during service execution
+     */
     @Transactional(noRollbackFor = {RuntimeException.class, SQLGrammarException.class}, readOnly = true)
     @Override
     public ServiceResultList execute(PatientTemplate patientTemplate, Range<Date> dateTimeRange)
             throws ExecutionException {
+        return execute(patientTemplate, dateTimeRange, null);
+    }
+
+    /**
+     * Executes a patient template {@link PatientTemplate} and result result as a {@link ServiceResultList}.
+     *
+     * @param patientTemplate - provided patient template
+     * @param dateTimeRange - date time range for executed query
+     * @param executionStartDateTime - date time of starting execution
+     * @return - list of results. The result list contains the Service results according to provided dateTime range.
+     *      Services which weren't executed should have the status set as FUTURE.
+     * @throws ExecutionException - exception occurred during service execution
+     */
+    @Transactional(noRollbackFor = {RuntimeException.class, SQLGrammarException.class}, readOnly = true)
+    @Override
+    public ServiceResultList execute(PatientTemplate patientTemplate, Range<Date> dateTimeRange,
+                                     Date executionStartDateTime) throws ExecutionException {
         ExecutionEngine executionEngine = getEngine(patientTemplate);
 
         ExecutionContext executionContext = new ExecutionContext(patientTemplate, dateTimeRange,
-                BestContactTimeHelper.getBestContactTime(patientTemplate.getActor(), patientTemplate.getActorType()));
+                BestContactTimeHelper.getBestContactTime(patientTemplate.getActor(), patientTemplate.getActorType()),
+                executionStartDateTime);
 
         logExecutingInfo(patientTemplate, executionEngine);
         return executionEngine.execute(executionContext);

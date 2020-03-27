@@ -43,7 +43,7 @@ UPDATE messages_template SET service_query =
     )dates_before_visit
     WHERE EXECUTION_DATE <= :endDateTime
         AND EXECUTION_DATE >= :startDateTime
-        AND EXECUTION_DATE > GET_PREDICTION_START_DATE_FOR_VISIT(:patientId, :actorId)
+        AND EXECUTION_DATE > GET_PREDICTION_START_DATE_FOR_VISIT(:patientId, :actorId, :executionStartDateTime)
         AND CHANNEL_ID != \'Deactivate service\'
     UNION
         SELECT mssg.msg_send_time AS EXECUTION_DATE,

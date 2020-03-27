@@ -1,4 +1,4 @@
-CREATE FUNCTION GET_PREDICTION_START_DATE_FOR_HEALTH_TIP(patient_id long, actor_id long)
+CREATE FUNCTION GET_PREDICTION_START_DATE_FOR_HEALTH_TIP(patient_id long, actor_id long, execution_start_date DATETIME)
 RETURNS DATETIME
 BEGIN
 DECLARE mssg_date DATETIME;
@@ -16,5 +16,5 @@ SET mssg_date =
             AND mpt.actor_id = actor_id
         ORDER BY 1 DESC)
        a LIMIT 1);
-RETURN if(mssg_date > NOW(), mssg_date, NOW());
+RETURN if(mssg_date > execution_start_date, mssg_date, execution_start_date);
 END

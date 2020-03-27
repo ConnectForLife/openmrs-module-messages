@@ -9,15 +9,6 @@
 
 package org.openmrs.module.messages.api.execution;
 
-import static org.hamcrest.Matchers.hasEntry;
-import static org.junit.Assert.assertThat;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import org.junit.Test;
 import org.openmrs.module.messages.BaseTest;
 import org.openmrs.module.messages.api.constants.MessagesConstants;
@@ -30,6 +21,16 @@ import org.openmrs.module.messages.api.util.EndDateType;
 import org.openmrs.module.messages.builder.PatientTemplateBuilder;
 import org.openmrs.module.messages.builder.TemplateFieldBuilder;
 import org.openmrs.module.messages.builder.TemplateFieldValueBuilder;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import static org.hamcrest.Matchers.hasEntry;
+import static org.junit.Assert.assertThat;
 
 public class ExecutionContextTest extends BaseTest {
 
@@ -50,7 +51,8 @@ public class ExecutionContextTest extends BaseTest {
                         TemplateFieldType.START_OF_MESSAGES, tfvStartDateText))
                 .build();
 
-        ExecutionContext executionContext = new ExecutionContext(patientTemplate, dateRange, DUMMY_BEST_CONTACT_TIME);
+        ExecutionContext executionContext = new ExecutionContext(patientTemplate, dateRange, DUMMY_BEST_CONTACT_TIME,
+                null);
         Map<String, Object> params = executionContext.getParams();
 
         assertThat(params, hasEntry(
@@ -71,7 +73,8 @@ public class ExecutionContextTest extends BaseTest {
                         TemplateFieldType.START_OF_MESSAGES, tfvStartDateText))
                 .build();
 
-        ExecutionContext executionContext = new ExecutionContext(patientTemplate, dateRange, DUMMY_BEST_CONTACT_TIME);
+        ExecutionContext executionContext = new ExecutionContext(patientTemplate, dateRange, DUMMY_BEST_CONTACT_TIME,
+                null);
         Map<String, Object> params = executionContext.getParams();
 
         assertThat(params, hasEntry(
@@ -92,7 +95,8 @@ public class ExecutionContextTest extends BaseTest {
                         TemplateFieldType.END_OF_MESSAGES, prepareDatePickerEndDateValue(tfvEndDateText)))
                 .build();
 
-        ExecutionContext executionContext = new ExecutionContext(patientTemplate, dateRange, DUMMY_BEST_CONTACT_TIME);
+        ExecutionContext executionContext = new ExecutionContext(patientTemplate, dateRange, DUMMY_BEST_CONTACT_TIME,
+                null);
         Map<String, Object> params = executionContext.getParams();
 
         assertThat(params, hasEntry(
@@ -113,12 +117,28 @@ public class ExecutionContextTest extends BaseTest {
                         TemplateFieldType.END_OF_MESSAGES, prepareDatePickerEndDateValue(tfvEndDateText)))
                 .build();
 
-        ExecutionContext executionContext = new ExecutionContext(patientTemplate, dateRange, DUMMY_BEST_CONTACT_TIME);
+        ExecutionContext executionContext = new ExecutionContext(patientTemplate, dateRange, DUMMY_BEST_CONTACT_TIME,
+                null);
         Map<String, Object> params = executionContext.getParams();
 
         assertThat(params, hasEntry(
                 ExecutionContext.END_DATE_TIME_PARAM,
                 DateUtil.convertToServerSideDateTime(rangeEndDate)));
+    }
+
+    @Test
+    public void shouldReturnExpectedExecutionStartDateParamIfThisValueWasSet() {
+        Date expectedExecutionStartDate = new Date();
+
+        Range<Date> dateRange = new Range<>(DateUtil.now(), DateUtil.now());
+        PatientTemplate patientTemplate = new PatientTemplateBuilder().build();
+        ExecutionContext executionContext = new ExecutionContext(patientTemplate, dateRange, DUMMY_BEST_CONTACT_TIME,
+                expectedExecutionStartDate);
+        Map<String, Object> params = executionContext.getParams();
+
+        assertThat(params, hasEntry(
+                ExecutionContext.EXECUTION_START_DATE_TIME,
+                DateUtil.convertToServerSideDateTime(expectedExecutionStartDate)));
     }
 
     private Date parseDate(String dateTime) throws ParseException {

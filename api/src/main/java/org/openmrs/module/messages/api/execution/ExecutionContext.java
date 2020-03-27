@@ -12,11 +12,11 @@ package org.openmrs.module.messages.api.execution;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.Range;
 import org.openmrs.module.messages.api.model.TemplateFieldValue;
+import org.openmrs.module.messages.api.util.DateUtil;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import org.openmrs.module.messages.api.util.DateUtil;
 
 /**
  * This context is passed to service execution engines. It contains the patient template, the date range
@@ -29,15 +29,19 @@ public class ExecutionContext {
     public static final String PATIENT_ID_PARAM = "patientId";
     public static final String ACTOR_ID_PARAM = "actorId";
     public static final String BEST_CONTACT_TIME_PARAM = "bestContactTime";
+    public static final String EXECUTION_START_DATE_TIME = "executionStartDateTime";
 
     private Map<String, Object> params;
     private PatientTemplate patientTemplate;
     private Range<Date> dateRange;
     private String bestContactTime;
+    private Date executionStartDateTime;
 
-    public ExecutionContext(PatientTemplate patientTemplate, Range<Date> dateTimeRange, String bestContactTime) {
+    public ExecutionContext(PatientTemplate patientTemplate, Range<Date> dateTimeRange, String bestContactTime,
+                            Date executionStartDateTime) {
         this.patientTemplate = patientTemplate;
         this.bestContactTime = bestContactTime;
+        setExecutionStartDateTime(executionStartDateTime);
         setRange(dateTimeRange);
 
         putParam(PATIENT_ID_PARAM, patientTemplate.getPatient().getPatientId());
@@ -65,6 +69,10 @@ public class ExecutionContext {
         return bestContactTime;
     }
 
+    public Date getExecutionStartDateTime() {
+        return executionStartDateTime;
+    }
+
     public String getQuery() {
         return patientTemplate.getServiceQuery();
     }
@@ -73,6 +81,15 @@ public class ExecutionContext {
         this.dateRange = new Range<>(getStartDateTime(dateTimeRange), getEndDateTime(dateTimeRange));
         putParam(START_DATE_TIME_PARAM, DateUtil.convertToServerSideDateTime(this.dateRange.getStart()));
         putParam(END_DATE_TIME_PARAM, DateUtil.convertToServerSideDateTime(this.dateRange.getEnd()));
+    }
+
+    private void setExecutionStartDateTime(Date executionStartDateTime) {
+        if (executionStartDateTime == null) {
+            this.executionStartDateTime = DateUtil.now();
+        } else {
+            this.executionStartDateTime = executionStartDateTime;
+        }
+        putParam(EXECUTION_START_DATE_TIME,  DateUtil.convertToServerSideDateTime(this.executionStartDateTime));
     }
 
     private void putParam(String key, Object value) {

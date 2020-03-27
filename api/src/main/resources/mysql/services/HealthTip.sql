@@ -91,7 +91,7 @@ UPDATE messages_template SET service_query =
                     ) tips
                 )
             ) gc
-    WHERE EXECUTION_DATE > GET_PREDICTION_START_DATE_FOR_HEALTH_TIP(:patientId, :actorId)
+    WHERE EXECUTION_DATE > GET_PREDICTION_START_DATE_FOR_HEALTH_TIP(:patientId, :actorId, :executionStartDateTime)
         AND EXECUTION_DATE >= :startDateTime
         AND EXECUTION_DATE <= :endDateTime
         AND CHANNEL_ID != \'Deactivate service\'
