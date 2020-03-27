@@ -1,16 +1,23 @@
 package org.openmrs.module.messages.api.builder;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Patient;
 import org.openmrs.module.messages.api.model.Actor;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.Template;
 import org.openmrs.module.messages.api.model.TemplateField;
+import org.openmrs.module.messages.api.model.TemplateFieldType;
 import org.openmrs.module.messages.api.model.TemplateFieldValue;
 import org.openmrs.module.messages.api.util.ActorUtil;
+import org.openmrs.module.messages.api.util.DateUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PatientTemplateBuilder implements Builder<PatientTemplate> {
+
+    private static final String DEFAULT_SERVICE_QUERY = "";
+    private static final String DEFAULT_SERVICE_QUERY_TYPE = "";
 
     private Template template;
     private Actor actor;
@@ -39,18 +46,27 @@ public class PatientTemplateBuilder implements Builder<PatientTemplate> {
         PatientTemplate patientTemplate = new PatientTemplate(
             patient.getPerson(),
             null,
-            template.getServiceQuery(),
-            template.getServiceQueryType(),
+            DEFAULT_SERVICE_QUERY,
+            DEFAULT_SERVICE_QUERY_TYPE,
             patient,
             tfvList,
             template
         );
         for (TemplateField tf : template.getTemplateFields()) {
             tfvList.add(
-                new TemplateFieldValue(tf.getDefaultValue(), tf, patientTemplate)
+                new TemplateFieldValue(getDefaultValue(tf), tf, patientTemplate)
             );
         }
         return patientTemplate;
+    }
+
+    private String getDefaultValue(TemplateField tf) {
+        String defaultValue = tf.getDefaultValue();
+        if (TemplateFieldType.START_OF_MESSAGES.equals(tf.getTemplateFieldType())
+                && StringUtils.isBlank(defaultValue)) {
+            defaultValue = DateUtil.convertToServerSideDateTime(DateUtil.now());
+        }
+        return defaultValue;
     }
 
     private PatientTemplate buildForActor() {
@@ -58,8 +74,8 @@ public class PatientTemplateBuilder implements Builder<PatientTemplate> {
         PatientTemplate patientTemplate = new PatientTemplate(
             ActorUtil.getActorPerson(actor),
             actor.getRelationship(),
-            template.getServiceQuery(),
-            template.getServiceQueryType(),
+            DEFAULT_SERVICE_QUERY,
+            DEFAULT_SERVICE_QUERY_TYPE,
             patient,
             tfvList,
             template

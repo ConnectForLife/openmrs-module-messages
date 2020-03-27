@@ -1,10 +1,11 @@
 package org.openmrs.module.messages.api.util;
 
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.openmrs.module.messages.api.model.PatientTemplate;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.openmrs.module.messages.api.model.PatientTemplate;
 
 public class DefaultPatientTemplateWrapper {
 
@@ -56,29 +57,30 @@ public class DefaultPatientTemplateWrapper {
     @SuppressWarnings("checkstyle:magicnumber")
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
-            .append(patientTemplate.getTemplate())
-            .append(patientTemplate.getPatient())
-            .append(patientTemplate.getActor())
-            .toHashCode();
+                .append(patientTemplate.getTemplate().getId())
+                .append(patientTemplate.getPatient().getId())
+                .append(patientTemplate.getActor().getId())
+                .toHashCode();
     }
 
     private boolean isSameActor(PatientTemplate other) {
         return this.patientTemplate
-            .getActor()
-            .equals(other.getActor());
+                .getActor()
+                .getId()
+                .equals(other.getActor().getId());
     }
 
     private boolean isSamePatient(PatientTemplate other) {
         return this.patientTemplate
-            .getPatient()
-            .getId()
-            .equals(other.getPatient().getId());
+                .getPatient()
+                .getId()
+                .equals(other.getPatient().getId());
     }
 
     private boolean isSameTemplate(PatientTemplate other) {
         return this.patientTemplate
-            .getTemplate()
-            .getId()
-            .equals(other.getTemplate().getId());
+                .getTemplate()
+                .getId()
+                .equals(other.getTemplate().getId());
     }
 }
