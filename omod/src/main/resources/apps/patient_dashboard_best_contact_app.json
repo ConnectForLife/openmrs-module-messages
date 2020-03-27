@@ -14,7 +14,7 @@
           "fragmentConfig": {
             "icon": "icon-comment",
             "personActorTypeLabel": "Caregiver",
-            "detailsUrl": "/owa/messages/index.html#/messages/{{person.id}}&patientUuid={{person.uuid}}/patient-template"
+            "detailsUrl": "owa/messages/index.html#/messages/{{person.id}}&patientUuid={{person.uuid}}"
           }
         }
       }
