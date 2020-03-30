@@ -29,8 +29,11 @@ import _ from 'lodash';
 import { RouteComponentProps } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getActorList } from '../../reducers/actor.reducer'
+import {getPersonStatus} from "../../reducers/person-status.reducer";
+import * as Msg from '../../shared/utils/messages';
 
 interface ICalendarViewProps extends DispatchProps, StateProps, RouteComponentProps<{ patientId: string }> {
+  patientUuid: string;
 };
 
 interface ICalendarViewState {
@@ -39,6 +42,7 @@ interface ICalendarViewState {
   activeTabKey?: string;
   filters: Object;
   patientId: number;
+  patientUuid: string;
 }
 
 interface ICalendarMessageEventService {
@@ -71,7 +75,8 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
       endDate: undefined,
       activeTabKey: 'Patient',
       filters: {},
-      patientId: parseInt(this.props.match.params.patientId, 10)
+      patientId: parseInt(this.props.match.params.patientId, 10),
+      patientUuid: props.patientUuid
     };
   }
 
@@ -82,6 +87,9 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
     startDate = startDate ? startDate : moment().subtract(1, MONTH);
     endDate = endDate ? endDate : moment().add(1, MONTH);
     this.props.getServiceResultLists(startDate.toDate(), endDate.toDate(), patientId);
+    if (_.isEmpty(this.props.personStatus)) {
+      this.props.getPersonStatus(this.state.patientUuid)
+    }
   }
   
   componentWillUpdate(nextProps: ICalendarViewProps, nextState: ICalendarViewState) {
@@ -114,7 +122,8 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
       actorId: this.state.patientId,
       actorDisplayName: 'Patient',
       events: []
-    })
+    });
+
     this.props.serviceResultLists.forEach((resultList) => {
       var existingIndex = actorsResults.findIndex(a => a.actorId === resultList.actorId);
       var actorDisplayName = this.getActorDisplayName(resultList.actorId, resultList.patientId);
@@ -132,7 +141,7 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
     });
 
     return this.appendDefaultDummyActorsIfNeeded(actorsResults);
-  }
+  };
 
   private getActorDisplayName(actorId: number | null, patientId: number | null): string {
     let displayName = '';
@@ -208,7 +217,9 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
       title: '\n' + entry.serviceName,
       status: entry.status,
       start: entry.executionDate.toISOString(),
-      services: entry.services
+      services: entry.services,
+      isDisabled: entry.status && entry.status.toString() === Msg.MESSAGE_STATUS_FUTURE
+          && this.props.personStatus.value !== Msg.PERSON_STATUSES.ACTIVATED.value
     }))
   };
 
@@ -286,17 +297,19 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
   }
 }
 
-const mapStateToProps = ({ calendar, patientTemplate, actor }: IRootState) => ({
+const mapStateToProps = ({ calendar, patientTemplate, actor, personStatus }: IRootState) => ({
   serviceResultLists: calendar.serviceResultLists,
   templates: patientTemplate.templates,
-  loading: patientTemplate.templatesLoading || actor.actorResultListLoading || calendar.serviceResultListsLoading,
-  actorResultList: actor.actorResultList
+  loading: patientTemplate.templatesLoading || actor.actorResultListLoading || calendar.serviceResultListsLoading || personStatus.personStatusLoading,
+  actorResultList: actor.actorResultList,
+  personStatus: personStatus.status
 });
 
 const mapDispatchToProps = ({
   getServiceResultLists,
   getTemplates,
-  getActorList
+  getActorList,
+  getPersonStatus
 });
 
 type StateProps = ReturnType<typeof mapStateToProps>;

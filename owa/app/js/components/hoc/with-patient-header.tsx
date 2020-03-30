@@ -13,18 +13,19 @@ interface IWrappedComponentProps extends RouteComponentProps<{ patientUuid: stri
 const withPatientHeader = (WrappedComponent) => {
   return class extends React.Component<IWrappedComponentProps> {
     render() {
+      const newProps = {...this.props, patientUuid: this.props.match.params.patientUuid};
       return (
           <div className="body-wrapper">
-            <Header patientUuid={this.props.match.params.patientUuid} />
-            <PatientStatusNotification />
+            <Header patientUuid={newProps.patientUuid}/>
+            <PatientStatusNotification patientUuid={newProps.patientUuid}/>
             <div className="content">
-              <WrappedComponent  {...this.props}/>
+              <WrappedComponent  {...newProps}/>
             </div>
           </div>
       )
     }
   }
-}
+};
 
 export const CalendarWithHeader = withPatientHeader(CalendarView); 
 export const PatientTemplateEditWithHeader = withPatientHeader(PatientTemplateEdit); 
