@@ -170,3 +170,23 @@ header .logo img {
     -moz-transition: opacity 0.2s ease-in-out;
     transition: opacity 0.2s ease-in-out;
 }
+
+.note-container {
+  .note-content {
+    display: flex;
+  }
+
+  .message {
+    align-items: center;
+    display: flex;
+  }
+
+  .toast-item-image {
+    width: initial;
+    height: initial;
+    position: initial !important;
+    top: initial;
+    margin-top: initial;
+    left: initial;
+  }
+}

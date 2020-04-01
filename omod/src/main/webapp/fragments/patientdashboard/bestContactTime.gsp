@@ -23,6 +23,16 @@
         <span class="best-contact-title">
             ${ ui.message("messages.dashboard.bestContactTime") }
         </span>
+        <div class="different-timezone">
+            <span>${ ui.message("messages.dashboard.differentTimezone") + " (" + timezone + ")." }</span>
+            <script type="text/javascript">
+                jq(".different-timezone").hide();
+                const localZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                if ("${timezone}" !== localZone) {
+                    jq(".different-timezone").show();
+                }
+            </script>
+        </div>
         <div id="best-contact-times">
             <% bestContactTimes.each { %>
                 <div id="time-entry-${ it.label.replaceAll(" ", "-") }" class="time-entry">
@@ -32,11 +42,11 @@
                     <input
                         id="time-value-${ it.label.replaceAll(" ", "-") }"
                         class="time-value"
-                        type="time"
+                        type="text"
                         disabled />
                     <script type="text/javascript">
                         jq("#time-value-${ it.label.replaceAll(" ", "-") }")
-                            .val(moment.utc("${ it.time }", "HH:mm").local().format('HH:mm'));
+                            .val(moment("${ it.time }", "HH:mm").format('HH:mm'));
                     </script>
                 </div>
             <% } %>

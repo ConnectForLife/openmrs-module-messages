@@ -32,9 +32,9 @@ class ManageMessages extends React.PureComponent<IManageMessagesProps, IManageMe
       return (
         <div className="note-container">
           <div className="note warning">
-            <div className="text">
+            <div className="note-content">
               <span className="toast-item-image toast-item-image-alert" />
-              <p>{this.getDefaultValuesMessage()}</p>
+              <div className="message">{this.getDefaultValuesMessage()}</div>
             </div>
           </div>
         </div>

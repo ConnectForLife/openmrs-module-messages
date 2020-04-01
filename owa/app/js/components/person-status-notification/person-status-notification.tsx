@@ -57,9 +57,9 @@ class PersonStatusNotification extends React.PureComponent<IPersonStatusNotifica
     return (
       <div className="note-container">
         <div className="note danger">
-          <div className="text">
+          <div className="note-content">
             <span className="toast-item-image toast-item-image-alert" />
-            <p>{message}</p>
+            <div className="message">{message}</div>
           </div>
         </div>
       </div>

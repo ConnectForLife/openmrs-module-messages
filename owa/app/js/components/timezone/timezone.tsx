@@ -44,9 +44,9 @@ class Timezone extends React.PureComponent<ITimezoneProps, ITimezoneState> {
     return (
       <div className="note-container">
         <div className="note warning">
-          <div className="text">
+          <div className="note-content">
             <span className="toast-item-image toast-item-image-alert"/>
-            <p>{Msg.DIFFERENT_TIMEZONE + this.props.timezone}</p>
+            <div className="message">{Msg.DIFFERENT_TIMEZONE + this.props.timezone}</div>
           </div>
         </div>
       </div>

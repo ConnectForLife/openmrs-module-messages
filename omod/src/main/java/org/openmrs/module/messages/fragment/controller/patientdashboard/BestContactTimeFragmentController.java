@@ -6,6 +6,7 @@ import org.openmrs.Person;
 import org.openmrs.PersonAttribute;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.messages.api.constants.ConfigConstants;
 import org.openmrs.module.messages.api.dto.ContactTimeDTO;
 import org.openmrs.module.messages.api.model.Actor;
 import org.openmrs.module.messages.api.service.ActorService;
@@ -37,6 +38,8 @@ public class BestContactTimeFragmentController {
 
     private static final String PERSON_UUID = "personUuid";
 
+    private static final String TIMEZONE = "timezone";
+
     private static final String MESSAGES_ACTOR_SERVICE = "messages.actorService";
 
     private static final String PATIENT = "Patient";
@@ -56,6 +59,9 @@ public class BestContactTimeFragmentController {
         }
         model.addAttribute(PERSON_ID, (null == person) ? null : person.getPersonId());
         model.addAttribute(PERSON_UUID, (null == person) ? null : person.getUuid());
+        model.addAttribute(TIMEZONE, Context.getAdministrationService()
+                .getGlobalProperty(ConfigConstants.DEFAULT_USER_TIMEZONE)
+        );
     }
 
     private List<SimpleObject> createContactTimes(Person person, Map<Integer, String> actors, ActorService actorService) {
@@ -100,18 +106,18 @@ public class BestContactTimeFragmentController {
         }
         return result;
     }
-    
+
     private String getPersonOrPatientIdentifier(Person person) {
         if (person.isPatient()) {
             Patient patient = Context.getPatientService().getPatient(person.getId());
             String patientIdentifier = patient.getPatientIdentifier().getIdentifier();
-            return org.apache.commons.lang3.StringUtils.isNotBlank(patientIdentifier)  ? patientIdentifier : "";
+            return org.apache.commons.lang3.StringUtils.isNotBlank(patientIdentifier) ? patientIdentifier : "";
         } else {
             String personIdentifier = getPersonIdentifier(person);
             return org.apache.commons.lang3.StringUtils.isNotBlank(personIdentifier) ? personIdentifier : "";
         }
     }
-    
+
     private String getPersonIdentifier(Person person) {
         String personIdentifier = null;
         PersonAttributeType identifierAttributeType = getPersonIdentifierAttributeType();
@@ -123,7 +129,7 @@ public class BestContactTimeFragmentController {
         }
         return personIdentifier;
     }
-    
+
     private PersonAttributeType getPersonIdentifierAttributeType() {
         PersonAttributeType type = null;
         String attributeTypeUUID = Context.getAdministrationService().getGlobalProperty(PERSON_IDENTIFIER_ATTRIBUTE_KEY);
