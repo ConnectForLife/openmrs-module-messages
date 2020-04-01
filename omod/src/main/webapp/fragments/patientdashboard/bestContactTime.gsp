@@ -45,8 +45,12 @@
                         type="text"
                         disabled />
                     <script type="text/javascript">
-                        jq("#time-value-${ it.label.replaceAll(" ", "-") }")
-                            .val(moment("${ it.time }", "HH:mm").format('HH:mm'));
+                        let value = "${ ui.message("messages.dashboard.noBestContactTime") }";
+                        const time = moment("${ it.time }", "HH:mm");
+                        if (time.isValid()) {
+                            value = time.format('HH:mm');
+                        }
+                        jq("#time-value-${ it.label.replaceAll(" ", "-") }").val(value);
                     </script>
                 </div>
             <% } %>
