@@ -18,6 +18,7 @@ import org.openmrs.module.messages.api.model.TemplateFieldType;
 import org.openmrs.module.messages.api.model.TemplateFieldValue;
 import org.openmrs.module.messages.api.util.DateUtil;
 import org.openmrs.module.messages.api.util.EndDateType;
+import org.openmrs.module.messages.api.util.ZoneConverterUtil;
 import org.openmrs.module.messages.builder.PatientTemplateBuilder;
 import org.openmrs.module.messages.builder.TemplateFieldBuilder;
 import org.openmrs.module.messages.builder.TemplateFieldValueBuilder;
@@ -57,7 +58,7 @@ public class ExecutionContextTest extends BaseTest {
 
         assertThat(params, hasEntry(
                 ExecutionContext.START_DATE_TIME_PARAM,
-                DateUtil.convertToServerSideDateTime(rangeStartDate)));
+                ZoneConverterUtil.formatToUserZone(rangeStartDate)));
     }
 
     @Test
@@ -79,7 +80,7 @@ public class ExecutionContextTest extends BaseTest {
 
         assertThat(params, hasEntry(
                 ExecutionContext.START_DATE_TIME_PARAM,
-                DateUtil.convertToServerSideDateTime(tfvStartDate)));
+                ZoneConverterUtil.formatToUserZone(tfvStartDate)));
     }
 
     @Test
@@ -101,7 +102,7 @@ public class ExecutionContextTest extends BaseTest {
 
         assertThat(params, hasEntry(
                 ExecutionContext.END_DATE_TIME_PARAM,
-                DateUtil.convertToServerSideDateTime(tfvEndDate)));
+                ZoneConverterUtil.formatToUserZone(tfvEndDate)));
     }
 
     @Test
@@ -123,7 +124,7 @@ public class ExecutionContextTest extends BaseTest {
 
         assertThat(params, hasEntry(
                 ExecutionContext.END_DATE_TIME_PARAM,
-                DateUtil.convertToServerSideDateTime(rangeEndDate)));
+                ZoneConverterUtil.formatToUserZone(rangeEndDate)));
     }
 
     @Test
@@ -138,7 +139,7 @@ public class ExecutionContextTest extends BaseTest {
 
         assertThat(params, hasEntry(
                 ExecutionContext.EXECUTION_START_DATE_TIME,
-                DateUtil.convertToServerSideDateTime(expectedExecutionStartDate)));
+                ZoneConverterUtil.formatToUserZone(expectedExecutionStartDate)));
     }
 
     private Date parseDate(String dateTime) throws ParseException {

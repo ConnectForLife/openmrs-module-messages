@@ -17,8 +17,10 @@ import org.openmrs.module.messages.api.model.ChannelType;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
 import org.openmrs.module.messages.api.util.DateUtil;
+import org.openmrs.module.messages.api.util.ZoneConverterUtil;
 
 import java.io.Serializable;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -55,11 +57,13 @@ public class ServiceResult implements Serializable, DTO {
         ChannelType channel = null;
         ServiceStatus status = ServiceStatus.FUTURE;
         Map<String, Object> params = new HashMap<>();
+        ZoneId zone = ZoneConverterUtil.getUserZone();
 
         for (Map.Entry<String, Object> entry : row.entrySet()) {
             switch (entry.getKey()) {
                 case EXEC_DATE_ALIAS:
                     date = DateUtil.toSimpleDate((Date) entry.getValue());
+                    date = ZoneConverterUtil.convertToZone(date, zone);
                     break;
                 case MSG_ID_ALIAS:
                     msgId = entry.getValue();
@@ -71,11 +75,11 @@ public class ServiceResult implements Serializable, DTO {
                     status = parseStatus((String) entry.getValue());
                     break;
                 default:
-                     params.put(entry.getKey(), entry.getValue());
-                     break;
+                    params.put(entry.getKey(), entry.getValue());
+                    break;
             }
         }
-        
+
         return new ServiceResult(date, msgId, channel, status, params);
     }
 

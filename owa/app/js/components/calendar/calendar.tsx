@@ -28,9 +28,10 @@ import { TemplateUI } from '../../shared/model/template-ui';
 import _ from 'lodash';
 import { RouteComponentProps } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { getActorList } from '../../reducers/actor.reducer'
 import {getPersonStatus} from "../../reducers/person-status.reducer";
 import * as Msg from '../../shared/utils/messages';
+import { getActorList } from '../../reducers/actor.reducer';
+import Timezone from "../timezone/timezone";
 
 interface ICalendarViewProps extends DispatchProps, StateProps, RouteComponentProps<{ patientId: string }> {
   patientUuid: string;
@@ -256,6 +257,7 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
     const actorsResults: Array<IActorIdWithEvents> = this.prepareActorsData();
     return (
       <>
+        <Timezone />
         <div className="row">
           <div className="col-md-12 col-xs-12">
             <h3>Calendar Overview</h3>
@@ -275,6 +277,7 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
                           <Calendar
                             dateRangeChangedCallback={(startDate, endDate) => this.dateRangeChanged(startDate, endDate, tabName)}
                             events={this.parseDataToCalendarEvents(actorWithResults.events)}
+                            timezone={this.props.timezone}
                             key={tabName}
                           />
                         </div>
@@ -297,12 +300,13 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
   }
 }
 
-const mapStateToProps = ({ calendar, patientTemplate, actor, personStatus }: IRootState) => ({
+const mapStateToProps = ({ calendar, patientTemplate, actor, personStatus, timezone }: IRootState) => ({
   serviceResultLists: calendar.serviceResultLists,
   templates: patientTemplate.templates,
-  loading: patientTemplate.templatesLoading || actor.actorResultListLoading || calendar.serviceResultListsLoading || personStatus.personStatusLoading,
+  loading: patientTemplate.templatesLoading || actor.actorResultListLoading || calendar.serviceResultListsLoading || personStatus.personStatusLoading || timezone.timezoneLoading,
   actorResultList: actor.actorResultList,
-  personStatus: personStatus.status
+  personStatus: personStatus.status,
+  timezone: timezone.timezone
 });
 
 const mapDispatchToProps = ({

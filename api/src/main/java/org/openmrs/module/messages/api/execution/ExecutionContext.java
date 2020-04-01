@@ -13,6 +13,7 @@ import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.Range;
 import org.openmrs.module.messages.api.model.TemplateFieldValue;
 import org.openmrs.module.messages.api.util.DateUtil;
+import org.openmrs.module.messages.api.util.ZoneConverterUtil;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -79,8 +80,8 @@ public class ExecutionContext {
 
     private void setRange(Range<Date> dateTimeRange) {
         this.dateRange = new Range<>(getStartDateTime(dateTimeRange), getEndDateTime(dateTimeRange));
-        putParam(START_DATE_TIME_PARAM, DateUtil.convertToServerSideDateTime(this.dateRange.getStart()));
-        putParam(END_DATE_TIME_PARAM, DateUtil.convertToServerSideDateTime(this.dateRange.getEnd()));
+        putParam(START_DATE_TIME_PARAM, ZoneConverterUtil.formatToUserZone(this.dateRange.getStart()));
+        putParam(END_DATE_TIME_PARAM, ZoneConverterUtil.formatToUserZone(this.dateRange.getEnd()));
     }
 
     private void setExecutionStartDateTime(Date executionStartDateTime) {
@@ -89,7 +90,7 @@ public class ExecutionContext {
         } else {
             this.executionStartDateTime = executionStartDateTime;
         }
-        putParam(EXECUTION_START_DATE_TIME,  DateUtil.convertToServerSideDateTime(this.executionStartDateTime));
+        putParam(EXECUTION_START_DATE_TIME,  ZoneConverterUtil.formatToUserZone(this.executionStartDateTime));
     }
 
     private void putParam(String key, Object value) {

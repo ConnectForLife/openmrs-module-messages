@@ -24,6 +24,7 @@ import { PatientTemplateUI } from '../../shared/model/patient-template-ui';
 import _ from 'lodash';
 import { IActor } from '../../shared/model/actor.model';
 import { getActorTypes } from '../../reducers/admin-settings.reducer';
+import Timezone from "../timezone/timezone";
 
 interface IPatientTemplateEditProps extends DispatchProps, StateProps, RouteComponentProps<{
   patientId: string,
@@ -138,6 +139,7 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
   render() {
     return (
       <>
+        <Timezone />
         <div className="panel-body">
           <h4>{Msg.EDIT_MESSAGES_TITLE}</h4>
           {!this.props.loading && this.renderTemplateState()}

@@ -7,6 +7,7 @@ import { checkIfDefaultValuesUsed, generateDefaultPatientTemplates } from '../..
 import { IRootState } from '../../reducers';
 import * as Msg from '../../shared/utils/messages';
 import './patient-template.scss';
+import Timezone from "../timezone/timezone";
 
 interface IManageMessagesProps extends DispatchProps, StateProps, RouteComponentProps<{ patientId: string, patientUuid: string }> {
 };
@@ -53,6 +54,7 @@ class ManageMessages extends React.PureComponent<IManageMessagesProps, IManageMe
       <>
         <h2>Manage messages</h2>
         {this.renderDefaultValuesNotificationIfNeeded()}
+        <Timezone />
         <div className="panel-body">
           <BestContactTime
             patientId={parseInt(patientId)}

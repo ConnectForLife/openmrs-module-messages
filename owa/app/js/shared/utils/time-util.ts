@@ -16,3 +16,11 @@ export const getUtcTimeToString = (time?: Moment): string | undefined => {
 export const getLocalTimeFromString = (time: string): Moment | undefined => {
   return !!time ? moment.utc(time, 'HH:mm').local() : undefined;
 }
+
+export const getTimeToString = (time?: Moment): string | undefined => {
+  return !!time ? moment(time, 'HH:mm').format('HH:mm') : undefined;
+}
+
+export const getTimeFromString = (time: string): Moment | undefined => {
+  return !!time ? moment(time, 'HH:mm') : undefined;
+}

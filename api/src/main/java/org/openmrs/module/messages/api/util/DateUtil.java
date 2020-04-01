@@ -25,7 +25,7 @@ public final class DateUtil {
 
     public static final int DAY_IN_SECONDS = 24 * 60 * 60;
 
-    private static final TimeZone DEFAULT_TIME_ZONE = TimeZone.getTimeZone("UTC");
+    public static final TimeZone DEFAULT_SYSTEM_TIME_ZONE = TimeZone.getTimeZone("UTC");
 
     public static Date now() {
         return getDateWithDefaultTimeZone(new Date());
@@ -40,7 +40,7 @@ public final class DateUtil {
     }
 
     public static Date getDateWithDefaultTimeZone(Date timestamp) {
-        return getDateWithTimeZone(timestamp, getDefaultTimeZone());
+        return getDateWithTimeZone(timestamp, getDefaultSystemTimeZone());
     }
 
     public static Date getDateWithTimeZone(Date timestamp, TimeZone timeZone) {
@@ -57,8 +57,8 @@ public final class DateUtil {
         return DateUtils.isSameInstant(date1, date2);
     }
 
-    public static TimeZone getDefaultTimeZone() {
-        return DEFAULT_TIME_ZONE;
+    public static TimeZone getDefaultSystemTimeZone() {
+        return DEFAULT_SYSTEM_TIME_ZONE;
     }
 
     public static String convertServerSideDateFormatToFrontend(String date) throws ParseException {

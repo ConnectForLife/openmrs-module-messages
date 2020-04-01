@@ -35,6 +35,7 @@ import org.openmrs.module.messages.api.service.MessagingService;
 import org.openmrs.module.messages.api.service.PatientTemplateService;
 import org.openmrs.module.messages.api.util.DateUtil;
 import org.openmrs.module.messages.api.util.HibernateUtil;
+import org.openmrs.module.messages.api.util.ZoneConverterUtil;
 import org.openmrs.module.messages.domain.criteria.LastResponseCriteria;
 import org.openmrs.module.messages.domain.criteria.PatientTemplateCriteria;
 import org.openmrs.module.messages.domain.criteria.ScheduledServiceCriteria;
@@ -278,8 +279,8 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
                                 "PatientTemplate %d is disabled, so applying the max execution date or now as " +
                                         "the end date (%s instead of %s)",
                                 patientTemplate.getId(),
-                                DateUtil.convertToServerSideDateTime(dateRange.getEnd()),
-                                DateUtil.convertToServerSideDateTime(endDate)));
+                                ZoneConverterUtil.formatToUserZone(dateRange.getEnd()),
+                                ZoneConverterUtil.formatToUserZone(endDate)));
                     }
                 }
                 results.add(serviceExecutor.execute(patientTemplate, dateRange, executionStartDateTime));

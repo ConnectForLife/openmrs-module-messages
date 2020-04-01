@@ -16,6 +16,7 @@ import actor, { ActorState } from './actor.reducer';
 import patient, { PatientState } from './patient.reducer';
 import adminSettings, { AdminSettingsState } from './admin-settings.reducer';
 import personStatus, { PersonState } from './person-status.reducer';
+import timezone, {TimezoneState} from "./timezone.reducer";
 
 export interface IRootState {
   readonly openmrs: any;
@@ -26,6 +27,7 @@ export interface IRootState {
   readonly patient: PatientState;
   readonly adminSettings: AdminSettingsState;
   readonly personStatus: PersonState;
+  readonly timezone: TimezoneState;
 }
 
 export default combineReducers<IRootState>({
@@ -36,5 +38,6 @@ export default combineReducers<IRootState>({
   actor,
   patient,
   adminSettings,
-  personStatus
+  personStatus,
+  timezone
 });

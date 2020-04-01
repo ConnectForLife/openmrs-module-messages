@@ -232,6 +232,11 @@ public final class ConfigConstants {
     public static final String NOTIFICATION_TEMPLATE_ADHERENCE_WEEKLY_DESCRIPTION =
             "The notification template for adherence report weekly message type.";
 
+    public static final String DEFAULT_USER_TIMEZONE = "messages.defaultUserTimezone";
+    public static final String DEFAULT_USER_TIMEZONE_DEFAULT_VALUE = "Europe/Brussels";
+    public static final String DEFAULT_USER_TIMEZONE_DESCRIPTION = "The timezone which represents end user timezone." +
+     " The message module events and best contact time are interpreted with this timezone.";
+
     private ConfigConstants() {
     }
 }

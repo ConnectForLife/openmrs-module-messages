@@ -8,8 +8,8 @@
  */
 
 import { Moment } from "moment";
-import { getUtcTimeToString, getLocalTimeFromString } from '../utils/time-util';
 import _ from 'lodash';
+import { getTimeFromString, getTimeToString } from "../utils/time-util";
 
 export interface IContactTime {
   time?: Moment
@@ -17,11 +17,11 @@ export interface IContactTime {
 
 export const mapFromRequest = (element) => {
   const result = _.clone(element);
-  result.time = getLocalTimeFromString(element.time);
+  result.time = getTimeFromString(element.time);
   return result;
-}
+};
 
 export const mapToRequest = (element: IContactTime) => {
   const result = _.clone(element);
-  return { ...result, time: getUtcTimeToString(element.time) };
-}
+  return { ...result, time: getTimeToString(element.time) };
+};

@@ -16,6 +16,7 @@ import * as Msg from '../shared/utils/messages';
 import BestContactTime from './default-settings/default-best-contact-time';
 import AdminSettings from "./admin-settings/admin-settings";
 import {RouteComponentProps} from "react-router-dom";
+import Timezone from "./timezone/timezone";
 
 interface IProps extends StateProps, DispatchProps, RouteComponentProps<{
     activeSection?: string
@@ -30,6 +31,7 @@ class AppManagement extends React.Component<IProps> {
     render = () =>
         <div className="body-wrapper">
             <div className="content">
+                <Timezone />
                 <h3>{Msg.DEFAULT_SETTINGS}</h3>
                 <BestContactTime
                     loading={this.props.loading}

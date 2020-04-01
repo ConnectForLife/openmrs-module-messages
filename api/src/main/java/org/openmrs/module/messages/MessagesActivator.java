@@ -117,6 +117,7 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
         createHealthTipConfig();
         createStatusesEndingCallflowConfig();
         createNotificationTemplateConfig();
+        createDefaultUserTimezone();
     }
 
     private void createNotificationTemplateConfig() {
@@ -234,6 +235,12 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
         attributeType.setDescription(ConfigConstants.PERSON_STATUS_REASON_ATTRIBUTE_TYPE_DESCRIPTION);
         attributeType.setUuid(ConfigConstants.PERSON_STATUS_REASON_ATTRIBUTE_TYPE_UUID);
         createPersonAttributeTypeIfNotExists(attributeType);
+    }
+
+    private void createDefaultUserTimezone() {
+        createGlobalSettingIfNotExists(ConfigConstants.DEFAULT_USER_TIMEZONE,
+                ConfigConstants.DEFAULT_USER_TIMEZONE_DEFAULT_VALUE,
+                ConfigConstants.DEFAULT_USER_TIMEZONE_DESCRIPTION);
     }
 
     private void createPersonAttributeTypeIfNotExists(PersonAttributeType attributeType) {

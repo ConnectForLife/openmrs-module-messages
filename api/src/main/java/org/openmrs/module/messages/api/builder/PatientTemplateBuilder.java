@@ -10,6 +10,7 @@ import org.openmrs.module.messages.api.model.TemplateFieldType;
 import org.openmrs.module.messages.api.model.TemplateFieldValue;
 import org.openmrs.module.messages.api.util.ActorUtil;
 import org.openmrs.module.messages.api.util.DateUtil;
+import org.openmrs.module.messages.api.util.ZoneConverterUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +65,7 @@ public class PatientTemplateBuilder implements Builder<PatientTemplate> {
         String defaultValue = tf.getDefaultValue();
         if (TemplateFieldType.START_OF_MESSAGES.equals(tf.getTemplateFieldType())
                 && StringUtils.isBlank(defaultValue)) {
-            defaultValue = DateUtil.convertToServerSideDateTime(DateUtil.now());
+            defaultValue = ZoneConverterUtil.formatToUserZone(DateUtil.now());
         }
         return defaultValue;
     }

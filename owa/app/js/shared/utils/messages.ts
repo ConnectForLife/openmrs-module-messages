@@ -116,3 +116,5 @@ export const MESSAGE_STATUS_FUTURE = 'FUTURE';
 
 // Edit messages
 export const EDIT_MESSAGES_TITLE = 'Create messages';
+
+export const DIFFERENT_TIMEZONE = 'Your local timezone is different than the specified in the system configuration (Global Property). The scheduling mechanism is compliant with the zone: ';
