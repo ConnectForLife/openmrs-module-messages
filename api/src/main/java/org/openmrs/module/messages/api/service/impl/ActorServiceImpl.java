@@ -28,6 +28,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -68,7 +69,7 @@ public class ActorServiceImpl implements ActorService {
     @Override
     public List<Actor> getAllActorsForPerson(Person person, boolean isPatient) {
         List<ActorType> actorTypes = getAllActorTypes();
-        Set<Actor> results = new LinkedHashSet<>();
+        Set<Actor> results = new TreeSet<>();
         if (person != null) {
             for (ActorType actorType : actorTypes) {
                 results.addAll(getRelationshipsBasedOnType(person, actorType, isPatient));

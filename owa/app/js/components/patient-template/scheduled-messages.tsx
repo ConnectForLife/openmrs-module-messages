@@ -16,12 +16,13 @@ interface IScheduledMessagesProps extends DispatchProps, StateProps {
   patientUuid: string,
   messageDetails: MessageDetails,
   loading: boolean
-};
+}
 
 interface IScheduledMessagesState {
-};
+}
 
 class ScheduledMessages extends React.PureComponent<IScheduledMessagesProps, IScheduledMessagesState> {
+
   componentDidMount() {
     this.props.getActorList(this.props.patientId);
   }
@@ -33,7 +34,7 @@ class ScheduledMessages extends React.PureComponent<IScheduledMessagesProps, ISc
       result[id] = actorSchedule.schedule;
     });
     return result;
-  }
+  };
 
   private mapMessageDetailsToData = (): Array<MessageRowData> => {
     let data = [] as Array<MessageRowData>;
@@ -52,13 +53,13 @@ class ScheduledMessages extends React.PureComponent<IScheduledMessagesProps, ISc
     });
 
     return data;
-  }
+  };
 
   private getMessages = () => {
     if (!this.props.messageDetailsLoading) {
       this.props.getMessages(this.props.patientId);
     }
-  }
+  };
 
   private renderMessagesTable = () => {
     const data = this.mapMessageDetailsToData();
@@ -92,13 +93,13 @@ class ScheduledMessages extends React.PureComponent<IScheduledMessagesProps, ISc
     if (!this.props.messageDetails) {
       return [];
     }
-    const wrapedTextProps = () => {
+    const wrappedTextProps = () => {
       return {
         style: {
           whiteSpace: 'normal'
         },
       };
-    }
+    };
 
     const actorSchedules = _.uniq(_.flatten(this.props.messageDetails.messages
       .map((msg) => msg.actorSchedules)));
@@ -110,7 +111,7 @@ class ScheduledMessages extends React.PureComponent<IScheduledMessagesProps, ISc
       return {
         Header: _.filter([type, name]).join(' - '),
         accessor: `schedules[${id}]`,
-        getProps: wrapedTextProps
+        getProps: wrappedTextProps
       };
     });
     return _.uniqBy(columns, 'Header');
