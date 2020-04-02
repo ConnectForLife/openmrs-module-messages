@@ -24,7 +24,7 @@
             ${ ui.message("messages.dashboard.bestContactTime") }
         </span>
         <div class="different-timezone">
-            <span>${ ui.message("messages.dashboard.differentTimezone") + " (" + timezone + ")." }</span>
+            <span>${ ui.message("messages.dashboard.differentTimezone") + " " + timezone }</span>
             <script type="text/javascript">
                 jq(".different-timezone").hide();
                 const localZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
