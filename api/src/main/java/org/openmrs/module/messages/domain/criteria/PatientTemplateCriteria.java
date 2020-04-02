@@ -2,8 +2,9 @@ package org.openmrs.module.messages.domain.criteria;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.sql.JoinType;
 import org.openmrs.Patient;
-import org.openmrs.Relationship;
+import org.openmrs.RelationshipType;
 import org.openmrs.module.messages.api.constants.MessagesConstants;
 import org.openmrs.module.messages.api.model.Actor;
 import org.openmrs.module.messages.api.service.ActorService;
@@ -32,13 +33,14 @@ public class PatientTemplateCriteria extends BaseCriteria implements Serializabl
     public void loadHibernateCriteria(Criteria hibernateCriteria) {
         // filtering PTs for a patient and the related actors - based on the allowed relationships (defined in GP)
         hibernateCriteria
-                .add(Restrictions.eq("patient", patient))
-                .add(
-                        Restrictions.or(
-                                Restrictions.isNull("actorType"), // directly related to a patient
-                                Restrictions.in("actorType", getActorTypeRelationships(patient))
-                        )
-                );
+            .add(Restrictions.eq("patient", patient))
+            .createAlias("actorType", "a", JoinType.LEFT_OUTER_JOIN)
+            .add(
+                Restrictions.or(
+                    Restrictions.isNull("actorType"), // directly related to a patient
+                    Restrictions.in("a.relationshipType", getActorTypeRelationshipTypes(patient))
+                )
+            );
     }
 
     public static PatientTemplateCriteria forPatientId(Integer patientId) {
@@ -46,13 +48,13 @@ public class PatientTemplateCriteria extends BaseCriteria implements Serializabl
         return new PatientTemplateCriteria(patient);
     }
 
-    private List<Relationship> getActorTypeRelationships(Patient patient) {
+    private List<RelationshipType> getActorTypeRelationshipTypes(Patient patient) {
         ActorService actorService = getRegisteredComponent(
                 MessagesConstants.ACTOR_SERVICE, ActorService.class);
-        List<Relationship> relationships = new ArrayList<>();
+        List<RelationshipType> relationships = new ArrayList<>();
         relationships.add(null);
         for (Actor actor : actorService.getAllActorsForPatient(patient)) {
-            relationships.add(actor.getRelationship());
+            relationships.add(actor.getRelationship().getRelationshipType());
         }
         return relationships;
     }
