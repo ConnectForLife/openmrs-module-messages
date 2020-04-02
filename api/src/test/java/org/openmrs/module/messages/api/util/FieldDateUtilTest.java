@@ -9,21 +9,22 @@
 
 package org.openmrs.module.messages.api.util;
 
-import static org.openmrs.module.messages.TestUtil.getMaxTimeForDate;
-import static org.openmrs.module.messages.api.model.TemplateFieldType.DAY_OF_WEEK;
-import static org.openmrs.module.messages.api.model.TemplateFieldType.END_OF_MESSAGES;
-import static org.openmrs.module.messages.api.model.TemplateFieldType.START_OF_MESSAGES;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.module.messages.api.model.TemplateFieldType;
 import org.openmrs.module.messages.api.model.TemplateFieldValue;
 import org.openmrs.module.messages.builder.TemplateFieldBuilder;
 import org.openmrs.module.messages.builder.TemplateFieldValueBuilder;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import static org.openmrs.module.messages.TestUtil.getMaxTimeForDate;
+import static org.openmrs.module.messages.api.model.TemplateFieldType.DAY_OF_WEEK;
+import static org.openmrs.module.messages.api.model.TemplateFieldType.END_OF_MESSAGES;
+import static org.openmrs.module.messages.api.model.TemplateFieldType.START_OF_MESSAGES;
 
 public class FieldDateUtilTest {
 
@@ -34,6 +35,7 @@ public class FieldDateUtilTest {
     private static final Date EXPECTED = getMaxTimeForDate(YEAR_2020,  Calendar.JANUARY, 8);
     private static final String SEPARATOR = "|";
     private static final String OTHER_TEMPLATE = "Other";
+    private static final int FIFTH_DAY_OF_MONTH = 5;
 
     @Test
     public void shouldParseAfterTimesDateForDayOfWeek() {
@@ -212,6 +214,32 @@ public class FieldDateUtilTest {
         Date result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
 
         Assert.assertNull(result);
+    }
+
+    @Test
+    public void shouldParseNoDateWhereExistAnotherDefaultValue() {
+        List<TemplateFieldValue> values = new ArrayList<>();
+        values.add(buildTemplateFieldWithValue(DAY_OF_WEEK, "Monday,Sunday"));
+        values.add(buildTemplateFieldWithValue(START_OF_MESSAGES, "2019-12-20"));
+        values.add(buildTemplateFieldWithValueAndDefaultValue(END_OF_MESSAGES,
+                EndDateType.NO_DATE.getName() + "|EMPTY", "AFTER_TIMES|5"));
+
+        Date actual = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
+
+        Assert.assertNull(actual);
+    }
+
+    @Test
+    public void shouldParseNoDateFromDefaultValue() {
+        List<TemplateFieldValue> values = new ArrayList<>();
+        values.add(buildTemplateFieldWithValue(DAY_OF_WEEK, "Monday,Sunday"));
+        values.add(buildTemplateFieldWithValue(START_OF_MESSAGES, "2019-12-20"));
+        values.add(buildTemplateFieldWithValueAndDefaultValue(END_OF_MESSAGES,
+                null , "AFTER_TIMES|5"));
+        Date expected = getMaxTimeForDate(YEAR_2020, Calendar.JANUARY, FIFTH_DAY_OF_MONTH);
+        Date actual = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
+
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
@@ -406,6 +434,18 @@ public class FieldDateUtilTest {
                 .withTemplateField(
                         new TemplateFieldBuilder()
                                 .withTemplateFieldType(type)
+                                .build())
+                .withValue(value)
+                .build();
+    }
+
+    private TemplateFieldValue buildTemplateFieldWithValueAndDefaultValue(TemplateFieldType type, String value,
+                                                                          String defaultValue) {
+        return new TemplateFieldValueBuilder()
+                .withTemplateField(
+                        new TemplateFieldBuilder()
+                                .withTemplateFieldType(type)
+                                .withDefaultValue(defaultValue)
                                 .build())
                 .withValue(value)
                 .build();

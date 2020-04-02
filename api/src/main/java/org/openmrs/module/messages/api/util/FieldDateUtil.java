@@ -9,21 +9,6 @@
 
 package org.openmrs.module.messages.api.util;
 
-import static org.openmrs.module.messages.api.constants.MessagesConstants.DEFAULT_FRONT_END_DATE_FORMAT;
-import static org.openmrs.module.messages.api.constants.MessagesConstants.DEFAULT_SERVER_SIDE_DATE_FORMAT;
-import static org.openmrs.module.messages.api.model.TemplateFieldType.DAY_OF_WEEK;
-import static org.openmrs.module.messages.api.model.TemplateFieldType.DAY_OF_WEEK_SINGLE;
-import static org.openmrs.module.messages.api.model.TemplateFieldType.END_OF_MESSAGES;
-import static org.openmrs.module.messages.api.model.TemplateFieldType.MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY;
-import static org.openmrs.module.messages.api.model.TemplateFieldType.MESSAGING_FREQUENCY_WEEKLY_OR_MONTHLY;
-import static org.openmrs.module.messages.api.model.TemplateFieldType.START_OF_MESSAGES;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,6 +17,22 @@ import org.openmrs.module.messages.api.model.TemplateFieldValue;
 import org.openmrs.module.messages.api.util.end.date.EndDate;
 import org.openmrs.module.messages.api.util.end.date.EndDateFactory;
 import org.openmrs.module.messages.api.util.end.date.EndDateParams;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import static org.openmrs.module.messages.api.constants.MessagesConstants.DEFAULT_FRONT_END_DATE_FORMAT;
+import static org.openmrs.module.messages.api.constants.MessagesConstants.DEFAULT_SERVER_SIDE_DATE_FORMAT;
+import static org.openmrs.module.messages.api.model.TemplateFieldType.DAY_OF_WEEK;
+import static org.openmrs.module.messages.api.model.TemplateFieldType.DAY_OF_WEEK_SINGLE;
+import static org.openmrs.module.messages.api.model.TemplateFieldType.END_OF_MESSAGES;
+import static org.openmrs.module.messages.api.model.TemplateFieldType.MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY;
+import static org.openmrs.module.messages.api.model.TemplateFieldType.MESSAGING_FREQUENCY_WEEKLY_OR_MONTHLY;
+import static org.openmrs.module.messages.api.model.TemplateFieldType.START_OF_MESSAGES;
 
 public final class FieldDateUtil {
 
@@ -64,12 +65,16 @@ public final class FieldDateUtil {
         Date startDate = getStartDate(templateFieldValues);
         FrequencyType frequency = getFrequency(templateFieldValues, templateName);
         String[] daysOfWeek = getDaysOfWeek(templateFieldValues);
-        Date result = parseEndDate(getEndDateValue(templateFieldValues), startDate, frequency, daysOfWeek);
-        if (result == null) {
-            result = parseEndDate(getDefaultEndDateValue(templateFieldValues), startDate,
-                frequency, daysOfWeek);
+        String templateFieldValue = getEndDateValue(templateFieldValues);
+        Date result = null;
+        if (StringUtils.isNotBlank(templateFieldValue)) {
+            result = parseEndDate(templateFieldValue, startDate, frequency, daysOfWeek);
+        } else {
+            String templateFieldDefaultValue = getDefaultEndDateValue(templateFieldValues);
+            result = parseEndDate(templateFieldDefaultValue, startDate,
+                    frequency, daysOfWeek);
         }
-        if (result != null) {
+        if (null != result) {
             result = convertToDateWithMaxTime(result);
         }
         return result;
