@@ -18,22 +18,34 @@ UPDATE messages_template SET service_query =
          locationId,
          dateStarted,
          visitId,
-         valueReference AS timeStarted
+         visitTime AS timeStarted
         FROM
         DATES_LIST
 
             JOIN (
-                SELECT v.date_started AS visit_dates,
+                SELECT
+                    v.date_started AS visit_dates,
                     v.visit_type_id AS visitTypeId,
                     v.location_id AS locationId,
                     v.visit_id AS visitId,
                     v.date_started AS dateStarted,
-                    va.value_reference AS valueReference
-                FROM visit v
-                JOIN visit_attribute va ON va.visit_id=v.visit_id
-                JOIN visit_attribute_type vat ON va.attribute_type_id = vat.visit_attribute_type_id
-                WHERE v.patient_id = :patientId AND vat.name=\'Visit Time\' AND v.voided = 0
-        ) dates_of_visit
+                    visit_times.visit_time AS visitTime
+                FROM
+                    visit v
+                    LEFT JOIN (
+                        SELECT
+                            visit_id,
+                            value_reference as visit_time
+                        FROM
+                            visit_attribute va
+                            JOIN visit_attribute_type vat ON va.attribute_type_id = vat.visit_attribute_type_id
+                        WHERE
+                            vat.name = \'Visit Time\'
+                    ) AS visit_times ON v.visit_id = visit_times.visit_id
+                WHERE
+                    v.patient_id = :patientId
+                    AND v.voided = 0
+            ) dates_of_visit
         WHERE concat(\',\',(
             SELECT property_value
             FROM global_property
