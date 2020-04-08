@@ -34,6 +34,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertEquals;
@@ -41,6 +42,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_CAREGIVER_ID;
 import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_CAREGIVER_PATIENT_TEMPLATE_ID;
+import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_INACTIVE_PATIENT_ID;
 import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_NO_CONSENT_CAREGIVER_ID;
 import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_PATIENT_ID;
 import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_PATIENT_TEMPLATE_ID;
@@ -131,6 +133,20 @@ public class MessageDeliveriesJobDefinitionTest extends ContextSensitiveTest {
     }
 
     @Test
+    public void shouldNotSaveScheduledServicesGroupWithServicesForCaregiverWhenPatientIsNotActive() throws Exception {
+        executeDataSet(XML_DATA_SET_PATH + "ConfigDataset.xml"); // loading GP which enables consent control
+
+        List<ScheduledService> listBeforeSave = findScheduledServicesByPatientIdAndActorId(DEFAULT_CAREGIVER_ID,
+                DEFAULT_INACTIVE_PATIENT_ID);
+        job.execute();
+        List<ScheduledService> newlySaved = getNewlyAddedObjects(
+                listBeforeSave, findScheduledServicesByPatientIdAndActorId(DEFAULT_CAREGIVER_ID,
+                        DEFAULT_INACTIVE_PATIENT_ID));
+
+        assertEquals(0, getServicesForPatient(newlySaved, DEFAULT_INACTIVE_PATIENT_ID).size());
+    }
+
+    @Test
     public void shouldSaveScheduledServicesGroupForActorWithNoConsentWhenConsentControlNotEnabled() {
         Context.getAdministrationService().setGlobalProperty(ConfigConstants.CONSENT_CONTROL_KEY, "false");
         List<ScheduledService> listBeforeSave = findScheduledServicesByDefaultPatientAndActorId(
@@ -181,7 +197,7 @@ public class MessageDeliveriesJobDefinitionTest extends ContextSensitiveTest {
 
         List<ScheduledServiceParameter> listBeforeSave = messagingParameterService.getAll(false);
         job.execute();
-        List<ScheduledServiceParameter> newlySaved  = filterByDefaultPatientTemplate(
+        List<ScheduledServiceParameter> newlySaved = filterByDefaultPatientTemplate(
                 getNewlyAddedObjects(listBeforeSave, messagingParameterService.getAll(false)));
 
         assertEquals(3, newlySaved.size());
@@ -193,6 +209,11 @@ public class MessageDeliveriesJobDefinitionTest extends ContextSensitiveTest {
     private List<ScheduledService> findScheduledServicesByDefaultPatientAndActorId(int actorId) {
         return messagingService.findAllByCriteria(
                 ScheduledServiceCriteria.forActorAndPatientIds(actorId, DEFAULT_PATIENT_ID));
+    }
+
+    private List<ScheduledService> findScheduledServicesByPatientIdAndActorId(int actorId, int patientId) {
+        return messagingService.findAllByCriteria(
+                ScheduledServiceCriteria.forActorAndPatientIds(actorId, patientId));
     }
 
     private ScheduledServiceParameter getParam(String key, String value) {
@@ -237,6 +258,15 @@ public class MessageDeliveriesJobDefinitionTest extends ContextSensitiveTest {
         }
 
         return result;
+    }
+
+    private List<ScheduledService> getServicesForPatient(List<ScheduledService> services, int patientId) {
+        return services.stream()
+                .filter(s -> s.getGroup()
+                        .getPatient()
+                        .getId()
+                        .equals(patientId))
+                .collect(Collectors.toList());
     }
 
     private ScheduledService getCallService(int patientTemplateId) {

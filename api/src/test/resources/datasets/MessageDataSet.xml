@@ -82,6 +82,56 @@
             date_created="2019-11-16 15:57:09.0"
             voided="false"
             uuid="e902c21d-c57d-4b96-8929-b8b7f07f3d19"/>
+            
+    <!-- Inactive Patient-->
+    <person
+            person_id="1111"
+            gender="M"
+            dead="false"
+            creator="1"
+            date_created="2019-11-16 15:57:09.0"
+            voided="false"
+            uuid="4567817d-bdef-4571-8f9b-c2ec868dc251"/>
+
+    <person_name
+            person_name_id="1111"
+            preferred="true"
+            person_id="1111"
+            given_name="Ben"
+            middle_name=""
+            family_name=""
+            creator="1"
+            date_created="2019-11-16 15:57:09.0"
+            voided="false"
+            void_reason=""
+            uuid="b4391cef-3e11-4445-bd83-eebe5b1759d3"/>
+
+    <person_attribute
+            person_id="1111"
+            person_attribute_id="1010"
+            value="DEACTIVATED"
+            person_attribute_type_id="710"
+            creator="1"
+            date_created="2010-11-16"
+            voided="false"
+            uuid="a3deb6dd-49da-4568-a24a-e6f0dae4133c"/>
+
+    <patient
+            patient_id="1111"
+            creator="1"
+            date_created="2019-11-16 15:57:09.0"
+            voided="false"/>
+
+    <patient_identifier
+            patient_identifier_id="1111"
+            patient_id="1111" identifier="1111"
+            identifier_type="3500"
+            preferred="1"
+            location_id="1"
+            creator="1"
+            date_created="2019-11-16 15:57:09.0"
+            voided="false"
+            uuid="3762c21d-c57d-4b96-8929-b8b7f07f3d19"/>
 
     <!-- Active Caregiver -->
     <person
@@ -125,6 +175,16 @@
             date_created="2019-11-20 00:00:00.0"
             voided="false"
             uuid="d8f91bf6-6d89-4da5-ad9d-735cd70ffc48"/>
+
+    <relationship
+            relationship_id="997"
+            person_a="1111"
+            relationship="2500"
+            person_b="997"
+            creator="1"
+            date_created="2019-11-20 00:00:00.0"
+            voided="false"
+            uuid="g8h91bf6-6d89-4da5-ad9d-735cd70ffc48"/>
 
     <!-- No consent Caregiver -->
     <person
@@ -238,6 +298,20 @@
             date_created="2019-11-20 00:00:00.1"
             voided="false"
             uuid="1232ea41-13ca-403a-b05d-9128d2b085cd"/>
+
+    <!--  Caregiver with inactive patient -->
+    <messages_patient_template
+            messages_patient_template_id="74"
+            actor_id="997"
+            actor_type="997"
+            template_id="51"
+            patient_id="1111"
+            service_query_type=""
+            service_query=""
+            creator="1"
+            date_created="2019-11-20 00:00:00.1"
+            voided="false"
+            uuid="68e2ea41-13ca-403a-b05d-9128d2b085cd"/>
 
     <messages_template_field_value
             messages_template_field_value_id="81"

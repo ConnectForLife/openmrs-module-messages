@@ -20,6 +20,12 @@ public final class DatasetConstants {
     public static final int DEFAULT_PATIENT_TEMPLATE_ID = 71;
     public static final int DEFAULT_TEMPLATE = 51;
 
+    // Ben (deactivated patient)
+    public static final int DEFAULT_INACTIVE_PERSON_ID = 111;
+
+    public static final int DEFAULT_INACTIVE_PATIENT_ID = DEFAULT_INACTIVE_PERSON_ID;
+    public static final int DEFAULT_INACTIVE_PATIENT_TEMPLATE_ID = 74;
+
     //Pablo Caregiver
     public static final int DEFAULT_CAREGIVER_ID = 999;
     public static final int DEFAULT_CAREGIVER_PATIENT_TEMPLATE_ID = 72;

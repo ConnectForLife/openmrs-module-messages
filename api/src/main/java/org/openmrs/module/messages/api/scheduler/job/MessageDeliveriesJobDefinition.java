@@ -68,7 +68,8 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
 
     private void scheduleTaskForActivePerson(GroupedServiceResultList groupedResult) {
         Person person = getPersonService().getPerson(groupedResult.getActorWithExecutionDate().getActorId());
-        if (isConsentControlDisabled() || isActive(person)) {
+        Person patient = getPersonService().getPerson(groupedResult.getGroup().getPatientId());
+        if (isConsentControlDisabled() || (isActive(person) && isActive(patient))) {
             ScheduledServiceGroup group = convertAndSave(groupedResult);
             getDeliveryService().scheduleDelivery(new ScheduledExecutionContext(
                     group.getScheduledServices(),
