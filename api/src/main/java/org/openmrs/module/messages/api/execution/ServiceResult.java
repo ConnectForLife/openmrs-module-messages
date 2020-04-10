@@ -23,6 +23,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -82,13 +83,22 @@ public class ServiceResult implements Serializable, DTO {
     }
 
     public static List<ServiceResult> parseList(List<Map<String, Object>> list, PatientTemplate patientTemplate) {
-        List<ServiceResult> resultList = new ArrayList<>();
+        Map<String, ServiceResult> resultServices = new LinkedHashMap<>();
         for (Map<String, Object> row : list) {
             ServiceResult result = ServiceResult.parse(row);
             result.patientTemplateId = patientTemplate.getId();
-            resultList.add(result);
+            String key = ZoneConverterUtil.formatToUserZone(result.getExecutionDate())
+                    + result.getChannelType();
+            if (resultServices.containsKey(key)) {
+                if (result.getServiceStatus() != null
+                        && !ServiceStatus.FUTURE.equals(result.getServiceStatus())) {
+                    resultServices.put(key, result);
+                }
+            } else {
+                resultServices.put(key, result);
+            }
         }
-        return resultList;
+        return new ArrayList(resultServices.values());
     }
 
     public ServiceResult() {

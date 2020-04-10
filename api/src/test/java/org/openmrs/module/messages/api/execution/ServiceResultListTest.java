@@ -36,17 +36,26 @@ public class ServiceResultListTest {
 
     private static final List<Date> EXEC_DATES = Arrays.asList(
         DateUtils.addDays(new Date(), 10),
+        DateUtils.addDays(new Date(), 10),
         DateUtils.addDays(new Date(), 16),
+        DateUtils.addDays(new Date(), 10),
         DateUtils.addDays(new Date(), 21)
     );
 
-    private static final List<String> MSG_IDS = Arrays.asList("ID_1", "ID 2", "abcdef");
-    private static final List<String> CHANNEL_NAMES = Arrays.asList("Call", "Sms", "Deactivate service");
+    private static final List<String> MSG_IDS = Arrays.asList("ID_0", "ID_1", "ID 2", "ID 3", "abcdef");
+    private static final List<String> CHANNEL_NAMES = Arrays.asList("Call", "Call", "Sms",
+            "Call", "Deactivate service");
     private static final List<ServiceStatus> SERVICE_STATUSES = Arrays.asList(
+            ServiceStatus.FUTURE,
             ServiceStatus.DELIVERED,
             ServiceStatus.PENDING,
+            null,
             ServiceStatus.FAILED
     );
+    private static final int EXPECTED_SIZE = 3;
+    private static final int EXPECTED_IDENTIFIER_DELIVERED = 1;
+    private static final int EXPECTED_IDENTIFIER_PENDING = 2;
+    private static final int EXPECTED_IDENTIFIER_FAILED = 4;
 
     @Mock
     private PatientTemplate patientTemplate;
@@ -61,7 +70,7 @@ public class ServiceResultListTest {
     private Patient patient;
 
     @Test
-    public void shouldParseList() {
+    public void shouldParseListAndOverrideFutureEventsIfWereExecuted() {
         when(template.getName()).thenReturn(SERVICE_NAME);
         when(patientTemplate.getActor()).thenReturn(actor);
         when(patientTemplate.getPatient()).thenReturn(patient);
@@ -81,15 +90,18 @@ public class ServiceResultListTest {
         assertEquals(START_DATE, resultList.getStartDate());
         assertEquals(END_DATE, resultList.getEndDate());
 
-        assertEquals(EXEC_DATES.size(), resultList.getResults().size());
-        for (int i = 0; i < EXEC_DATES.size(); i++) {
-            ServiceResult result = resultList.getResults().get(i);
+        assertEquals(EXPECTED_SIZE, resultList.getResults().size());
+        assertResultEntities(resultList, EXPECTED_IDENTIFIER_DELIVERED, 0);
+        assertResultEntities(resultList, EXPECTED_IDENTIFIER_PENDING, 1);
+        assertResultEntities(resultList, EXPECTED_IDENTIFIER_FAILED, 2);
+    }
 
-            assertEquals(EXEC_DATES.get(i), result.getExecutionDate());
-            assertEquals(MSG_IDS.get(i), result.getMessageId());
-            assertEquals(ChannelType.fromName(CHANNEL_NAMES.get(i).toUpperCase()),
-                result.getChannelType());
-        }
+    private void assertResultEntities(ServiceResultList resultList, int expectedIdentifier, int actualIdentifier) {
+        ServiceResult result = resultList.getResults().get(actualIdentifier);
+        assertEquals(EXEC_DATES.get(expectedIdentifier), result.getExecutionDate());
+        assertEquals(MSG_IDS.get(expectedIdentifier), result.getMessageId());
+        assertEquals(ChannelType.fromName(CHANNEL_NAMES.get(expectedIdentifier).toUpperCase()),
+            result.getChannelType());
     }
 
     private List<Map<String, Object>> buildRows() {
@@ -100,7 +112,8 @@ public class ServiceResultListTest {
             row.put(ServiceResult.EXEC_DATE_ALIAS, EXEC_DATES.get(i));
             row.put(ServiceResult.MSG_ID_ALIAS, MSG_IDS.get(i));
             row.put(ServiceResult.CHANNEL_NAME_ALIAS, CHANNEL_NAMES.get(i));
-            row.put(ServiceResult.STATUS_COL_ALIAS, SERVICE_STATUSES.get(i).toString());
+            row.put(ServiceResult.STATUS_COL_ALIAS, SERVICE_STATUSES.get(i) == null ? null
+                    : SERVICE_STATUSES.get(i).toString());
 
             rows.add(row);
         }
