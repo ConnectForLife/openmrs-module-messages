@@ -45,12 +45,14 @@
                         type="text"
                         disabled />
                     <script type="text/javascript">
-                        let value = "${ ui.message("messages.dashboard.noBestContactTime") }";
-                        const time = moment("${ it.time }", "HH:mm");
-                        if (time.isValid()) {
-                            value = time.format('HH:mm');
-                        }
-                        jq("#time-value-${ it.label.replaceAll(" ", "-") }").val(value);
+                        jq( document ).ready(function() {
+                            let value = "${ ui.message("messages.dashboard.noBestContactTime") }";
+                            let time = moment("${ it.time }", "HH:mm");
+                            if (time.isValid()) {
+                                value = time.format('HH:mm');
+                            }
+                            jq("#time-value-${ it.label.replaceAll(" ", "-") }").val(value);
+                        });
                     </script>
                 </div>
             <% } %>
