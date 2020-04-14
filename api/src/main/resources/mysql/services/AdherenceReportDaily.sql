@@ -28,6 +28,7 @@ UPDATE messages_template SET service_query =
         WHERE mt.name = \'Adherence report daily\'
             AND mpt.patient_id = :patientId
             AND mpt.actor_id = :actorId
+            AND mssg.patient_id = :patientId
             AND mssg.msg_send_time >= :startDateTime
             AND mssg.msg_send_time <= :endDateTime
         ORDER BY 1 desc;'

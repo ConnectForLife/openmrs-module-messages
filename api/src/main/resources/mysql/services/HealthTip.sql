@@ -108,6 +108,7 @@ UNION
     WHERE mt.name = \'Health tip\'
         AND mpt.patient_id = :patientId
         AND mpt.actor_id = :actorId
+        AND mssg.patient_id = :patientId
         AND mssg.msg_send_time >= :startDateTime
         AND mssg.msg_send_time <= :endDateTime
     ORDER BY 1 DESC ;'

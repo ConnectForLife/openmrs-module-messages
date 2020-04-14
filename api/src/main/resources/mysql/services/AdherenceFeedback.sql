@@ -321,6 +321,7 @@ ON       mssg.messages_scheduled_service_group_id = mss.group_id
 WHERE    mt.NAME = \'Adherence feedback\'
 AND      mpt.patient_id = :patientId
 AND      mpt.actor_id =:actorId
+AND      mssg.patient_id = :patientId
 AND      mssg.msg_send_time >= :startDateTime
 AND      mssg.msg_send_time <= :endDateTime
 ORDER BY 1 DESC ; '
