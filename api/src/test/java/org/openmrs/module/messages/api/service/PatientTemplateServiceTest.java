@@ -16,13 +16,11 @@ public class PatientTemplateServiceTest extends BaseTest {
 
     @Before
     public void setUp() {
-        patientTemplate = new PatientTemplateBuilder()
-            .withServiceQuery("Some sample query")
-            .build();
+        patientTemplate = new PatientTemplateBuilder().build();
     }
 
     @Test
     public void shouldCreatePatientTemplateProperly() {
-        Assert.assertEquals("Some sample query", patientTemplate.getServiceQuery());
+        Assert.assertEquals("SELECT * FROM template", patientTemplate.getServiceQuery());
     }
 }

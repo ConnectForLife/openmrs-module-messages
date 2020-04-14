@@ -168,12 +168,6 @@ public class ExecutionEngineContextTest extends ContextSensitiveTest {
         PatientTemplate patientTemplate = new PatientTemplate();
         patientTemplate.setPatient(patient);
         patientTemplate.setActor(patient);
-        patientTemplate.setServiceQueryType("SQL");
-        patientTemplate.setServiceQuery("SELECT DATEADD('YEAR', 1, per.birthdate) AS EXECUTION_DATE, 'msg' AS MESSAGE_ID, " +
-                "'Call' AS CHANNEL_ID, per.gender AS GENDER " +
-                "FROM patient p " +
-                "JOIN person per ON per.person_id = p.patient_id  " +
-                "WHERE per.birthdate > :startDateTime AND per.birthdate < :endDateTime");
 
         // TODO incorrect schema
         TemplateField templateField = new TemplateField();
@@ -250,12 +244,6 @@ public class ExecutionEngineContextTest extends ContextSensitiveTest {
         PatientTemplate patientTemplate = new PatientTemplate();
         patientTemplate.setPatient(patient);
         patientTemplate.setActor(patient);
-        patientTemplate.setServiceQueryType("SQL");
-        patientTemplate.setServiceQuery("SELECT DATEADD('YEAR', 1, per.birthdate) AS EXECUTION_DATE, 'msg' AS MESSAGE_ID, " +
-                "'Call' AS CHANNEL_ID, per.gender AS GENDER " +
-                "FROM patient p " +
-                "JOIN person per ON per.person_id = p.patient_id  " +
-                "WHERE per.birthdate > :startDateTime AND per.birthdate < :endDateTime");
 
         return patientTemplate;
     }

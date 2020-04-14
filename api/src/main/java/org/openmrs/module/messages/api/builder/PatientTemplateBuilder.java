@@ -17,9 +17,6 @@ import java.util.List;
 
 public class PatientTemplateBuilder implements Builder<PatientTemplate> {
 
-    private static final String DEFAULT_SERVICE_QUERY = "";
-    private static final String DEFAULT_SERVICE_QUERY_TYPE = "";
-
     private Template template;
     private Actor actor;
     private Patient patient;
@@ -47,8 +44,6 @@ public class PatientTemplateBuilder implements Builder<PatientTemplate> {
         PatientTemplate patientTemplate = new PatientTemplate(
             patient.getPerson(),
             null,
-            DEFAULT_SERVICE_QUERY,
-            DEFAULT_SERVICE_QUERY_TYPE,
             patient,
             tfvList,
             template
@@ -75,8 +70,6 @@ public class PatientTemplateBuilder implements Builder<PatientTemplate> {
         PatientTemplate patientTemplate = new PatientTemplate(
             ActorUtil.getActorPerson(actor),
             actor.getRelationship(),
-            DEFAULT_SERVICE_QUERY,
-            DEFAULT_SERVICE_QUERY_TYPE,
             patient,
             tfvList,
             template

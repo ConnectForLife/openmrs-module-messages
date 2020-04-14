@@ -3790,4 +3790,22 @@
                                  referencedTableName="messages_template"
                                  referencedColumnNames="messages_template_id"/>
     </changeSet>
+
+    <changeSet id="messages-70" author="Dawid Ruchniewicz">
+        <preConditions>
+            <tableExists tableName="messages_patient_template"/>
+            <columnExists tableName="messages_patient_template" columnName="service_query" />
+            <columnExists tableName="messages_patient_template" columnName="service_query_type" />
+        </preConditions>
+        <comment>
+            Removed not null constraints from service_query and service_query_type fields in PatientTemplate
+            to avoid unpredictable saving values to those fields
+        </comment>
+        <dropNotNullConstraint tableName="messages_patient_template"
+                               columnName="service_query"
+                               columnDataType="TEXT" />
+        <dropNotNullConstraint tableName="messages_patient_template"
+                               columnName="service_query_type"
+                               columnDataType="varchar(255)" />
+    </changeSet>
 </databaseChangeLog>

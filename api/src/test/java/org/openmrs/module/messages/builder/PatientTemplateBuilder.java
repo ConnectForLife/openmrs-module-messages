@@ -15,14 +15,10 @@ public final class PatientTemplateBuilder extends AbstractBuilder<PatientTemplat
 
     private static final int DEFAULT_ACTOR_ID = 1;
     private static final int DEFAULT_PATIENT_ID = 2;
-    private static final String DEFAULT_SERVICE_QUERY = "SELECT * FROM SERVICE";
-    private static final String DEFAULT_SERVICE_QUERY_TYPE = "SQL";
 
     private Integer id;
     private Person actor;
     private Relationship actorType;
-    private String serviceQuery;
-    private String serviceQueryType;
     private Patient patient;
     private Template template;
     private List<TemplateFieldValue> templateFieldValues = new ArrayList<>();
@@ -33,8 +29,6 @@ public final class PatientTemplateBuilder extends AbstractBuilder<PatientTemplat
         id = getInstanceNumber();
         actor = new PersonBuilder().withId(DEFAULT_ACTOR_ID).build();
         actorType = new RelationshipBuilder().build();
-        serviceQuery = DEFAULT_SERVICE_QUERY;
-        serviceQueryType = DEFAULT_SERVICE_QUERY_TYPE;
         patient = new PatientBuilder().withId(DEFAULT_PATIENT_ID).build();
         template = new TemplateBuilder().build();
         creator = new User();
@@ -46,8 +40,6 @@ public final class PatientTemplateBuilder extends AbstractBuilder<PatientTemplat
         patientTemplate.setId(id);
         patientTemplate.setActor(actor);
         patientTemplate.setActorType(actorType);
-        patientTemplate.setServiceQuery(serviceQuery);
-        patientTemplate.setServiceQueryType(serviceQueryType);
         patientTemplate.setPatient(patient);
         patientTemplate.setTemplate(template);
         patientTemplate.setTemplateFieldValues(templateFieldValues);
@@ -72,16 +64,6 @@ public final class PatientTemplateBuilder extends AbstractBuilder<PatientTemplat
     
     public PatientTemplateBuilder withActorType(Relationship actorType) {
         this.actorType = actorType;
-        return this;
-    }
-    
-    public PatientTemplateBuilder withServiceQuery(String serviceQuery) {
-        this.serviceQuery = serviceQuery;
-        return this;
-    }
-    
-    public PatientTemplateBuilder withServiceQueryType(String serviceQueryType) {
-        this.serviceQueryType = serviceQueryType;
         return this;
     }
     

@@ -14,8 +14,6 @@ public final class PatientTemplateBuilder extends AbstractBuilder<PatientTemplat
     private Integer id;
     private Person actor;
     private Relationship actorType;
-    private String serviceQuery;
-    private String serviceQueryType;
     private Patient patient;
     private Template template;
     private List<TemplateFieldValue> templateFieldValues = new ArrayList<>();
@@ -25,8 +23,6 @@ public final class PatientTemplateBuilder extends AbstractBuilder<PatientTemplat
         id = getInstanceNumber();
         actor = new Person(1);
         actorType = new RelationshipBuilder().build();
-        serviceQuery = "SELECT * FROM SERVICE";
-        serviceQueryType = "SQL";
         patient = new Patient(new Person(1)); //TODO:CFLM-248:Consider adding Patient/Person builder
         template = new TemplateBuilder().build();
     }
@@ -37,8 +33,6 @@ public final class PatientTemplateBuilder extends AbstractBuilder<PatientTemplat
         patientTemplate.setId(id);
         patientTemplate.setActor(actor);
         patientTemplate.setActorType(actorType);
-        patientTemplate.setServiceQuery(serviceQuery);
-        patientTemplate.setServiceQueryType(serviceQueryType);
         patientTemplate.setPatient(patient);
         patientTemplate.setTemplate(template);
         patientTemplate.setTemplateFieldValues(templateFieldValues);
@@ -62,16 +56,6 @@ public final class PatientTemplateBuilder extends AbstractBuilder<PatientTemplat
 
     public PatientTemplateBuilder withActorType(Relationship actorType) {
         this.actorType = actorType;
-        return this;
-    }
-
-    public PatientTemplateBuilder withServiceQuery(String serviceQuery) {
-        this.serviceQuery = serviceQuery;
-        return this;
-    }
-
-    public PatientTemplateBuilder withServiceQueryType(String serviceQueryType) {
-        this.serviceQueryType = serviceQueryType;
         return this;
     }
 

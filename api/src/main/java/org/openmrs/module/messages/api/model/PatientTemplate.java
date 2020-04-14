@@ -43,13 +43,10 @@ public class PatientTemplate extends AbstractBaseOpenmrsData {
 
     public PatientTemplate() { }
 
-    public PatientTemplate(Person actor, Relationship actorType, String serviceQuery,
-                           String serviceQueryType, Patient patient,
+    public PatientTemplate(Person actor, Relationship actorType, Patient patient,
                            List<TemplateFieldValue> templateFieldValues, Template template) {
         this.actor = actor;
         this.actorType = actorType;
-        this.serviceQuery = serviceQuery;
-        this.serviceQueryType = serviceQueryType;
         this.patient = patient;
         this.templateFieldValues = templateFieldValues;
         this.template = template;
@@ -68,10 +65,10 @@ public class PatientTemplate extends AbstractBaseOpenmrsData {
     @JoinColumn(name = "actor_type")
     private Relationship actorType;
 
-    @Column(name = "service_query", columnDefinition = "text", nullable = false)
+    @Column(name = "service_query", columnDefinition = "text")
     private String serviceQuery;
 
-    @Column(name = "service_query_type", nullable = false)
+    @Column(name = "service_query_type")
     private String serviceQueryType;
 
     @OneToOne
@@ -117,11 +114,7 @@ public class PatientTemplate extends AbstractBaseOpenmrsData {
     }
 
     public String getServiceQuery() {
-        return StringUtils.isBlank(serviceQuery) ? getTemplate().getServiceQuery() : this.serviceQuery;
-    }
-
-    public void setServiceQuery(String serviceQuery) {
-        this.serviceQuery = serviceQuery;
+        return StringUtils.isBlank(serviceQuery) ? getTemplate().getServiceQuery() : serviceQuery;
     }
 
     public Patient getPatient() {
@@ -150,10 +143,6 @@ public class PatientTemplate extends AbstractBaseOpenmrsData {
 
     public String getServiceQueryType() {
         return StringUtils.isBlank(serviceQueryType) ? getTemplate().getServiceQueryType() : serviceQueryType;
-    }
-
-    public void setServiceQueryType(String serviceQueryType) {
-        this.serviceQueryType = serviceQueryType;
     }
 
     @Transient

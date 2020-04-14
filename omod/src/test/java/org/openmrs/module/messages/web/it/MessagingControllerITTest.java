@@ -60,9 +60,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest {
 
-    private static final String QUERY_1 = "query1";
     private static final String QUERY_TYPE_1 = "query_type1";
-    private static final String QUERY_2 = "query2";
     private static final String QUERY_TYPE_2 = "query_type2";
     private static final int THREE = 3;
     private static final int FIVE = 5;
@@ -112,13 +110,13 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
         Relationship relationship = personService.getAllRelationships().get(0);
         Relationship otherRelationship = personService.getAllRelationships().get(1);
         PatientTemplate template1 = createPatientTemplate(patient1, relationship.getPersonA(),
-                relationship, QUERY_1, QUERY_TYPE_1, MESSAGE_TEMPLATE_NAME + "1", false);
+                relationship, MESSAGE_TEMPLATE_NAME + "1", false);
 
         createPatientTemplate(patient2, otherRelationship.getPersonA(),
-                otherRelationship, QUERY_1, QUERY_TYPE_2, MESSAGE_TEMPLATE_NAME + "2", false);
+                otherRelationship, MESSAGE_TEMPLATE_NAME + "2", false);
 
         PatientTemplate template2 = createPatientTemplate(patient1, relationship.getPersonA(),
-                relationship, QUERY_2, QUERY_TYPE_2, MESSAGE_TEMPLATE_NAME + "3", false);
+                relationship, MESSAGE_TEMPLATE_NAME + "3", false);
 
         Patient patientWithId = new Patient();
         patientWithId.setId(patient1.getId());
@@ -169,24 +167,18 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
         Relationship relationship = personService.getAllRelationships().get(0);
 
         // Page 1, with QUERY_TYPE_1
-        createPatientTemplate(patient1, relationship.getPersonA(),
-                relationship, QUERY_1, QUERY_TYPE_1);
+        createPatientTemplate(patient1, relationship.getPersonA(), relationship);
 
-        createPatientTemplate(patient1, relationship.getPersonA(),
-                relationship, QUERY_1, QUERY_TYPE_1);
+        createPatientTemplate(patient1, relationship.getPersonA(), relationship);
 
-        createPatientTemplate(patient1, relationship.getPersonA(),
-                relationship, QUERY_2, QUERY_TYPE_1);
+        createPatientTemplate(patient1, relationship.getPersonA(), relationship);
 
         // Page 1, with QUERY_TYPE_2
-        createPatientTemplate(patient1, relationship.getPersonA(),
-                relationship, QUERY_1, QUERY_TYPE_2);
+        createPatientTemplate(patient1, relationship.getPersonA(), relationship);
 
-        createPatientTemplate(patient1, relationship.getPersonA(),
-                relationship, QUERY_1, QUERY_TYPE_2);
+        createPatientTemplate(patient1, relationship.getPersonA(), relationship);
 
-        createPatientTemplate(patient1, relationship.getPersonA(),
-                relationship, QUERY_2, QUERY_TYPE_2);
+        createPatientTemplate(patient1, relationship.getPersonA(), relationship);
 
         Patient patientWithId = new Patient();
         patientWithId.setId(patient1.getId());
@@ -221,7 +213,7 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
         int existingPatientTemplatesCount = TEN;
         for (int i = 0; i < existingPatientTemplatesCount; i++) {
             createPatientTemplate(patient1, relationship.getPersonA(),
-                relationship, QUERY_1, QUERY_TYPE_1);
+                relationship);
         }
 
         int templatesForDefaultAttachment = FIVE;
@@ -257,9 +249,7 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
         createPatientTemplate(
                 patient1,
                 patient1,
-                null,
-                "SELECT now() AS EXECUTION_DATE, 1 AS MESSAGE_ID, 'Call' AS CHANNEL_ID;",
-                "SQL"
+                null
         );
 
         final Date startDate = DateUtils.addDays(new Date(), -1);
@@ -311,7 +301,6 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
 
     private PatientTemplate createPatientTemplate(Patient patient, Person person,
                                                   Relationship relationship,
-                                                  String query, String queryType,
                                                   String templateName,
                                                   boolean isServiceActive) {
         Template template = createTemplate(templateName);
@@ -319,8 +308,6 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
                 .withActor(person)
                 .withActorType(relationship)
                 .withPatient(patient)
-                .withServiceQuery(query)
-                .withServiceQueryType(queryType)
                 .withTemplate(template)
                 .buildAsNew();
         if (isServiceActive) {
@@ -339,9 +326,8 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
     }
 
     private PatientTemplate createPatientTemplate(Patient patient, Person person,
-                                                  Relationship relationship,
-                                                  String query, String queryType) {
-        return createPatientTemplate(patient, person, relationship, query, queryType,
+                                                  Relationship relationship) {
+        return createPatientTemplate(patient, person, relationship,
             MESSAGE_TEMPLATE_NAME, true);
     }
 

@@ -72,15 +72,6 @@ public class PatientTemplateITTest extends ContextSensitiveTest {
         Assert.assertEquals(TestConstants.DELETE_EXPECTED_LIST_SIZE, patientTemplateDao.getAll(true).size());
     }
     
-    @Test
-    public void shouldUpdateExistingPatientTemplate() {
-        patientTemplate.setServiceQueryType("updated service query type");
-        patientTemplateDao.saveOrUpdate(patientTemplate);
-        
-        Assert.assertThat(patientTemplateDao.getByUuid(patientTemplate.getUuid()),
-                hasProperty("serviceQueryType", is("updated service query type")));
-    }
-    
     private void createTestInstance() {
         Template template = TemplateHelper.createTestInstance();
         templateDao.saveOrUpdate(template);
