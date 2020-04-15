@@ -69,7 +69,7 @@ public class ActorResponseGraphFragmentController {
         configuration.require(RESPONSE_MODE);
         SimpleObject requestConfiguration = new SimpleObject();
         requestConfiguration.put(ACTOR_ID, (person == null) ? null : person.getPersonId());
-        requestConfiguration.put(PATIENT_ID, configuration.getAttribute(PATIENT_ID));
+        requestConfiguration.put(PATIENT_ID, person.isPatient() ? configuration.getAttribute(PATIENT_ID) : null);
         requestConfiguration.put(QUESTION_ID, configuration.getAttribute(QUESTION_ID));
         requestConfiguration.put(DATA_DATE_RANGE, configuration.getAttribute(DATA_DATE_RANGE));
         requestConfiguration.put(RESPONSE_MODE, configuration.getAttribute(RESPONSE_MODE));
