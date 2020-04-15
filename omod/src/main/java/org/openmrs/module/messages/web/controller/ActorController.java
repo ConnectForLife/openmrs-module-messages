@@ -3,8 +3,8 @@ package org.openmrs.module.messages.web.controller;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
-import org.openmrs.Patient;
-import org.openmrs.api.PatientService;
+import org.openmrs.Person;
+import org.openmrs.api.PersonService;
 import org.openmrs.module.messages.api.dto.ActorDTO;
 import org.openmrs.module.messages.api.dto.ActorTypeDTO;
 import org.openmrs.module.messages.api.dto.ContactTimeDTO;
@@ -46,19 +46,21 @@ public class ActorController extends BaseRestController {
     private ActorTypeMapper actorTypeMapper;
 
     @Autowired
-    @Qualifier("patientService")
-    private PatientService patientService;
+    @Qualifier("personService")
+    private PersonService personService;
 
-    @RequestMapping(value = "/{patientId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{personId}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<ActorDTO> getAllForPatient(@PathVariable String patientId) {
-        validateId(patientId);
-        Patient patient = patientService.getPatient(Integer.parseInt(patientId));
-        if (patient == null) {
-            throw new ValidationException(String.format("Patient with %s id doesn't exist.", patientId));
+    public List<ActorDTO> getAllForPerson(
+            @PathVariable String personId,
+            @RequestParam(value = "isPatient", defaultValue = "true") boolean isPatient) {
+        validateId(personId);
+        Person person = personService.getPerson(Integer.parseInt(personId));
+        if (person == null) {
+            throw new ValidationException(String.format("Person with %s id doesn't exist.", personId));
         }
-        return actorMapper.toDtos(actorService.getAllActorsForPatient(patient));
+        return actorMapper.toDtos(actorService.getAllActorsForPersonId(person.getId(), isPatient));
     }
 
     @RequestMapping(value = "/{personId}/contact-time", method = RequestMethod.GET)
@@ -120,7 +122,8 @@ public class ActorController extends BaseRestController {
         // OpenMRS by default convert requested list into List<LinkedHashMap>
         if (!contactTimeDTOs.isEmpty() && !(contactTimeDTOs.get(0) instanceof ContactTimeDTO)) {
             ObjectMapper mapper = new ObjectMapper();
-            result = mapper.convertValue(contactTimeDTOs, new TypeReference<List<ContactTimeDTO>>() { });
+            result = mapper.convertValue(contactTimeDTOs, new TypeReference<List<ContactTimeDTO>>() {
+            });
         }
         return result;
     }

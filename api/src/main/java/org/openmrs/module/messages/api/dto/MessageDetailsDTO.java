@@ -5,7 +5,7 @@ import java.util.List;
 
 public class MessageDetailsDTO {
 
-    private Integer patientId;
+    private Integer personId;
 
     private List<MessageDTO> messages;
 
@@ -17,13 +17,13 @@ public class MessageDetailsDTO {
         this.messages = messages;
     }
 
-    public MessageDetailsDTO withPatientId(Integer patientId) {
-        this.patientId = patientId;
+    public MessageDetailsDTO withPersonId(Integer personId) {
+        this.personId = personId;
         return this;
     }
 
-    public Integer getPatientId() {
-        return patientId;
+    public Integer getPersonId() {
+        return personId;
     }
 
     public List<MessageDTO> getMessages() {

@@ -7,18 +7,18 @@ import UrlPattern from 'url-pattern';
 import './bread-crumb.scss';
 import { UnregisterCallback } from 'history';
 import * as Msg from '../../shared/utils/messages';
-import { getPatient } from '../../reducers/patient.reducer';
+import { getPerson } from '../../reducers/person.reducer';
 import { IRootState } from '../../reducers';
 
 const ids = 'patientId&patientuuid=:patientUuid';
 
-const PATIENT_TEMPLATE_PATTERN = new UrlPattern(`/messages/:${ids}/patient-template/:newOrEdit*`);
-const MANAGE_PATTERN = new UrlPattern('/messages/manage*');
-const BASE_MESSAGES_PATTERN = new UrlPattern(`/messages/:${ids}*`);
+const PATIENT_TEMPLATE_PATTERN = new UrlPattern(`/messages/:dashboardType/:${ids}/patient-template/:newOrEdit*`);
+const MANAGE_PATTERN = new UrlPattern(`/messages/:dashboardType/manage*`);
+const BASE_MESSAGES_PATTERN = new UrlPattern(`/messages/:dashboardType/:${ids}*`);
 
 const MODULE_ROUTE = '/';
 const OMRS_ROUTE = '../../';
-const PATIENT_TEMPLATE_ROUTE = (patientId, patientUuid) => `/messages/${patientId}&patientUuid=${patientUuid}/patient-template/`;
+const PATIENT_TEMPLATE_ROUTE = (patientId, patientUuid, dashboardType) => `/messages/${dashboardType}/${patientId}&patientUuid=${patientUuid}/patient-template/`;
 const PATIENT_DASHBOARD_ROUTE = patientUuid => `${OMRS_ROUTE}coreapps/clinicianfacing/patient.page?patientId=${patientUuid}`;
 const SYSTEM_ADMINISTRATION_ROUTE = `${OMRS_ROUTE}coreapps/systemadministration/systemAdministration.page`;
 
@@ -90,12 +90,11 @@ class BreadCrumb extends React.PureComponent<IBreadCrumbProps, IBreadCrumbState>
     const match = BASE_MESSAGES_PATTERN.match(path.toLowerCase());
     const patientUuid = match.patientUuid;
 
-    if (this.props.patient.uuid != patientUuid) {
-      this.props.getPatient(patientUuid);
+    if (this.props.person.uuid != patientUuid) {
+      this.props.getPerson(patientUuid);
     }
-
-    const patientName = this.props.patient.person ? this.props.patient.person.display : '';
-    return this.renderCrumb(PATIENT_DASHBOARD_ROUTE(patientUuid), patientName, true)
+    const personName = this.props.person ? this.props.person.display : '';
+    return this.renderCrumb(PATIENT_DASHBOARD_ROUTE(patientUuid), personName, true)
   }
 
   getPatientTemplateCrumbs = (path: string): Array<ReactFragment> => {
@@ -110,7 +109,7 @@ class BreadCrumb extends React.PureComponent<IBreadCrumbProps, IBreadCrumbState>
 
     return [
       this.getPatientNameCrumb(path),
-      this.renderCrumb(PATIENT_TEMPLATE_ROUTE(match.patientId, match.patientUuid), Msg.GENERAL_MODULE_BREADCRUMB),
+      this.renderCrumb(PATIENT_TEMPLATE_ROUTE(match.patientId, match.patientUuid, match.dashboardType), Msg.GENERAL_MODULE_BREADCRUMB),
       this.renderLastCrumb(msg)
     ];
   }
@@ -166,12 +165,12 @@ class BreadCrumb extends React.PureComponent<IBreadCrumbProps, IBreadCrumbState>
   }
 }
 
-const mapStateToProps = ({ patient }: IRootState) => ({
-  patient: patient.patient
+const mapStateToProps = ({ person }: IRootState) => ({
+  person: person.person
 });
 
 const mapDispatchToProps = ({
-  getPatient
+  getPerson
 });
 
 type StateProps = ReturnType<typeof mapStateToProps>;

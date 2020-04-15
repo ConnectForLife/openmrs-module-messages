@@ -1,9 +1,9 @@
 import _ from 'lodash';
 
-import { REQUEST, SUCCESS, FAILURE } from './action-type.util'
+import {REQUEST, SUCCESS, FAILURE} from './action-type.util'
 import 'react-toastify/dist/ReactToastify.css';
 import axiosInstance from '../config/axios';
-import { ServiceResultListUI } from '../shared/model/service-result-list-ui';
+import {ServiceResultListUI} from '../shared/model/service-result-list-ui';
 
 export const ACTION_TYPES = {
   GET_SERVICE_RESULT_LISTS: 'calendarReducer/GET_SERVICE_RESULT_LISTS',
@@ -46,10 +46,17 @@ export default (state = initialState, action) => {
 
 const templatesUrl = "ws/messages/";
 
-export const getServiceResultLists = (startDate: Date, endDate: Date, patientId: number) => async (dispatch) => {
+export const getServiceResultLists = (startDate: Date, endDate: Date, patientId: number, isPatient: boolean = true) => async (dispatch) => {
   await dispatch({
     type: ACTION_TYPES.GET_SERVICE_RESULT_LISTS,
-    payload: axiosInstance.get(`${templatesUrl}?startDate=${startDate.valueOf()}&endDate=${endDate.valueOf()}&patientId=${patientId}`)
+    payload: axiosInstance.get(templatesUrl, {
+      params: {
+        startDate: startDate.valueOf(),
+        endDate: endDate.valueOf(),
+        personId: patientId,
+        isPatient
+      },
+    })
   });
 };
 

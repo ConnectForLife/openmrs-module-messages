@@ -69,7 +69,7 @@ public class ActorControllerITTest extends BaseModuleWebContextSensitiveTest {
 
     private static final String FATHER_NAME = "Father";
 
-    private static final String EXPECTED_ERROR = String.format("Patient with %d id doesn't exist.",
+    private static final String EXPECTED_ERROR = String.format("Person with %d id doesn't exist.",
             NOT_EXISTING_PATIENT_ID);
 
     private static final String MISSING_ID_ERROR = "Missing id parameter.";

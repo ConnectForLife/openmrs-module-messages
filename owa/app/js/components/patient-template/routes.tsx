@@ -9,15 +9,15 @@ const Routes = (props) => (
   <>
     <Switch>
       <Route
-        path={'/messages/:patientId&patientuuid=:patientUuid/patient-template/new'}
+        path={'/messages/:dashboardType/:patientId&patientuuid=:patientUuid/patient-template/new'}
         render={(props) => <PatientTemplateEdit {...props} isNew={true} />}
       />
       <Route
-        path={'/messages/:patientId&patientuuid=:patientUuid/patient-template/edit/:activeSection'}
+        path={'/messages/:dashboardType/:patientId&patientuuid=:patientUuid/patient-template/edit/:activeSection'}
         render={(props) => <PatientTemplateEdit {...props} isNew={false} />}
       />
       <Route
-        path={'/messages/:patientId&patientuuid=:patientUuid/patient-template'}
+        path={'/messages/:dashboardType/:patientId&patientuuid=:patientUuid/patient-template'}
         render={(props) => <ManageMessages {...props} />}
       />
     </Switch>

@@ -46,10 +46,14 @@ export default (state = initialState, action) => {
 
 const actorUrl = "ws/messages/actor/";
 
-export const getActorList = (patientId: number) => async (dispatch) => {
+export const getActorList = (personId: number, isPatient: boolean = true) => async (dispatch) => {
   await dispatch({
     type: ACTION_TYPES.GET_ACTORS,
-    payload: axiosInstance.get(actorUrl + patientId)
+    payload: axiosInstance.get(actorUrl + personId, {
+      params: {
+        isPatient
+      }
+    })
   });
 };
 

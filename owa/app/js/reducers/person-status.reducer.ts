@@ -32,7 +32,7 @@ const initialState = {
     possibleResults: [] as Array<string>
 };
 
-export type PersonState = Readonly<typeof initialState>;
+export type PersonStatusState = Readonly<typeof initialState>;
 
 export default (state = initialState, action) => {
     switch (action.type) {

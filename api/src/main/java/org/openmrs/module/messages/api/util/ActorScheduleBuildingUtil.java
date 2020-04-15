@@ -25,7 +25,8 @@ import static org.openmrs.module.messages.api.util.PatientTemplateFieldUtil.getT
 
 public final class ActorScheduleBuildingUtil {
 
-    public static final String ERROR_INFORMATION = "Unable to display schedule";
+    public static final String SCHEDULE_ERROR_INFORMATION = "Unable to display schedule";
+    public static final String PATIENT_NAME_ERROR_INFORMATION = "Unable to obtain patient's name";
 
     private static final Log LOGGER = LogFactory.getLog(ActorScheduleBuildingUtil.class);
     private static final String SCHEDULE_ELEMENTS_SEPARATOR = ", ";
@@ -36,7 +37,23 @@ public final class ActorScheduleBuildingUtil {
         Integer actorId = buildActorId(patientTemplate);
         String actorType = patientTemplate.getActorTypeAsString();
         String schedule = buildSchedule(patientTemplate);
-        return new ActorScheduleDTO(actorId, actorType, schedule);
+        Integer patientId = buildPatientId(patientTemplate);
+        String patientName = buildPatientName(patientTemplate);
+        return new ActorScheduleDTO(actorId, actorType, schedule, patientId, patientName);
+    }
+
+    private static String buildPatientName(PatientTemplate patientTemplate) {
+        String fullName = StringUtils.EMPTY;
+        try {
+            fullName = patientTemplate.getPatient().getPersonName().getFullName();
+        } catch (Exception ex) {
+            LOGGER.error(SCHEDULE_ERROR_INFORMATION, ex);
+        }
+        return fullName;
+    }
+
+    private static Integer buildPatientId(PatientTemplate patientTemplate) {
+        return patientTemplate.getPatient().getId();
     }
 
     private static Integer buildActorId(PatientTemplate patientTemplate) {
@@ -65,8 +82,8 @@ public final class ActorScheduleBuildingUtil {
             String schedule = StringUtils.join(scheduleElements, SCHEDULE_ELEMENTS_SEPARATOR);
             return StringUtils.defaultIfEmpty(schedule, DEFAULT_INFORMATION);
         } catch (Exception ex) {
-            LOGGER.error(ERROR_INFORMATION, ex);
-            return ERROR_INFORMATION;
+            LOGGER.error(SCHEDULE_ERROR_INFORMATION, ex);
+            return SCHEDULE_ERROR_INFORMATION;
         }
     }
 

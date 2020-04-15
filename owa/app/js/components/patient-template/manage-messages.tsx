@@ -8,8 +8,9 @@ import { IRootState } from '../../reducers';
 import * as Msg from '../../shared/utils/messages';
 import './patient-template.scss';
 import Timezone from "../timezone/timezone";
+import {DashboardType} from "../../shared/model/dashboard-type";
 
-interface IManageMessagesProps extends DispatchProps, StateProps, RouteComponentProps<{ patientId: string, patientUuid: string }> {
+interface IManageMessagesProps extends DispatchProps, StateProps, RouteComponentProps<{ patientId: string, patientUuid: string, dashboardType: DashboardType }> {
 };
 
 interface IManageMessagesState {
@@ -18,13 +19,21 @@ interface IManageMessagesState {
 class ManageMessages extends React.PureComponent<IManageMessagesProps, IManageMessagesState> {
 
   componentDidMount() {
-    this.props.checkIfDefaultValuesUsed(parseInt(this.props.match.params.patientId, 10));
+    if (this.isPatient()) {
+      this.props.checkIfDefaultValuesUsed(parseInt(this.props.match.params.patientId, 10));
+    } else {
+    }
   }
 
   handleSave() {
     if (!!this.props.defaultValuesState.defaultValuesUsed) {
       this.props.generateDefaultPatientTemplates(parseInt(this.props.match.params.patientId, 10));
     }
+  }
+
+  private isPatient() {
+    const dashboardType = this.props.match.params.dashboardType;
+    return !!dashboardType ? dashboardType.toUpperCase() === DashboardType.PATIENT : true;
   }
 
   private renderDefaultValuesNotificationIfNeeded() {
@@ -48,8 +57,7 @@ class ManageMessages extends React.PureComponent<IManageMessagesProps, IManageMe
   }
 
   render() {
-    const { patientId, patientUuid } = this.props.match.params;
-
+    const { patientId, patientUuid, dashboardType } = this.props.match.params;
     return (
       <>
         <h2>Manage messages</h2>
@@ -60,10 +68,13 @@ class ManageMessages extends React.PureComponent<IManageMessagesProps, IManageMe
             patientId={parseInt(patientId)}
             patientUuid={patientUuid}
             onSaveClickCallback={() => this.handleSave()}
+            dashboardType={this.props.match.params.dashboardType}
           />
           <ScheduledMessages
             patientId={patientId}
-            patientUuid={patientUuid} />
+            patientUuid={patientUuid}
+            dashboardType={dashboardType}
+            isPatient={this.isPatient()} />
         </div>
       </>
     );

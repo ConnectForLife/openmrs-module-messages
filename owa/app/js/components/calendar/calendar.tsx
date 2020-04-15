@@ -7,34 +7,28 @@
  * graphic logo is a trademark of OpenMRS Inc.
  */
 import React from 'react';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import Calendar from '@bit/soldevelo-omrs.cfl-components.calendar';
-import {
-  Col,
-  Row,
-  Button,
-  Checkbox
-} from 'react-bootstrap';
-import { Tabs, Tab } from 'react-bootstrap'
-import { IRootState } from '../../reducers';
-import { getServiceResultLists } from '../../reducers/calendar.reducer'
-import { ServiceStatus } from '../../shared/enums/service-status';
-import { ServiceResultListUI } from '../../shared/model/service-result-list-ui';
-import moment, { Moment } from 'moment';
-import {
-  getTemplates
-} from '../../reducers/patient-template.reducer'
-import { TemplateUI } from '../../shared/model/template-ui';
+import {Button, Checkbox, Col, Row, Tab, Tabs} from 'react-bootstrap';
+import {IRootState} from '../../reducers';
+import {getServiceResultLists} from '../../reducers/calendar.reducer'
+import {ServiceStatus} from '../../shared/enums/service-status';
+import {ServiceResultListUI} from '../../shared/model/service-result-list-ui';
+import moment, {Moment} from 'moment';
+import {getTemplates} from '../../reducers/patient-template.reducer'
+import {TemplateUI} from '../../shared/model/template-ui';
 import _ from 'lodash';
-import { RouteComponentProps } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {RouteComponentProps} from 'react-router-dom';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {getPersonStatus} from "../../reducers/person-status.reducer";
 import * as Msg from '../../shared/utils/messages';
-import { getActorList } from '../../reducers/actor.reducer';
+import {getActorList} from '../../reducers/actor.reducer';
 import Timezone from "../timezone/timezone";
+import {DashboardType} from "../../shared/model/dashboard-type";
 
 interface ICalendarViewProps extends DispatchProps, StateProps, RouteComponentProps<{ patientId: string }> {
   patientUuid: string;
+  dashboardType: DashboardType
 };
 
 interface ICalendarViewState {
@@ -74,7 +68,7 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
     this.state = {
       startDate: undefined,
       endDate: undefined,
-      activeTabKey: 'Patient',
+      activeTabKey: undefined,
       filters: {},
       patientId: parseInt(this.props.match.params.patientId, 10),
       patientUuid: props.patientUuid
@@ -83,11 +77,11 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
 
   componentDidMount() {
     this.props.getTemplates();
-    this.props.getActorList(this.state.patientId);
+    this.props.getActorList(this.state.patientId, this.isPatient());
     let { startDate, endDate, patientId } = this.state;
     startDate = startDate ? startDate : moment().subtract(1, MONTH);
     endDate = endDate ? endDate : moment().add(1, MONTH);
-    this.props.getServiceResultLists(startDate.toDate(), endDate.toDate(), patientId);
+    this.props.getServiceResultLists(startDate.toDate(), endDate.toDate(), patientId, this.isPatient());
     if (_.isEmpty(this.props.personStatus)) {
       this.props.getPersonStatus(this.state.patientUuid)
     }
@@ -101,6 +95,10 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
     }
   }
 
+  private isPatient() {
+    return !!this.props.dashboardType ? this.props.dashboardType.toUpperCase() === DashboardType.PATIENT : true;
+  }
+
   // We have to debounce calling this method because fullcalendar 
   // calls dateRangeChangedCallback few times with the same values.
   // Debounce allows us to wait until last component update is performed
@@ -112,37 +110,70 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
       this.setState({
         startDate: moment(start),
         endDate: moment(end)
-      }, () => this.props.getServiceResultLists(start, end, this.state.patientId));
+      }, () => this.props.getServiceResultLists(start, end, this.state.patientId, this.isPatient()));
     }
   }, DATE_RANGE_CHANGE_CALLBACK_DEBOUNCE_DELAY);
 
   private prepareActorsData = () => {
-    const actorsResults = [] as Array<IActorIdWithEvents>;
+    let actorsResults = [] as Array<IActorIdWithEvents>;
+    if (this.isPatient()) {
+      actorsResults = this.prepareActorResultsForPatient();
+    } else {
+      actorsResults = this.prepareActorResultsForPerson();
+    }
+
+    return this.appendDefaultDummyActorsIfNeeded(actorsResults);
+  };
+
+  private prepareActorResultsForPatient() {
     // We always want calendar for a patient, and it needs to be first
+    const actorsResults = [] as Array<IActorIdWithEvents>;
     actorsResults.push({
       actorId: this.state.patientId,
       actorDisplayName: 'Patient',
       events: []
     });
-
     this.props.serviceResultLists.forEach((resultList) => {
-      var existingIndex = actorsResults.findIndex(a => a.actorId === resultList.actorId);
-      var actorDisplayName = this.getActorDisplayName(resultList.actorId, resultList.patientId);
-      var actorWithEvents = existingIndex !== -1
-        ? actorsResults[existingIndex]
-        : {
-          actorId: resultList.actorId,
-          actorDisplayName: actorDisplayName,
-          events: []
-        } as IActorIdWithEvents;
-      if (this.isServiceSelected(resultList.serviceName)) {
-        this.parseEvents(resultList, actorWithEvents.events);
+      let existingIndex = actorsResults.findIndex(a => a.actorId === resultList.actorId);
+      let actorDisplayName = this.getActorDisplayName(resultList.actorId, resultList.patientId);
+      if (!!actorDisplayName) {
+        let actorWithEvents = existingIndex !== -1
+          ? actorsResults[existingIndex]
+          : {
+            actorId: resultList.actorId,
+            actorDisplayName: actorDisplayName,
+            events: []
+          } as IActorIdWithEvents;
+        if (this.isServiceSelected(resultList.serviceName)) {
+          this.parseEvents(resultList, actorWithEvents.events);
+        }
+        existingIndex !== -1 ? actorsResults[existingIndex] = actorWithEvents : actorsResults.push(actorWithEvents);
       }
-      existingIndex !== -1 ? actorsResults[existingIndex] = actorWithEvents : actorsResults.push(actorWithEvents);
     });
+    return actorsResults;
+  }
 
-    return this.appendDefaultDummyActorsIfNeeded(actorsResults);
-  };
+  private prepareActorResultsForPerson() {
+    const actorsResults = [] as Array<IActorIdWithEvents>;
+    this.props.serviceResultLists.forEach((resultList) => {
+      let existingIndex = actorsResults.findIndex(a => a.actorId === resultList.patientId);
+      let actorDisplayName = this.getPatientDisplayName(resultList.actorId, resultList.patientId);
+      if (!!actorDisplayName) {
+        let actorWithEvents = existingIndex !== -1
+          ? actorsResults[existingIndex]
+          : {
+            actorId: resultList.patientId,
+            actorDisplayName: actorDisplayName,
+            events: []
+          } as IActorIdWithEvents;
+        if (this.isServiceSelected(resultList.serviceName)) {
+          this.parseEventsForPatient(resultList, actorWithEvents.events);
+        }
+        existingIndex !== -1 ? actorsResults[existingIndex] = actorWithEvents : actorsResults.push(actorWithEvents);
+      }
+    });
+    return actorsResults;
+  }
 
   private getActorDisplayName(actorId: number | null, patientId: number | null): string {
     let displayName = '';
@@ -152,6 +183,19 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
 
     if (actorId) {
       const actor = _.find(this.props.actorResultList, actor => actor.actorId === actorId);
+      const role = actor && actor.actorTypeName ? actor.actorTypeName! : '';
+      const name = actor && actor.actorName ? actor.actorName! : '';
+      displayName = this.buildDisplayName(role, name);
+    } else {
+      console.error('Actor id is not specified');
+    }
+    return displayName;
+  }
+
+  private getPatientDisplayName(actorId: number | null, patientId: number | null) {
+    let displayName = '';
+    if (actorId) {
+      const actor = _.find(this.props.actorResultList, actor => actor.actorId === patientId);
       const role = actor && actor.actorTypeName ? actor.actorTypeName! : '';
       const name = actor && actor.actorName ? actor.actorName! : '';
       displayName = this.buildDisplayName(role, name);
@@ -180,6 +224,39 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
   }
 
   private parseEvents(resultList: ServiceResultListUI, actorEvents: Array<ICalendarMessageEvent>) {
+    resultList.results.forEach((result) => {
+      if (result.executionDate !== null) {
+        // If there already exists event for an actor with same type and message id we need to group those as it was one message
+        var index = actorEvents.findIndex(r => r.executionDate.valueOf() === (result.executionDate && result.executionDate.valueOf())
+          && r.messageId === result.messageId);
+        // append to existing one
+        if (index !== -1) {
+          actorEvents[index] = {
+            ...actorEvents[index],
+            serviceName: `${actorEvents[index].serviceName},\n${resultList.serviceName}`,
+            services: [...actorEvents[index].services, {
+              name: resultList.serviceName,
+              status: result.serviceStatus
+            }]
+          };
+          // or push new one
+        } else {
+          actorEvents.push({
+            serviceName: resultList.serviceName,
+            status: result.serviceStatus,
+            executionDate: result.executionDate,
+            messageId: result.messageId,
+            services: [{
+              name: resultList.serviceName,
+              status: result.serviceStatus
+            }]
+          });
+        }
+      }
+    });
+  }
+
+  private parseEventsForPatient(resultList: ServiceResultListUI, actorEvents: Array<ICalendarMessageEvent>) {
     resultList.results.forEach((result) => {
       if (result.executionDate !== null) {
         // If there already exists event for an actor with same type and message id we need to group those as it was one message
@@ -255,13 +332,17 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
 
   render() {
     const actorsResults: Array<IActorIdWithEvents> = this.prepareActorsData();
+    let activeTabKey = this.state.activeTabKey;
+    if (!activeTabKey && actorsResults.length > 0) {
+      activeTabKey = actorsResults[0].actorDisplayName;
+    }
     return (
       <>
         <Timezone />
         <div className="row">
           <div className="col-md-12 col-xs-12">
             <h3>Calendar Overview</h3>
-            <Tabs activeKey={this.state.activeTabKey} onSelect={this.tabSelected} >
+            <Tabs activeKey={activeTabKey} onSelect={this.tabSelected} >
               {actorsResults.map((actorWithResults, index) => {
                 const tabName = actorWithResults.actorDisplayName;
                 return (

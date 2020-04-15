@@ -229,4 +229,13 @@ public interface MessagingService extends BaseOpenmrsCriteriaDataService<Schedul
      * @return list of all scheduled services for particular patient and actor id
      */
     List<ScheduledService> getScheduledServicesByPatientIdAndActorId(Integer patientId, Integer actorId);
+
+    /**
+     * Retrieves all service executions bound to occur (or which occurred) in the given date range for the actor.
+     * @param personId id of the actor
+     * @param startDate the start of the date range
+     * @param endDate the end of the date range
+     * @return list of all service executions in the given period
+     */
+    List<ServiceResultList> retrieveAllServiceExecutionsForActor(Integer personId, Date startDate, Date endDate);
 }

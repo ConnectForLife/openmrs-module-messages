@@ -14,11 +14,13 @@ import _ from 'lodash';
 import { Moment } from 'moment';
 import { IActor } from '../../shared/model/actor.model';
 import { IContactTime } from '../../shared/model/contact-time.model';
+import {DashboardType} from "../../shared/model/dashboard-type";
 
 interface IBestContactTimeProps extends DispatchProps, StateProps {
   patientId: number,
-  patientUuid: string
-  onSaveClickCallback?: Function
+  patientUuid: string,
+  onSaveClickCallback?: Function,
+  dashboardType: DashboardType
 };
 
 interface IBestContactTimeState {
@@ -28,6 +30,10 @@ class BestContactTime extends React.PureComponent<IBestContactTimeProps, IBestCo
 
   constructor(props: IBestContactTimeProps) {
     super(props);
+  }
+
+  private isPatient() {
+    return !!this.props.dashboardType ? this.props.dashboardType.toUpperCase() === DashboardType.PATIENT : true;
   }
 
   componentDidMount() {
@@ -44,13 +50,15 @@ class BestContactTime extends React.PureComponent<IBestContactTimeProps, IBestCo
   refreshBestContactTimeList = () => {
     const personIds: Array<number> = [];
     personIds.push(this.props.patientId);
-    this.props.actorResultList.forEach(e => personIds.push(e.actorId));
+    if (this.isPatient()) {
+      this.props.actorResultList.forEach(e => personIds.push(e.actorId));
+    }
     this.props.getBestContactTime(personIds);
   }
 
   handleCalendarOverview = () => {
-    const { patientId, patientUuid } = this.props;
-    history.push(`/messages/${patientId}&patientUuid=${patientUuid}`);
+    const { patientId, patientUuid, dashboardType } = this.props;
+    history.push(`/messages/${dashboardType}/${patientId}&patientUuid=${patientUuid}`);
   }
 
   handleSave = () => {
@@ -92,13 +100,13 @@ class BestContactTime extends React.PureComponent<IBestContactTimeProps, IBestCo
   }
 
   applyDefaultValuesIfNeeded = (bestContactTimes: Array<IBestContactTime>): Array<IBestContactTime> => {
-    const clonededValues = _.clone(bestContactTimes);
-    clonededValues.map(contactTime => {
+    const clonedValues = _.clone(bestContactTimes);
+    clonedValues.map(contactTime => {
       if (!contactTime.time) {
         contactTime.time = this.getDefaultValue(contactTime);
       }
     });
-    return clonededValues;
+    return clonedValues;
   }
 
   getDefaultValue = (contactTime: IBestContactTime): Moment | undefined => {
@@ -132,8 +140,10 @@ class BestContactTime extends React.PureComponent<IBestContactTimeProps, IBestCo
       <div className="sections">
         {bestContactTimes.map((e, i) => {
           let label: string = `Person ${e.personId}`;
-          if (this.isActorPatient(e)) {
-            label = 'Patient';
+          if (!this.isPatient()) {
+            label = Msg.CAREGIVER_ROLE;
+          } else if (this.isActorPatient(e)) {
+            label = Msg.PATIENT_ROLE;
           } else {
             const actor: IActor | undefined = _.find(this.props.actorResultList, (a) => a.actorId === e.personId);
             if (!!actor) {

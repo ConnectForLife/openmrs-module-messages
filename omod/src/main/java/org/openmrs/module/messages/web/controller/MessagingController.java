@@ -1,6 +1,5 @@
 package org.openmrs.module.messages.web.controller;
 
-import org.openmrs.module.messages.api.service.ActorService;
 import org.openmrs.module.messages.api.dto.ErrorResponseDTO;
 import org.openmrs.module.messages.api.dto.MessageDetailsDTO;
 import org.openmrs.module.messages.api.execution.ExecutionException;
@@ -10,8 +9,6 @@ import org.openmrs.module.messages.api.model.ErrorMessage;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.service.MessagingService;
 import org.openmrs.module.messages.api.service.PatientTemplateService;
-import org.openmrs.module.messages.api.service.TemplateService;
-import org.openmrs.module.messages.api.util.MessageDetailsUtil;
 import org.openmrs.module.messages.domain.criteria.PatientTemplateCriteria;
 import org.openmrs.module.messages.web.model.MessagingParams;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,20 +36,12 @@ public class MessagingController extends BaseRestController {
     private PatientTemplateService patientTemplateService;
 
     @Autowired
-    @Qualifier("messages.templateService")
-    private TemplateService templateService;
-
-    @Autowired
     @Qualifier("messages.MessageDetailsMapper")
     private MessageDetailsMapper messageDetailsMapper;
 
     @Autowired
     @Qualifier("messages.messagingService")
     private MessagingService messagingService;
-
-    @Autowired
-    @Qualifier("messages.actorService")
-    private ActorService actorService;
 
     @RequestMapping(value = "/details", method = RequestMethod.GET)
     @ResponseBody
@@ -61,25 +50,24 @@ public class MessagingController extends BaseRestController {
         List<PatientTemplate> patientTemplates = patientTemplateService.findAllByCriteria(
                 criteria);
 
-        MessageDetailsDTO messageDetailsDTO =
-            messageDetailsMapper.toDto(patientTemplates).withPatientId(criteria.getPatientId());
-        messageDetailsDTO = MessageDetailsUtil.attachDefaultMessageDetails(messageDetailsDTO,
-            templateService.getAll(false),
-            actorService.getAllActorsForPatientId(criteria.getPatientId()));
-
-        return messageDetailsDTO;
+        return messageDetailsMapper.toDto(patientTemplates).withPersonId(criteria.getPersonId());
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     @ResponseBody
     public List<ServiceResultList> getMessages(
-            @RequestParam(value = "patientId") Integer patientId,
+            @RequestParam(value = "personId") Integer personId,
             @RequestParam(value = "startDate") long startDate,
-            @RequestParam(value = "endDate") long endDate
+            @RequestParam(value = "endDate") long endDate,
+            @RequestParam(value = "isPatient", defaultValue = "true") boolean isPatient
     ) throws ExecutionException {
         Date date1 = new Date(startDate);
         Date date2 = new Date(endDate);
-        return messagingService.retrieveAllServiceExecutions(patientId, date1, date2);
+        if (isPatient) {
+            return messagingService.retrieveAllServiceExecutions(personId, date1, date2);
+        } else {
+            return messagingService.retrieveAllServiceExecutionsForActor(personId, date1, date2);
+        }
     }
 
     @ExceptionHandler(ExecutionException.class)

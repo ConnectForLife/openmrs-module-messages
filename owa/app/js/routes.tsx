@@ -19,10 +19,10 @@ export default (store) => (
         <Header />
         <BreadCrumb />
         <Switch>
-            <Route path="/messages/:patientId&patientuuid=:patientUuid/patient-template" component={PatientTemplate} />
+            <Route path="/messages/:dashboardType/:patientId&patientuuid=:patientUuid/patient-template" component={PatientTemplate} />
             <Route path="/messages/manage/:activeSection" component={AppManagement} />
             <Route path="/messages/manage" component={AppManagement} />
-            <Route path="/messages/:patientId&patientuuid=:patientUuid" component={Calendar} />
+            <Route path="/messages/:dashboardType/:patientId&patientuuid=:patientUuid" component={Calendar} />
         </Switch>
     </div>
 );

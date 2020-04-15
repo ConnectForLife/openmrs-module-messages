@@ -78,15 +78,15 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
         actorResponse.setResponse(response);
         actorResponse.setTextResponse(textResponse);
         actorResponse.setAnsweredTime(timestamp);
-        
+
         return actorResponseDao.saveOrUpdate(actorResponse);
     }
-    
+
     @Override
     public ScheduledService registerAttempt(int scheduledServiceId, String status, Date timestamp, String executionId) {
         return registerAttempt(scheduledServiceId, ServiceStatus.valueOf(status), timestamp, executionId);
     }
-    
+
     @Override
     public ScheduledService registerAttempt(int scheduledServiceId, ServiceStatus status, Date timestamp,
                                             String executionId) {
@@ -94,7 +94,7 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
         ScheduledService service = HibernateUtil.getNotNull(scheduledServiceId, this);
         return registerAttempt(service, status, timestamp, executionId);
     }
-    
+
     @Override
     public ScheduledService registerAttempt(ScheduledService service, ServiceStatus status, Date timestamp,
                                             String executionId) {
@@ -106,21 +106,21 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
                     timestamp,
                     executionId));
         }
-        
+
         DeliveryAttempt deliveryAttempt = new DeliveryAttempt();
         deliveryAttempt.setServiceExecution(executionId);
         deliveryAttempt.setAttemptNumber(service.getNumberOfAttempts() + 1);
         deliveryAttempt.setStatus(status);
         deliveryAttempt.setTimestamp(timestamp);
         deliveryAttempt.setScheduledService(service);
-        
+
         service.setStatus(status);
         service.setLastServiceExecution(executionId);
         service.getDeliveryAttempts().add(deliveryAttempt);
-        
+
         return saveOrUpdate(service);
     }
-    
+
     @Override
     @SuppressWarnings("checkstyle:ParameterNumber")
     public ScheduledService registerResponseAndStatus(Integer scheduledId,
@@ -134,7 +134,7 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
         registerResponseForScheduledService(scheduledId, questionId, textQuestion, responseId, textResponse, timestamp);
         return registerAttempt(scheduledId, status, timestamp, executionId);
     }
-    
+
     @Override
     @SuppressWarnings("checkstyle:ParameterNumber")
     public ScheduledService registerResponseAndStatus(Integer scheduledId,
@@ -148,22 +148,30 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
         registerResponseForScheduledService(scheduledId, questionId, textQuestion, responseId, textResponse, timestamp);
         return registerAttempt(scheduledId, status, timestamp, executionId);
     }
-    
+
     @Override
     @Transactional(noRollbackFor = {RuntimeException.class, SQLGrammarException.class}, readOnly = true)
     public List<ServiceResultList> retrieveAllServiceExecutions(Integer patientId, Date startDate, Date endDate) {
-        
+
         PatientTemplateCriteria patientTemplateCriteria = PatientTemplateCriteria.forPatientId(patientId);
         return retrieveAllServiceExecutions(patientTemplateService.findAllByCriteria(patientTemplateCriteria),
                 startDate, endDate);
     }
-    
+
+    @Override
+    @Transactional(noRollbackFor = {RuntimeException.class, SQLGrammarException.class}, readOnly = true)
+    public List<ServiceResultList> retrieveAllServiceExecutionsForActor(Integer personId, Date startDate, Date endDate) {
+        PatientTemplateCriteria patientTemplateCriteria = PatientTemplateCriteria.forActorId(personId);
+        return retrieveAllServiceExecutions(patientTemplateService.findAllByCriteria(patientTemplateCriteria),
+                startDate, endDate);
+    }
+
     @Override
     @Transactional(noRollbackFor = {RuntimeException.class, SQLGrammarException.class}, readOnly = true)
     public List<ServiceResultList> retrieveAllServiceExecutions(Date startDate, Date endDate) {
         return retrieveAllServiceExecutions(patientTemplateService.getAll(false), startDate, endDate);
     }
-    
+
     @Override
     public ActorResponse updateActorResponse(Integer actorResponseId, Integer newResponseId, String newResponseTxt)
             throws EntityNotFoundException {
@@ -172,18 +180,18 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
         }
         ActorResponse current = actorResponseDao.getById(actorResponseId);
         throwExceptionIfMissing(current, actorResponseId, ActorResponse.class.getName());
-        
+
         if (newResponseId != null) {
             Concept newResponse = conceptService.getConcept(newResponseId);
             throwExceptionIfMissing(newResponse, newResponseId, Concept.class.getName());
             current.setResponse(newResponse);
         }
-        
+
         current.setAnsweredTime(DateUtil.now());
         current.setTextResponse(newResponseTxt);
         return actorResponseDao.saveOrUpdate(current);
     }
-    
+
     @Override
     public List<ActorResponse> getLastActorResponsesForConceptQuestion(Integer patientId,
                                                                        Integer actorId,
@@ -194,9 +202,9 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
                         .setPatientId(patientId)
                         .setConceptQuestionId(conceptQuestionId)
                         .setLimit(pageSize)
-                        , null);
+                , null);
     }
-    
+
     @Override
     public List<ActorResponse> getLastActorResponsesForTextQuestion(Integer patientId,
                                                                     Integer actorId,
@@ -207,9 +215,9 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
                         .setPatientId(patientId)
                         .setTextQuestion(textQuestion)
                         .setLimit(pageSize)
-                        , null);
+                , null);
     }
-    
+
     @Override
     public List<ActorResponse> getLastActorResponsesForServiceType(Integer patientId,
                                                                    Integer actorId,
@@ -220,51 +228,51 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
                         .setActorId(actorId)
                         .setServiceType(serviceType)
                         .setLimit(limit)
-                        , null);
+                , null);
     }
-    
+
     @Override
     public List<ScheduledService> getScheduledServicesByGroupId(Integer groupId) {
         return findAllByCriteria(ScheduledServiceCriteria.forGroupId(groupId));
     }
-    
+
     @Override
     public List<ScheduledService> getScheduledServicesByPatientIdAndActorId(Integer patientId, Integer actorId) {
         return findAllByCriteria(ScheduledServiceCriteria
                 .forPatientTemplateActorId(actorId).forPatientTemplatePatientId(patientId));
     }
-    
+
     public void setConceptService(ConceptService conceptService) {
         this.conceptService = conceptService;
     }
-    
+
     public void setActorResponseDao(ActorResponseDao actorResponseDao) {
         this.actorResponseDao = actorResponseDao;
     }
-    
+
     public void setServiceExecutor(ServiceExecutor serviceExecutor) {
         this.serviceExecutor = serviceExecutor;
     }
-    
+
     public void setPatientTemplateService(PatientTemplateService patientTemplateService) {
         this.patientTemplateService = patientTemplateService;
     }
-    
+
     private void throwExceptionIfMissing(Object entity, Integer id, String entityName) throws EntityNotFoundException {
         if (entity == null) {
             throw new EntityNotFoundException(String.format(
                     "Could not find %s with identifier: %s", entityName, id));
         }
     }
-    
+
     public void setPersonService(PersonService personService) {
         this.personService = personService;
     }
-    
+
     public void setPatientService(PatientService patientService) {
         this.patientService = patientService;
     }
-    
+
     private List<ServiceResultList> retrieveAllServiceExecutions(List<PatientTemplate> patientTemplates, Date startDate,
                                                                  Date endDate) {
         List<ServiceResultList> results = new ArrayList<>();
@@ -288,7 +296,7 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
                 logException(patientTemplate, e);
             }
         }
-        
+
         return results;
     }
 
@@ -318,7 +326,7 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
                     "%s status cannot be registered", status.name()));
         }
     }
-    
+
     private void registerResponseForScheduledService(Integer scheduledId, Integer questionId, String textQuestion,
                                                      Integer responseId, String textResponse, Date timestamp) {
         ScheduledService scheduled = HibernateUtil.getNotNull(scheduledId, this);
@@ -345,7 +353,7 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
         } catch (Exception ex) {
             LOGGER.error(String.format(
                     "Cannot execute query for patientTemplate with id %d. The details couldn't be extracted." +
-                     "The execution of this particular patient template will be skipped.",
+                            "The execution of this particular patient template will be skipped.",
                     patientTemplate.getId()), e);
         }
     }

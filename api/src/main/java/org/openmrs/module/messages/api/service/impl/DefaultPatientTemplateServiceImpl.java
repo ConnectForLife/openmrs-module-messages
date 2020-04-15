@@ -74,7 +74,7 @@ public class DefaultPatientTemplateServiceImpl extends BaseOpenmrsService implem
         List<PatientTemplate> patientTemplates = patientTemplateService
             .findAllByCriteria(PatientTemplateCriteria.forPatientId(patient.getId()));
         patientTemplates.addAll(lacking);
-        return messageDetailsMapper.toDto(patientTemplates).withPatientId(patient.getId());
+        return messageDetailsMapper.toDto(patientTemplates).withPersonId(patient.getId());
     }
 
     public DefaultPatientTemplateServiceImpl setPatientTemplateService(PatientTemplateService patientTemplateService) {

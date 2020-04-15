@@ -21,7 +21,7 @@
         "label": "messages.title",
         "icon": "icon-comment",
         "order": 1,
-        "url": "owa/messages/index.html#/messages/{{patient.patientId}}&patientUuid={{patient.uuid}}"
+        "url": "owa/messages/index.html#/messages/patient/{{patient.patientId}}&patientUuid={{patient.uuid}}"
       }
     ]
   }

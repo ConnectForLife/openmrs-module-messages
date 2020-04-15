@@ -14,8 +14,9 @@ import bestContactTime, { BestContactTimeState } from './best-contact-time.reduc
 import calendar, { CalendarState } from './calendar.reducer';
 import actor, { ActorState } from './actor.reducer';
 import patient, { PatientState } from './patient.reducer';
+import person, { PersonState } from './person.reducer';
 import adminSettings, { AdminSettingsState } from './admin-settings.reducer';
-import personStatus, { PersonState } from './person-status.reducer';
+import personStatus, { PersonStatusState } from './person-status.reducer';
 import timezone, {TimezoneState} from "./timezone.reducer";
 
 export interface IRootState {
@@ -25,8 +26,9 @@ export interface IRootState {
   readonly calendar: CalendarState;
   readonly actor: ActorState;
   readonly patient: PatientState;
+  readonly person: PersonState;
   readonly adminSettings: AdminSettingsState;
-  readonly personStatus: PersonState;
+  readonly personStatus: PersonStatusState;
   readonly timezone: TimezoneState;
 }
 
@@ -39,5 +41,6 @@ export default combineReducers<IRootState>({
   patient,
   adminSettings,
   personStatus,
-  timezone
+  timezone,
+  person
 });

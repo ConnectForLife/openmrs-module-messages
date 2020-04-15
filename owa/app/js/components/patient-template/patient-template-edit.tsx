@@ -1,35 +1,37 @@
-import React, { ReactFragment } from 'react';
-import { connect } from 'react-redux';
-import { RouteComponentProps } from 'react-router-dom';
+import React, {ReactFragment} from 'react';
+import {connect} from 'react-redux';
+import {RouteComponentProps} from 'react-router-dom';
 import {
   getTemplates,
   getPatientTemplates,
   putPatientTemplates
 } from '../../reducers/patient-template.reducer'
-import { getActorList } from '../../reducers/actor.reducer';
-import { IRootState } from '../../reducers';
-import { Button, SelectCallback } from 'react-bootstrap';
+import {getActorList} from '../../reducers/actor.reducer';
+import {IRootState} from '../../reducers';
+import {Button, SelectCallback} from 'react-bootstrap';
 import * as Msg from '../../shared/utils/messages';
 import FormSection from '@bit/soldevelo-omrs.cfl-components.form-entry/model/form-section';
 import FormSubSection from '@bit/soldevelo-omrs.cfl-components.form-entry/model/form-subsection';
 import FormEntry from '@bit/soldevelo-omrs.cfl-components.form-entry';
 import './patient-template.scss';
 import PatientTemplateForm from './patient-template-form';
-import { TemplateUI } from '../../shared/model/template-ui';
+import {TemplateUI} from '../../shared/model/template-ui';
 import {
   getPatientTemplateWithTemplateId,
   getPatientTemplateWithActorId
 } from '../../selectors/patient-template-selector';
-import { PatientTemplateUI } from '../../shared/model/patient-template-ui';
+import {PatientTemplateUI} from '../../shared/model/patient-template-ui';
 import _ from 'lodash';
-import { IActor } from '../../shared/model/actor.model';
-import { getActorTypes } from '../../reducers/admin-settings.reducer';
+import {IActor} from '../../shared/model/actor.model';
+import {getActorTypes} from '../../reducers/admin-settings.reducer';
 import Timezone from "../timezone/timezone";
+import {DashboardType} from "../../shared/model/dashboard-type";
 
 interface IPatientTemplateEditProps extends DispatchProps, StateProps, RouteComponentProps<{
   patientId: string,
   patientUuid: string,
-  activeSection: string
+  activeSection: string,
+  dashboardType: DashboardType
 }> {
   isNew: boolean
   relatedActors: Array<IActor>
@@ -51,9 +53,20 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
     this.props.getPatientTemplates(parseInt(this.props.match.params.patientId));
   }
 
+  private isPatient() {
+    const dashboardType = this.props.match.params.dashboardType;
+    return !!dashboardType ? dashboardType.toUpperCase() === DashboardType.PATIENT : true;
+  }
+
   handleSave = () => {
-    const { patientId, patientUuid } = this.props.match.params;
-    this.props.putPatientTemplates(this.props.patientTemplates, this.props.templates, parseInt(patientId), patientUuid);
+    const {patientId, patientUuid, dashboardType} = this.props.match.params;
+    this.props.putPatientTemplates(
+      this.props.patientTemplates,
+      this.props.templates,
+      parseInt(patientId),
+      patientUuid,
+      dashboardType
+    );
   }
 
   handleCancel = () => this.props.history.goBack();
@@ -64,12 +77,12 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
   };
 
   resolveSubsectionUrl = (subsectionName: string) => {
-    const { patientId, patientUuid } = this.props.match.params;
-    return `/messages/${patientId}&patientuuid=${patientUuid}/patient-template/edit/${subsectionName}`;
+    const {patientId, patientUuid, dashboardType} = this.props.match.params;
+    return `/messages/${dashboardType}/${patientId}&patientuuid=${patientUuid}/patient-template/edit/${subsectionName}`;
   };
 
   getNextSubsection = () => {
-    const { templates } = this.props;
+    const {templates} = this.props;
     const currentTemplateName = this.props.match.params.activeSection;
     const nextTemplateIndex = templates.findIndex(template => template.name === currentTemplateName) + 1;
     return nextTemplateIndex < templates.length ? templates[nextTemplateIndex] : null;
@@ -83,21 +96,21 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
     const sections = this.mapTemplatesToSections();
     if (this.props.isNew) {
       return (
-        <FormEntry sections={sections} activeSection={this.props.match.params.activeSection} />
+        <FormEntry sections={sections} activeSection={this.props.match.params.activeSection}/>
       );
     } else {
       return (
-        <FormEntry sections={sections} activeSection={this.props.match.params.activeSection} />
+        <FormEntry sections={sections} activeSection={this.props.match.params.activeSection}/>
       );
     }
   }
 
   buildActorTemplate = (patientTemplates: ReadonlyArray<PatientTemplateUI>, template: TemplateUI, actor?: IActor): ReactFragment =>
     <PatientTemplateForm key={`template-form-${actor ? actor.actorId : parseInt(this.props.match.params.patientId)}`}
-      patientTemplate={patientTemplates.length ? patientTemplates[0] : undefined}
-      template={template}
-      patientId={parseInt(this.props.match.params.patientId)}
-      actor={actor}
+                         patientTemplate={patientTemplates.length ? patientTemplates[0] : undefined}
+                         template={template}
+                         patientId={parseInt(this.props.match.params.patientId)}
+                         actor={actor}
     />
 
   mapTemplatesToSections = (): Array<FormSection> => {
@@ -139,7 +152,7 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
   render() {
     return (
       <>
-        <Timezone />
+        <Timezone/>
         <div className="panel-body">
           <h4>{Msg.EDIT_MESSAGES_TITLE}</h4>
           {!this.props.loading && this.renderTemplateState()}
@@ -169,7 +182,7 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
   }
 }
 
-const mapStateToProps = ({ actor, patientTemplate, adminSettings }: IRootState) => ({
+const mapStateToProps = ({actor, patientTemplate, adminSettings}: IRootState) => ({
   templates: patientTemplate.templates,
   patientTemplates: patientTemplate.patientTemplates,
   loading: patientTemplate.patientTemplatesLoading || patientTemplate.templatesLoading || adminSettings.loading,

@@ -36,7 +36,7 @@ public final class MessageDetailsUtil {
         }
 
         return new MessageDetailsDTO(messages)
-            .withPatientId(messageDetailsDTO.getPatientId());
+            .withPersonId(messageDetailsDTO.getPersonId());
     }
 
     private static MessageDTO findMatchingMessage(List<MessageDTO> messages, Template template) {

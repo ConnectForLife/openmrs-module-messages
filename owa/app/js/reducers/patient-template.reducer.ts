@@ -169,12 +169,13 @@ const templatesUrl = messagesUrl + "/templates";
 const messageDetailsUrl = messagesUrl + "/details";
 const patientTemplatesUrl = messagesUrl + "/patient-templates";
 
-export const getMessages = (patientId: number) => async (dispatch) => {
+export const getMessages = (patientId: number, isPatient: boolean = true) => async (dispatch) => {
   await dispatch({
     type: ACTION_TYPES.GET_MESSAGE_DETAILS,
     payload: axiosInstance.get(messageDetailsUrl, {
       params: {
-        patientId: patientId
+        personId: patientId,
+        isPatient
       }
     })
   });
@@ -217,7 +218,7 @@ export const reset = () => ({
 });
 
 export const putPatientTemplates = (patientTemplates: Array<PatientTemplateUI>,
-  templates: Array<TemplateUI>, patientId: number, patientUuid: string) => async (dispatch) => {
+  templates: Array<TemplateUI>, patientId: number, patientUuid: string, dashboardType: string) => async (dispatch) => {
     const validated = await validatePatientTemplates(patientTemplates, templates, true);
     const requestUrl = `${patientTemplatesUrl}/patient/${patientId}`
     if (isValid(validated)) {
@@ -226,7 +227,7 @@ export const putPatientTemplates = (patientTemplates: Array<PatientTemplateUI>,
         payload: axiosInstance.post(requestUrl, { patientTemplates: _.map(validated, toModel) })
       }
       await handleRequest(dispatch, body, Msg.GENERIC_SUCCESS, Msg.GENERIC_FAILURE);
-      history.push(`/messages/${patientId}&patientuuid=${patientUuid}`);
+      history.push(`/messages/${dashboardType}/${patientId}&patientuuid=${patientUuid}`);
     } else {
       dispatch(updatePatientTemplates(validated));
     }

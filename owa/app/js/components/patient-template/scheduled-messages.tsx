@@ -1,21 +1,25 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { IRootState } from '../../reducers';
+import {connect} from 'react-redux';
+import {IRootState} from '../../reducers';
 import './patient-template.scss';
 import Table from '@bit/soldevelo-omrs.cfl-components.table/table';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { getMessages } from '../../reducers/patient-template.reducer';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {getMessages} from '../../reducers/patient-template.reducer';
 import MessageDetails from '../../shared/model/message-details';
 import _ from 'lodash';
 import ActorSchedule from '../../shared/model/actor-schedule';
 import MessageRowData from '../../shared/model/message-row-data';
-import { getActorList } from '../../reducers/actor.reducer'
+import {getActorList} from '../../reducers/actor.reducer'
+import {DashboardType} from "../../shared/model/dashboard-type";
+import {IActor} from "../../shared/model/actor.model";
 
 interface IScheduledMessagesProps extends DispatchProps, StateProps {
   patientId: number,
   patientUuid: string,
   messageDetails: MessageDetails,
-  loading: boolean
+  loading: boolean,
+  dashboardType: DashboardType,
+  isPatient: boolean
 }
 
 interface IScheduledMessagesState {
@@ -24,15 +28,22 @@ interface IScheduledMessagesState {
 class ScheduledMessages extends React.PureComponent<IScheduledMessagesProps, IScheduledMessagesState> {
 
   componentDidMount() {
-    this.props.getActorList(this.props.patientId);
+    this.props.getActorList(this.props.patientId, this.isPatient());
   }
 
   private mapActorSchedules = (actorSchedules: Array<ActorSchedule>) => {
     const result = {};
-    actorSchedules.forEach((actorSchedule) => {
-      const id = actorSchedule.actorId ? actorSchedule.actorId : this.props.patientId;
-      result[id] = actorSchedule.schedule;
-    });
+    if (this.isPatient()) {
+      actorSchedules.forEach((actorSchedule) => {
+        const id = actorSchedule.actorId ? actorSchedule.actorId : this.props.patientId;
+        result[id] = actorSchedule.schedule;
+      });
+    } else {
+      actorSchedules.forEach((actorSchedule) => {
+        const id = actorSchedule.patientId!;
+        result[id] = actorSchedule.schedule;
+      });
+    }
     return result;
   };
 
@@ -44,7 +55,7 @@ class ScheduledMessages extends React.PureComponent<IScheduledMessagesProps, ISc
     }
 
     let messages = this.props.messageDetails.messages;
-    messages = _.orderBy(messages, ['createdAt'],['asc']);
+    messages = _.orderBy(messages, ['createdAt'], ['asc']);
     messages.forEach((m) => {
       data.push({
         messageType: m.type,
@@ -57,18 +68,25 @@ class ScheduledMessages extends React.PureComponent<IScheduledMessagesProps, ISc
 
   private getMessages = () => {
     if (!this.props.messageDetailsLoading) {
-      this.props.getMessages(this.props.patientId);
+      this.props.getMessages(this.props.patientId, this.props.isPatient);
     }
   };
 
   private renderMessagesTable = () => {
     const data = this.mapMessageDetailsToData();
-
-    const columns = _.concat(
-      this.getTypeColumnDefinition(),
-      this.getSchedulesColumnDefinition(),
-      this.getActionsColumnDefinition()
-    );
+    let columns;
+    if (this.isPatient()) {
+      columns = _.concat(
+        this.getTypeColumnDefinition(),
+        this.getSchedulesColumnDefinition(),
+        this.getActionsColumnDefinition()
+      );
+    } else {
+      columns = _.concat(
+        this.getTypeColumnDefinition(),
+        this.getSchedulesColumnDefinition()
+      );
+    }
 
     return (
       <Table
@@ -89,6 +107,11 @@ class ScheduledMessages extends React.PureComponent<IScheduledMessagesProps, ISc
     accessor: 'messageType',
   });
 
+  private isPatient() {
+    const dashboardType = this.props.dashboardType;
+    return !!dashboardType ? dashboardType.toUpperCase() === DashboardType.PATIENT : true;
+  }
+
   private getSchedulesColumnDefinition = () => {
     if (!this.props.messageDetails) {
       return [];
@@ -104,7 +127,33 @@ class ScheduledMessages extends React.PureComponent<IScheduledMessagesProps, ISc
     const actorSchedules = _.uniq(_.flatten(this.props.messageDetails.messages
       .map((msg) => msg.actorSchedules)));
 
-    const columns = actorSchedules.map((actorSchedule: ActorSchedule) => {
+    let columns: any[];
+    if (this.isPatient()) {
+      columns = this.renderColumnsForPatient(actorSchedules, wrappedTextProps);
+    } else {
+      columns = this.renderColumnsForPerson(actorSchedules, wrappedTextProps);
+    }
+    return _.uniqBy(columns, 'Header');
+  };
+
+  private renderColumnsForPerson(actorSchedules, wrappedTextProps) {
+    const columns = this.props.actorResultList
+      .map((actor: IActor) => {
+        const id = actor.actorId;
+        const name = actor.actorName;
+        const type = 'For patient';
+        return {
+          Header: _.filter([type, name]).join(' - '),
+          accessor: `schedules[${id}]`,
+          getProps: wrappedTextProps
+        };
+      });
+    return columns;
+  }
+
+  private renderColumnsForPatient(actorSchedules, wrappedTextProps) {
+    const columns = actorSchedules
+    .map((actorSchedule: ActorSchedule) => {
       const id = actorSchedule.actorId ? actorSchedule.actorId : this.props.patientId;
       const name = this.getActorName(actorSchedule);
       const type = actorSchedule.actorType;
@@ -114,8 +163,8 @@ class ScheduledMessages extends React.PureComponent<IScheduledMessagesProps, ISc
         getProps: wrappedTextProps
       };
     });
-    return _.uniqBy(columns, 'Header');
-  };
+    return columns;
+  }
 
   private getActionsColumnDefinition = () => ({
     Header: 'Actions',
@@ -131,11 +180,13 @@ class ScheduledMessages extends React.PureComponent<IScheduledMessagesProps, ISc
     },
     Cell: props => {
       //TODO in CFLm-376: Change link to proper messages sidebar val
-      const link = `#messages/${this.props.patientId}&patientuuid=${this.props.patientUuid}/patient-template/edit/${props.value}`;
+      const {patientId, patientUuid, dashboardType} = this.props;
+
+      const link = `#messages/${dashboardType}/${patientId}&patientuuid=${patientUuid}/patient-template/edit/${props.value}`;
       return (
         <span>
           <a href={link}>
-            <FontAwesomeIcon icon={['fas', 'pencil-alt']} size="lg" />
+            <FontAwesomeIcon icon={['fas', 'pencil-alt']} size="lg"/>
           </a>
         </span>
       );
@@ -161,7 +212,7 @@ class ScheduledMessages extends React.PureComponent<IScheduledMessagesProps, ISc
   }
 }
 
-const mapStateToProps = ({ patientTemplate, actor }: IRootState) => ({
+const mapStateToProps = ({patientTemplate, actor}: IRootState) => ({
   messageDetails: patientTemplate.messageDetails,
   loading: patientTemplate.messageDetailsLoading || actor.actorResultListLoading,
   messageDetailsLoading: patientTemplate.messageDetailsLoading,

@@ -250,7 +250,7 @@ public class ActorScheduleBuildingUtilTest {
 
         ActorScheduleDTO schedule = ActorScheduleBuildingUtil.build(patientTemplate);
 
-        Assert.assertEquals(ActorScheduleBuildingUtil.ERROR_INFORMATION, schedule.getSchedule());
+        Assert.assertEquals(ActorScheduleBuildingUtil.SCHEDULE_ERROR_INFORMATION, schedule.getSchedule());
     }
 
     private TemplateFieldValue buildTemplateFieldWithValue(TemplateFieldType type, String value) {
