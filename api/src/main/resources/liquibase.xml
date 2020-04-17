@@ -3808,4 +3808,19 @@
                                columnName="service_query_type"
                                columnDataType="varchar(255)" />
     </changeSet>
+
+    <changeSet id="messages-71" author="Arkadiusz Lalo">
+        <preConditions>
+            <tableExists tableName="global_property"/>
+        </preConditions>
+
+        <comment>Resets message.daysToCallBeforeVisit.default to the default value (the property structure
+            and its description have been changed). It is in order to apply the new changes to all already
+            existing environments. The migration can be removed if the liquibase refactor will be conducted
+            (eg. replacing all changes by one changeSet).</comment>
+
+        <delete tableName="global_property">
+            <where>property='message.daysToCallBeforeVisit.default'</where>
+        </delete>
+    </changeSet>
 </databaseChangeLog>
