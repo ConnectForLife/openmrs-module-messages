@@ -3823,4 +3823,46 @@
             <where>property='message.daysToCallBeforeVisit.default'</where>
         </delete>
     </changeSet>
+
+    <changeSet id="messages-72" author="Dawid Ruchniewicz">
+        <preConditions>
+            <tableExists tableName="messages_template_field"/>
+        </preConditions>
+
+        <comment>
+            Updated default_value of Categories of the message for the HealthTip service to avoid setting
+            this field for each new patient template (e.g. if we want set only Adherence Daily service
+            we have to set category in HealthTip service).
+        </comment>
+
+        <sql>
+            UPDATE messages_template_field
+            SET default_value = 'HT_PREVENTION'
+            WHERE uuid = '95572cd9-20b2-11ea-ac12-0242c0a82002'
+            AND default_value = '';
+        </sql>
+    </changeSet>
+
+    <changeSet id="messages-73" author="Dawid Ruchniewicz">
+        <preConditions>
+            <tableExists tableName="messages_template_field_default_values"/>
+        </preConditions>
+
+        <comment>
+            Updated default_value of Categories of the message for the HealthTip service for other
+            relationship types than patient (e.g. for Caregiver) to avoid setting this field for
+            each new patient template (e.g. if we want set only Adherence Daily service we have to
+            set category in HealthTip service).
+        </comment>
+
+        <sql>
+            UPDATE messages_template_field_default_values mtfdv
+            SET mtfdv.default_value='HT_PREVENTION'
+            WHERE mtfdv.template_field IN
+                (SELECT mtf.messages_template_field_id
+                FROM messages_template_field mtf
+                WHERE mtf.name = 'Categories of the message')
+            AND mtfdv.default_value = '';
+        </sql>
+    </changeSet>
 </databaseChangeLog>
