@@ -7,8 +7,8 @@ responseGraph.load = function(mainDiv, config) {
   jq.ajax({
     url: url,
     type: 'POST',
-    dataType: 'json',
-    data: config.requestConfig,
+    dataType: "json",
+    data: {graphConfig: JSON.stringify(config.requestConfig)},
     success: function(data) {
         if(data && data.length) {
           var barChartConfig = {

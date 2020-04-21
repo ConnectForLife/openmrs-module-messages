@@ -9,25 +9,7 @@
 
 package org.openmrs.module.messages.api.strategy;
 
-import static org.hamcrest.Matchers.hasItem;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.openmrs.module.messages.api.scheduler.job.ServiceGroupDeliveryJobDefinition.EXECUTION_CONTEXT;
-import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_PATIENT_ID;
-import static org.openmrs.module.messages.api.service.DatasetConstants.DELIVERED_SCHEDULED_SERVICE;
-import static org.openmrs.module.messages.api.service.DatasetConstants.FAILED_SCHEDULED_SERVICE;
-import static org.openmrs.module.messages.api.service.DatasetConstants.PENDING_SCHEDULED_SERVICE;
-import static org.openmrs.module.messages.api.service.DatasetConstants.PENDING_SCHEDULED_SERVICE_IN_ANOTHER_CHANNEL;
-import static org.openmrs.module.messages.api.service.DatasetConstants.XML_DATA_SET_PATH;
-
 import com.google.gson.Gson;
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -52,7 +34,25 @@ import org.openmrs.scheduler.TaskDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-@SuppressWarnings("VisibilityModifier")
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.hamcrest.Matchers.hasItem;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.openmrs.module.messages.api.scheduler.job.ServiceGroupDeliveryJobDefinition.EXECUTION_CONTEXT;
+import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_PATIENT_ID;
+import static org.openmrs.module.messages.api.service.DatasetConstants.DELIVERED_SCHEDULED_SERVICE;
+import static org.openmrs.module.messages.api.service.DatasetConstants.FAILED_SCHEDULED_SERVICE;
+import static org.openmrs.module.messages.api.service.DatasetConstants.PENDING_SCHEDULED_SERVICE;
+import static org.openmrs.module.messages.api.service.DatasetConstants.PENDING_SCHEDULED_SERVICE_IN_ANOTHER_CHANNEL;
+import static org.openmrs.module.messages.api.service.DatasetConstants.XML_DATA_SET_PATH;
+
 public abstract class BaseReschedulingStrategyITTest extends ContextSensitiveTest {
 
     protected static final Long NEVER_REPEAT = 0L;

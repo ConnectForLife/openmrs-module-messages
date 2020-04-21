@@ -19,7 +19,6 @@ import static org.joda.time.DateTimeConstants.FRIDAY;
 import static org.joda.time.DateTimeConstants.SATURDAY;
 import static org.joda.time.DateTimeConstants.SUNDAY;
 
-@SuppressWarnings("checkstyle:magicnumber")
 public class AfterTimesTest {
 
     private static final int YEAR_2020 = 2020 - 1900; // new Date implementation is x - 1900
@@ -37,6 +36,10 @@ public class AfterTimesTest {
     private static final Date FIRST_DAY_OF_MONTH_START = getDateFrom2020(Calendar.FEBRUARY, 1);
     private static final Date MISSED_FIRST_WEEKDAY_IN_MONTH_START = getDateFrom2020(Calendar.FEBRUARY, 3);
     private static final int SIMPLE_CASE_WEEKS = 7;
+    private static final int THREE_OCCURRENCES = 3;
+    private static final int THREE_DAYS = 3;
+    private static final int FOUR_DAYS = 4;
+    private static final int EXPECTED_DAY_COUNT = 27;
 
     @Test
     public void shouldReturnEndDateForSimpleCase() {
@@ -314,41 +317,37 @@ public class AfterTimesTest {
     @Test
     public void shouldReturnProperMondayForDailyPeriodForOneDay() {
         Set<Integer> days = new HashSet<>(Collections.singletonList(MONDAY));
-        int occurrences = 3;
-        AfterTimes afterTimes = new AfterTimes(FrequencyType.DAILY, days, occurrences,
+        AfterTimes afterTimes = new AfterTimes(FrequencyType.DAILY, days, THREE_OCCURRENCES,
             SIMPLE_CASE_START_MONDAY);
 
-        Assert.assertEquals(getDateFrom2020(Calendar.FEBRUARY, 3), afterTimes.get());
+        Assert.assertEquals(getDateFrom2020(Calendar.FEBRUARY, THREE_DAYS), afterTimes.get());
     }
 
     @Test
     public void shouldReturnProperMondayForDailyPeriodForTwoDays() {
         Set<Integer> days = new HashSet<>(Arrays.asList(MONDAY, TUESDAY));
-        int occurrences = 3;
-        AfterTimes afterTimes = new AfterTimes(FrequencyType.DAILY, days, occurrences,
+        AfterTimes afterTimes = new AfterTimes(FrequencyType.DAILY, days, THREE_OCCURRENCES,
             SIMPLE_CASE_START_MONDAY);
 
-        Assert.assertEquals(getDateFrom2020(Calendar.JANUARY, 27), afterTimes.get());
+        Assert.assertEquals(getDateFrom2020(Calendar.JANUARY, EXPECTED_DAY_COUNT), afterTimes.get());
     }
 
     @Test
     public void shouldReturnProperMondayForWeeklyPeriod() {
         Set<Integer> days = new HashSet<>(Collections.singletonList(MONDAY));
-        int occurrences = 3;
-        AfterTimes afterTimes = new AfterTimes(FrequencyType.WEEKLY, days, occurrences,
+        AfterTimes afterTimes = new AfterTimes(FrequencyType.WEEKLY, days, THREE_OCCURRENCES,
             SIMPLE_CASE_START_MONDAY);
 
-        Assert.assertEquals(getDateFrom2020(Calendar.FEBRUARY, 3), afterTimes.get());
+        Assert.assertEquals(getDateFrom2020(Calendar.FEBRUARY, THREE_DAYS), afterTimes.get());
     }
 
     @Test
     public void shouldReturnProperProperTuesdayForWeeklyPeriod() {
         Set<Integer> days = new HashSet<>(Collections.singletonList(TUESDAY));
-        int occurrences = 3;
-        AfterTimes afterTimes = new AfterTimes(FrequencyType.WEEKLY, days, occurrences,
+        AfterTimes afterTimes = new AfterTimes(FrequencyType.WEEKLY, days, THREE_OCCURRENCES,
             SIMPLE_CASE_START_MONDAY);
 
-        Assert.assertEquals(getDateFrom2020(Calendar.FEBRUARY, 4), afterTimes.get());
+        Assert.assertEquals(getDateFrom2020(Calendar.FEBRUARY, FOUR_DAYS), afterTimes.get());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -384,7 +383,7 @@ public class AfterTimesTest {
         AfterTimes afterTimes = new AfterTimes(FrequencyType.MONTHLY, days, occurrences,
             SIMPLE_CASE_START_MONDAY);
 
-        Assert.assertEquals(getDateFrom2020(Calendar.MARCH, 3), afterTimes.get());
+        Assert.assertEquals(getDateFrom2020(Calendar.MARCH, THREE_DAYS), afterTimes.get());
     }
 
     @Test(expected = IllegalArgumentException.class)

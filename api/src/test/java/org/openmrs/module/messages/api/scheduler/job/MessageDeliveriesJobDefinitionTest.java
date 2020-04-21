@@ -50,7 +50,6 @@ import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_T
 import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_TEMPLATE_NAME;
 import static org.openmrs.module.messages.api.service.DatasetConstants.XML_DATA_SET_PATH;
 
-@SuppressWarnings("checkstyle:magicnumber")
 public class MessageDeliveriesJobDefinitionTest extends ContextSensitiveTest {
 
     private static final long DAILY = 3600L * 24;
@@ -61,6 +60,7 @@ public class MessageDeliveriesJobDefinitionTest extends ContextSensitiveTest {
             + ", 1 as intParam"
             + ", 1.23 as floatParam"
             + ", 'testString' as stringParam";
+    public static final int EXPECTED_THREE = 3;
 
     @Autowired
     @Qualifier("messages.templateService")
@@ -200,7 +200,7 @@ public class MessageDeliveriesJobDefinitionTest extends ContextSensitiveTest {
         List<ScheduledServiceParameter> newlySaved = filterByDefaultPatientTemplate(
                 getNewlyAddedObjects(listBeforeSave, messagingParameterService.getAll(false)));
 
-        assertEquals(3, newlySaved.size());
+        assertEquals(EXPECTED_THREE, newlySaved.size());
         assertParameterIsCorrect(expectedParam1, newlySaved.get(0));
         assertParameterIsCorrect(expectedParam2, newlySaved.get(1));
         assertParameterIsCorrect(expectedParam3, newlySaved.get(2));

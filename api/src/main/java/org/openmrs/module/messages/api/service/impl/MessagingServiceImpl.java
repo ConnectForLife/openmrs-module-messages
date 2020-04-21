@@ -62,6 +62,8 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
     private PatientService patientService;
     
     @Override
+    // This method is called by the velocity template engine (in a separate module)
+    // that's why to require so many parameters
     @SuppressWarnings("checkstyle:ParameterNumber")
     public ActorResponse registerResponse(Integer actorId, Integer patientId, String sourceId, String sourceType,
             Integer questionId, String textQuestion, Integer responseId, String textResponse, Date timestamp) {
@@ -125,6 +127,8 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
     }
 
     @Override
+    // This method is called by the velocity template engine (in a separate module)
+    // that's why to require so many parameters
     @SuppressWarnings("checkstyle:ParameterNumber")
     public ScheduledService registerResponseAndStatus(Integer scheduledId,
                                                       Integer questionId,
@@ -139,6 +143,8 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
     }
 
     @Override
+    // This method is called by the velocity template engine (in a separate module)
+    // that's why to require so many parameters
     @SuppressWarnings("checkstyle:ParameterNumber")
     public ScheduledService registerResponseAndStatus(Integer scheduledId,
                                                       Integer questionId,

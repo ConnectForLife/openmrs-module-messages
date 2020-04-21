@@ -13,7 +13,6 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.openmrs.module.messages.api.execution.ServiceResultGroupHelper.groupByActorAndExecutionDate;
 
-@SuppressWarnings("checkstyle:magicnumber")
 public class ServiceResultGroupHelperTest {
 
     private static final int ACTOR_1_ID = 1;
@@ -21,22 +20,28 @@ public class ServiceResultGroupHelperTest {
     private static final int PATIENT_1_ID = 5;
     private static final int PATIENT_TEMPLATE_1_ID = 1;
     private static final int PATIENT_TEMPLATE_2_ID = 2;
+    private static final int THREE_SERVICES = 3;
+    private static final int ONE_SERVICE = 1;
+    private static final int EXPECTED_ONE = 1;
+    private static final int EXPECTED_TWO = 2;
+    private static final int EXPECTED_THREE = 3;
+    private static final int EXPECTED_FOUR = 4;
 
     @Test
     public void shouldGroupByActor() {
         List<ServiceResultList> input = new ArrayList<>();
         Date date = getDate();
 
-        input.add(new ServiceResultListBuilder().withServiceResults(1, date)
+        input.add(new ServiceResultListBuilder().withServiceResults(ONE_SERVICE, date)
                 .withActorId(ACTOR_1_ID).build());
 
-        input.add(new ServiceResultListBuilder().withServiceResults(3, date)
+        input.add(new ServiceResultListBuilder().withServiceResults(THREE_SERVICES, date)
                 .withActorId(ACTOR_2_ID).build());
 
         List<GroupedServiceResultList> result = groupByActorAndExecutionDate(input, false);
-        assertEquals(2, result.size());
-        assertEquals(1, getResultsFor(result, ACTOR_1_ID, date).size());
-        assertEquals(3, getResultsFor(result, ACTOR_2_ID, date).size());
+        assertEquals(EXPECTED_TWO, result.size());
+        assertEquals(EXPECTED_ONE, getResultsFor(result, ACTOR_1_ID, date).size());
+        assertEquals(EXPECTED_THREE, getResultsFor(result, ACTOR_2_ID, date).size());
     }
 
     @Test
@@ -102,11 +107,11 @@ public class ServiceResultGroupHelperTest {
                 .withActorId(ACTOR_2_ID).build());
 
         List<GroupedServiceResultList> result = groupByActorAndExecutionDate(input, false);
-        assertEquals(4, result.size());
-        assertEquals(1, getResultsFor(result, ACTOR_1_ID, date).size());
-        assertEquals(1, getResultsFor(result, ACTOR_1_ID, datePlusOneSec).size());
-        assertEquals(2, getResultsFor(result, ACTOR_2_ID, date).size());
-        assertEquals(1, getResultsFor(result, ACTOR_2_ID, datePlusOneSec).size());
+        assertEquals(EXPECTED_FOUR, result.size());
+        assertEquals(EXPECTED_ONE, getResultsFor(result, ACTOR_1_ID, date).size());
+        assertEquals(EXPECTED_ONE, getResultsFor(result, ACTOR_1_ID, datePlusOneSec).size());
+        assertEquals(EXPECTED_TWO, getResultsFor(result, ACTOR_2_ID, date).size());
+        assertEquals(EXPECTED_ONE, getResultsFor(result, ACTOR_2_ID, datePlusOneSec).size());
     }
 
     @Test
@@ -149,12 +154,12 @@ public class ServiceResultGroupHelperTest {
         List<ServiceResultList> input = new ArrayList<>();
         Date date = getDate();
 
-        input.add(new ServiceResultListBuilder().withServiceResults(3, date)
+        input.add(new ServiceResultListBuilder().withServiceResults(THREE_SERVICES, date)
                 .withActorId(ACTOR_1_ID).build());
 
         List<GroupedServiceResultList> result = groupByActorAndExecutionDate(input, false);
-        assertEquals(1, result.size());
-        assertEquals(3, result.get(0).getGroup().getResults().size());
+        assertEquals(EXPECTED_ONE, result.size());
+        assertEquals(EXPECTED_THREE, result.get(0).getGroup().getResults().size());
         for (ServiceResult entry : getResultsFor(result, ACTOR_1_ID, date)) {
             assertEquals(date, entry.getExecutionDate());
         }
@@ -165,12 +170,12 @@ public class ServiceResultGroupHelperTest {
         List<ServiceResultList> input = new ArrayList<>();
         Date date = getDate();
 
-        input.add(new ServiceResultListBuilder().withServiceResults(3, date)
+        input.add(new ServiceResultListBuilder().withServiceResults(THREE_SERVICES, date)
                 .withActorId(ACTOR_1_ID).build());
 
         List<GroupedServiceResultList> result = groupByActorAndExecutionDate(input, false);
-        assertEquals(1, result.size());
-        assertEquals(3, result.get(0).getGroup().getResults().size());
+        assertEquals(EXPECTED_ONE, result.size());
+        assertEquals(EXPECTED_THREE, result.get(0).getGroup().getResults().size());
         for (GroupedServiceResultList group : result) {
             assertEquals((int) group.getGroup().getActorId(), ACTOR_1_ID);
         }
@@ -202,12 +207,12 @@ public class ServiceResultGroupHelperTest {
         List<ServiceResultList> input = new ArrayList<>();
         Date date = getDate();
 
-        input.add(new ServiceResultListBuilder().withServiceResults(1, date)
+        input.add(new ServiceResultListBuilder().withServiceResults(ONE_SERVICE, date)
                 .withActorId(ACTOR_1_ID)
                 .withPatientId(PATIENT_1_ID)
                 .build());
 
-        input.add(new ServiceResultListBuilder().withServiceResults(3, date)
+        input.add(new ServiceResultListBuilder().withServiceResults(THREE_SERVICES, date)
                 .withActorId(ACTOR_2_ID)
                 .withPatientId(ACTOR_2_ID)
                 .build());

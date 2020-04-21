@@ -9,6 +9,9 @@ import java.util.List;
 
 public class DefaultPatientTemplateWrapper {
 
+    private static final int INITIAL_NON_ZERO_ODD_NUMBER = 17;
+    private static final int MULTIPLIER_NON_ZERO_ODD_NUMBER = 37;
+
     public static List<DefaultPatientTemplateWrapper> wrapToList(Collection<PatientTemplate> patientTemplates) {
         List<DefaultPatientTemplateWrapper> list = new ArrayList<>();
         for (PatientTemplate patientTemplate : patientTemplates) {
@@ -54,9 +57,8 @@ public class DefaultPatientTemplateWrapper {
     }
 
     @Override
-    @SuppressWarnings("checkstyle:magicnumber")
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
+        return new HashCodeBuilder(INITIAL_NON_ZERO_ODD_NUMBER, MULTIPLIER_NON_ZERO_ODD_NUMBER)
                 .append(patientTemplate.getTemplate().getId())
                 .append(patientTemplate.getPatient().getId())
                 .append(patientTemplate.getActor().getId())

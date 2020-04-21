@@ -282,7 +282,7 @@
         <module name="VisibilityModifier">
             <property name="severity" value="error"/>
             <property name="packageAllowed" value="false"/>
-            <property name="protectedAllowed" value="false"/>
+            <property name="protectedAllowed" value="true"/>
             <property name="publicMemberPattern" value="^serialVersionUID$"/>
         </module>
         <module name="WhitespaceAfter">

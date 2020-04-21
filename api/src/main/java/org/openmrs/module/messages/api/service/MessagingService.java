@@ -67,6 +67,9 @@ public interface MessagingService extends BaseOpenmrsCriteriaDataService<Schedul
     /**
      * The API to be called by other modules, such as callflows and sms, in order to create actor response.
      *
+     * Note: This method is called by the velocity template engine (in a separate module)
+     * that's why to require so many parameters
+     *
      * @param actorId is an id of the Person (actor) for which {@link ActorResponse} should be created.
      * @param patientId is an id of the Patient which is related to this {@link ActorResponse}.
      * @param sourceId is an string identifier of the response which is used to join this method with specific message.
@@ -97,6 +100,9 @@ public interface MessagingService extends BaseOpenmrsCriteriaDataService<Schedul
      *
      * It should be used only if we registered the last response for service.
      *
+     * Note: This method is called by the velocity template engine (in a separate module)
+     * that's why to require so many parameters
+     *
      * @param scheduledId  is an id of the ScheduledService for which ActorResponse should be created.
      * @param questionId   is an id of a concept which describes a question.
      * @param textQuestion is an optional string value of question.
@@ -126,6 +132,9 @@ public interface MessagingService extends BaseOpenmrsCriteriaDataService<Schedul
      * The API to be called by other modules, such as callflows and sms, in order to create actor response and update
      * the delivery status of a given service scheduled. The method also invokes rescheduling strategy (determined by
      * Global Property) for all attempts.
+     *
+     * Note: This method is called by the velocity template engine (in a separate module)
+     * that's why to require so many parameters
      *
      * @param scheduledId  is an id of the ScheduledService for which ActorResponse should be created.
      * @param questionId   is an id of a concept which describes a question.
