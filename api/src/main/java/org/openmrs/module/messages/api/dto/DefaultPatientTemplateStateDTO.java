@@ -6,6 +6,9 @@ import java.util.List;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+/**
+ * Represents default patient template state DTO
+ */
 public class DefaultPatientTemplateStateDTO implements Serializable {
 
     private static final long serialVersionUID = -2593240814951309883L;
@@ -21,6 +24,13 @@ public class DefaultPatientTemplateStateDTO implements Serializable {
     public DefaultPatientTemplateStateDTO() {
     }
 
+    /**
+     * Constructor of a DefaultPatientTemplateState DTO object
+     *
+     * @param lacking list of not yet saved patient templates
+     * @param details DTO object containing detailed information about patient templates
+     * @param anyPatientTemplateSaved identifies whether any patient template is saved
+     */
     public DefaultPatientTemplateStateDTO(List<PatientTemplateDTO> lacking,
                                           MessageDetailsDTO details,
                                           boolean anyPatientTemplateSaved) {

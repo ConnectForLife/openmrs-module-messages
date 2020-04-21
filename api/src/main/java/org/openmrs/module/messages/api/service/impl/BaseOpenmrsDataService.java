@@ -14,6 +14,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Implements generic methods for creating, reading, updating and deleting entities
+ *
+ * @param <T> an object which extends BaseOpenmrsData
+ */
 @Transactional
 public class BaseOpenmrsDataService<T extends BaseOpenmrsData> extends BaseOpenmrsService
         implements BaseOpenmrsCriteriaDataService<T> {

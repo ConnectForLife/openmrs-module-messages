@@ -10,6 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Implements methods related to creating, reading, updating and deleting template entities
+ */
 public class TemplateServiceImpl extends BaseOpenmrsDataService<Template> implements TemplateService {
 
     private TemplateMapper templateMapper;

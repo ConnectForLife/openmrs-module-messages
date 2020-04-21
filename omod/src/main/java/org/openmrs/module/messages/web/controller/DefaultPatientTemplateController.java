@@ -22,6 +22,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+/**
+ * Exposes the endpoint related to managing data for default patient templates
+ */
 @Controller
 @RequestMapping("/messages/defaults")
 public class DefaultPatientTemplateController extends BaseRestController {
@@ -42,6 +45,12 @@ public class DefaultPatientTemplateController extends BaseRestController {
     @Qualifier("messages.patientTemplateMapper")
     private PatientTemplateMapper mapper;
 
+    /**
+     * Checks whether patient has any patient templates and fetches their details
+     *
+     * @param id id of patient
+     * @return DTO object containing information about available patient templates and their detailed data
+     */
     @RequestMapping(value = "{patientId}/check", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -59,6 +68,12 @@ public class DefaultPatientTemplateController extends BaseRestController {
         return new DefaultPatientTemplateStateDTO(mapper.toDtos(lacking), details, existing.size() > 0);
     }
 
+    /**
+     * Saves the default patient templates
+     *
+     * @param id if of patient
+     * @return list of DTO objects containing default patient templates
+     */
     @RequestMapping(value = "{patientId}/generate-and-save", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody

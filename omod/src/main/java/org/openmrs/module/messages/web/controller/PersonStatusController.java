@@ -37,6 +37,12 @@ public class PersonStatusController extends BaseRestController {
     @Qualifier("messages.personStatusHelper")
     private PersonStatusHelper personStatusHelper;
 
+    /**
+     * Fetches the person status
+     *
+     * @param personId id of person
+     * @return DTO object containing data about person status
+     */
     @RequestMapping(value = "/{personId}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -49,6 +55,13 @@ public class PersonStatusController extends BaseRestController {
         return result;
     }
 
+    /**
+     * Updates the person status
+     *
+     * @param personId id of person
+     * @param personStatusDTO DTO object containing data about person status
+     * @return updated DTO object containing data about person status
+     */
     @RequestMapping(value = "/{personId}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -59,6 +72,11 @@ public class PersonStatusController extends BaseRestController {
         return personStatusHelper.getStatus(personId);
     }
 
+    /**
+     * Fetches the possible reasons for patient deactivation
+     *
+     * @return list of possible reasons
+     */
     @RequestMapping(value = "/reasons", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody

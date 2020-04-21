@@ -11,6 +11,9 @@ import org.openmrs.module.messages.api.service.ServiceResultsHandlerService;
 
 import static org.openmrs.module.messages.api.constants.ConfigConstants.PERSON_PHONE_ATTR;
 
+/**
+ * Implements basic methods related to the handling of service results
+ */
 public abstract class AbstractServiceResultsHandlerService implements ServiceResultsHandlerService {
 
     private PersonService personService;

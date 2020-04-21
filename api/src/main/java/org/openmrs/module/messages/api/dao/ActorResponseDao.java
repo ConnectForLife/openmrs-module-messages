@@ -11,5 +11,8 @@ package org.openmrs.module.messages.api.dao;
 
 import org.openmrs.module.messages.api.model.ActorResponse;
 
+/**
+ * Data access object for the actor response entities
+ */
 public interface ActorResponseDao extends BaseOpenmrsPageableDao<ActorResponse> {
 }

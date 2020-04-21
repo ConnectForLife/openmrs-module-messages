@@ -6,6 +6,9 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
+/**
+ * Represents an actor schedule DTO
+ */
 public class ActorScheduleDTO implements Comparable<ActorScheduleDTO>, DTO {
     private Integer actorId;
     private String actorType;
@@ -13,6 +16,15 @@ public class ActorScheduleDTO implements Comparable<ActorScheduleDTO>, DTO {
     private Integer patientId;
     private String patientName;
 
+    /**
+     * Constructor of an ActorSchedule DTO object
+     *
+     * @param actorId actor id
+     * @param actorType actor type
+     * @param schedule comma separated string containing patient template field values
+     * @param patientId patient id
+     * @param patientName patient name
+     */
     public ActorScheduleDTO(Integer actorId, String actorType, String schedule, Integer patientId, String patientName) {
         this.actorId = actorId;
         this.actorType = actorType;

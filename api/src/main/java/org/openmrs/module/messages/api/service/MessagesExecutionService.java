@@ -9,6 +9,17 @@
 
 package org.openmrs.module.messages.api.service;
 
+/**
+ * Provides methods to handle completed messages executions
+ */
 public interface MessagesExecutionService {
+    /**
+     * Method allows to perform the all desired actions after message execution
+     * (attempt registration, status setting etc.)
+     *
+     * @param groupId id of messages execution group
+     * @param executionId id of messages execution
+     * @param channelType name of specific channel type (e.g. SMS, Call)
+     */
     void executionCompleted(Integer groupId, String executionId, String channelType);
 }

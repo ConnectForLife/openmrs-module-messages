@@ -14,6 +14,9 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
 
+/**
+ * Represents default contact time DTO
+ */
 public class DefaultContactTimeDTO implements Serializable {
 
     private static final long serialVersionUID = -4291847840418724090L;
@@ -24,6 +27,12 @@ public class DefaultContactTimeDTO implements Serializable {
 
     public DefaultContactTimeDTO() { }
 
+    /**
+     * Constructor of a DefaultContactTime DTO object
+     *
+     * @param actor uuid of relationship type taken from best contact time config (global property)
+     * @param time time as a text value assigned to particular actor
+     */
     public DefaultContactTimeDTO(String actor, String time) {
         this.actor = actor;
         this.time = time;

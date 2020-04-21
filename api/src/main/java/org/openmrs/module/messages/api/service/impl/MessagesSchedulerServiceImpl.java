@@ -24,6 +24,9 @@ import org.openmrs.scheduler.SchedulerException;
 import org.openmrs.scheduler.SchedulerService;
 import org.openmrs.scheduler.TaskDefinition;
 
+/**
+ * Implements methods related to job scheduling
+ */
 public class MessagesSchedulerServiceImpl extends BaseOpenmrsDataService<ScheduledService>
         implements MessagesSchedulerService {
 

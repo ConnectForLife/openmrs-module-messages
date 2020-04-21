@@ -20,6 +20,9 @@ import org.openmrs.module.messages.api.service.TemplateService;
 import org.openmrs.module.messages.api.util.DefaultPatientTemplateWrapper;
 import org.openmrs.module.messages.domain.criteria.PatientTemplateCriteria;
 
+/**
+ * Implements methods related to the creating of default patient templates
+ */
 public class DefaultPatientTemplateServiceImpl extends BaseOpenmrsService implements DefaultPatientTemplateService {
 
     private PatientTemplateService patientTemplateService;

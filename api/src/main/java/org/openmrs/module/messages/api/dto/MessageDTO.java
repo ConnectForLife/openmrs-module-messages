@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Represents a message DTO
+ */
 public class MessageDTO {
 
     private String type;
@@ -14,6 +17,14 @@ public class MessageDTO {
 
     private List<ActorScheduleDTO> actorSchedules;
 
+    /**
+     * Constructor of an Message DTO object
+     *
+     * @param type type of message, in other words name of template e.g. Adherence report daily
+     * @param createdAt date of message type creation
+     * @param author creator of message type, in other words system user e.g. admin
+     * @param actorSchedules list of ActorScheduleDTO objects
+     */
     public MessageDTO(String type, Date createdAt, UserDTO author, List<ActorScheduleDTO> actorSchedules) {
         this.type = type;
         this.createdAt = createdAt;

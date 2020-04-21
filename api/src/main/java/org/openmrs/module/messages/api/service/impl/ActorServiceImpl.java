@@ -32,6 +32,9 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Implements methods related to the actor service management
+ */
 public class ActorServiceImpl implements ActorService {
 
     private static final Log LOGGER = LogFactory.getLog(ActorServiceImpl.class);

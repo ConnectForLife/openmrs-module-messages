@@ -11,5 +11,8 @@ package org.openmrs.module.messages.api.dao;
 
 import org.openmrs.module.messages.api.model.ScheduledService;
 
+/**
+ * Data access object for the scheduled service entities
+ */
 public interface MessagingDao extends BaseOpenmrsPageableDao<ScheduledService> {
 }

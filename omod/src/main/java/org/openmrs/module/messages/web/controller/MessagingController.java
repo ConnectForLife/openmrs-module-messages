@@ -25,6 +25,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Exposes the endpoints related to managing of scheduled services
+ */
 @Controller
 @RequestMapping("/messages")
 public class MessagingController extends BaseRestController {
@@ -43,6 +46,12 @@ public class MessagingController extends BaseRestController {
     @Qualifier("messages.messagingService")
     private MessagingService messagingService;
 
+    /**
+     * Fetches detailed settings of configured patient templates
+     *
+     * @param messagingParams object containing basic information needed to fetch patient templates e.g. patient, actor
+     * @return DTO object containing detailed information about messages settings in patient templates
+     */
     @RequestMapping(value = "/details", method = RequestMethod.GET)
     @ResponseBody
     public MessageDetailsDTO getMessageDetails(MessagingParams messagingParams) {
@@ -53,6 +62,16 @@ public class MessagingController extends BaseRestController {
         return messageDetailsMapper.toDto(patientTemplates).withPersonId(criteria.getPersonId());
     }
 
+    /**
+     * Fetches executions list for a service from given date range
+     *
+     * @param personId id of person
+     * @param startDate the start of the date range
+     * @param endDate the end of the date range
+     * @param isPatient identifies whether person is a patient
+     * @return list of service execution result
+     * @throws ExecutionException
+     */
     @RequestMapping(value = "", method = RequestMethod.GET)
     @ResponseBody
     public List<ServiceResultList> getMessages(
@@ -70,6 +89,12 @@ public class MessagingController extends BaseRestController {
         }
     }
 
+    /**
+     * Execution exception handler for internal server error
+     *
+     * @param exception thrown exception
+     * @return an error response
+     */
     @ExceptionHandler(ExecutionException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody

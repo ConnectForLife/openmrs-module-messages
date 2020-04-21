@@ -30,6 +30,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Implements methods related to the handling of sms service results
+ */
 public class SmsServiceResultsHandlerServiceImpl extends AbstractServiceResultsHandlerService {
 
     private static final Log LOGGER = LogFactory.getLog(SmsServiceResultsHandlerServiceImpl.class);

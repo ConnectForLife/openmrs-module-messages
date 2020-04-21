@@ -24,6 +24,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Controller for managing of best contact time widget
+ */
 public class BestContactTimeFragmentController {
 
     private static final String LABEL_KEY = "label";

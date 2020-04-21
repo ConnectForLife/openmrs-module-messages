@@ -6,6 +6,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a patient template DTO
+ */
 public class PatientTemplateDTO implements Serializable, DTO {
 
     private static final long serialVersionUID = -6043667008851204408L;

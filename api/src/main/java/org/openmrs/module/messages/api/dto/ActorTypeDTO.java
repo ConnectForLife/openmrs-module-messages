@@ -15,6 +15,9 @@ import org.openmrs.module.messages.api.model.RelationshipTypeDirection;
 
 import java.io.Serializable;
 
+/**
+ * Represents an actor type DTO
+ */
 public class ActorTypeDTO implements Serializable {
 
     private static final long serialVersionUID = -5236428829247063915L;
@@ -27,6 +30,14 @@ public class ActorTypeDTO implements Serializable {
 
     private RelationshipTypeDirection relationshipTypeDirection;
 
+    /**
+     * Constructor of an ActorType DTO object
+     *
+     * @param uuid uuid of relationship type
+     * @param display displayed name from relationship type, depending on the relationship type direction
+     * @param relationshipTypeId id of relationship type
+     * @param relationshipTypeDirection relationship type direction e.g. A or B
+     */
     public ActorTypeDTO(String uuid, String display, Integer relationshipTypeId,
                         RelationshipTypeDirection relationshipTypeDirection) {
         this.uuid = uuid;

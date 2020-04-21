@@ -1,5 +1,8 @@
 package org.openmrs.module.messages.api.dto;
 
+/**
+ * Represents a user DTO
+ */
 public class UserDTO {
 
     private String username;

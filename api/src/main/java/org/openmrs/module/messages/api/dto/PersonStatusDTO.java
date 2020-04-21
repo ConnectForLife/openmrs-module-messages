@@ -14,6 +14,9 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
 
+/**
+ * Represents a person status DTO
+ */
 public class PersonStatusDTO implements Serializable {
 
     private static final long serialVersionUID = 449432652231507555L;

@@ -35,6 +35,9 @@ import java.util.List;
 
 import static org.openmrs.module.messages.api.model.ErrorMessageEnum.ERR_SYSTEM;
 
+/**
+ * Exposes the endpoints related to managing of patient templates
+ */
 @Controller
 @RequestMapping("/messages/patient-templates")
 public class PatientTemplateController extends BaseRestController {
@@ -57,6 +60,13 @@ public class PatientTemplateController extends BaseRestController {
     @Qualifier("messages.validationComponent")
     private ValidationComponent validationComponent;
 
+    /**
+     * Fetches patient templates for particular patient
+     *
+     * @param id id of patient
+     * @param pageableParams parameters representing expected page shape
+     * @return a page containing patient templates details
+     */
     @RequestMapping(value = "/patient/{id}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -72,6 +82,16 @@ public class PatientTemplateController extends BaseRestController {
         return new PageDTO<>(mapper.toDtos(templates), pagingInfo);
     }
 
+    /**
+     * Creates or updates patient templates
+     *
+     * @param patientId id of patient
+     * @param wrapper patient template wrapper
+     * @return
+     * @throws ValidationException
+     * @throws APIException
+     * @throws StaleStateException
+     */
     @RequestMapping(value = "/patient/{id}", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -86,6 +106,12 @@ public class PatientTemplateController extends BaseRestController {
         return new PatientTemplatesWrapper(mapper.toDtos(saved));
     }
 
+    /**
+     * API exception handler for bad request
+     *
+     * @param ex thrown exception
+     * @return an error response
+     */
     @ExceptionHandler(APIException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
@@ -94,6 +120,12 @@ public class PatientTemplateController extends BaseRestController {
         return new ErrorResponseDTO(new ErrorMessage(ERR_SYSTEM.getCode(), ex.getMessage()));
     }
 
+    /**
+     * StaleStateException handler for bad request
+     *
+     * @param ex thrown exception
+     * @return an error response
+     */
     @ExceptionHandler(StaleStateException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody

@@ -3,6 +3,9 @@ package org.openmrs.module.messages.api.dto;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a message details DTO
+ */
 public class MessageDetailsDTO {
 
     private Integer personId;

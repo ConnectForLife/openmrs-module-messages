@@ -9,6 +9,9 @@ import org.openmrs.module.messages.api.service.MessagesEventService;
 import java.io.Serializable;
 import java.util.Map;
 
+/**
+ * Implements methods related to events management
+ */
 public class MessagesEventServiceImpl extends BaseOpenmrsService implements MessagesEventService {
 
     @Override

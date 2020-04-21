@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Arrays;
 
+/**
+ * Controller for managing of person status
+ */
 public class ChangeStatusFragmentController {
 
     public void controller(FragmentModel model,
@@ -32,6 +35,14 @@ public class ChangeStatusFragmentController {
         }
     }
 
+    /**
+     * Updates the person status
+     *
+     * @param personId person id
+     * @param personStatusValue status value
+     * @param personStatusReason status reason value
+     * @param personStatusHelper bean for PersonStatusHelper
+     */
     public void update(@RequestParam(value = "personId", required = false) String personId,
             @RequestParam(value = "personStatusValue", required = false) String personStatusValue,
             @RequestParam(value = "personStatusReason", required = false) String personStatusReason,

@@ -44,6 +44,12 @@ public class TemplateController extends BaseRestController {
     @Qualifier("messages.validationComponent")
     private ValidationComponent validationComponent;
 
+    /**
+     * Fetches all available templates
+     *
+     * @param pageableParams parameters representing expected page shape
+     * @return a page containing available templates
+     */
     @RequestMapping(method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -54,6 +60,12 @@ public class TemplateController extends BaseRestController {
         return new PageDTO<>(templateMapper.toDtos(templates), pagingInfo);
     }
 
+    /**
+     * Creates a new template
+     *
+     * @param templateDTO DTO object containing all necessary data to create template
+     * @return DTO object containing data related to new template
+     */
     @RequestMapping(method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
@@ -64,6 +76,13 @@ public class TemplateController extends BaseRestController {
         return templateMapper.toDto(templateService.saveOrUpdateTemplate(template));
     }
 
+    /**
+     * Updates existing template
+     *
+     * @param templateId id of existing template
+     * @param templateDto DTO object containing data needed to update template
+     * @return DTO object containing data related to updated template
+     */
     @RequestMapping(value = "/{templateId}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -77,6 +96,12 @@ public class TemplateController extends BaseRestController {
         return templateMapper.toDto(updated);
     }
 
+    /**
+     * Updates existing templates
+     *
+     * @param templateWrapper template wrapper object stores list of templates
+     * @return template wrapper object with updated list of templates
+     */
     @RequestMapping(method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody

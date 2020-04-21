@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
+/**
+ * Controller for managing adherence graph
+ */
 public class ActorResponseGraphFragmentController {
 
     private static final String ACTOR_ID = "actorId";
@@ -41,6 +44,21 @@ public class ActorResponseGraphFragmentController {
         buildRequestConfiguration(model, configuration, person);
     }
 
+    /**
+     * Fetches actor responses which are used to display as a content of adherence graph
+     *
+     * @param actorId actor id
+     * @param patientId person id
+     * @param questionId id of concept containing adherence question
+     * @param textQuestion text adherence question
+     * @param possibleResponses list of concept ids containing adherence responses
+     * @param possibleTextResponses list of possible text responses
+     * @param responseMode response mode e.g. concept or text
+     * @param aggregateMode aggregate mode e.g. week or month
+     * @param dataDateRange number of aggregate mode units, e.g. 4 (weeks/months)
+     * @param actorResponseService bean for ActorResponseService
+     * @return list of actor responses for particular person from given date range
+     */
     @SuppressWarnings({"checkstyle:parameterNumber", "PMD.ExcessiveParameterList"})
     public List<ActorResponse> getData(
             @RequestParam(value = ACTOR_ID, required = false) Integer actorId,
@@ -48,7 +66,7 @@ public class ActorResponseGraphFragmentController {
             @RequestParam(value = QUESTION_ID, required = false) Integer questionId,
             @RequestParam(value = TEXT_QUESTION, required = false) String textQuestion,
             @RequestParam(value = POSSIBLE_RESPONSES + "[]", required = false) List<Integer> possibleResponses,
-            @RequestParam(value = POSSIBLE_TEXT_RESPONSES + "[]", required = false) List<String> possibleTestResponses,
+            @RequestParam(value = POSSIBLE_TEXT_RESPONSES + "[]", required = false) List<String> possibleTextResponses,
             @RequestParam(value = RESPONSE_MODE, required = false) String responseMode,
             @RequestParam(value = AGGREGATE_MODE, required = false) String aggregateMode,
             @RequestParam(value = DATA_DATE_RANGE, required = false) Integer dataDateRange,
@@ -59,7 +77,7 @@ public class ActorResponseGraphFragmentController {
             .setQuestionId(questionId)
             .setTextQuestion(textQuestion)
             .setPossibleResponses(possibleResponses)
-            .setPossibleTextResponses(possibleTestResponses)
+            .setPossibleTextResponses(possibleTextResponses)
             .setResponseMode(responseMode)
             .setAggregateMode(aggregateMode)
             .setDataDateRange(dataDateRange));

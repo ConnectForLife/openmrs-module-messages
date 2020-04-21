@@ -33,6 +33,9 @@ import static org.openmrs.module.messages.api.event.CallFlowParamConstants.MESSA
 import static org.openmrs.module.messages.api.event.CallFlowParamConstants.PHONE;
 import static org.openmrs.module.messages.api.event.CallFlowParamConstants.REF_KEY;
 
+/**
+ * Implements methods related to the handling of call service results
+ */
 public class CallFlowServiceResultsHandlerServiceImpl extends AbstractServiceResultsHandlerService {
 
     private static final Log LOG = LogFactory.getLog(CallFlowServiceResultsHandlerServiceImpl.class);

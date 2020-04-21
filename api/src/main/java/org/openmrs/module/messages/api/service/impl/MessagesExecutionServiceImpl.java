@@ -22,6 +22,9 @@ import org.openmrs.module.messages.api.service.MessagingService;
 import org.openmrs.module.messages.api.util.DateUtil;
 import org.openmrs.module.messages.api.util.HibernateUtil;
 
+/**
+ * Implements methods related to handling of completed messages executions
+ */
 public class MessagesExecutionServiceImpl implements MessagesExecutionService {
     private static final Log LOGGER = LogFactory.getLog(MessagesExecutionServiceImpl.class);
 

@@ -13,6 +13,15 @@ import java.util.List;
 import org.openmrs.module.messages.api.model.ScheduledService;
 import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
 
+/**
+ * Provides methods to handle results after service query execution
+ */
 public interface ServiceResultsHandlerService {
+    /**
+     * Handles results after service query execution e.g. trigger event
+     *
+     * @param services list of scheduled services e.g. smsServices or callServices
+     * @param executionContext scheduled service context which contains all necessary data to schedule an event
+     */
     void handle(List<ScheduledService> services, ScheduledExecutionContext executionContext);
 }

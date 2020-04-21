@@ -5,6 +5,9 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
 
+/**
+ * Represents an actor DTO
+ */
 public class ActorDTO implements Serializable {
 
     private static final long serialVersionUID = -6289921466905123913L;

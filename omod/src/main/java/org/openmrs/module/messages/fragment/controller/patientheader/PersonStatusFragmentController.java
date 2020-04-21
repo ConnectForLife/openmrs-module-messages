@@ -15,6 +15,9 @@ import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.springframework.web.bind.annotation.RequestParam;
 
+/**
+ * Controller for displaying person status
+ */
 public class PersonStatusFragmentController {
 
     public void controller(FragmentModel model,

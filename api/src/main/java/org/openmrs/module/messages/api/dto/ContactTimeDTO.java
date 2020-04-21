@@ -5,6 +5,9 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
 
+/**
+ * Represents a contact time DTO
+ */
 public class ContactTimeDTO implements Serializable {
 
     private static final long serialVersionUID = -2593240814911309883L;

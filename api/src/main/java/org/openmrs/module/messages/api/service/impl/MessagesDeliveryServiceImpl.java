@@ -18,6 +18,9 @@ import org.openmrs.module.messages.api.scheduler.job.ServiceGroupDeliveryJobDefi
 import org.openmrs.module.messages.api.service.MessagesDeliveryService;
 import org.openmrs.module.messages.api.service.MessagesSchedulerService;
 
+/**
+ * Implements methods related to the messages delivery management
+ */
 @Transactional
 public class MessagesDeliveryServiceImpl extends BaseOpenmrsService implements MessagesDeliveryService {
 

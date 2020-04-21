@@ -45,6 +45,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Implements methods related to scheduled services management
+ */
 @Transactional
 public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledService> implements MessagingService {
 

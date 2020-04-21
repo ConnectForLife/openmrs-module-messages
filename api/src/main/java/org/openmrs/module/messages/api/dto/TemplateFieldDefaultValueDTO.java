@@ -6,6 +6,9 @@ import org.openmrs.module.messages.api.model.RelationshipTypeDirection;
 
 import javax.validation.constraints.NotNull;
 
+/**
+ * Represents a template field default value DTO
+ */
 public class TemplateFieldDefaultValueDTO implements DTO {
 
     private Integer id;

@@ -10,6 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * Implements methods related to creating, reading, updating and deleting patient templates entities
+ */
 public class PatientTemplateServiceImpl extends BaseOpenmrsDataService<PatientTemplate>
         implements PatientTemplateService {
 

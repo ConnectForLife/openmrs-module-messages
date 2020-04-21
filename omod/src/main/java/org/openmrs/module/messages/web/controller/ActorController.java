@@ -29,6 +29,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
 
+/**
+ * Exposes the endpoints related to managing data for actor
+ */
 @Controller
 @RequestMapping(value = "/messages/actor")
 public class ActorController extends BaseRestController {
@@ -49,6 +52,13 @@ public class ActorController extends BaseRestController {
     @Qualifier("personService")
     private PersonService personService;
 
+    /**
+     * Fetches all actors for person
+     *
+     * @param personId id of person
+     * @param isPatient identifies whether person is a patient
+     * @return list of DTO objects containing all actors related to the person
+     */
     @RequestMapping(value = "/{personId}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -63,6 +73,12 @@ public class ActorController extends BaseRestController {
         return actorMapper.toDtos(actorService.getAllActorsForPersonId(person.getId(), isPatient));
     }
 
+    /**
+     * Fetches best contact time for person
+     *
+     * @param personId id of person
+     * @return best contact time as a text
+     */
     @RequestMapping(value = "/{personId}/contact-time", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -71,6 +87,12 @@ public class ActorController extends BaseRestController {
         return actorService.getContactTime(Integer.parseInt(personId));
     }
 
+    /**
+     * Fetches best contact times for people
+     *
+     * @param personIds list of people ids
+     * @return list of DTO objects containing best contact times data
+     */
     @RequestMapping(value = "/contact-times", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -78,6 +100,11 @@ public class ActorController extends BaseRestController {
         return actorService.getContactTimes(personIds);
     }
 
+    /**
+     * Fetches all actor types
+     *
+     * @return list of DTO objects containing available actor types
+     */
     @RequestMapping(value = "/types", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -85,6 +112,11 @@ public class ActorController extends BaseRestController {
         return actorTypeMapper.toDtos(actorService.getAllActorTypes());
     }
 
+    /**
+     * Fetches default best contact times
+     *
+     * @return list of DTO objects containing default best contact times data
+     */
     @RequestMapping(value = "/contact-times/default", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -92,18 +124,33 @@ public class ActorController extends BaseRestController {
         return BestContactTimeHelper.getDefaultContactTimes();
     }
 
+    /**
+     * Saves default best contact times
+     *
+     * @param contactTimes list of default best contact times
+     */
     @RequestMapping(value = "/contact-times/default", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
     public void setBestContactTimes(@RequestBody DefaultContactTimeWrapper contactTimes) {
         BestContactTimeHelper.setDefaultContactTimes(contactTimes.getRecords());
     }
 
+    /**
+     * Saves best contact time
+     *
+     * @param contactTimeDTO DTO object containing best contact time data
+     */
     @RequestMapping(value = "/contact-time", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     public void setBestContactTime(@RequestBody ContactTimeDTO contactTimeDTO) {
         actorService.saveContactTime(contactTimeDTO);
     }
 
+    /**
+     * Saves best contact times
+     *
+     * @param contactTimeDTOs list of DTO objects containing best contact times data
+     */
     @RequestMapping(value = "/contact-times", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     public void setBestContactTimes(@RequestBody List<ContactTimeDTO> contactTimeDTOs) {
