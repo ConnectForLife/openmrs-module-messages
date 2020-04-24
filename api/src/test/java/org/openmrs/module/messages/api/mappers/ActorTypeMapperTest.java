@@ -15,9 +15,9 @@ import static org.openmrs.module.messages.Constant.CARETAKER_RELATIONSHIP;
 
 public class ActorTypeMapperTest {
 
-    private ActorTypeMapper actorTypeMapper = StaticMappersProvider.getActorTypeMapper();
-
     private static final String TYPE_UUID = "511cc270-2541-4a9b-b08e-d70b058f86ab";
+
+    private ActorTypeMapper actorTypeMapper = StaticMappersProvider.getActorTypeMapper();
 
     @Test
     public void shouldMapToActorTypeForDirectionA() {

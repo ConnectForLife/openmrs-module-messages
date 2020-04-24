@@ -136,4 +136,57 @@
 		</plugins>
 	</build>
 
+	<profiles>
+		<profile>
+			<id>code-coverage</id>
+			<dependencies>
+				<dependency>
+					<groupId>org.jacoco</groupId>
+					<artifactId>org.jacoco.agent</artifactId>
+					<classifier>runtime</classifier>
+					<version>${jacocoVersion}</version>
+				</dependency>
+			</dependencies>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+						<version>${jacocoVersion}</version>
+						<configuration>
+							<excludes>
+								<exclude>org/openmrs/module/messages/api/**</exclude>
+								<exclude>org/openmrs/module/messages/builder/**</exclude>
+								<exclude>org/openmrs/module/messages/domain/**</exclude>
+								<exclude>org/openmrs/module/messages/*.class</exclude>
+							</excludes>
+						</configuration>
+						<executions>
+							<!-- Off line instrumentation is needed to compute coverage for Power Mock tests -->
+							<execution>
+								<id>default-instrument</id>
+								<goals>
+									<goal>instrument</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>default-restore-instrumented-classes</id>
+								<goals>
+									<goal>restore-instrumented-classes</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>default-report</id>
+								<phase>prepare-package</phase>
+								<goals>
+									<goal>report</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
 </project>

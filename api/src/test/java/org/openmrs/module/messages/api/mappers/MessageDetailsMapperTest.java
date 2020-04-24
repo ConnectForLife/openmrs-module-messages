@@ -16,12 +16,12 @@ import static org.junit.Assert.assertEquals;
 
 public class MessageDetailsMapperTest {
 
-    private MessageDetailsMapper messageDetailsMapper = StaticMappersProvider.getMessageDetailsMapper();
-
     private static final int PATIENT_2_ID = 682;
     private static final int PATIENT_1_ID = 328;
     private static final int TEMPLATE_1_ID = 284;
     private static final int TEMPLATE_2_ID = 720;
+
+    private MessageDetailsMapper messageDetailsMapper = StaticMappersProvider.getMessageDetailsMapper();
 
     @Test
     public void shouldAccumulateMessagesWithTheSameTemplate() {

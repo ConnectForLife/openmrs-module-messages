@@ -10,6 +10,7 @@ import org.openmrs.module.messages.builder.TemplateFieldDTOBuilder;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertEquals;
 
 public class TemplateFieldMapperTest {
 
@@ -31,26 +32,26 @@ public class TemplateFieldMapperTest {
     }
 
     @Test
-    public void toDto() {
+    public void shouldMapToDtoSuccessfully() {
         TemplateFieldDTO actual = templateFieldMapper.toDto(dao);
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getId(), is(dao.getId()));
-        assertThat(actual.getName(), is(dao.getName()));
-        assertThat(actual.getMandatory(), is(dao.getMandatory()));
-        assertThat(actual.getDefaultValue(), is(dao.getDefaultValue()));
-        assertThat(actual.getType(), is(dao.getTemplateFieldType().name()));
-        assertThat(actual.getUuid(), is(dao.getUuid()));
+        assertEquals(dao.getId(), actual.getId());
+        assertEquals(dao.getName(), actual.getName());
+        assertEquals(dao.getMandatory(), actual.getMandatory());
+        assertEquals(dao.getDefaultValue(), actual.getDefaultValue());
+        assertEquals(dao.getTemplateFieldType().name(), actual.getType());
+        assertEquals(dao.getUuid(), actual.getUuid());
     }
 
     @Test
-    public void fromDto() {
+    public void shouldMapToDaoSuccessfully() {
         TemplateField actual = templateFieldMapper.fromDto(dto);
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getId(), is(dto.getId()));
-        assertThat(actual.getName(), is(dto.getName()));
-        assertThat(actual.getMandatory(), is(dto.getMandatory()));
-        assertThat(actual.getDefaultValue(), is(dto.getDefaultValue()));
-        assertThat(actual.getTemplateFieldType().name(), is(dto.getType()));
-        assertThat(actual.getUuid(), is(dto.getUuid()));
+        assertEquals(dto.getId(), actual.getId());
+        assertEquals(dto.getName(), actual.getName());
+        assertEquals(dto.getMandatory(), actual.getMandatory());
+        assertEquals(dto.getDefaultValue(), actual.getDefaultValue());
+        assertEquals(dto.getType(), actual.getTemplateFieldType().name());
+        assertEquals(dto.getUuid(), actual.getUuid());
     }
 }
