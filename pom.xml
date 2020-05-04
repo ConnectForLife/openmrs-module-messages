@@ -12,8 +12,10 @@
     <artifactId>messages</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>Messages</name>
-    <description>Messages module</description>
+    <name>Messages module</name>
+    <description>
+        The Messages module will provide receiving messages (Call or SMS) from health facility.
+    </description>
 
     <scm>
         <connection>scm:git:git@bitbucket.org/soldevelo/omrs-messages.git</connection>
@@ -26,6 +28,27 @@
         <module>omod</module>
         <module>owa</module>
     </modules>
+
+    <properties>
+        <apacheHttpClientVersion>4.4.1</apacheHttpClientVersion>
+        <openmrsPlatformVersion>2.0.1</openmrsPlatformVersion>
+        <javaCompilerSource>1.8</javaCompilerSource>
+        <javaCompilerTarget>1.8</javaCompilerTarget>
+        <gsonVersion>2.8.5</gsonVersion>
+        <pmdPluginVersion>3.12.0</pmdPluginVersion>
+        <checkStylePluginVersion>3.0.0</checkStylePluginVersion>
+        <findBugsPluginVersion>3.0.5</findBugsPluginVersion>
+        <legacyVersion>1.5.0</legacyVersion>
+        <jacocoVersion>0.8.2</jacocoVersion>
+        <surefireVersion>2.17</surefireVersion>
+        <javax.servlet.version>3.0.1</javax.servlet.version>
+        <uiframeworkVersion>3.9</uiframeworkVersion>
+        <uiCommonsVersion>2.6.1</uiCommonsVersion>
+        <eventVersion>2.6.0</eventVersion>
+        <jtsCoreVersion>1.14.0</jtsCoreVersion>
+        <pmdPluginSkip>false</pmdPluginSkip>
+        <checkStylePluginSkip>false</checkStylePluginSkip>
+    </properties>
 
     <dependencyManagement>
         <dependencies>
@@ -293,25 +316,4 @@
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
-
-    <properties>
-        <apacheHttpClientVersion>4.4.1</apacheHttpClientVersion>
-        <openmrsPlatformVersion>2.0.1</openmrsPlatformVersion>
-        <javaCompilerSource>1.8</javaCompilerSource>
-        <javaCompilerTarget>1.8</javaCompilerTarget>
-        <gsonVersion>2.8.5</gsonVersion>
-        <pmdPluginVersion>3.12.0</pmdPluginVersion>
-        <checkStylePluginVersion>3.0.0</checkStylePluginVersion>
-        <findBugsPluginVersion>3.0.5</findBugsPluginVersion>
-        <legacyVersion>1.5.0</legacyVersion>
-        <jacocoVersion>0.8.2</jacocoVersion>
-        <surefireVersion>2.17</surefireVersion>
-        <javax.servlet.version>3.0.1</javax.servlet.version>
-        <uiframeworkVersion>3.9</uiframeworkVersion>
-        <uiCommonsVersion>2.6.1</uiCommonsVersion>
-        <eventVersion>2.6.0</eventVersion>
-        <jtsCoreVersion>1.14.0</jtsCoreVersion>
-        <pmdPluginSkip>false</pmdPluginSkip>
-        <checkStylePluginSkip>false</checkStylePluginSkip>
-    </properties>
 </project>
