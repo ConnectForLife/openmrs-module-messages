@@ -101,7 +101,7 @@ public class ActorServiceImpl implements ActorService {
     }
 
     @Override
-    public String getContactTime(Integer personId) {
+    public String getContactTime(Integer personId) throws ValidationException {
         Person person = personService.getPerson(personId);
         if (person == null) {
             throw new ValidationException(String.format("Person with %d id doesn't exist.", personId));
@@ -113,7 +113,14 @@ public class ActorServiceImpl implements ActorService {
     public List<ContactTimeDTO> getContactTimes(List<Integer> personIds) {
         List<ContactTimeDTO> result = new LinkedList<>();
         for (Integer id : personIds) {
-            String value = getContactTime(id);
+            String value;
+            try {
+                value = getContactTime(id);
+            } catch (ValidationException ex) {
+                LOGGER.debug(String.format("The following error occurs: %s \n Empty value will be used",
+                        ex.getMessage()));
+                value = "";
+            }
             result.add(new ContactTimeDTO().setPersonId(id).setTime(value));
         }
         return result;

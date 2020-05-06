@@ -3,6 +3,40 @@
     ui.includeJavascript("messages", "moment-with-locales.min.js")
     def editIcon = config.editIcon ?: "icon-pencil"
 %>
+
+<style>
+.disabled-time {
+    border: 3px solid red;
+}
+
+.time-entry-wrapper .tooltiptext {
+    visibility: hidden;
+    width: 200px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 20%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.time-entry-wrapper:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+.time-entry-wrapper {
+    position: relative;
+    display: inline-block;
+}
+</style>
+
 <div class="info-section">
     <div class="info-header" style="padding-bottom: 4px;">
         <i class="${config.icon}"></i>
@@ -39,11 +73,25 @@
                     <label for="time-label-${ it.label.replaceAll(" ", "-") }" class="time-label">
                         ${ it.label.replaceAll(" ", "-")}
                     </label>
-                    <input
-                        id="time-value-${ it.label.replaceAll(" ", "-") }"
-                        class="time-value"
-                        type="text"
-                        disabled />
+                    <% if(it.time == "") { %>
+                        <span class="time-entry-wrapper">
+                            <input
+                                id="time-value-${ it.label.replaceAll(" ", "-") }"
+                                class="time-value disabled-time"
+                                type="text"
+                                disabled
+                            />
+                            <span class="tooltiptext">${ui.message("messages.dashboard.bestContactTime.tooltip")}</span>
+                        </span>
+                    <% } else { %>
+                        <span>
+                            <input
+                                id="time-value-${ it.label.replaceAll(" ", "-") }"
+                                class="time-value"
+                                type="text"
+                                disabled />
+                        </span>
+                    <% } %>
                     <script type="text/javascript">
                         jq( document ).ready(function() {
                             let value = "${ ui.message("messages.dashboard.noBestContactTime") }";

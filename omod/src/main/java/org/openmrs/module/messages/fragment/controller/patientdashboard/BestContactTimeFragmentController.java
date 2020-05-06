@@ -111,7 +111,9 @@ public class BestContactTimeFragmentController {
     }
 
     private String getPersonOrPatientIdentifier(Person person) {
-        if (person.isPatient()) {
+        if (person == null) {
+            return "";
+        } else if (person.isPatient()) {
             Patient patient = Context.getPatientService().getPatient(person.getId());
             String patientIdentifier = patient.getPatientIdentifier().getIdentifier();
             return org.apache.commons.lang3.StringUtils.isNotBlank(patientIdentifier) ? patientIdentifier : "";
