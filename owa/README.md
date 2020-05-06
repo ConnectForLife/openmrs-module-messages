@@ -1,6 +1,6 @@
 <img src="https://cloud.githubusercontent.com/assets/668093/12567089/0ac42774-c372-11e5-97eb-00baf0fccc37.jpg" alt="OpenMRS"/>
 
-# messages
+# Messages OWA Module
 
 This repository contains the messages OpenMRS Open Web App.
 
