@@ -17,7 +17,15 @@ pipelines:
          
   branches:
     master:
-      - step: *build-step
+      - step: 
+          name: Build the module and code analysis
+          caches:
+          - maven
+          script:
+            - mvn clean install -Pcode-coverage
+            - mvn sonar:sonar -Dsonar.projectKey=$PIPELINES_SONAR_PROJECT_KEY -Dsonar.host.url=$PIPELINES_SONAR_HOST_URL -Dsonar.login=$PIPELINES_SONAR_TOKEN
+          artifacts:
+            - omod/target/*.omod
       - step:
           name: Push to OpenMRS repository
           script:
