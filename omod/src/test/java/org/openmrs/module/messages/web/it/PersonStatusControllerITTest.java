@@ -114,6 +114,7 @@ public class PersonStatusControllerITTest extends BaseModuleWebContextSensitiveW
         PersonAttribute actualStatus = new PersonAttribute(personStatusAttributeType, ACTUAL_STATUS);
         person.addAttribute(actualStatus);
         person = personService.savePerson(person);
+        Context.flushSession();
     }
 
     @Test

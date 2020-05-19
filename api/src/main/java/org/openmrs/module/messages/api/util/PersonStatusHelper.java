@@ -17,6 +17,7 @@ import org.openmrs.PersonAttribute;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.ValidationException;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.api.constants.ConfigConstants;
 import org.openmrs.module.messages.api.dto.PersonStatusConfigDTO;
 import org.openmrs.module.messages.api.dto.PersonStatusDTO;
@@ -100,18 +101,29 @@ public class PersonStatusHelper {
     }
 
     private Person getPersonFromDashboardPersonId(String personId) {
+        Person person;
         if (NumberUtils.isDigits(personId)) {
-            return personService.getPerson(Integer.parseInt(personId));
+            person = personService.getPerson(Integer.parseInt(personId));
+
+        } else {
+            person = personService.getPersonByUuid(personId);
         }
-        return personService.getPersonByUuid(personId);
+        if (person != null) {
+            Context.refreshEntity(person); //person caching issue fix
+        }
+        return person;
     }
 
     private void changeStatusReason(PersonStatusDTO statusDTO, Person person) {
         PersonAttributeType attributeTypeStatusReason =
                 personService.getPersonAttributeTypeByUuid(ConfigConstants.PERSON_STATUS_REASON_ATTRIBUTE_TYPE_UUID);
+        if (attributeTypeStatusReason != null) {
+            Context.refreshEntity(attributeTypeStatusReason); //person caching issue fix
+        }
         PersonAttribute newStatus = new PersonAttribute(attributeTypeStatusReason, statusDTO.getReason());
         person.addAttribute(newStatus);
         personService.savePerson(person);
+        Context.flushSession(); //person caching issue fix
     }
 
     private void saveNewValue(PersonStatusDTO statusDTO, Person person) {
@@ -120,6 +132,7 @@ public class PersonStatusHelper {
         PersonAttribute newStatus = new PersonAttribute(attributeTypeStatus, statusDTO.getValue());
         person.addAttribute(newStatus);
         personService.savePerson(person);
+        Context.flushSession(); //person caching issue fix
     }
 
     private boolean isValidStatusValue(String value) {

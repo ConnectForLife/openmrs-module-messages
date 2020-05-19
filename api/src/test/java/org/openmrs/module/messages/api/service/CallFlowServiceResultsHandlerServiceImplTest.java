@@ -1,15 +1,17 @@
 package org.openmrs.module.messages.api.service;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.openmrs.Person;
 import org.openmrs.PersonAttribute;
 import org.openmrs.api.PersonService;
+import org.openmrs.api.context.Context;
+import org.openmrs.api.context.Daemon;
 import org.openmrs.module.messages.api.constants.ConfigConstants;
 import org.openmrs.module.messages.api.event.MessagesEvent;
 import org.openmrs.module.messages.api.model.PatientTemplate;
@@ -19,6 +21,8 @@ import org.openmrs.module.messages.api.service.impl.CallFlowServiceResultsHandle
 import org.openmrs.module.messages.builder.PatientTemplateBuilder;
 import org.openmrs.module.messages.builder.ScheduledExecutionContextBuilder;
 import org.openmrs.module.messages.builder.ScheduledServiceBuilder;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.Collections;
 import java.util.Map;
@@ -37,8 +41,10 @@ import static org.openmrs.module.messages.api.event.CallFlowParamConstants.CONFI
 import static org.openmrs.module.messages.api.event.CallFlowParamConstants.FLOW_NAME;
 import static org.openmrs.module.messages.api.event.CallFlowParamConstants.PHONE;
 import static org.openmrs.module.messages.api.event.CallFlowParamConstants.REF_KEY;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({Context.class, Daemon.class})
 public class CallFlowServiceResultsHandlerServiceImplTest {
 
     private static final String PHONE_NUMBER = "612345987";
@@ -60,6 +66,11 @@ public class CallFlowServiceResultsHandlerServiceImplTest {
 
     @InjectMocks
     private CallFlowServiceResultsHandlerServiceImpl callFlowServiceResultsHandlerService;
+
+    @Before
+    public void setUp() {
+        mockStatic(Context.class);
+    }
 
     @Test
     public void shouldSendEventWithProperEventParams() {

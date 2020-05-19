@@ -87,6 +87,9 @@ public class ActorServiceImpl implements ActorService {
         if (person == null) {
             throw new ValidationException(String.format("Person with %s id doesn't exist.", personId));
         }
+        if (person != null) {
+            Context.refreshEntity(person); //person caching issue fix
+        }
         return getAllActorsForPerson(person, isPatient);
     }
 
@@ -106,6 +109,7 @@ public class ActorServiceImpl implements ActorService {
         if (person == null) {
             throw new ValidationException(String.format("Person with %d id doesn't exist.", personId));
         }
+        Context.refreshEntity(person); //person caching issue fix
         return getContactTimeValue(person);
     }
 
@@ -129,6 +133,9 @@ public class ActorServiceImpl implements ActorService {
     @Override
     public void saveContactTime(ContactTimeDTO contactTimeDTO) {
         Person person = personService.getPerson(contactTimeDTO.getPersonId());
+        if (person != null) {
+            Context.refreshEntity(person); //person caching issue fix
+        }
         validateContactTimeRequest(contactTimeDTO.getPersonId(), contactTimeDTO.getTime(), person);
         createOrUpdateAttributeValue(person, contactTimeDTO.getTime());
     }
@@ -292,5 +299,6 @@ public class ActorServiceImpl implements ActorService {
             contactTime.setValue(time);
         }
         personService.savePerson(person);
+        Context.flushSession(); //person caching issue fix
     }
 }

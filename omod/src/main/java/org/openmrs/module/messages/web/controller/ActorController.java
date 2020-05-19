@@ -5,6 +5,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.openmrs.Person;
 import org.openmrs.api.PersonService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.api.dto.ActorDTO;
 import org.openmrs.module.messages.api.dto.ActorTypeDTO;
 import org.openmrs.module.messages.api.dto.ContactTimeDTO;
@@ -70,6 +71,7 @@ public class ActorController extends BaseRestController {
         if (person == null) {
             throw new ValidationException(String.format("Person with %s id doesn't exist.", personId));
         }
+        Context.refreshEntity(person); //person caching issue fix
         return actorMapper.toDtos(actorService.getAllActorsForPersonId(person.getId(), isPatient));
     }
 

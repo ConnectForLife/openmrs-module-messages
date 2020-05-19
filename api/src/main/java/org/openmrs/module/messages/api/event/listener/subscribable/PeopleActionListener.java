@@ -13,6 +13,7 @@ import org.openmrs.OpenmrsObject;
 import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.api.PersonService;
+import org.openmrs.api.context.Context;
 import org.openmrs.api.context.Daemon;
 import org.openmrs.event.Event;
 import org.openmrs.event.SubscribableEventListener;
@@ -127,6 +128,7 @@ public abstract class PeopleActionListener implements SubscribableEventListener 
         if (person == null) {
             throw new MessagesRuntimeException(String.format("Unable to retrieve person by uuid: %s", personUuid));
         }
+        Context.refreshEntity(person); //person caching issue fix
         return person;
     }
 

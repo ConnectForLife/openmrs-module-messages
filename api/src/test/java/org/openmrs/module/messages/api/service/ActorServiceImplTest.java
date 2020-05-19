@@ -4,7 +4,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Patient;
+import org.openmrs.PersonAttributeType;
 import org.openmrs.RelationshipType;
+import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.ContextSensitiveTest;
 import org.openmrs.module.messages.api.dto.ContactTimeDTO;
@@ -84,6 +86,9 @@ public class ActorServiceImplTest extends ContextSensitiveTest {
     @Autowired
     @Qualifier("messages.actorService")
     private ActorService actorService;
+
+    @Autowired
+    private PersonService personService;
 
     @Before
     public void setUp() throws Exception {
@@ -234,17 +239,18 @@ public class ActorServiceImplTest extends ContextSensitiveTest {
     public void shouldThrowValidationExceptionWhenOneOfValuesIsIncorrect() {
         List<ContactTimeDTO> contactTimeDTOs = Arrays.asList(
                 new ContactTimeDTO()
-                    .setPersonId(patient.getPersonId())
-                    .setTime(CORRECT_TIME_VALUE),
+                        .setPersonId(patient.getPersonId())
+                        .setTime(CORRECT_TIME_VALUE),
                 new ContactTimeDTO()
-                    .setPersonId(caregiverPerson.getTarget().getPersonId())
-                    .setTime(INCORRECT_TIME_VALUE)
+                        .setPersonId(caregiverPerson.getTarget().getPersonId())
+                        .setTime(INCORRECT_TIME_VALUE)
         );
         actorService.saveContactTimes(contactTimeDTOs);
     }
 
     @Test
     public void shouldSaveTwoOfContactTime() {
+        reinitializeBestContactTypeUuid();
         List<ContactTimeDTO> contactTimeDTOs = Arrays.asList(
                 new ContactTimeDTO()
                         .setPersonId(patient.getPersonId())
@@ -321,5 +327,13 @@ public class ActorServiceImplTest extends ContextSensitiveTest {
 
     private ActorType createActorType(RelationshipType relationshipType, RelationshipTypeDirection direction) {
         return new ActorType(relationshipType, direction);
+    }
+
+    private void reinitializeBestContactTypeUuid() {
+        PersonAttributeType attributeType = personService.getPersonAttributeTypeByName(
+                ConfigConstants.PERSON_CONTACT_TIME_ATTRIBUTE_TYPE_NAME
+        );
+        attributeType.setUuid(ConfigConstants.PERSON_CONTACT_TIME_TYPE_UUID);
+        personService.savePersonAttributeType(attributeType);
     }
 }

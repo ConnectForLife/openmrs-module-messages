@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.openmrs.Person;
 import org.openmrs.PersonAttribute;
 import org.openmrs.api.PersonService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.api.event.MessagesEvent;
 import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
 import org.openmrs.module.messages.api.service.MessagesEventService;
@@ -37,6 +38,7 @@ public abstract class AbstractServiceResultsHandlerService implements ServiceRes
         if (person == null) {
             throw new MessagesRuntimeException(String.format("Person with id %s does not exist", personId));
         }
+        Context.refreshEntity(person); //person caching issue fix
         PersonAttribute attribute = person.getAttribute(PERSON_PHONE_ATTR);
         if (attribute == null || StringUtils.isBlank(attribute.getValue())) {
             throw new MessagesRuntimeException(String.format("Phone number not specified for " +
