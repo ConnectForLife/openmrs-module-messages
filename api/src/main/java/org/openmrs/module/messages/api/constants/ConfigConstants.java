@@ -63,24 +63,7 @@ public final class ConfigConstants {
             + "  }\n"
             + "]";
     public static final String PERSON_STATUS_CONFIGURATION_DESCRIPTION = "Person status configuration in JSON-like format."
-            + "Example: [\n"
-            + "  {\n"
-            + "    \"name\": \"NO_CONSENT\",\n"
-            + "    \"style\": \"background-color: #EEA616; border-color: #EEA616; color: #f5f5f5;\""
-            + "  },\n"
-            + "  {\n"
-            + "    \"name\": \"ACTIVATED\",\n"
-            + "    \"style\": \"background-color: #51a351; border-color: #51a351; color: #f5f5f5;\""
-            + "  },\n"
-            + "  {\n"
-            + "    \"name\": \"DEACTIVATED\",\n"
-            + "    \"style\": \"background-color: #f23722; border-color: #f23722; color: #f5f5f5;\""
-            + "  },\n"
-            + "  {\n"
-            + "    \"name\": \"MISSING_VALUE\",\n"
-            + "    \"style\": \"background-color: #EEA616; border-color: #EEA616; color: #f5f5f5;\""
-            + "  }\n"
-            + "]";
+            + "Example: " + PERSON_STATUS_CONFIGURATION_DEFAULT_VALUE;
 
     public static final String CONSENT_CONTROL_KEY = "message.consent.validation";
     public static final String CONSENT_CONTROL_DEFAULT_VALUE = "true";

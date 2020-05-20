@@ -97,7 +97,7 @@ public class MessageDeliveriesJobDefinitionTest extends ContextSensitiveTest {
         defaultTemplate = templateService.getById(DEFAULT_TEMPLATE);
     }
 
-    @Test
+    @Test(expected = Test.None.class /* no exception expected */)
     public void shouldBeExecutedWithoutAnyException() {
         job.execute();
     }

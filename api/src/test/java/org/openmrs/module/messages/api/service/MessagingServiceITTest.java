@@ -24,6 +24,7 @@ import org.openmrs.module.messages.api.dao.ActorResponseDao;
 import org.openmrs.module.messages.api.dao.MessagingDao;
 import org.openmrs.module.messages.api.exception.EntityNotFoundException;
 import org.openmrs.module.messages.api.model.ActorResponse;
+import org.openmrs.module.messages.api.model.ActorResponseType;
 import org.openmrs.module.messages.api.model.DeliveryAttempt;
 import org.openmrs.module.messages.api.model.ScheduledService;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
@@ -189,7 +190,7 @@ public class MessagingServiceITTest extends ContextSensitiveTest {
 
     @Test
     public void shouldRegisterResponseWithOptionalValues() {
-        messagingService.registerResponse(
+        ActorResponse actual = messagingService.registerResponse(
                 null,
                 null,
                 null,
@@ -199,6 +200,22 @@ public class MessagingServiceITTest extends ContextSensitiveTest {
                 null,
                 null,
                 TIMESTAMP);
+        assertThat(actual, not(nullValue()));
+        assertThat(actual.getId(), not(nullValue()));
+        assertThat(actorResponseDao.getByUuid(actual.getUuid()), not(nullValue()));
+        assertThat(actual.getTextResponse(), is(nullValue()));
+        assertThat(actual.getAnsweredTime(), is(TIMESTAMP));
+
+        assertThat(actual.getQuestion(), is(nullValue()));
+        assertThat(actual.getQuestion(), is(nullValue()));
+        assertThat(actual.getResponse(), is(nullValue()));
+        assertThat(actual.getResponse(), is(nullValue()));
+
+        assertThat(actual.getActor(), is(nullValue()));
+        assertThat(actual.getPatient(), is(nullValue()));
+        assertThat(actual.getSourceId(), is(nullValue()));
+        assertThat(actual.getSourceType(), is(new ActorResponseType(MessagesConstants.DEFAULT_ACTOR_RESPONSE_TYPE)));
+        assertThat(actual.getTextQuestion(), is(nullValue()));
     }
 
     @Test

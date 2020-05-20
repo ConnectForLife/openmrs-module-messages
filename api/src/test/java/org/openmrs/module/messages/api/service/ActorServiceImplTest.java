@@ -260,6 +260,10 @@ public class ActorServiceImplTest extends ContextSensitiveTest {
                         .setTime(CORRECT_TIME_VALUE)
         );
         actorService.saveContactTimes(contactTimeDTOs);
+        String actualPatient = actorService.getContactTime(patient.getPersonId());
+        assertThat(actualPatient, is(CORRECT_TIME_VALUE));
+        String actualCaregiver = actorService.getContactTime(caregiverPerson.getTarget().getPersonId());
+        assertThat(actualCaregiver, is(CORRECT_TIME_VALUE));
     }
 
     @Test

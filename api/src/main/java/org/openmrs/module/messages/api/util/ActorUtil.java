@@ -9,9 +9,14 @@ import org.openmrs.module.messages.api.model.RelationshipTypeDirection;
 public final class ActorUtil {
 
     public static boolean isActorPatient(Actor actor, Integer patientId) {
+        if (actor.getRelationship() == null) {
+            return false;
+        }
+        Person personA = actor.getRelationship().getPersonA();
+        Person personB = actor.getRelationship().getPersonB();
         return getRelationShipTypeDirection(actor) == RelationshipTypeDirection.A ?
-            actor.getRelationship().getPersonA().equals(patientId) :
-            actor.getRelationship().getPersonB().equals(patientId);
+            personA != null && personA.getId().equals(patientId) :
+            personB != null && personB.getId().equals(patientId);
     }
 
     public static Person getActorPerson(Actor actor) {

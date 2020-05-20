@@ -6,10 +6,14 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
+import java.io.Serializable;
+
 /**
  * Represents an actor schedule DTO
  */
-public class ActorScheduleDTO implements Comparable<ActorScheduleDTO>, DTO {
+public class ActorScheduleDTO implements Comparable<ActorScheduleDTO>, DTO, Serializable {
+
+    private static final long serialVersionUID = -8612064108251395707L;
     private Integer actorId;
     private String actorType;
     private String schedule;

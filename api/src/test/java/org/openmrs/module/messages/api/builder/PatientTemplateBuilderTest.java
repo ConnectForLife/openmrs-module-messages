@@ -36,7 +36,7 @@ public class PatientTemplateBuilderTest {
         new PatientTemplateBuilder(new Template(), null);
     }
 
-    @Test
+    @Test(expected = Test.None.class /* no exception expected */)
     public void shouldCreateBuilderForNullActor() {
         new PatientTemplateBuilder(new Template(), new Patient());
     }

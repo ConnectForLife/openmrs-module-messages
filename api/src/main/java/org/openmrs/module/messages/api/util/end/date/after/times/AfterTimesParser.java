@@ -7,9 +7,6 @@ import java.util.Set;
 
 public class AfterTimesParser {
 
-    public AfterTimesParser() {
-    }
-
     public Set<Integer> parseWeekDays(List<String> days) throws AfterTimesParseFrequencyException {
         Set<Integer> frequency = new HashSet<>();
         if (days != null) {

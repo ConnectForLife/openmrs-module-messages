@@ -50,6 +50,12 @@ public class ActorResponseCriteria extends ReportCriteria implements Serializabl
 
     private static final String WEEK_AGGREGATION_MODE = "WEEK";
 
+    private static final String TEXT_RESPONSE = "textResponse";
+
+    private static final String RESPONSE_PROP = "response";
+
+    private static final String RESPONSE_CONCEPT_ID = "response.conceptId";
+
     private Integer actorId;
 
     private Integer patientId;
@@ -148,7 +154,7 @@ public class ActorResponseCriteria extends ReportCriteria implements Serializabl
         ProjectionList projectionList = Projections.projectionList();
         projectionList.add(Projections.sqlGroupProjection(
                 getAggregateSql(), "over", new String[]{"over"}, new Type[]{ StandardBasicTypes.STRING }));
-        projectionList.add(Projections.count("textResponse").as("responseCount"));
+        projectionList.add(Projections.count(TEXT_RESPONSE).as("responseCount"));
         createResponseProjections(projectionList);
         return projectionList;
     }
@@ -179,19 +185,19 @@ public class ActorResponseCriteria extends ReportCriteria implements Serializabl
 
     private void createResponseWhereCondition(Criteria hibernateCriteria) {
         if (isConceptResponseMode()) {
-            addNotNotEmptyCriteria(hibernateCriteria, "response.conceptId", possibleResponses);
+            addNotNotEmptyCriteria(hibernateCriteria, RESPONSE_CONCEPT_ID, possibleResponses);
         } else {
-            addNotNotEmptyCriteria(hibernateCriteria, "textResponse", possibleTextResponses);
+            addNotNotEmptyCriteria(hibernateCriteria, TEXT_RESPONSE, possibleTextResponses);
         }
     }
 
     private void createResponseProjections(ProjectionList projectionList) {
         if (isConceptResponseMode()) {
-            projectionList.add(Projections.property("response.conceptId").as("response"));
-            projectionList.add(Projections.groupProperty("response.conceptId"));
+            projectionList.add(Projections.property(RESPONSE_CONCEPT_ID).as(RESPONSE_PROP));
+            projectionList.add(Projections.groupProperty(RESPONSE_CONCEPT_ID));
         } else {
-            projectionList.add(Projections.property("textResponse").as("response"));
-            projectionList.add(Projections.groupProperty("textResponse"));
+            projectionList.add(Projections.property(TEXT_RESPONSE).as(RESPONSE_PROP));
+            projectionList.add(Projections.groupProperty(TEXT_RESPONSE));
         }
     }
 

@@ -4,9 +4,6 @@ import java.util.Date;
 
 public class NoEndDate implements EndDate {
 
-    public NoEndDate() {
-    }
-
     @Override
     public Date getDate() {
         return null;

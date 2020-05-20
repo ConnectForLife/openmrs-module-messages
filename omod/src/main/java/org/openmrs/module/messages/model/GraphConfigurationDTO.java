@@ -105,8 +105,9 @@ public class GraphConfigurationDTO implements Serializable {
     }
 
     public GraphConfigurationDTO withFragmentConfiguration(FragmentConfiguration configuration, Person person) {
-        this.setActorId((person == null) ? null : person.getPersonId())
-                .setPatientId(person.isPatient() ? (Integer) configuration.getAttribute(WebConstants.PATIENT_ID) : null)
+        this.setActorId((person != null) ? person.getPersonId() : null)
+                .setPatientId(person != null && person.isPatient() ?
+                        (Integer) configuration.getAttribute(WebConstants.PATIENT_ID) : null)
                 .setQuestionId((Integer) configuration.getAttribute(WebConstants.QUESTION_ID))
                 .setDataDateRange((Integer) configuration.getAttribute(WebConstants.DATA_DATE_RANGE))
                 .setResponseMode((String) configuration.getAttribute(WebConstants.RESPONSE_MODE))

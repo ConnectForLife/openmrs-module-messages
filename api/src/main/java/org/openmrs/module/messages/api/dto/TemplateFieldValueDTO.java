@@ -19,9 +19,6 @@ public class TemplateFieldValueDTO extends BaseOpenmrsObject implements Serializ
 
     private String value;
 
-    public TemplateFieldValueDTO() {
-    }
-
     @Override
     public Integer getId() {
         return id;

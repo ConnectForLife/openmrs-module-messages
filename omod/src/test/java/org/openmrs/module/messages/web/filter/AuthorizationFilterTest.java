@@ -21,10 +21,10 @@ import java.io.IOException;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.doNothing;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 import static org.powermock.api.mockito.PowerMockito.doThrow;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Context.class})
@@ -41,13 +41,13 @@ public class AuthorizationFilterTest {
                 Mockito.any(String.class), Mockito.any(String.class));
     }
 
-    @Test
+    @Test(expected = Test.None.class /* no exception expected */)
     public void initShouldInitWithoutExceptions() throws ServletException {
         AuthorizationFilter authorizationFilter = new AuthorizationFilter();
         authorizationFilter.init(new MockFilterConfig());
     }
 
-    @Test
+    @Test(expected = Test.None.class /* no exception expected */)
     public void destroyShouldDestroyWithoutExceptions() {
         AuthorizationFilter authorizationFilter = new AuthorizationFilter();
         authorizationFilter.destroy();

@@ -15,7 +15,7 @@ import java.io.IOException;
  * @author bramak09
  */
 @PowerMockIgnore("org.jacoco.agent.rt.*")
-public class BaseTest {
+public abstract class BaseTest {
 
     @Rule
     // Warning from check style need to be ignored as the Junit require ExpectedException to be public

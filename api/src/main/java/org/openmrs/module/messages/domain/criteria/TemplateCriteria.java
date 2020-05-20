@@ -10,5 +10,6 @@ public class TemplateCriteria extends BaseCriteria implements Serializable {
 
     @Override
     public void loadHibernateCriteria(Criteria hibernateCriteria) {
+        // any specific action isn't required
     }
 }

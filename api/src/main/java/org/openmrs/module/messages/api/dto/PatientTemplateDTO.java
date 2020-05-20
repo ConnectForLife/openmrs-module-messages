@@ -31,9 +31,6 @@ public class PatientTemplateDTO implements Serializable, DTO {
 
     private String uuid;
 
-    public PatientTemplateDTO() {
-    }
-
     @Override
     public Integer getId() {
         return id;

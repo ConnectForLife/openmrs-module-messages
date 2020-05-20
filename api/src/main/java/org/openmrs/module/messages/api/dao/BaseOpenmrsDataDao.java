@@ -1,6 +1,7 @@
 package org.openmrs.module.messages.api.dao;
 
 import org.hibernate.Criteria;
+import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Projections;
 import org.openmrs.BaseOpenmrsData;
 import org.openmrs.api.db.hibernate.DbSession;
@@ -14,14 +15,14 @@ import java.util.List;
 public abstract class BaseOpenmrsDataDao<T extends BaseOpenmrsData> extends HibernateOpenmrsDataDAO<T>
         implements BaseOpenmrsPageableDao<T> {
 
-    private DbSessionFactory sessionFactory;
+    private DbSessionFactory dbSessionFactory;
 
     public BaseOpenmrsDataDao(Class<T> mappedClass) {
         super(mappedClass);
     }
 
-    public void setDbSessionFactory(DbSessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public void setDbSessionFactory(DbSessionFactory dbSessionFactory) {
+        this.dbSessionFactory = dbSessionFactory;
     }
 
     @Override
@@ -81,12 +82,12 @@ public abstract class BaseOpenmrsDataDao<T extends BaseOpenmrsData> extends Hibe
                 .uniqueResult();
         // resetting criteria
         criteria.setProjection(null)
-                .setResultTransformer(Criteria.ROOT_ENTITY);
+                .setResultTransformer(CriteriaSpecification.ROOT_ENTITY);
         return rows;
     }
 
     protected DbSession getSession() {
-        return sessionFactory.getCurrentSession();
+        return dbSessionFactory.getCurrentSession();
     }
 }
 

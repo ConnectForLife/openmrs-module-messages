@@ -92,7 +92,7 @@ public class PatientTemplateValidator implements ConstraintValidator<ValidPatien
 
     @Override
     public void initialize(ValidPatientTemplate validPatientTemplate) {
-
+        // any specific action isn't required
     }
 
     private void addErrorToContext(ConstraintValidatorContext context, String path,
