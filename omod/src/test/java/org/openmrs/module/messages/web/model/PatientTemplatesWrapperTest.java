@@ -11,7 +11,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class PatientTemplatesWrapperTest {
 
@@ -50,7 +50,7 @@ public class PatientTemplatesWrapperTest {
         assertThat(patientTemplatesWrapper2, is(notNullValue()));
         assertEquals(patientTemplates2, patientTemplatesWrapper2.getPatientTemplates());
 
-        assertFalse(patientTemplatesWrapper.equals(patientTemplatesWrapper2));
+        assertTrue(patientTemplatesWrapper.equals(patientTemplatesWrapper2));
     }
 
     private PatientTemplateDTO buildPatientTemplateDTOObject() {

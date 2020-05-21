@@ -2,14 +2,13 @@ package org.openmrs.module.messages.api.dto;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Represents a patient template DTO
  */
-public class PatientTemplateDTO implements Serializable, DTO {
+public class PatientTemplateDTO extends BaseDTO implements DTO {
 
     private static final long serialVersionUID = -6043667008851204408L;
 

@@ -232,6 +232,20 @@ public class ActorControllerITTest extends BaseModuleWebContextSensitiveTest {
                 .contentType(ApiConstant.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(contactTimeDTOs)))
                 .andExpect(status().is(HttpStatus.CREATED.value()));
+        mockMvc.perform(get(CONTACT_TIMES_URL)
+                .param("personIds[]", PATIENT_ID.toString())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(HttpStatus.OK.value()))
+                .andExpect(content().contentType(ApiConstant.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$.[*].time").value(hasItem(CORRECT_TIME_VALUE)));
+        mockMvc.perform(get(CONTACT_TIMES_URL)
+                .param("personIds[]", CAREGIVER_ID.toString())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(HttpStatus.OK.value()))
+                .andExpect(content().contentType(ApiConstant.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$.[*].time").value(hasItem(CORRECT_TIME_VALUE)));
     }
 
     @Test

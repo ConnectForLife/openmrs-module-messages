@@ -9,15 +9,10 @@
 
 package org.openmrs.module.messages.api.dto;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
-import java.io.Serializable;
-
 /**
  * Represents a person status config DTO
  */
-public class PersonStatusConfigDTO implements Serializable {
+public class PersonStatusConfigDTO extends BaseDTO {
 
     private static final long serialVersionUID = 271349603627302913L;
 
@@ -41,23 +36,5 @@ public class PersonStatusConfigDTO implements Serializable {
     public PersonStatusConfigDTO setStyle(String style) {
         this.style = style;
         return this;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        return EqualsBuilder.reflectionEquals(this, o);
-    }
-
-    @Override
-    public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
     }
 }

@@ -15,10 +15,6 @@ public abstract class AbstractBaseOpenmrsData extends BaseOpenmrsData {
             return true;
         }
 
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
         return EqualsBuilder.reflectionEquals(this, o, ID_FIELD_NAME);
     }
 

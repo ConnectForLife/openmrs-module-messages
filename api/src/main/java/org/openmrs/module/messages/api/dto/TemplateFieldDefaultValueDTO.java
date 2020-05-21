@@ -1,7 +1,5 @@
 package org.openmrs.module.messages.api.dto;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.openmrs.module.messages.api.model.RelationshipTypeDirection;
 
 import javax.validation.constraints.NotNull;
@@ -9,7 +7,7 @@ import javax.validation.constraints.NotNull;
 /**
  * Represents a template field default value DTO
  */
-public class TemplateFieldDefaultValueDTO implements DTO {
+public class TemplateFieldDefaultValueDTO extends BaseDTO implements DTO {
 
     private Integer id;
 
@@ -66,23 +64,5 @@ public class TemplateFieldDefaultValueDTO implements DTO {
     public TemplateFieldDefaultValueDTO setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
         return this;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        return EqualsBuilder.reflectionEquals(this, o);
-    }
-
-    @Override
-    public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
     }
 }

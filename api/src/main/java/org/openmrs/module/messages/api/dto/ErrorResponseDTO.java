@@ -1,17 +1,14 @@
 package org.openmrs.module.messages.api.dto;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.openmrs.module.messages.api.model.ErrorMessage;
 
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
 /**
  * Represent the DTO for the Error Response
  */
-public class ErrorResponseDTO implements Serializable {
+public class ErrorResponseDTO extends BaseDTO {
 
     private static final long serialVersionUID = -8870048107491805181L;
 
@@ -53,23 +50,5 @@ public class ErrorResponseDTO implements Serializable {
     public ErrorResponseDTO setErrorMessages(List<ErrorMessage> errorMessages) {
         this.errorMessages = errorMessages;
         return this;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        return EqualsBuilder.reflectionEquals(this, o);
-    }
-
-    @Override
-    public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
     }
 }

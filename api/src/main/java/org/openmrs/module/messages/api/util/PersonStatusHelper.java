@@ -75,8 +75,10 @@ public class PersonStatusHelper {
             throw new ValidationException(String.format("Not valid value of reason: %s", statusDTO.getReason()));
         }
         Person person = getPersonFromDashboardPersonId(statusDTO.getPersonId());
-        changeStatusReason(statusDTO, person);
-        saveNewValue(statusDTO, person);
+        if (person != null) {
+            changeStatusReason(statusDTO, person);
+            saveNewValue(statusDTO, person);
+        }
     }
 
     /**

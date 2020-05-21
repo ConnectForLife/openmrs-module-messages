@@ -1,13 +1,12 @@
 package org.openmrs.module.messages.api.dto;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Represents a message details DTO
  */
-public class MessageDetailsDTO implements Serializable {
+public class MessageDetailsDTO extends BaseDTO {
 
     private static final long serialVersionUID = 8491509272261320704L;
 

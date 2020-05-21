@@ -1,7 +1,5 @@
 package org.openmrs.module.messages.api.dto;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.Valid;
@@ -11,7 +9,7 @@ import java.util.List;
 /**
  * Represent the DTO for the {@link org.openmrs.module.messages.api.model.Template}
  */
-public class TemplateDTO implements DTO {
+public class TemplateDTO extends BaseDTO implements DTO {
 
     private Integer id;
 
@@ -81,23 +79,5 @@ public class TemplateDTO implements DTO {
     public TemplateDTO setUuid(String uuid) {
         this.uuid = uuid;
         return this;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        return EqualsBuilder.reflectionEquals(this, o);
-    }
-
-    @Override
-    public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
     }
 }

@@ -9,15 +9,10 @@
 
 package org.openmrs.module.messages.api.dto;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
-import java.io.Serializable;
-
 /**
  * Represents default contact time DTO
  */
-public class DefaultContactTimeDTO implements Serializable {
+public class DefaultContactTimeDTO extends BaseDTO {
 
     private static final long serialVersionUID = -4291847840418724090L;
 
@@ -52,23 +47,5 @@ public class DefaultContactTimeDTO implements Serializable {
 
     public void setTime(String time) {
         this.time = time;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        return EqualsBuilder.reflectionEquals(this, o);
-    }
-
-    @Override
-    public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
     }
 }

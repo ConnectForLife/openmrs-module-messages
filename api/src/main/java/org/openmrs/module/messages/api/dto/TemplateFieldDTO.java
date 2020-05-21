@@ -1,7 +1,5 @@
 package org.openmrs.module.messages.api.dto;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.validator.constraints.NotBlank;
 import org.openmrs.module.messages.api.model.TemplateFieldType;
 import org.openmrs.module.messages.api.util.validate.ValueOfEnum;
@@ -12,7 +10,7 @@ import java.util.List;
 /**
  * Represent the DTO for the {@link org.openmrs.module.messages.api.model.TemplateField}
  */
-public class TemplateFieldDTO implements DTO {
+public class TemplateFieldDTO extends BaseDTO implements DTO {
 
     private Integer id;
 
@@ -92,23 +90,5 @@ public class TemplateFieldDTO implements DTO {
     public TemplateFieldDTO setDefaultValues(List<TemplateFieldDefaultValueDTO> defaultValues) {
         this.defaultValues = defaultValues;
         return this;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        return EqualsBuilder.reflectionEquals(this, o);
-    }
-
-    @Override
-    public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
     }
 }

@@ -2,16 +2,12 @@ package org.openmrs.module.messages.api.dto;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang3.builder.CompareToBuilder;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.codehaus.jackson.annotate.JsonIgnore;
-
-import java.io.Serializable;
 
 /**
  * Represents an actor schedule DTO
  */
-public class ActorScheduleDTO implements Comparable<ActorScheduleDTO>, DTO, Serializable {
+public class ActorScheduleDTO extends BaseDTO implements Comparable<ActorScheduleDTO>, DTO {
 
     private static final long serialVersionUID = -8612064108251395707L;
     private Integer actorId;
@@ -67,37 +63,6 @@ public class ActorScheduleDTO implements Comparable<ActorScheduleDTO>, DTO, Seri
         return schedule;
     }
 
-    @Override
-    @JsonIgnore
-    public Integer getId() {
-        throw new NotImplementedException("not implemented yet");
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        return EqualsBuilder.reflectionEquals(this, o);
-    }
-
-    @Override
-    public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
-    }
-
-    @Override
-    public int compareTo(ActorScheduleDTO o) {
-        return new CompareToBuilder()
-            .append(this.getActorId(), o.getActorId())
-            .toComparison();
-    }
-
     public Integer getPatientId() {
         return patientId;
     }
@@ -112,5 +77,18 @@ public class ActorScheduleDTO implements Comparable<ActorScheduleDTO>, DTO, Seri
 
     public void setPatientName(String patientName) {
         this.patientName = patientName;
+    }
+
+    @Override
+    @JsonIgnore
+    public Integer getId() {
+        throw new NotImplementedException("not implemented yet");
+    }
+
+    @Override
+    public int compareTo(ActorScheduleDTO o) {
+        return new CompareToBuilder()
+                .append(this.getActorId(), o.getActorId())
+                .toComparison();
     }
 }

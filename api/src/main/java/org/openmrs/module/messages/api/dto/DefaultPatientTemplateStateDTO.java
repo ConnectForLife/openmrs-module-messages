@@ -1,15 +1,12 @@
 package org.openmrs.module.messages.api.dto;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * Represents default patient template state DTO
  */
-public class DefaultPatientTemplateStateDTO implements Serializable {
+public class DefaultPatientTemplateStateDTO extends BaseDTO {
 
     private static final long serialVersionUID = -2593240814951309883L;
 
@@ -69,23 +66,5 @@ public class DefaultPatientTemplateStateDTO implements Serializable {
     public DefaultPatientTemplateStateDTO setDetails(MessageDetailsDTO details) {
         this.details = details;
         return this;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        return EqualsBuilder.reflectionEquals(this, o);
-    }
-
-    @Override
-    public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
     }
 }

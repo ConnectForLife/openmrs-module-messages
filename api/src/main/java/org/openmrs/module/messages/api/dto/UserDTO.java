@@ -1,11 +1,9 @@
 package org.openmrs.module.messages.api.dto;
 
-import java.io.Serializable;
-
 /**
  * Represents a user DTO
  */
-public class UserDTO implements Serializable {
+public class UserDTO extends BaseDTO {
 
     private static final long serialVersionUID = 4206072853290921989L;
 
