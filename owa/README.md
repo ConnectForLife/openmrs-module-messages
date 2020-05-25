@@ -49,7 +49,7 @@ that looks like:
 
 Note: make sure that you have write access to LOCAL_OWA_FOLDER and its content.
 
-### Live Reload with CfL docker
+### Live Reload with docker
 
 1. Adjust variables listed below to your environment, open terminal and run them
 ```bash
