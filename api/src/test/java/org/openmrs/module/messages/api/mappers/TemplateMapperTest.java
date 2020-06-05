@@ -26,12 +26,16 @@ public class TemplateMapperTest {
 
     private TemplateFieldMapper templateFieldMapper;
 
+    private TemplateFieldDefaultValueMapper fieldDefaultValueMapper;
+
     private List<TemplateFieldDTO> templateFields;
 
     @Before
     public void setUp() {
         templateMapper = new TemplateMapper();
+        fieldDefaultValueMapper = new TemplateFieldDefaultValueMapper();
         templateFieldMapper = new TemplateFieldMapper();
+        templateFieldMapper.setTemplateFieldDefaultValueMapper(fieldDefaultValueMapper);
         templateMapper.setTemplateFieldMapper(templateFieldMapper);
         templateFields = new ArrayList<>();
         dao = new TemplateBuilder().build();
@@ -45,7 +49,7 @@ public class TemplateMapperTest {
 
         assertThat(templateDTO, is(notNullValue()));
         assertEquals(dao.getId(), templateDTO.getId());
-        assertEquals(dao.getTemplateFields(), templateDTO.getTemplateFields());
+        assertEquals(templateFieldMapper.toDtos(dao.getTemplateFields()), templateDTO.getTemplateFields());
         assertEquals(dao.getName(), templateDTO.getName());
         assertEquals(dao.getServiceQuery(), templateDTO.getServiceQuery());
         assertEquals(dao.getServiceQueryType(), templateDTO.getServiceQueryType());

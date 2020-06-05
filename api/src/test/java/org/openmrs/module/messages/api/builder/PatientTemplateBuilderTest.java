@@ -1,29 +1,40 @@
 package org.openmrs.module.messages.api.builder;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.openmrs.Patient;
+import org.openmrs.module.messages.api.model.Actor;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.Template;
 import org.openmrs.module.messages.api.model.TemplateField;
+import org.openmrs.module.messages.api.model.TemplateFieldType;
+import org.openmrs.module.messages.api.model.TemplateFieldValue;
+import org.openmrs.module.messages.api.util.DateUtil;
+import org.openmrs.module.messages.api.util.ZoneConverterUtil;
+import org.openmrs.module.messages.builder.ActorBuilder;
+import org.openmrs.module.messages.builder.PatientBuilder;
 import org.openmrs.module.messages.builder.TemplateBuilder;
-import org.openmrs.module.messages.builder.TemplateFieldBuilder;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.util.Date;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.Assert.assertThat;
+
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({DateUtil.class})
 public class PatientTemplateBuilderTest {
 
-    public static final String DEFAULT_TF_VALUE = "default tf value";
-    private Patient patient;
-    private Template template;
+    private static final Date EXPECTED_START_OF_MESSAGES = new Date();
 
     @Before
-    public void setUp() {
-        patient = new Patient(1);
-        template = new TemplateBuilder().build();
-        TemplateField tf = new TemplateFieldBuilder()
-            .withDefaultValue(DEFAULT_TF_VALUE)
-            .build();
-        template.getTemplateFields().add(tf);
+    public void setUp() throws Exception {
+        PowerMockito.spy(DateUtil.class);
+        PowerMockito.when(DateUtil.class, "now").thenReturn(EXPECTED_START_OF_MESSAGES);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -42,12 +53,57 @@ public class PatientTemplateBuilderTest {
     }
 
     @Test
-    public void shouldBuildPatientTemplateProperly() {
+    public void shouldBuildPatientTemplateProperlyForPatient() {
+        Template template = new TemplateBuilder().build();
+        Patient patient = new PatientBuilder().build();
         PatientTemplate patientTemplate = new PatientTemplateBuilder(template, patient).build();
-        Assert.assertNotNull(patientTemplate);
-        Assert.assertEquals(patient.getId(), patientTemplate.getPatient().getId());
-        Assert.assertEquals("default tf value",
-            patientTemplate.getTemplateFieldValues().get(0).getValue());
-        Assert.assertEquals(patient.getPerson(), patientTemplate.getActor());
+        assertThat(patientTemplate, is(notNullValue()));
+        assertThat(patientTemplate.getPatient().getId(), is(patient.getId()));
+        assertThat(patientTemplate.getActor(), is(patient.getPerson()));
+        for (TemplateFieldValue tfv : patientTemplate.getTemplateFieldValues()) {
+            assertThat(tfv.getValue(), is(getExpectedPatientDefaultValue(tfv, template)));
+        }
     }
+
+    @Test
+    public void shouldBuildPatientTemplateProperlyForActor() {
+        Template template = new TemplateBuilder().build();
+        Patient patient = new PatientBuilder().build();
+        Actor actor = new ActorBuilder().build();
+        PatientTemplate patientTemplate = new PatientTemplateBuilder(template, actor, patient).build();
+        assertThat(patientTemplate, is(notNullValue()));
+        assertThat(patientTemplate.getPatient().getId(), is(patient.getId()));
+        assertThat(patientTemplate.getActor(), is(actor.getTarget()));
+        for (TemplateFieldValue tfv : patientTemplate.getTemplateFieldValues()) {
+            assertThat(tfv.getValue(), is(getExpectedActorDefaultValue(tfv, template, actor)));
+        }
+    }
+
+    private String getExpectedPatientDefaultValue(TemplateFieldValue tfv, Template template) {
+        TemplateFieldType type = tfv.getTemplateField().getTemplateFieldType();
+        if (TemplateFieldType.START_OF_MESSAGES.equals(type)) {
+            return ZoneConverterUtil.formatToUserZone(EXPECTED_START_OF_MESSAGES);
+        }
+        TemplateField templateField = getTemplateFieldByType(type, template);
+        return templateField != null ? templateField.getDefaultValue() : null;
+    }
+
+    private String getExpectedActorDefaultValue(TemplateFieldValue tfv, Template template, Actor actor) {
+        TemplateFieldType type = tfv.getTemplateField().getTemplateFieldType();
+        if (TemplateFieldType.START_OF_MESSAGES.equals(type)) {
+            return ZoneConverterUtil.formatToUserZone(EXPECTED_START_OF_MESSAGES);
+        }
+        TemplateField templateField = getTemplateFieldByType(type, template);
+        return templateField != null ? templateField.getDefaultValueForSpecificActorOrGeneral(actor) : null;
+    }
+
+    private TemplateField getTemplateFieldByType(TemplateFieldType templateFieldType, Template template) {
+        for (TemplateField tf : template.getTemplateFields()) {
+            if (tf.getTemplateFieldType().equals(templateFieldType)) {
+                return tf;
+            }
+        }
+        return null;
+    }
+
 }

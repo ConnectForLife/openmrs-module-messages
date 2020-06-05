@@ -1,9 +1,5 @@
 package org.openmrs.module.messages.api.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import org.openmrs.Patient;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.messages.api.builder.PatientTemplateBuilder;
@@ -19,6 +15,11 @@ import org.openmrs.module.messages.api.service.PatientTemplateService;
 import org.openmrs.module.messages.api.service.TemplateService;
 import org.openmrs.module.messages.api.util.DefaultPatientTemplateWrapper;
 import org.openmrs.module.messages.domain.criteria.PatientTemplateCriteria;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Implements methods related to the creating of default patient templates
@@ -111,12 +112,10 @@ public class DefaultPatientTemplateServiceImpl extends BaseOpenmrsService implem
                 new PatientTemplateBuilder(template, patient)
                     .build()
             );
-        }
-        for (Actor actor : actors) {
-            for (Template template : templates) {
+            for (Actor actor : actors) {
                 patientTemplates.add(
-                    new PatientTemplateBuilder(template, actor, patient)
-                        .build()
+                        new PatientTemplateBuilder(template, actor, patient)
+                                .build()
                 );
             }
         }

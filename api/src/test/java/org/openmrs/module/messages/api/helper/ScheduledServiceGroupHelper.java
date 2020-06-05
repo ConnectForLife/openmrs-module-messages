@@ -2,8 +2,7 @@ package org.openmrs.module.messages.api.helper;
 
 import org.openmrs.module.messages.api.model.ScheduledServiceGroup;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
-
-import java.util.Date;
+import org.openmrs.module.messages.api.util.DateUtil;
 
 public final class ScheduledServiceGroupHelper {
     
@@ -12,7 +11,7 @@ public final class ScheduledServiceGroupHelper {
     
     public static ScheduledServiceGroup createTestInstance() {
         ScheduledServiceGroup scheduledServiceGroup = new ScheduledServiceGroup();
-        scheduledServiceGroup.setMsgSendTime(new Date());
+        scheduledServiceGroup.setMsgSendTime(DateUtil.now());
         scheduledServiceGroup.setPatient(PatientHelper.createTestInstance());
         scheduledServiceGroup.setActor(PatientHelper.createTestInstance().getPerson());
         scheduledServiceGroup.setStatus(ServiceStatus.DELIVERED);

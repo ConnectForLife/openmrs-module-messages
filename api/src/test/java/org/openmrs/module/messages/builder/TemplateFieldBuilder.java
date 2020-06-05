@@ -24,7 +24,6 @@ public final class TemplateFieldBuilder extends AbstractBuilder<TemplateField> {
         name = "Template field " + id;
         mandatory = false;
         defaultValue = "default value";
-        template = new TemplateBuilder().build();
         templateFieldType = TemplateFieldType.SERVICE_TYPE;
         defaultValues = new ArrayList<>();
     }
@@ -32,6 +31,9 @@ public final class TemplateFieldBuilder extends AbstractBuilder<TemplateField> {
     @Override
     public TemplateField build() {
         TemplateField templateField = new TemplateField();
+        if (template == null) {
+            template = new TemplateBuilder().withTemplateField(templateField).build();
+        }
         templateField.setId(id);
         templateField.setName(name);
         templateField.setMandatory(mandatory);

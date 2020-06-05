@@ -1,7 +1,15 @@
 package org.openmrs.module.messages.builder;
 
 import org.openmrs.User;
+import org.openmrs.module.messages.api.model.ChannelType;
 import org.openmrs.module.messages.api.model.Template;
+import org.openmrs.module.messages.api.model.TemplateField;
+import org.openmrs.module.messages.api.model.TemplateFieldType;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public final class TemplateBuilder extends AbstractBuilder<Template> {
 
@@ -10,6 +18,7 @@ public final class TemplateBuilder extends AbstractBuilder<Template> {
     private String serviceQueryType;
     private String name;
     private User creator;
+    private List<TemplateField> templateFields;
 
     public TemplateBuilder() {
         id = getInstanceNumber();
@@ -17,16 +26,21 @@ public final class TemplateBuilder extends AbstractBuilder<Template> {
         serviceQueryType = "SQL";
         name = "Example service";
         creator = new User();
+        templateFields = new ArrayList<>();
     }
 
     @Override
     public Template build() {
         Template template = new Template();
+        if (templateFields.isEmpty()) {
+            buildTemplateFields(template);
+        }
         template.setId(id);
         template.setServiceQuery(serviceQuery);
         template.setServiceQueryType(serviceQueryType);
         template.setName(name);
         template.setCreator(creator);
+        template.setTemplateFields(templateFields);
         return template;
     }
 
@@ -53,5 +67,82 @@ public final class TemplateBuilder extends AbstractBuilder<Template> {
     public TemplateBuilder withName(String name) {
         this.name = name;
         return this;
+    }
+
+    public TemplateBuilder withTemplateFields(List<TemplateField> templateFields) {
+        this.templateFields = templateFields;
+        return this;
+    }
+
+    public TemplateBuilder withTemplateField(TemplateField templateField) {
+        this.templateFields = Collections.singletonList(templateField);
+        return this;
+    }
+
+    private void buildTemplateFields(Template template) {
+        templateFields = Arrays.asList(buildServiceTypeFieldDef(template),
+                buildDayOfWeekFieldDef(template),
+                buildStartOfMessagesFieldDef(template),
+                buildEndOfMessagesFieldDef(template));
+    }
+
+    private TemplateField buildServiceTypeFieldDef(Template template) {
+        TemplateField serviceType = new TemplateFieldBuilder()
+                .withName("Service type")
+                .withMandatory(true)
+                .withDefaultValue(ChannelType.SMS.getName())
+                .withTemplate(template)
+                .withTemplateFieldType(TemplateFieldType.SERVICE_TYPE)
+                .build();
+        serviceType.setDefaultValues(Collections.singletonList(new TemplateFieldDefaultValueBuilder()
+                .withTemplateField(serviceType)
+                .withDefaultValue(ChannelType.DEACTIVATED.getName())
+                .build()));
+        return serviceType;
+    }
+
+    private TemplateField buildDayOfWeekFieldDef(Template template) {
+        TemplateField serviceType = new TemplateFieldBuilder()
+                .withName("Week day of delivering message")
+                .withMandatory(true)
+                .withDefaultValue("Monday,Tuesday,Wednesday,Sunday")
+                .withTemplate(template)
+                .withTemplateFieldType(TemplateFieldType.DAY_OF_WEEK)
+                .build();
+        serviceType.setDefaultValues(Collections.singletonList(new TemplateFieldDefaultValueBuilder()
+                .withTemplateField(serviceType)
+                .withDefaultValue("Monday,Friday,Saturday")
+                .build()));
+        return serviceType;
+    }
+
+    private TemplateField buildStartOfMessagesFieldDef(Template template) {
+        TemplateField serviceType = new TemplateFieldBuilder()
+                .withName("Start of daily messages")
+                .withMandatory(false)
+                .withDefaultValue("")
+                .withTemplate(template)
+                .withTemplateFieldType(TemplateFieldType.START_OF_MESSAGES)
+                .build();
+        serviceType.setDefaultValues(Collections.singletonList(new TemplateFieldDefaultValueBuilder()
+                .withTemplateField(serviceType)
+                .withDefaultValue("")
+                .build()));
+        return serviceType;
+    }
+
+    private TemplateField buildEndOfMessagesFieldDef(Template template) {
+        TemplateField serviceType = new TemplateFieldBuilder()
+                .withName("End of daily messages")
+                .withMandatory(false)
+                .withDefaultValue("NO_DATE|EMPTY")
+                .withTemplate(template)
+                .withTemplateFieldType(TemplateFieldType.END_OF_MESSAGES)
+                .build();
+        serviceType.setDefaultValues(Collections.singletonList(new TemplateFieldDefaultValueBuilder()
+                .withTemplateField(serviceType)
+                .withDefaultValue("AFTER_TIMES|1")
+                .build()));
+        return serviceType;
     }
 }

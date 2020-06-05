@@ -78,7 +78,7 @@ public class PatientTemplateBuilder implements Builder<PatientTemplate> {
             if (!ActorUtil.isActorPatient(actor, patient.getId())) {
                 tfvList.add(
                     new TemplateFieldValue(
-                        tf.getDefaultValueForSpecificActorOrGeneral(actor),
+                        getDefaultValueForActor(tf, actor),
                         tf,
                         patientTemplate
                     )
@@ -86,6 +86,20 @@ public class PatientTemplateBuilder implements Builder<PatientTemplate> {
             }
         }
         return patientTemplate;
+    }
+
+    private String getDefaultValueForActor(TemplateField tf, Actor actor) {
+        String defaultValue = null;
+        if (TemplateFieldType.START_OF_MESSAGES.equals(tf.getTemplateFieldType())
+                && StringUtils.isBlank(defaultValue)) {
+            defaultValue = ZoneConverterUtil.formatToUserZone(DateUtil.now());
+        } else {
+            defaultValue = tf.getDefaultValue(actor);
+            if (defaultValue == null) {
+                defaultValue = tf.getDefaultValue();
+            }
+        }
+        return defaultValue;
     }
 
     private void validateFields() throws IllegalArgumentException {
