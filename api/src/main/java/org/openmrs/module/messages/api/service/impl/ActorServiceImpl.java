@@ -87,9 +87,7 @@ public class ActorServiceImpl implements ActorService {
         if (person == null) {
             throw new ValidationException(String.format("Person with %s id doesn't exist.", personId));
         }
-        if (person != null) {
-            Context.refreshEntity(person); //person caching issue fix
-        }
+        Context.refreshEntity(person); //person caching issue fix
         return getAllActorsForPerson(person, isPatient);
     }
 

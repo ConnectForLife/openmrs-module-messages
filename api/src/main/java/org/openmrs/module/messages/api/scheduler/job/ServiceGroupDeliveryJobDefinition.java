@@ -33,7 +33,6 @@ public class ServiceGroupDeliveryJobDefinition extends JobDefinition {
     public static final String EXECUTION_CONTEXT = "EXECUTION_CONTEXT";
     
     private static final Log LOGGER = LogFactory.getLog(ServiceGroupDeliveryJobDefinition.class);
-    private static final String TASK_NAME_PREFIX = "Group";
 
     private final Gson gson = JsonUtil.getGson();
 
@@ -58,9 +57,9 @@ public class ServiceGroupDeliveryJobDefinition extends JobDefinition {
 
     @Override
     public String getTaskName() {
-        return String.format("%s:%s-%s",
-            TASK_NAME_PREFIX,
+        return String.format("Msg-a:%d-p:%d-%s",
             this.executionContext.getActorId(),
+            this.executionContext.getPatientId(),
             this.executionContext.getExecutionDate());
     }
 

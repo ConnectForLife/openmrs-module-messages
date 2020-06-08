@@ -34,6 +34,7 @@ public class GroupedServiceResultList implements DTO {
                 Date date = list.getResults().get(0).getExecutionDate();
                 result.add(new GroupedServiceResultList(new ActorWithDate(
                         list.getActorId(),
+                        list.getPatientId(),
                         list.getActorType(),
                         date), list));
             }

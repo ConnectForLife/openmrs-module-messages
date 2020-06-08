@@ -90,8 +90,7 @@ public class PatientTemplateBuilder implements Builder<PatientTemplate> {
 
     private String getDefaultValueForActor(TemplateField tf, Actor actor) {
         String defaultValue = null;
-        if (TemplateFieldType.START_OF_MESSAGES.equals(tf.getTemplateFieldType())
-                && StringUtils.isBlank(defaultValue)) {
+        if (TemplateFieldType.START_OF_MESSAGES.equals(tf.getTemplateFieldType())) {
             defaultValue = ZoneConverterUtil.formatToUserZone(DateUtil.now());
         } else {
             defaultValue = tf.getDefaultValue(actor);

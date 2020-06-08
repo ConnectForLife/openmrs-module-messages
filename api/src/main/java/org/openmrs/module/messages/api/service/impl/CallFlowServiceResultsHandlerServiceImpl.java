@@ -11,6 +11,8 @@ package org.openmrs.module.messages.api.service.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.messages.api.constants.ConfigConstants;
 import org.openmrs.module.messages.api.event.MessagesEvent;
 import org.openmrs.module.messages.api.model.Message;
 import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
@@ -21,8 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.openmrs.module.messages.api.constants.MessagesConstants.CALLFLOWS_DEFAULT_CONFIG;
-import static org.openmrs.module.messages.api.constants.MessagesConstants.CALLFLOWS_DEFAULT_FLOW;
 import static org.openmrs.module.messages.api.constants.MessagesConstants.CALL_FLOW_INITIATE_CALL_EVENT;
 import static org.openmrs.module.messages.api.event.CallFlowParamConstants.ACTOR_ID;
 import static org.openmrs.module.messages.api.event.CallFlowParamConstants.ACTOR_TYPE;
@@ -58,8 +58,8 @@ public class CallFlowServiceResultsHandlerServiceImpl extends AbstractServiceRes
     private MessagesEvent buildMessage(List<ScheduledService> callServices,
                                        ScheduledExecutionContext executionContext) {
         Map<String, Object> params = new HashMap<>();
-        params.put(CONFIG, CALLFLOWS_DEFAULT_CONFIG);
-        params.put(FLOW_NAME, CALLFLOWS_DEFAULT_FLOW);
+        params.put(CONFIG, getCallConfig());
+        params.put(FLOW_NAME, getCallFlow());
 
         String personPhone = getPersonPhone(executionContext.getActorId());
 
@@ -94,5 +94,15 @@ public class CallFlowServiceResultsHandlerServiceImpl extends AbstractServiceRes
             result.add(message.toPrimitivesMap());
         }
         return result;
+    }
+
+    private Object getCallConfig() {
+        return Context.getAdministrationService().getGlobalProperty(ConfigConstants.CALL_CONFIG,
+                ConfigConstants.CALL_CONFIG_DEFAULT_VALUE);
+    }
+
+    private Object getCallFlow() {
+        return Context.getAdministrationService().getGlobalProperty(ConfigConstants.CALL_DEFAULT_FLOW,
+                ConfigConstants.CALL_DEFAULT_FLOW_DEFAULT_VALUE);
     }
 }

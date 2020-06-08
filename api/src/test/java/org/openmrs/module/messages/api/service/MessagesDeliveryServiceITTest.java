@@ -108,7 +108,8 @@ public class MessagesDeliveryServiceITTest extends ContextSensitiveTest {
 
     private ScheduledExecutionContext getExecutionContext(Date date, ServiceResultList resultList) {
         GroupedServiceResultList groupResults = new GroupedServiceResultList(
-                new ActorWithDate(DEFAULT_PATIENT_ID, PATIENT_DEFAULT_ACTOR_TYPE, date), resultList);
+                new ActorWithDate(DEFAULT_PATIENT_ID, DEFAULT_PATIENT_ID,
+                        PATIENT_DEFAULT_ACTOR_TYPE, date), resultList);
         ScheduledServiceGroup group = groupMapper.fromDto(groupResults);
         group = messagingGroupService.saveOrUpdate(group);
         return new ScheduledExecutionContextBuilder()

@@ -9,10 +9,10 @@
 
 package org.openmrs.module.messages.api.scheduler.job;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.messages.ContextSensitiveTest;
 import org.openmrs.module.messages.api.constants.ConfigConstants;
 import org.openmrs.module.messages.api.mappers.ScheduledGroupMapper;
 import org.openmrs.module.messages.api.model.ScheduledService;
@@ -28,9 +28,12 @@ import org.openmrs.module.messages.builder.PatientTemplateBuilder;
 import org.openmrs.module.messages.builder.ScheduledServiceBuilder;
 import org.openmrs.module.messages.builder.ScheduledServiceParameterBuilder;
 import org.openmrs.module.messages.domain.criteria.ScheduledServiceCriteria;
+import org.openmrs.scheduler.SchedulerService;
 import org.openmrs.scheduler.TaskDefinition;
+import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +53,10 @@ import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_T
 import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_TEMPLATE_NAME;
 import static org.openmrs.module.messages.api.service.DatasetConstants.XML_DATA_SET_PATH;
 
-public class MessageDeliveriesJobDefinitionTest extends ContextSensitiveTest {
+@ContextConfiguration(
+        locations = {"classpath:applicationContext-service.xml", "classpath*:moduleApplicationContext.xml",
+                "classpath*:CustomSchedulerServiceApplicationContext.xml"}, inheritLocations = false)
+public class MessageDeliveriesJobDefinitionTest extends BaseModuleContextSensitiveTest {
 
     private static final long DAILY = 3600L * 24;
     private static final String EMPTY_RESULT_SQL = "SELECT * WHERE 1=0";
@@ -60,7 +66,9 @@ public class MessageDeliveriesJobDefinitionTest extends ContextSensitiveTest {
             + ", 1 as intParam"
             + ", 1.23 as floatParam"
             + ", 'testString' as stringParam";
-    public static final int EXPECTED_THREE = 3;
+    private static final int EXPECTED_THREE = 3;
+    private static final int CAREGIVER_PATIENT_ACTOR = 674;
+    private static final String EXECUTION_CONTEXT = "EXECUTION_CONTEXT";
 
     @Autowired
     @Qualifier("messages.templateService")
@@ -82,6 +90,10 @@ public class MessageDeliveriesJobDefinitionTest extends ContextSensitiveTest {
     @Qualifier("messages.scheduledGroupMapper")
     private ScheduledGroupMapper groupMapper;
 
+    @Autowired
+    @Qualifier("schedulerService")
+    private SchedulerService schedulerService;
+
     private MessageDeliveriesJobDefinition job = new MessageDeliveriesJobDefinition();
     private Template defaultTemplate;
 
@@ -95,6 +107,11 @@ public class MessageDeliveriesJobDefinitionTest extends ContextSensitiveTest {
         job.initialize(taskDefinition);
 
         defaultTemplate = templateService.getById(DEFAULT_TEMPLATE);
+    }
+
+    @After
+    public void cleanUp() {
+        schedulerService.onShutdown();
     }
 
     @Test(expected = Test.None.class /* no exception expected */)
@@ -206,6 +223,22 @@ public class MessageDeliveriesJobDefinitionTest extends ContextSensitiveTest {
         assertParameterIsCorrect(expectedParam3, newlySaved.get(2));
     }
 
+    @Test
+    public void shouldSaveTwoScheduledServicesForCaregiver() {
+        List<ScheduledService> listServicesBeforeSave =
+                findScheduledServicesByDefaultPatientAndActorId(CAREGIVER_PATIENT_ACTOR);
+        List<TaskDefinition> listTasksBeforeSave = getScheduledTaskForActor(CAREGIVER_PATIENT_ACTOR);
+        job.execute();
+        List<ScheduledService> newlySaved = getNewlyAddedObjects(
+                listServicesBeforeSave, findScheduledServicesByActorId(CAREGIVER_PATIENT_ACTOR));
+        assertEquals(EXPECTED_THREE, newlySaved.size());
+
+        //verify if each scheduled service group has own scheduled task
+        List<TaskDefinition> newlySavedTasks = getNewlyAddedObjects(listTasksBeforeSave,
+                getScheduledTaskForActor(CAREGIVER_PATIENT_ACTOR));
+        assertEquals(newlySaved.size(), newlySavedTasks.size());
+    }
+
     private List<ScheduledService> findScheduledServicesByDefaultPatientAndActorId(int actorId) {
         return messagingService.findAllByCriteria(
                 ScheduledServiceCriteria.forActorAndPatientIds(actorId, DEFAULT_PATIENT_ID));
@@ -214,6 +247,21 @@ public class MessageDeliveriesJobDefinitionTest extends ContextSensitiveTest {
     private List<ScheduledService> findScheduledServicesByPatientIdAndActorId(int actorId, int patientId) {
         return messagingService.findAllByCriteria(
                 ScheduledServiceCriteria.forActorAndPatientIds(actorId, patientId));
+    }
+
+    private List<ScheduledService> findScheduledServicesByActorId(int actorId) {
+        return messagingService.findAllByCriteria(
+                ScheduledServiceCriteria.forActorAndPatientIds(actorId, null));
+    }
+
+    private List<TaskDefinition> getScheduledTaskForActor(int actorId) {
+        List<TaskDefinition> tasks = new ArrayList<>();
+        for (TaskDefinition t : schedulerService.getRegisteredTasks()) {
+            if (t.getProperty(EXECUTION_CONTEXT).contains(String.format("\"actorId\":%d", actorId))) {
+                tasks.add(t);
+            }
+        }
+        return tasks;
     }
 
     private ScheduledServiceParameter getParam(String key, String value) {

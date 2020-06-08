@@ -222,6 +222,22 @@ public final class ConfigConstants {
     public static final String DEFAULT_USER_TIMEZONE_DESCRIPTION = "The timezone which represents end user timezone." +
      " The message module events and best contact time are interpreted with this timezone.";
 
+    public static final String CALL_CONFIG = "messages.callConfig";
+    public static final String CALL_CONFIG_DEFAULT_VALUE = "voxeo-mobile";
+    public static final String CALL_CONFIG_DESCRIPTION = "The string value representing the default value of " +
+                "call configuration used to make calls.";
+
+    public static final String CALL_DEFAULT_FLOW = "messages.defaultFlow";
+    public static final String CALL_DEFAULT_FLOW_DEFAULT_VALUE = "MainFlow";
+    public static final String CALL_DEFAULT_FLOW_DESCRIPTION = "The string value representing the default value of " +
+            " call flow used to make calls.";
+
+    public static final String MESSAGE_DELIVERY_JOB_INTERVAL = "messages.messageDeliveryJobInterval";
+    public static final String MESSAGE_DELIVERY_JOB_INTERVAL_DEFAULT_VALUE = "86400";
+    public static final String MESSAGE_DELIVERY_JOB_INTERVAL_DESCRIPTION = "The integer value represents the " +
+            "interval (in second) of launching the job which will schedule tasks for the upcoming messages. " +
+            "A server reboot is required to effect changes.";
+
     private ConfigConstants() {
     }
 }

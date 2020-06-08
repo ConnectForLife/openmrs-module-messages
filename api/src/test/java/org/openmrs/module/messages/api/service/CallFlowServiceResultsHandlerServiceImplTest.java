@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.openmrs.Person;
 import org.openmrs.PersonAttribute;
+import org.openmrs.api.AdministrationService;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.Daemon;
@@ -21,6 +22,7 @@ import org.openmrs.module.messages.api.service.impl.CallFlowServiceResultsHandle
 import org.openmrs.module.messages.builder.PatientTemplateBuilder;
 import org.openmrs.module.messages.builder.ScheduledExecutionContextBuilder;
 import org.openmrs.module.messages.builder.ScheduledServiceBuilder;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -29,10 +31,9 @@ import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.openmrs.module.messages.api.constants.MessagesConstants.CALLFLOWS_DEFAULT_CONFIG;
-import static org.openmrs.module.messages.api.constants.MessagesConstants.CALLFLOWS_DEFAULT_FLOW;
 import static org.openmrs.module.messages.api.constants.MessagesConstants.CALL_FLOW_INITIATE_CALL_EVENT;
 import static org.openmrs.module.messages.api.event.CallFlowParamConstants.ACTOR_ID;
 import static org.openmrs.module.messages.api.event.CallFlowParamConstants.ACTOR_TYPE;
@@ -70,6 +71,13 @@ public class CallFlowServiceResultsHandlerServiceImplTest {
     @Before
     public void setUp() {
         mockStatic(Context.class);
+        AdministrationService administrationService = mock(AdministrationService.class);
+        when(administrationService.getGlobalProperty(ConfigConstants.CALL_CONFIG,
+                ConfigConstants.CALL_CONFIG_DEFAULT_VALUE)).thenReturn(ConfigConstants.CALL_CONFIG_DEFAULT_VALUE);
+        when(administrationService.getGlobalProperty(ConfigConstants.CALL_DEFAULT_FLOW,
+                ConfigConstants.CALL_DEFAULT_FLOW_DEFAULT_VALUE))
+                .thenReturn(ConfigConstants.CALL_DEFAULT_FLOW_DEFAULT_VALUE);
+        PowerMockito.when(Context.getAdministrationService()).thenReturn(administrationService);
     }
 
     @Test
@@ -94,8 +102,8 @@ public class CallFlowServiceResultsHandlerServiceImplTest {
         Map<String, Object> additionalParams = (Map<String, Object>) params.get(ADDITIONAL_PARAMS);
 
         assertThat(messagesEvent.getSubject(), is(CALL_FLOW_INITIATE_CALL_EVENT));
-        assertThat(params.get(CONFIG), is(CALLFLOWS_DEFAULT_CONFIG));
-        assertThat(params.get(FLOW_NAME), is(CALLFLOWS_DEFAULT_FLOW));
+        assertThat(params.get(CONFIG), is(ConfigConstants.CALL_CONFIG_DEFAULT_VALUE));
+        assertThat(params.get(FLOW_NAME), is(ConfigConstants.CALL_DEFAULT_FLOW_DEFAULT_VALUE));
         assertThat(additionalParams.get(PHONE), is(PHONE_NUMBER));
         assertThat(additionalParams.get(ACTOR_ID), is(Integer.toString(scheduledExecutionContext.getActorId())));
         assertThat(additionalParams.get(ACTOR_TYPE), is(scheduledExecutionContext.getActorType()));

@@ -28,6 +28,8 @@ public class ScheduledExecutionContext implements Serializable {
 
     private int actorId;
 
+    private int patientId;
+
     private String actorType;
 
     private int groupId;
@@ -35,11 +37,12 @@ public class ScheduledExecutionContext implements Serializable {
     public ScheduledExecutionContext() {
     }
 
-    public ScheduledExecutionContext(List<ScheduledService> scheduledServices,
-                                     Date executionDate, Person actor, String actorType, int groupId) {
+    public ScheduledExecutionContext(List<ScheduledService> scheduledServices, Date executionDate,
+                                     Person actor, Integer patientId, String actorType, int groupId) {
         this.serviceIdsToExecute = OpenmrsObjectUtil.getIds(scheduledServices);
         this.executionDate = executionDate;
         this.actorId = actor.getId();
+        this.patientId = patientId;
         this.actorType = actorType;
         this.groupId = groupId;
     }
@@ -66,6 +69,14 @@ public class ScheduledExecutionContext implements Serializable {
 
     public void setActorId(int actorId) {
         this.actorId = actorId;
+    }
+
+    public int getPatientId() {
+        return this.patientId;
+    }
+
+    public void setPatientId(int patientId) {
+        this.patientId = patientId;
     }
 
     public String getActorType() {

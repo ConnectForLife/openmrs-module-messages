@@ -22,6 +22,7 @@ import org.openmrs.module.DaemonToken;
 import org.openmrs.module.DaemonTokenAware;
 import org.openmrs.module.Module;
 import org.openmrs.module.ModuleFactory;
+import org.openmrs.module.messages.api.constants.ConfigConstants;
 import org.openmrs.module.messages.api.constants.MessagesConstants;
 import org.openmrs.module.messages.api.event.AbstractMessagesEventListener;
 import org.openmrs.module.messages.api.event.listener.MessagesEventListenerFactory;
@@ -30,7 +31,7 @@ import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
 import org.openmrs.module.messages.api.scheduler.job.JobRepeatInterval;
 import org.openmrs.module.messages.api.scheduler.job.MessageDeliveriesJobDefinition;
 import org.openmrs.module.messages.api.service.MessagesSchedulerService;
-import org.openmrs.module.messages.api.constants.ConfigConstants;
+import org.openmrs.module.messages.api.util.GlobalPropertyUtil;
 
 import java.util.List;
 
@@ -95,8 +96,8 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
     }
 
     private void scheduleMessageDeliveries() {
-        getSchedulerService().rescheduleOrCreateNewTask(new MessageDeliveriesJobDefinition(),
-            JobRepeatInterval.DAILY);
+        Long interval = getJobInterval();
+        getSchedulerService().rescheduleOrCreateNewTask(new MessageDeliveriesJobDefinition(), interval);
     }
 
     private MessagesSchedulerService getSchedulerService() {
@@ -118,6 +119,8 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
         createStatusesEndingCallflowConfig();
         createNotificationTemplateConfig();
         createDefaultUserTimezone();
+        createCallConfiguration();
+        createSchedulerConfiguration();
     }
 
     private void createNotificationTemplateConfig() {
@@ -186,7 +189,7 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
                 ConfigConstants.BENCHMARK_PERIOD_DEFAULT_VALUE,
                 ConfigConstants.BENCHMARK_PERIOD_DESCRIPTION);
     }
-    
+
     private void createHealthTipConfig() {
         createGlobalSettingIfNotExists(ConfigConstants.NUMBER_OF_HEALTH_TIPS_PLAYED_PER_CALL_KEY,
                 ConfigConstants.NUMBER_OF_HEALTH_TIPS_PLAYED_PER_CALL_DEFAULT_VALUE,
@@ -241,6 +244,35 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
         createGlobalSettingIfNotExists(ConfigConstants.DEFAULT_USER_TIMEZONE,
                 ConfigConstants.DEFAULT_USER_TIMEZONE_DEFAULT_VALUE,
                 ConfigConstants.DEFAULT_USER_TIMEZONE_DESCRIPTION);
+    }
+
+    private void createCallConfiguration() {
+        createGlobalSettingIfNotExists(ConfigConstants.CALL_CONFIG,
+                ConfigConstants.CALL_CONFIG_DEFAULT_VALUE,
+                ConfigConstants.CALL_CONFIG_DESCRIPTION);
+        createGlobalSettingIfNotExists(ConfigConstants.CALL_DEFAULT_FLOW,
+                ConfigConstants.CALL_DEFAULT_FLOW_DEFAULT_VALUE,
+                ConfigConstants.CALL_DEFAULT_FLOW_DESCRIPTION);
+    }
+
+    private void createSchedulerConfiguration() {
+        createGlobalSettingIfNotExists(ConfigConstants.MESSAGE_DELIVERY_JOB_INTERVAL,
+                ConfigConstants.MESSAGE_DELIVERY_JOB_INTERVAL_DEFAULT_VALUE,
+                ConfigConstants.MESSAGE_DELIVERY_JOB_INTERVAL_DESCRIPTION);
+    }
+
+    private Long getJobInterval() {
+        String gpName = ConfigConstants.MESSAGE_DELIVERY_JOB_INTERVAL;
+        String stringValue = Context.getAdministrationService().getGlobalProperty(gpName);
+        Long interval = null;
+        try {
+            interval = Long.valueOf(GlobalPropertyUtil.parseInt(gpName, stringValue));
+        } catch (MessagesRuntimeException e) {
+            interval = JobRepeatInterval.DAILY.getSeconds();
+            LOGGER.warn(String.format("Error occurred during getting job interval: %s. " +
+                    "Default value will be used: %d", e.getMessage(), interval));
+        }
+        return interval;
     }
 
     private void createPersonAttributeTypeIfNotExists(PersonAttributeType attributeType) {

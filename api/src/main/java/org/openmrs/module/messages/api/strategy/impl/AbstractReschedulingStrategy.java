@@ -50,6 +50,7 @@ public abstract class AbstractReschedulingStrategy implements ReschedulingStrate
                 servicesToExecute,
                 getRescheduleDate(),
                 service.getPatientTemplate().getActor(),
+                service.getPatientTemplate().getPatient().getPatientId(),
                 service.getPatientTemplate().getActorTypeAsString(),
                 service.getGroup().getId()
         ));

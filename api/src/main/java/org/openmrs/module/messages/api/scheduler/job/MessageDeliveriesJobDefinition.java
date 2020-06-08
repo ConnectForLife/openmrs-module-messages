@@ -9,7 +9,6 @@
 
 package org.openmrs.module.messages.api.scheduler.job;
 
-import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Person;
@@ -29,6 +28,8 @@ import org.openmrs.module.messages.api.service.MessagingGroupService;
 import org.openmrs.module.messages.api.service.MessagingService;
 import org.openmrs.module.messages.api.util.DateUtil;
 
+import java.util.List;
+
 public class MessageDeliveriesJobDefinition extends JobDefinition {
 
     private static final Log LOGGER = LogFactory.getLog(MessageDeliveriesJobDefinition.class);
@@ -47,7 +48,13 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
         LOGGER.debug(String.format("Converted to %d groups to execute", groupedResults.size()));
 
         for (GroupedServiceResultList groupedResult : groupedResults) {
-            scheduleTaskForActivePerson(groupedResult);
+            try {
+                scheduleTaskForActivePerson(groupedResult);
+            } catch (Exception e) {
+                LOGGER.error(String.format("The error occurred during scheduling group for: %s. %s",
+                        groupedResult.getActorWithExecutionDate().toString(), e.getMessage()));
+                LOGGER.debug(e.getMessage(), e);
+            }
         }
     }
 
@@ -75,6 +82,7 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
                     group.getScheduledServices(),
                     groupedResult.getActorWithExecutionDate().getDate(),
                     group.getActor(),
+                    group.getPatient().getPatientId(),
                     groupedResult.getActorWithExecutionDate().getActorType(),
                     group.getId()
             ));

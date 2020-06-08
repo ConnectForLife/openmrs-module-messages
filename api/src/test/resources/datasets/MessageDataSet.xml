@@ -381,4 +381,343 @@
             date_created="2019-11-25 00:00:00.0"
             voided="false"
             uuid="5a2f0b56-3ff9-427b-b4f3-b92796c7eea2"/>
+
+    <person
+            person_id="677"
+            gender="M"
+            dead="false"
+            creator="1"
+            date_created="2010-11-16 15:57:09.0"
+            voided="false"
+            uuid="1b71ba6f-1aa9-405e-b7fc-7375b396ea7d"/>
+
+    <person_name
+            person_name_id="677"
+            preferred="true"
+            person_id="677"
+            given_name="Carl"
+            middle_name=""
+            family_name="Patient"
+            creator="1"
+            date_created="2010-11-16 15:57:09.0"
+            voided="false"
+            void_reason=""
+            uuid="0db65f92-781d-4a65-8fc2-744479a317a6"/>
+
+    <person_attribute
+            person_id="677"
+            person_attribute_id="1677"
+            value="ACTIVE"
+            person_attribute_type_id="710"
+            creator="1"
+            date_created="2010-11-16"
+            voided="false"
+            uuid="0c1ffd7a-805b-4d20-961a-d8ecc4961ada"/>
+
+    <patient
+            patient_id="677"
+            creator="1"
+            date_created="2010-11-16 15:57:09.0"
+            voided="false"/>
+
+    <patient_identifier
+            patient_identifier_id="677"
+            patient_id="677"
+            identifier="677"
+            identifier_type="3500"
+            preferred="1"
+            location_id="1"
+            creator="1"
+            date_created="2010-11-16 15:57:09.0"
+            voided="false"
+            uuid="9767129c-51ae-4916-b22d-9fd575136bc1"/>
+
+    <person
+            person_id="674"
+            gender="M"
+            dead="false"
+            creator="1"
+            date_created="2010-11-16 15:57:09.0"
+            voided="false"
+            uuid="4c26ad97-f2a3-4113-b26a-b2720a41ddd3"/>
+
+    <person_name
+            person_name_id="674"
+            preferred="true"
+            person_id="674"
+            given_name="Jack"
+            middle_name=""
+            family_name="PatientAndCaregiver"
+            creator="1"
+            date_created="2010-11-16 15:57:09.0"
+            voided="false"
+            void_reason=""
+            uuid="d4468cac-e021-4cd4-b765-3446e44f609d"/>
+
+    <person_attribute
+            person_id="674"
+            person_attribute_id="674"
+            value="ACTIVE"
+            person_attribute_type_id="710"
+            creator="1"
+            date_created="2010-11-16"
+            voided="false"
+            uuid="eae44373-1171-40f4-84fc-c3e0f56c23f1"/>
+
+    <patient
+            patient_id="674"
+            creator="1"
+            date_created="2010-11-16 15:57:09.0"
+            voided="false"/>
+
+    <patient_identifier
+            patient_identifier_id="674"
+            patient_id="674"
+            identifier="674"
+            identifier_type="3500"
+            preferred="1"
+            location_id="1"
+            creator="1"
+            date_created="2010-11-16 15:57:09.0"
+            voided="false"
+            uuid="209bb57b-4549-4100-9510-b5caecab7616"/>
+
+    <relationship
+            relationship_id="674"
+            person_a="677"
+            relationship="2500"
+            person_b="674"
+            creator="1"
+            date_created="2010-11-16 00:00:00.0"
+            voided="false"
+            uuid="658752f0-c9d2-4063-a16f-817564b76a1c"/>
+
+    <messages_template
+            messages_template_id="23"
+            service_query="select CAST('2010-11-16' as date) as EXECUTION_DATE,
+                '1' as MESSAGE_ID,
+                'Call' as CHANNEL_ID,
+                'FUTURE' as STATUS_ID,
+                :patientId as PATIENT_ID,
+                :actorId as ACTOR_ID;"
+            service_query_type="SQL"
+            name="Dummy Service type"
+            creator="1"
+            date_created="2010-11-16 00:00:00.0"
+            voided="false"
+            uuid="4fa0030b-2c4c-4e92-954b-08001b95bdfd"/>
+
+    <messages_template_field
+            messages_template_field_id="71"
+            name="Start of daily messages"
+            mandatory="false"
+            default_value=""
+            template_field_type="START_OF_MESSAGES"
+            template_id="23"
+            creator="1"
+            date_created="2010-11-16 00:00:00.0"
+            voided="false"
+            uuid="3133f259-1ae3-41bc-90eb-b34cf4f97bbf"/>
+
+    <messages_template_field
+            messages_template_field_id="72"
+            name="End of daily messages"
+            mandatory="false"
+            default_value="AFTER_TIMES|2"
+            template_field_type="END_OF_MESSAGES"
+            template_id="23"
+            creator="1"
+            date_created="2010-11-16 00:00:00.0"
+            voided="false"
+            uuid="d9c80308-7c51-4690-b77e-7535a630fb45"/>
+
+    <messages_patient_template
+            messages_patient_template_id="91"
+            actor_id="677"
+            template_id="23"
+            patient_id="677"
+            service_query_type=""
+            service_query=""
+            creator="1"
+            date_created="2010-11-16 00:00:00.1"
+            voided="false"
+            uuid="40196942-3eea-479d-b396-54100b80f1a8"/>
+
+    <messages_template_field_value
+            messages_template_field_value_id="91"
+            value=""
+            patient_template_id="91"
+            template_field_id="71"
+            creator="1"
+            date_created="2010-11-16 00:00:00.2"
+            voided="false"
+            uuid="65cd32a0-c12a-4605-b315-e911af4fdcdd"/>
+
+    <messages_template_field_value
+            messages_template_field_value_id="92"
+            value="AFTER_TIMES|2"
+            patient_template_id="91"
+            template_field_id="72"
+            creator="1"
+            date_created="2010-11-16 00:00:00.2"
+            voided="false"
+            uuid="4b64ab9b-889e-4ec6-8bee-24341e88b3d1"/>
+
+    <messages_patient_template
+            messages_patient_template_id="92"
+            actor_id="674"
+            template_id="23"
+            patient_id="674"
+            service_query_type=""
+            service_query=""
+            creator="1"
+            date_created="2010-11-16 00:00:00.1"
+            voided="false"
+            uuid="a347e0c5-db67-4451-bfba-772a298136bc"/>
+
+    <messages_template_field_value
+            messages_template_field_value_id="93"
+            value=""
+            patient_template_id="92"
+            template_field_id="71"
+            creator="1"
+            date_created="2010-11-16 00:00:00.2"
+            voided="false"
+            uuid="4ebdd797-a258-4bba-977d-f4628bc687ac"/>
+
+    <messages_template_field_value
+            messages_template_field_value_id="94"
+            value="AFTER_TIMES|1"
+            patient_template_id="92"
+            template_field_id="72"
+            creator="1"
+            date_created="2010-11-16 00:00:00.2"
+            voided="false"
+            uuid="2b89850c-da01-470e-8606-566136165f90"/>
+
+    <messages_patient_template
+            messages_patient_template_id="93"
+            actor_id="674"
+            actor_type="674"
+            template_id="23"
+            patient_id="677"
+            service_query_type=""
+            service_query=""
+            creator="1"
+            date_created="2010-11-16 00:00:00.1"
+            voided="false"
+            uuid="5f632769-7b4d-452d-bc07-e9603e96e362"/>
+
+    <messages_template_field_value
+            messages_template_field_value_id="95"
+            value=""
+            patient_template_id="93"
+            template_field_id="71"
+            creator="1"
+            date_created="2010-11-16 00:00:00.2"
+            voided="false"
+            uuid="c8d6aac2-d8c3-47ad-af0f-66a3ecc38d4d"/>
+
+    <messages_template_field_value
+            messages_template_field_value_id="96"
+            value="AFTER_TIMES|1"
+            patient_template_id="93"
+            template_field_id="72"
+            creator="1"
+            date_created="2010-11-16 00:00:00.2"
+            voided="false"
+            uuid="1938b7c0-8c37-4454-b1e9-ca6a3eceadb0"/>
+
+    <person
+            person_id="675"
+            gender="M"
+            dead="false"
+            creator="1"
+            date_created="2010-11-16 15:57:09.0"
+            voided="false"
+            uuid="d9932d29-cf24-4352-970a-ded834ee5f62"/>
+
+    <person_name
+            person_name_id="675"
+            preferred="true"
+            person_id="675"
+            given_name="Tom"
+            middle_name=""
+            family_name="SecondPatient"
+            creator="1"
+            date_created="2010-11-16 15:57:09.0"
+            voided="false"
+            void_reason=""
+            uuid="7df9a5f9-7e6c-43ea-938e-fa567086f9b7"/>
+
+    <person_attribute
+            person_id="675"
+            person_attribute_id="675"
+            value="ACTIVE"
+            person_attribute_type_id="710"
+            creator="1"
+            date_created="2010-11-16"
+            voided="false"
+            uuid="ccd41917-94b2-4deb-90b6-57dbba43285d"/>
+
+    <patient
+            patient_id="675"
+            creator="1"
+            date_created="2010-11-16 15:57:09.0"
+            voided="false"/>
+
+    <patient_identifier
+            patient_identifier_id="675"
+            patient_id="675"
+            identifier="675"
+            identifier_type="3500"
+            preferred="1"
+            location_id="1"
+            creator="1"
+            date_created="2010-11-16 15:57:09.0"
+            voided="false"
+            uuid="a93cf6b6-1724-4b02-a61a-3b68acc84c1d"/>
+
+    <relationship
+            relationship_id="675"
+            person_a="675"
+            relationship="2500"
+            person_b="674"
+            creator="1"
+            date_created="2010-11-16 00:00:00.0"
+            voided="false"
+            uuid="68ccc940-ee09-4274-b989-7ec5403df8ab"/>
+
+    <messages_patient_template
+            messages_patient_template_id="94"
+            actor_id="674"
+            actor_type="675"
+            template_id="23"
+            patient_id="675"
+            service_query_type=""
+            service_query=""
+            creator="1"
+            date_created="2010-11-16 00:00:00.1"
+            voided="false"
+            uuid="da85a419-41fb-41fd-b8a6-d4635ebc0bd9"/>
+
+    <messages_template_field_value
+            messages_template_field_value_id="97"
+            value=""
+            patient_template_id="94"
+            template_field_id="71"
+            creator="1"
+            date_created="2010-11-16 00:00:00.2"
+            voided="false"
+            uuid="1b72d9c6-f0df-4639-b0aa-8e54eaa74c63"/>
+
+    <messages_template_field_value
+            messages_template_field_value_id="98"
+            value="AFTER_TIMES|1"
+            patient_template_id="94"
+            template_field_id="72"
+            creator="1"
+            date_created="2010-11-16 00:00:00.2"
+            voided="false"
+            uuid="7c444892-f0ea-48f9-bbe6-901ab90f4b2d"/>
 </dataset>

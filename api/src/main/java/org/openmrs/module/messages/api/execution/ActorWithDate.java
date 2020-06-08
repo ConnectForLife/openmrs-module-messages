@@ -8,17 +8,23 @@ import java.util.Date;
 public class ActorWithDate {
 
     private Integer actorId;
+    private Integer patientId;
     private String actorType;
     private Date date;
 
-    public ActorWithDate(Integer actorId, String actorType, Date date) {
+    public ActorWithDate(Integer actorId, Integer patientId, String actorType, Date date) {
         this.actorId = actorId;
+        this.patientId = patientId;
         this.actorType = actorType;
         this.date = date;
     }
 
     public Integer getActorId() {
         return actorId;
+    }
+
+    public Integer getPatientId() {
+        return patientId;
     }
 
     public String getActorType() {
@@ -45,5 +51,14 @@ public class ActorWithDate {
     @Override
     public int hashCode() {
         return HashCodeBuilder.reflectionHashCode(this);
+    }
+
+    @Override
+    public String toString() {
+        return "ActorWithDate {" +
+                "actorId=" + actorId +
+                ", actorType='" + actorType + '\'' +
+                ", date=" + date +
+                '}';
     }
 }

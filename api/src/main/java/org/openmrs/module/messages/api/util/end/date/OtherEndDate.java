@@ -10,6 +10,8 @@
 package org.openmrs.module.messages.api.util.end.date;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.messages.api.util.TimeType;
 
 import java.util.Calendar;
@@ -19,6 +21,8 @@ import static org.openmrs.module.messages.api.util.FieldDateUtil.SEPARATOR;
 
 public class OtherEndDate implements EndDate {
 
+    private static final Log LOGGER = LogFactory.getLog(OtherEndDate.class);
+
     private EndDateParams params;
 
     public OtherEndDate(EndDateParams params) {
@@ -27,16 +31,22 @@ public class OtherEndDate implements EndDate {
 
     @Override
     public Date getDate() {
-        String[] chain = StringUtils.split(params.getValue(), SEPARATOR);
-        TimeType timeType;
-        Integer units;
-        try {
-            timeType = TimeType.valueOf(chain[0]);
-            units = Integer.valueOf(chain[1]);
-        } catch (IllegalArgumentException | ArrayIndexOutOfBoundsException e) {
-            return null;
+        Date endDate = null;
+        if (null != params && null != params.getValue() && null != params.getStartDate()) {
+            String[] chain = StringUtils.split(params.getValue(), SEPARATOR);
+            if (chain.length > 1) {
+                try {
+                    TimeType timeType = TimeType.valueOf(chain[0]);
+                    Integer units = Integer.valueOf(chain[1]);
+                    endDate = getOtherEndDate(params.getStartDate(), timeType, units);
+                } catch (IllegalArgumentException e) {
+                    LOGGER.warn("Exception occurred during processing end date: " + e.getMessage());
+                }
+            }
+        } else {
+            LOGGER.warn("The end date could not be calculated for provided params:" + params);
         }
-        return getOtherEndDate(params.getStartDate(), timeType, units);
+        return endDate;
     }
 
     private Date getOtherEndDate(Date startDate, TimeType timeType, Integer units) {

@@ -9,7 +9,6 @@
 
 package org.openmrs.module.messages.api.service.impl;
 
-import java.util.Date;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Daemon;
@@ -24,6 +23,8 @@ import org.openmrs.scheduler.SchedulerException;
 import org.openmrs.scheduler.SchedulerService;
 import org.openmrs.scheduler.TaskDefinition;
 
+import java.util.Date;
+
 /**
  * Implements methods related to job scheduling
  */
@@ -37,9 +38,9 @@ public class MessagesSchedulerServiceImpl extends BaseOpenmrsDataService<Schedul
     private DaemonToken daemonToken;
 
     @Override
-    public void rescheduleOrCreateNewTask(JobDefinition jobDefinition, JobRepeatInterval repeatInterval) {
+    public void rescheduleOrCreateNewTask(JobDefinition jobDefinition, Long intervalInSecond) {
         TaskDefinition previousTask = schedulerService.getTaskByName(jobDefinition.getTaskName());
-        TaskDefinition newTask = prepareTask(jobDefinition, previousTask, repeatInterval.getSeconds());
+        TaskDefinition newTask = prepareTask(jobDefinition, previousTask, intervalInSecond);
 
         if (shouldBeExecuted(newTask, jobDefinition)) {
             newTask.setLastExecutionTime(DateUtil.now());

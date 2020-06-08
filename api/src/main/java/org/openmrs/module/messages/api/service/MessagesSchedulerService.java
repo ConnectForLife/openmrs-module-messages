@@ -1,10 +1,11 @@
 package org.openmrs.module.messages.api.service;
 
-import java.util.Date;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.DaemonToken;
 import org.openmrs.module.messages.api.scheduler.job.JobDefinition;
 import org.openmrs.module.messages.api.scheduler.job.JobRepeatInterval;
+
+import java.util.Date;
 
 /**
  * Provides methods related to job scheduling
@@ -16,9 +17,9 @@ public interface MessagesSchedulerService extends OpenmrsService {
      * Start date is set to now.
      *
      * @param jobDefinition object containing the important data about job
-     * @param repeatInterval interval between job executions
+     * @param intervalInSecond interval between job executions (represented in seconds)
      */
-    void rescheduleOrCreateNewTask(JobDefinition jobDefinition, JobRepeatInterval repeatInterval);
+    void rescheduleOrCreateNewTask(JobDefinition jobDefinition, Long intervalInSecond);
 
     /**
      * Creates a new scheduled task

@@ -1,8 +1,9 @@
 package org.openmrs.module.messages.api.util.end.date;
 
+import org.openmrs.module.messages.api.util.FrequencyType;
+
 import java.util.Date;
 import java.util.List;
-import org.openmrs.module.messages.api.util.FrequencyType;
 
 public class EndDateParams {
     private String value;
@@ -59,5 +60,15 @@ public class EndDateParams {
     public EndDateParams setFrequency(FrequencyType frequency) {
         this.frequency = frequency;
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return "EndDateParams{" +
+                "value='" + value + "'" +
+                ", startDate=" + startDate +
+                ", frequency=" + frequency +
+                ", daysOfWeek=" + daysOfWeek +
+                '}';
     }
 }

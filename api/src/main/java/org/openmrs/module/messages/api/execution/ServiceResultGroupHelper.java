@@ -58,6 +58,7 @@ public final class ServiceResultGroupHelper {
         for (GroupedServiceResultList group : input) {
             ActorWithDate actorWithDate = new ActorWithDate(
                     group.getActorWithExecutionDate().getActorId(),
+                    group.getGroup().getPatientId(),
                     group.getActorWithExecutionDate().getActorType(),
                     group.getActorWithExecutionDate().getDate());
             if (groupsMap.containsKey(actorWithDate)) {

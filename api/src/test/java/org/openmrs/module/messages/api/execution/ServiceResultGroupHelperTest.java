@@ -219,8 +219,16 @@ public class ServiceResultGroupHelperTest {
 
         List<GroupedServiceResultList> result = groupByActorAndExecutionDate(input, false);
         assertEquals(2, result.size());
-        assertEquals("Caregiver", result.get(0).getActorWithExecutionDate().getActorType());
-        assertEquals("Patient", result.get(1).getActorWithExecutionDate().getActorType());
+        for (GroupedServiceResultList group : result) {
+            ActorWithDate actorWithDate = group.getActorWithExecutionDate();
+            if ("Caregiver".equals(actorWithDate.getActorType())) {
+                assertEquals(Integer.valueOf(ACTOR_1_ID), actorWithDate.getActorId());
+                assertEquals(Integer.valueOf(PATIENT_1_ID), actorWithDate.getPatientId());
+            } else {
+                assertEquals(Integer.valueOf(ACTOR_2_ID), actorWithDate.getActorId());
+                assertEquals(Integer.valueOf(ACTOR_2_ID), actorWithDate.getPatientId());
+            }
+        }
     }
 
     private List<ServiceResultList> getServiceResultListsWithOneFutureAndOnePendingStatus(Date date, int actorId) {
