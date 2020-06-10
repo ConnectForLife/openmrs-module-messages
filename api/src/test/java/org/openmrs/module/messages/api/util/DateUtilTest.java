@@ -9,12 +9,14 @@
 
 package org.openmrs.module.messages.api.util;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.module.messages.BaseTest;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class DateUtilTest extends BaseTest {
 
@@ -39,6 +41,22 @@ public class DateUtilTest extends BaseTest {
         String actual = DateUtil.convertToServerSideDateTime(date);
 
         Assert.assertEquals(expectedDateTime, actual);
+    }
+
+    @Test
+    public void shouldConvertDateTimeWithSecondsPrecisionFormat() throws ParseException {
+        final String expectedDateTime = "2020-02-09 10:17:18.123";
+        final Date date = parseDateTimeWithMillisecondsPrecision(expectedDateTime);
+
+        String actual = DateUtil.convertDate(date, DATE_TIME_PATTERN_WITH_MILLISECONDS_PRECISION);
+
+        Assert.assertEquals(expectedDateTime, actual);
+    }
+
+    @Test
+    public void shouldReturnEmptyStringWhenDateIsNull() {
+        Assert.assertEquals(StringUtils.EMPTY, DateUtil.convertDate(null,
+                DATE_TIME_PATTERN_WITH_MILLISECONDS_PRECISION));
     }
 
     private Date parseDateTimeWithMillisecondsPrecision(String dateTime) throws ParseException {

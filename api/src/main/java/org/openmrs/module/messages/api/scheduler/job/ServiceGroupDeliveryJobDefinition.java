@@ -20,6 +20,7 @@ import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
 import org.openmrs.module.messages.api.model.ScheduledService;
 import org.openmrs.module.messages.api.service.MessagingService;
 import org.openmrs.module.messages.api.service.ServiceResultsHandlerService;
+import org.openmrs.module.messages.api.util.DateUtil;
 import org.openmrs.module.messages.api.util.JsonUtil;
 import org.openmrs.module.messages.domain.criteria.ScheduledServiceCriteria;
 
@@ -31,8 +32,9 @@ import java.util.Map;
 public class ServiceGroupDeliveryJobDefinition extends JobDefinition {
 
     public static final String EXECUTION_CONTEXT = "EXECUTION_CONTEXT";
-    
+
     private static final Log LOGGER = LogFactory.getLog(ServiceGroupDeliveryJobDefinition.class);
+    private static final String SHORT_DATE_FORMAT = "yyyyMMddHHmmz";
 
     private final Gson gson = JsonUtil.getGson();
 
@@ -57,10 +59,10 @@ public class ServiceGroupDeliveryJobDefinition extends JobDefinition {
 
     @Override
     public String getTaskName() {
-        return String.format("Msg-a:%d-p:%d-%s",
+        return String.format("a:%dp:%dd:%s",
             this.executionContext.getActorId(),
             this.executionContext.getPatientId(),
-            this.executionContext.getExecutionDate());
+            DateUtil.convertDate(this.executionContext.getExecutionDate(), SHORT_DATE_FORMAT));
     }
 
     @Override

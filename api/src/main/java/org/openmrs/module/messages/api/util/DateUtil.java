@@ -9,17 +9,17 @@
 
 package org.openmrs.module.messages.api.util;
 
-import static org.openmrs.module.messages.api.constants.MessagesConstants.DEFAULT_FRONT_END_DATE_FORMAT;
-import static org.openmrs.module.messages.api.constants.MessagesConstants.DEFAULT_SERVER_SIDE_DATETIME_FORMAT;
-import static org.openmrs.module.messages.api.constants.MessagesConstants.DEFAULT_SERVER_SIDE_DATE_FORMAT;
+import org.apache.commons.lang3.time.DateUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import org.apache.commons.lang3.time.DateUtils;
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
+
+import static org.openmrs.module.messages.api.constants.MessagesConstants.DEFAULT_FRONT_END_DATE_FORMAT;
+import static org.openmrs.module.messages.api.constants.MessagesConstants.DEFAULT_SERVER_SIDE_DATETIME_FORMAT;
+import static org.openmrs.module.messages.api.constants.MessagesConstants.DEFAULT_SERVER_SIDE_DATE_FORMAT;
 
 public final class DateUtil {
 
@@ -80,15 +80,19 @@ public final class DateUtil {
         return date;
     }
 
+    public static String convertDate(Date date, String toFormat) {
+        String result = "";
+        if (date != null) {
+            result = new SimpleDateFormat(toFormat).format(date);
+        }
+        return result;
+    }
+
     private static String convertDate(String date, String fromFormat, String toFormat) throws ParseException {
         SimpleDateFormat newDateFormat = new SimpleDateFormat(fromFormat);
         Date myDate = newDateFormat.parse(date);
         newDateFormat.applyPattern(toFormat);
         return newDateFormat.format(myDate);
-    }
-
-    private static String convertDate(Date date, String toFormat) {
-        return new SimpleDateFormat(toFormat).format(date);
     }
 
     private DateUtil() { }
