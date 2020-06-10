@@ -42,8 +42,6 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
 
     private static final Log LOGGER = LogFactory.getLog(MessagesActivator.class);
 
-    private MessagesSchedulerService schedulerService;
-
     /**
      * @see #started()
      */
@@ -101,11 +99,7 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
     }
 
     private MessagesSchedulerService getSchedulerService() {
-        if (schedulerService == null) {
-            schedulerService = Context.getRegisteredComponent(
-                    MessagesConstants.SCHEDULER_SERVICE, MessagesSchedulerService.class);
-        }
-        return schedulerService;
+        return Context.getRegisteredComponent(MessagesConstants.SCHEDULER_SERVICE, MessagesSchedulerService.class);
     }
 
     private void createConfig() {
