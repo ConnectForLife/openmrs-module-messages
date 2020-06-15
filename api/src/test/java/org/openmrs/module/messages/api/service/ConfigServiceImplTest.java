@@ -9,16 +9,6 @@
 
 package org.openmrs.module.messages.api.service;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
-
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.messages.ContextSensitiveTest;
@@ -29,6 +19,17 @@ import org.openmrs.module.messages.api.model.RelationshipTypeDirection;
 import org.openmrs.module.messages.api.strategy.ReschedulingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 
 public class ConfigServiceImplTest extends ContextSensitiveTest {
 
@@ -47,7 +48,7 @@ public class ConfigServiceImplTest extends ContextSensitiveTest {
     private static final String CALL_CHANNEL_NAME = "Call";
     private static final String CHANNEL_NAME_WITHOUT_RESCHEDULING_STRATEGY = "channelNameWithoutReschedulingStrategy";
 
-    private static final int EXPECTED_MAX_NUMBER_OF_RESCHEDULING = 3;
+    private static final int EXPECTED_MAX_NUMBER_OF_ATTEMPTS = 3;
 
     private static final int EXPECTED_TIME_INTERVAL_TO_NEXT_RESCHEDULE = 900;
 
@@ -116,9 +117,9 @@ public class ConfigServiceImplTest extends ContextSensitiveTest {
     }
 
     @Test
-    public void shouldReturnExpectedMaxNumberOfRescheduling() {
-        int actual = configService.getMaxNumberOfRescheduling();
-        assertThat(actual, is(EXPECTED_MAX_NUMBER_OF_RESCHEDULING));
+    public void shouldReturnExpectedMaxNumberOfAttempts() {
+        int actual = configService.getMaxNumberOfAttempts();
+        assertThat(actual, is(EXPECTED_MAX_NUMBER_OF_ATTEMPTS));
     }
 
     @Test

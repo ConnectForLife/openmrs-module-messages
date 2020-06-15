@@ -161,9 +161,9 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
         createGlobalSettingIfNotExists(ConfigConstants.RESCHEDULING_STRATEGY_KEY,
                 ConfigConstants.RESCHEDULING_STRATEGY_DEFAULT_VALUE,
                 ConfigConstants.RESCHEDULING_STRATEGY_DESCRIPTION);
-        createGlobalSettingIfNotExists(ConfigConstants.MAX_NUMBER_OF_RESCHEDULING_KEY,
-                ConfigConstants.MAX_NUMBER_OF_RESCHEDULING_DEFAULT_VALUE,
-                ConfigConstants.MAX_NUMBER_OF_RESCHEDULING_DESCRIPTION);
+        createGlobalSettingIfNotExists(ConfigConstants.MAX_NUMBER_OF_ATTEMPTS_KEY,
+                ConfigConstants.MAX_NUMBER_OF_ATTEMPTS_DEFAULT_VALUE,
+                ConfigConstants.MAX_NUMBER_OF_ATTEMPTS_DESCRIPTION);
         createGlobalSettingIfNotExists(ConfigConstants.TIME_INTERVAL_TO_NEXT_RESCHEDULE_KEY,
                 ConfigConstants.TIME_INTERVAL_TO_NEXT_RESCHEDULE_DEFAULT_VALUE,
                 ConfigConstants.TIME_INTERVAL_TO_NEXT_RESCHEDULE_DESCRIPTION);

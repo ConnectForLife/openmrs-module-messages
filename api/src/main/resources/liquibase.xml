@@ -3865,4 +3865,22 @@
             AND mtfdv.default_value = '';
         </sql>
     </changeSet>
+
+    <changeSet id="messages-74" author="Arkadiusz Lalo">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_property"/>
+            <sqlCheck expectedResult="1">
+                SELECT COUNT(*) FROM global_property WHERE property='messages.maxNumberOfRescheduling'
+            </sqlCheck>
+        </preConditions>
+
+        <comment>Removed messages.maxNumberOfRescheduling property because the property name
+            has been changed to 'messages.maxNumberOfAttempts'.
+            The migration can be removed if the liquibase refactor will be conducted (eg. replacing all changes by one
+            changeSet).</comment>
+
+        <delete tableName="global_property">
+            <where>property='messages.maxNumberOfRescheduling'</where>
+        </delete>
+    </changeSet>
 </databaseChangeLog>

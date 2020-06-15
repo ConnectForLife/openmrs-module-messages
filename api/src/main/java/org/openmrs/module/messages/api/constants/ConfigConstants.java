@@ -101,9 +101,9 @@ public final class ConfigConstants {
             + "supports multiple channels next entries must be separated by a comma. Example of usage: "
             + "'channelType1:beanName1,channelType2:beanName2'.";
 
-    public static final String MAX_NUMBER_OF_RESCHEDULING_KEY = "messages.maxNumberOfRescheduling";
-    public static final String MAX_NUMBER_OF_RESCHEDULING_DEFAULT_VALUE = "3";
-    public static final String MAX_NUMBER_OF_RESCHEDULING_DESCRIPTION =
+    public static final String MAX_NUMBER_OF_ATTEMPTS_KEY = "messages.maxNumberOfAttempts";
+    public static final String MAX_NUMBER_OF_ATTEMPTS_DEFAULT_VALUE = "3";
+    public static final String MAX_NUMBER_OF_ATTEMPTS_DESCRIPTION =
             "Used to determine the number of maximum attempts that can be taken for failing ScheduledServices. After "
             + "exceeding the number of retries, services will be denied rescheduling next task. Changing this value "
             + "will not influence on tasks which already exceeded the counter. In the primary approach, it is designed "

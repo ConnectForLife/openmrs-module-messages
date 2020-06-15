@@ -37,7 +37,7 @@ public interface ConfigService {
      *
      * @return - maximum number of attempts
      */
-    int getMaxNumberOfRescheduling();
+    int getMaxNumberOfAttempts();
 
     /**
      * Provides the interval (the time - in seconds) between next scheduling task for retry specific message.

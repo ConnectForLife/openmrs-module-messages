@@ -63,8 +63,8 @@ public class ConfigServiceImpl implements ConfigService {
      * @return - maximum number of attempts
      */
     @Override
-    public int getMaxNumberOfRescheduling() {
-        String gpName = ConfigConstants.MAX_NUMBER_OF_RESCHEDULING_KEY;
+    public int getMaxNumberOfAttempts() {
+        String gpName = ConfigConstants.MAX_NUMBER_OF_ATTEMPTS_KEY;
         return GlobalPropertyUtil.parseInt(gpName, getGp(gpName));
     }
 

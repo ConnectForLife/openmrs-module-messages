@@ -116,7 +116,7 @@ public abstract class AbstractReschedulingStrategy implements ReschedulingStrate
     }
 
     private int getMaxNumberOfAttempts() {
-        return configService.getMaxNumberOfRescheduling();
+        return configService.getMaxNumberOfAttempts();
     }
 
     private int getTimeIntervalToNextReschedule() {
