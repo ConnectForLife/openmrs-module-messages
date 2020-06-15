@@ -219,8 +219,15 @@ public final class ConfigConstants {
     public static final String NOTIFICATION_TEMPLATE_ADHERENCE_FEEDBACK_DEFAULT_VALUE =
             "#set($adfLevel = $ADHERENCE_LEVEL)\n"
                     + "#set($adfTrend = $ADHERENCE_TREND)\n"
-                    + "Your adherence for past week is $adfLevel and compare "
-                    + "to last week your adherence trend is $adfTrend";
+                    + "#set($textToRead = \"\")\n"
+                    + "#if($patient.getId().equals($actor.getId()))\n"
+                    + " #set($textToRead = \"Your adherence for past week is $adfLevel "
+                    + "and compare to last week your adherence trend is $adfTrend\")\n"
+                    + "#else\n"
+                    + " #set($textToRead = \"Your patient's adherence for past week is $adfLevel "
+                    + "and compare to last week your patient's adherence trend is $adfTrend\")\n"
+                    + "#end\n"
+                    + "$textToRead";
     public static final String NOTIFICATION_TEMPLATE_ADHERENCE_FEEDBACK_DESCRIPTION =
             "The notification template for adherence feedback message type.";
 
