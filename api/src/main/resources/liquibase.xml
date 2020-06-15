@@ -3883,4 +3883,80 @@
             <where>property='messages.maxNumberOfRescheduling'</where>
         </delete>
     </changeSet>
+    
+    <changeSet id="messages-75" author="Dawid Ruchniewicz">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_property"/>
+            <sqlCheck expectedResult="1">
+                SELECT COUNT(*) FROM global_property WHERE property='messages.notificationTemplate.adherence-report-daily'
+            </sqlCheck>
+        </preConditions>
+
+        <comment>
+            Removed messages.notificationTemplate.adherence-report-daily property in order
+            to update default value via activator. The migration can be removed if the liquibase
+            refactor will be conducted (eg. replacing all changes by one changeSet).
+        </comment>
+
+        <delete tableName="global_property">
+            <where>property='messages.notificationTemplate.adherence-report-daily'</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="messages-76" author="Dawid Ruchniewicz">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_property"/>
+            <sqlCheck expectedResult="1">
+                SELECT COUNT(*) FROM global_property WHERE property='messages.notificationTemplate.adherence-report-weekly'
+            </sqlCheck>
+        </preConditions>
+
+        <comment>
+            Removed messages.notificationTemplate.adherence-report-weekly property in order
+            to update default value via activator. The migration can be removed if the liquibase
+            refactor will be conducted (eg. replacing all changes by one changeSet).
+        </comment>
+
+        <delete tableName="global_property">
+            <where>property='messages.notificationTemplate.adherence-report-weekly'</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="messages-77" author="Dawid Ruchniewicz">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_property"/>
+            <sqlCheck expectedResult="1">
+                SELECT COUNT(*) FROM global_property WHERE property='messages.notificationTemplate.visit-reminder'
+            </sqlCheck>
+        </preConditions>
+
+        <comment>
+            Removed messages.notificationTemplate.visit-reminder property in order
+            to update default value via activator. The migration can be removed if the liquibase
+            refactor will be conducted (eg. replacing all changes by one changeSet).
+        </comment>
+
+        <delete tableName="global_property">
+            <where>property='messages.notificationTemplate.visit-reminder'</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="messages-78" author="Dawid Ruchniewicz">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_property"/>
+            <sqlCheck expectedResult="1">
+                SELECT COUNT(*) FROM global_property WHERE property='messages.notificationTemplate.adherence-feedback'
+            </sqlCheck>
+        </preConditions>
+
+        <comment>
+            Removed messages.notificationTemplate.adherence-feedback property in order
+            to update default value via activator. The migration can be removed if the liquibase
+            refactor will be conducted (eg. replacing all changes by one changeSet).
+        </comment>
+
+        <delete tableName="global_property">
+            <where>property='messages.notificationTemplate.adherence-feedback'</where>
+        </delete>
+    </changeSet>
 </databaseChangeLog>

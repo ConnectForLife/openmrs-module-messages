@@ -169,7 +169,7 @@ public final class ConfigConstants {
             "#set($textToRead = \"\")\n"
                     + "#if($patient.getId().equals($actor.getId()))\n"
                     + " #set($textToRead = \"Hello $patient.getPersonName().toString(), "
-                    + "Your dosage is scheduled to be taken now. Please take your dosage.\"n"
+                    + "Your dosage is scheduled to be taken now. Please take your dosage.\")\n"
                     + "#else\n"
                     + " #set($textToRead = \"Hello $actor.getPersonName().toString(), "
                     + "Your patient's dosage is scheduled to be taken now. \")\n"
