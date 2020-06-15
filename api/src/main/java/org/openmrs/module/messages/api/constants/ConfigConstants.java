@@ -166,7 +166,15 @@ public final class ConfigConstants {
     public static final String NOTIFICATION_TEMPLATE_ADHERENCE_DAILY =
             "messages.notificationTemplate.adherence-report-daily";
     public static final String NOTIFICATION_TEMPLATE_ADHERENCE_DAILY_DEFAULT_VALUE =
-            "Hello $patient.getPatientId(), Your dosage is scheduled to be taken now. Please take your dosage.";
+            "#set($textToRead = \"\")\n"
+                    + "#if($patient.getId().equals($actor.getId()))\n"
+                    + " #set($textToRead = \"Hello $patient.getPersonName().toString(), "
+                    + "Your dosage is scheduled to be taken now. Please take your dosage.\"n"
+                    + "#else\n"
+                    + " #set($textToRead = \"Hello $actor.getPersonName().toString(), "
+                    + "Your patient's dosage is scheduled to be taken now. \")\n"
+                    + "#end\n"
+                    + "$textToRead";
     public static final String NOTIFICATION_TEMPLATE_ADHERENCE_DAILY_DESCRIPTION =
             "The notification template for adherence report daily message type.";
 
@@ -180,8 +188,15 @@ public final class ConfigConstants {
                     + "#set ($visitTypeIdInteger = $integerClazz.parseInt($visitTypeId))\n"
                     + "#set ($visitPurpose = $openmrsContext.getVisitService()"
                     + ".getVisitType($visitTypeIdInteger).getName())\n"
-                    + "Hello $patient.getPersonName().toString(), You have a visit scheduled for $simpleDateFormat"
-                    + ".format($simpleDateFormat.parse($dateStarted)) for the purpose of $visitPurpose.";
+                    + "#set($textToRead1 = \"\")\n"
+                    + "#if($patient.getId().equals($actor.getId()))\n"
+                    + " #set($textToRead1 = \"Hello $patient.getPersonName().toString(), You have a\")\n"
+                    + "#else\n"
+                    + " #set($textToRead1 = \"Hello $actor.getPersonName().toString(), Your patient has a\")\n"
+                    + "#end\n"
+                    + "#set($textToRead2 = \"visit scheduled for $simpleDateFormat.format($simpleDateFormat"
+                    + ".parse($dateStarted)) for the purpose of $visitPurpose.\")\n"
+                    + "$textToRead1 $textToRead2";
     public static final String NOTIFICATION_TEMPLATE_VISIT_REMINDER_DESCRIPTION =
             "The notification template for visit reminder message type.";
 
@@ -212,8 +227,15 @@ public final class ConfigConstants {
     public static final String NOTIFICATION_TEMPLATE_ADHERENCE_WEEKLY =
             "messages.notificationTemplate.adherence-report-weekly";
     public static final String NOTIFICATION_TEMPLATE_ADHERENCE_WEEKLY_DEFAULT_VALUE =
-            "Hello $patient.getPersonName().toString(), Your dosage is scheduled to be taken. "
-                    + "Please take your dosage as prescribed.";
+            "#set($textToRead = \"\")\n"
+                    + "#if($patient.getId().equals($actor.getId()))\n"
+                    + " #set($textToRead = \"Hello $patient.getPersonName().toString(), "
+                    + "Your dosage is scheduled to be taken. Please take your dosage as prescribed.\")\n"
+                    + "#else\n"
+                    + " #set($textToRead = \"Hello $actor.getPersonName().toString(), "
+                    + "Your patient's dosage is scheduled to be taken.\")\n"
+                    + "#end\n"
+                    + "$textToRead";
     public static final String NOTIFICATION_TEMPLATE_ADHERENCE_WEEKLY_DESCRIPTION =
             "The notification template for adherence report weekly message type.";
 
