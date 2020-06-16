@@ -37,22 +37,8 @@ public abstract class BaseOpenmrsDataDao<T extends BaseOpenmrsData> extends Hibe
         return hibernateCriteria.list();
     }
 
-    private Criteria createCriteria() {
+    protected Criteria createCriteria() {
         return getSession().createCriteria(this.mappedClass);
-    }
-
-    /**
-     * Loads the record count for the specified criteria into the specified paging object.
-     * @param pagingInfo The {@link PagingInfo} object to load with the record count.
-     * @param criteria The {@link Criteria} to execute against the hibernate data source or {@code null} to create a new one.
-     */
-    private void loadPagingTotal(PagingInfo pagingInfo, Criteria criteria) {
-        if (pagingInfo != null && pagingInfo.getPage() > 0 && pagingInfo.getPageSize() > 0
-                && pagingInfo.shouldLoadRecordCount()) {
-            Long count = countRows(criteria);
-            pagingInfo.setTotalRecordCount(count == null ? 0 : count);
-            pagingInfo.setLoadRecordCount(false);
-        }
     }
 
     /**
@@ -76,7 +62,7 @@ public abstract class BaseOpenmrsDataDao<T extends BaseOpenmrsData> extends Hibe
      * @param criteria The {@link Criteria} tto execute against the hibernate data source
      * @return The row count
      */
-    private Long countRows(Criteria criteria) {
+    protected Long countRows(Criteria criteria) {
         Long rows = (Long) criteria
                 .setProjection(Projections.rowCount())
                 .uniqueResult();
@@ -88,6 +74,20 @@ public abstract class BaseOpenmrsDataDao<T extends BaseOpenmrsData> extends Hibe
 
     protected DbSession getSession() {
         return dbSessionFactory.getCurrentSession();
+    }
+
+    /**
+     * Loads the record count for the specified criteria into the specified paging object.
+     * @param pagingInfo The {@link PagingInfo} object to load with the record count.
+     * @param criteria The {@link Criteria} to execute against the hibernate data source or {@code null} to create a new one.
+     */
+    private void loadPagingTotal(PagingInfo pagingInfo, Criteria criteria) {
+        if (pagingInfo != null && pagingInfo.getPage() > 0 && pagingInfo.getPageSize() > 0
+                && pagingInfo.shouldLoadRecordCount()) {
+            Long count = countRows(criteria);
+            pagingInfo.setTotalRecordCount(count == null ? 0 : count);
+            pagingInfo.setLoadRecordCount(false);
+        }
     }
 }
 

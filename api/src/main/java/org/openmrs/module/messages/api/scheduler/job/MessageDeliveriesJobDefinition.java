@@ -28,6 +28,7 @@ import org.openmrs.module.messages.api.service.MessagingGroupService;
 import org.openmrs.module.messages.api.service.MessagingService;
 import org.openmrs.module.messages.api.util.DateUtil;
 
+import java.util.Date;
 import java.util.List;
 
 public class MessageDeliveriesJobDefinition extends JobDefinition {
@@ -76,7 +77,7 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
     private void scheduleTaskForActivePerson(GroupedServiceResultList groupedResult) {
         Person person = getPersonService().getPerson(groupedResult.getActorWithExecutionDate().getActorId());
         Person patient = getPersonService().getPerson(groupedResult.getGroup().getPatientId());
-        if (isConsentControlDisabled() || (isActive(person) && isActive(patient))) {
+        if (shouldGroupBeCreated(patient, person, groupedResult)) {
             ScheduledServiceGroup group = convertAndSave(groupedResult);
             getDeliveryService().scheduleDelivery(new ScheduledExecutionContext(
                     group.getScheduledServices(),
@@ -87,6 +88,11 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
                     group.getId()
             ));
         }
+    }
+
+    private boolean shouldGroupBeCreated(Person patient, Person person, GroupedServiceResultList groupedResult) {
+        return isGroupNotExist(patient.getId(), person.getId(), groupedResult.getActorWithExecutionDate().getDate()) &&
+                (isConsentControlDisabled() || (isActive(person) && isActive(patient)));
     }
 
     private ScheduledServiceGroup convertAndSave(GroupedServiceResultList groupedResult) {
@@ -109,6 +115,15 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
             LOGGER.debug("Consent control is not enabled. Skipping validation...");
         }
         return !isControl;
+    }
+
+    private boolean isGroupNotExist(int patientId, int actorId, Date executionDate) {
+        boolean exist = getGroupService().isGroupExists(patientId, actorId, executionDate);
+        if (exist) {
+            LOGGER.warn(String.format("Messaging group for patient=%d, actor=%d and executionDate=%s "
+                            + "has been already created", patientId, actorId, executionDate));
+        }
+        return !exist;
     }
 
     private MessagingService getMessagingService() {

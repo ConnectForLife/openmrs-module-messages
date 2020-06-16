@@ -329,6 +329,7 @@
             actor_id="997"
             creator="1"
             date_created="2019-11-20 00:00:00.0"
+            msg_send_time="2019-11-20 00:00:00.0"
             voided="false"
             uuid="3d3a36a6-ff59-4c7e-bf3e-fe3d7a6b47a6"/>
 

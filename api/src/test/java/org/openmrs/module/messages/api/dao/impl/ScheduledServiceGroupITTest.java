@@ -1,12 +1,5 @@
 package org.openmrs.module.messages.api.dao.impl;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasProperty;
-import static org.hamcrest.Matchers.is;
-
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.Before;
@@ -23,12 +16,26 @@ import org.openmrs.module.messages.api.util.TestConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.is;
+
 public class ScheduledServiceGroupITTest extends ContextSensitiveTest {
 
     private static final String XML_DATA_SET_PATH = "datasets/";
     private static final String SCHEDULE_1_UUID = "b3de6d76-3e31-41cf-955d-ad14b9db07ff";
     private static final String SCHEDULE_2_UUID = "532f0b56-3ff9-427b-b4f3-b92796c7eea2";
     private static final String GROUP_UUID = "3d3a36a6-ff59-4c7e-bf3e-fe3d7a6b47a6";
+
+    private static final int ACTOR_ID = 997;
+    private static final int WRONG_ACTOR_ID = 998;
+    private static final int PATIENT_ID = 997;
+    private static final Date MSG_SEND_TIME = new Date(1574204400000L);
 
     @Autowired
     @Qualifier("messages.MessagingGroupDao")
@@ -143,6 +150,28 @@ public class ScheduledServiceGroupITTest extends ContextSensitiveTest {
         Assert.assertNotNull(scheduledServices);
         Assert.assertThat(scheduledServices, hasItem(scheduledService1));
         Assert.assertThat(scheduledServices, hasItem(scheduledService2));
+    }
+
+    @Test
+    public void shouldGetRowNumberForPatientActorAndMsgSendTime() throws Exception {
+        executeMessageDataSet();
+
+        ScheduledServiceGroup scheduledServiceGroup = messagingGroupDao.getByUuid(GROUP_UUID);
+        scheduledServiceGroup.setMsgSendTime(MSG_SEND_TIME);
+        messagingGroupDao.saveOrUpdate(scheduledServiceGroup);
+
+        long count = messagingGroupDao.countRowsByPatientIdActorIdAndMsgSendTime(PATIENT_ID, ACTOR_ID, MSG_SEND_TIME);
+
+        Assert.assertThat(count, equalTo(1L));
+    }
+
+    @Test
+    public void shouldReturn0CountForPatientActorAndMsgSendTime() throws Exception {
+        executeMessageDataSet();
+
+        long count = messagingGroupDao.countRowsByPatientIdActorIdAndMsgSendTime(WRONG_ACTOR_ID, ACTOR_ID, MSG_SEND_TIME);
+
+        Assert.assertThat(count, equalTo(0L));
     }
 
     private void executeMessageDataSet() throws Exception {
