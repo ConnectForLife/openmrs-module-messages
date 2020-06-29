@@ -13,9 +13,11 @@ import AppManagement from './components/app-management';
 import PatientTemplate from './components/patient-template/routes';
 import BreadCrumb from './components/bread-crumb';
 import { CalendarWithHeader as Calendar } from './components/hoc/with-patient-header';
+import Customize from '@bit/soldevelo-omrs.cfl-components.customize'
 
 export default (store) => (
     <div>
+        <Customize />
         <Header />
         <BreadCrumb />
         <Switch>

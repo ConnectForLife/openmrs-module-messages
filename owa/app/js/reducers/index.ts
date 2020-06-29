@@ -18,6 +18,7 @@ import person, { PersonState } from './person.reducer';
 import adminSettings, { AdminSettingsState } from './admin-settings.reducer';
 import personStatus, { PersonStatusState } from './person-status.reducer';
 import timezone, {TimezoneState} from "./timezone.reducer";
+import customizeReducer, { CustomizeState } from '@bit/soldevelo-omrs.cfl-components.customize/customize.reducer';
 
 export interface IRootState {
   readonly openmrs: any;
@@ -30,6 +31,7 @@ export interface IRootState {
   readonly adminSettings: AdminSettingsState;
   readonly personStatus: PersonStatusState;
   readonly timezone: TimezoneState;
+  readonly customizeReducer: CustomizeState;
 }
 
 export default combineReducers<IRootState>({
@@ -42,5 +44,6 @@ export default combineReducers<IRootState>({
   adminSettings,
   personStatus,
   timezone,
-  person
+  person,
+  customizeReducer
 });
