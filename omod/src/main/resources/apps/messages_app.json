@@ -20,7 +20,7 @@
         "type": "link",
         "label": "messages.title",
         "icon": "icon-comment",
-        "order": 1,
+        "order": 2,
         "url": "owa/messages/index.html#/messages/patient/{{patient.patientId}}&patientUuid={{patient.uuid}}"
       }
     ]
