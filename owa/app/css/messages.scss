@@ -95,8 +95,15 @@ header .logo img {
 }
 
 .btn-manage-messages {
-    background: -webkit-linear-gradient(top, #fff, #DDD);
+    background: -webkit-linear-gradient(bottom, #10708E 15%, #00455C 97%);
     margin-top: 1em;
+    color: white;
+}
+
+.btn-manage-messages:hover {
+    background: -webkit-linear-gradient(bottom, #00455C, #00455C);
+    margin-top: 1em;
+    color: white;
 }
 
 .flex-justify-end {
@@ -189,4 +196,12 @@ header .logo img {
     margin-top: initial;
     left: initial;
   }
+}
+
+.display-header {
+    color: #10708E;
+}
+
+.template-name {
+    color: #10708E;
 }

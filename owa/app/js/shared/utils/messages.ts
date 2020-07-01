@@ -119,3 +119,7 @@ export const MESSAGE_STATUS_FUTURE = 'FUTURE';
 export const EDIT_MESSAGES_TITLE = 'Create messages';
 
 export const DIFFERENT_TIMEZONE = 'Your local timezone is different than the one configured for this system. Please enter scheduling information in the following time zone: ';
+
+//Calendar overview
+export const MANAGE_MESSAGES_LABEL = 'Manage messages';
+export const DISPLAY_HEADER = 'Display:';

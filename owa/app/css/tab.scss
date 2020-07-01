@@ -16,18 +16,20 @@
   cursor: pointer;
   border: solid #ccc;
   border-width: 1px 1px 0px 1px;
-  background: #F1F1F1;
+  background: -webkit-linear-gradient(left, rgba(215, 215, 215, 1), white);
   color: #A9A9A9;
   font-size: 1em;
+  font-weight: bold;
 }
 
 .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
   background-color: white;
   border: solid #ccc;
   border-width: 4px 1px 0px 1px;
-  
-  border-top-color: #363463;
-  color: #363463;
+  background: -webkit-linear-gradient(white, white);
+
+  border-top-color: #10708E;
+  color: #10708E;
 
   font-size: 1.2em;
   font-weight: bold;

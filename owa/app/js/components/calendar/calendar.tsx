@@ -319,7 +319,7 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
 
   renderTemplateFilter = (template: TemplateUI) =>
     <Row key={template.name as string} className="u-pl-1_5em u-mr-0">
-      <span>
+      <span className="template-name">
         <Checkbox
           type="checkbox"
           inline
@@ -341,17 +341,17 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
         <Timezone />
         <div className="row">
           <div className="col-md-12 col-xs-12">
-            <h3>Calendar Overview</h3>
-            <Tabs activeKey={activeTabKey} onSelect={this.tabSelected} >
+            <h3>{Msg.CALENDAR_OVERVIEW_LABEL}</h3>
+            <Tabs activeKey={activeTabKey} onSelect={this.tabSelected} className="tabs-custom-css">
               {actorsResults.map((actorWithResults, index) => {
                 const tabName = actorWithResults.actorDisplayName;
                 return (
-                  <Tab title={tabName} key={tabName} eventKey={tabName}>
+                  <Tab title={tabName} key={tabName} eventKey={tabName} className="tab-custom-class">
                     <Row className="u-pl-1em">
                       <Col sm={9}>
                         <a href={`${window.location.href}/patient-template`}>
                           <Button className="btn btn-md pull-right btn-manage-messages">
-                            Manage messages
+                            {Msg.MANAGE_MESSAGES_LABEL}
                           </Button>
                         </a>
                         <div className={this.getClassForCalendarArea()}>
@@ -366,7 +366,7 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
                       <Col sm={3} className="u-p-0 u-mt-4_5em u-mr-0 calendar-filters">
                         <span>
                           <FontAwesomeIcon icon={['fas', 'filter']} />{' '}
-                          Display:
+                          <span className="display-header">{Msg.DISPLAY_HEADER}</span>
                         </span>
                         {_.uniqBy(this.props.templates, 'name').map((template) => this.renderTemplateFilter(template))}
                       </Col>
