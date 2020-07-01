@@ -11,12 +11,12 @@ import { combineReducers } from 'redux';
 import { reducers as openmrs } from '@openmrs/react-components';
 import patientTemplate, { PatientTemplateState } from './patient-template.reducer';
 import bestContactTime, { BestContactTimeState } from './best-contact-time.reducer';
-import calendar, { CalendarState } from './calendar.reducer';
+import calendar, { CalendarState } from './calendar.reducer'; 
 import actor, { ActorState } from './actor.reducer';
 import patient, { PatientState } from './patient.reducer';
 import person, { PersonState } from './person.reducer';
 import adminSettings, { AdminSettingsState } from './admin-settings.reducer';
-import personStatus, { PersonStatusState } from './person-status.reducer';
+import personStatus, { PersonStatusState } from '@bit/soldevelo-omrs.cfl-components.person-status/person-status/person-status.reducer';
 import timezone, {TimezoneState} from "./timezone.reducer";
 import customizeReducer, { CustomizeState } from '@bit/soldevelo-omrs.cfl-components.customize/customize.reducer';
 

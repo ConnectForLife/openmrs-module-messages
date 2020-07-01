@@ -78,11 +78,6 @@ export const PERSON_STATUS_NO_CONSENT = 'No consent';
 export const PERSON_STATUS_ACTIVATED = 'Activated';
 export const PERSON_STATUS_DEACTIVATED = 'Deactivated';
 export const PERSON_STATUS_MISSING_VALUE = 'Missing value';
-export const PERSON_STATUS_LABEL = 'Status:';
-export const PERSON_STATUS_MODAL_LABEL = 'Update the person status';
-export const PERSON_STATUS_MODAL_INSTRUCTION = 'Change person status';
-export const PERSON_STATUS_MODAL_FIELD_LABEL = 'Person status:';
-export const PERSON_STATUS_MODAL_REASON_FIELD_LABEL = 'Reason:';
 export const DEACTIVATED_KEY = 'DEACTIVATED';
 export const ACTIVATED_KEY = 'ACTIVATED';
 export const MISSING_VALUE_KEY = 'MISSING_VALUE';
@@ -111,8 +106,6 @@ export const CONFIRM = 'Confirm';
 export const DEACTIVATED_STATUS_NOTIFICATION = 'Person status is deactivated. The scheduled messages won\'t be sent to this person.';
 export const NO_CONSENT_STATUS_NOTIFICATION = 'Person status is no consent. The scheduled messages won\'t be sent to this person.';
 export const MISSING_VALUE_STATUS_NOTIFICATION = 'Person status is missing value. The scheduled messages won\'t be sent to this person.';
-export const PERSON_STATUS_CHANGE_SUCCESS = 'The person status has been successfully changed.';
-export const PERSON_STATUS_CHANGE_FAILURE = 'Unable to change the person status.';
 export const MESSAGE_STATUS_FUTURE = 'FUTURE';
 
 // Edit messages

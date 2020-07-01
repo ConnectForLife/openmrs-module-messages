@@ -16,7 +16,7 @@ import {
   openModal,
   putPersonStatus,
   getPossibleReasons
-} from '../../reducers/person-status.reducer'
+} from '@bit/soldevelo-omrs.cfl-components.person-status/person-status/person-status.reducer';
 import * as Msg from '../../shared/utils/messages';
 import './person-status-notification.scss';
 

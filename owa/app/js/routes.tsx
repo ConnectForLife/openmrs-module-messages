@@ -14,6 +14,9 @@ import PatientTemplate from './components/patient-template/routes';
 import BreadCrumb from './components/bread-crumb';
 import { CalendarWithHeader as Calendar } from './components/hoc/with-patient-header';
 import Customize from '@bit/soldevelo-omrs.cfl-components.customize'
+import { initializeLocalizationWrapper } from '@bit/soldevelo-omrs.cfl-components.localization-wrapper';
+
+initializeLocalizationWrapper({});
 
 export default (store) => (
     <div>

@@ -20,7 +20,7 @@ import {TemplateUI} from '../../shared/model/template-ui';
 import _ from 'lodash';
 import {RouteComponentProps} from 'react-router-dom';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {getPersonStatus} from "../../reducers/person-status.reducer";
+import {getPersonStatus} from '@bit/soldevelo-omrs.cfl-components.person-status/person-status/person-status.reducer';
 import * as Msg from '../../shared/utils/messages';
 import {getActorList} from '../../reducers/actor.reducer';
 import Timezone from "../timezone/timezone";
