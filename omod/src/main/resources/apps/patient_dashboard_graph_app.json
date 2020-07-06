@@ -16,7 +16,7 @@
             "additionalTitle": "messages.dashboard.actorResponse.additionalTitle",
             "xAxisLabel": "messages.dashboard.actorResponse.xAxisLabel",
             "yAxisLabel": "messages.dashboard.actorResponse.yAxisLabel",
-            "colorRange": ["#009384", "#5B57A6", "#4eaaba", "#8c66b0"],
+            "colorRange": ["#a34a3d", "#10708e", "#eba45b", "#2b3640"],
             "columnsInfo": { "165319": "Taken on Time", "165317": "Taken late",
               "165296": "Not Taken But will take", "165310": "Will not take" },
             "responseMode": "CONCEPT",
