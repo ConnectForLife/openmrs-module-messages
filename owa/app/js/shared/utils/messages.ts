@@ -29,6 +29,7 @@ export const MANAGE_BREADCRUMB = 'Manage';
 export const NEW_PATIENT_TEMPLATE_BREADCRUMB = 'New';
 export const EDIT_PATIENT_TEMPLATE_BREADCRUMB = 'Edit';
 export const SYSTEM_ADMINITRATION_BREADCRUMB = 'System Administration';
+export const MANAGE_PATIENT_TEMPLATE_BREADCRUMB = 'Manage Messages';
 
 // Best contact time
 export const NO_END_DATE_LABEL = 'No end date';

@@ -8,54 +8,66 @@
  * graphic logo is a trademark of OpenMRS Inc.
  */
 
- .breadcrumb {
+.breadcrumb {
   clear: both;
-  font-size: 1em;
+  font-size: 16px;
   font-family: 'OpenSans';
   display: block;
   border-bottom: 1px solid white;
-  background: #f5f5f5;
+  background: #eeeeee;
   margin-bottom: 10px;
-}
+  padding: 0px;
+  padding-top: 1px;
+  padding-bottom: 1px;
 
-.breadcrumb-item {
-  display: inline-block;
-  margin-left: 0.4em;
-  color: black;
-}
+  .home-crumb {
+    padding-left: 5px;
+    padding-right: 10px;
+  }
 
-.breadcrumb-last-item {
-  @extend .breadcrumb-item;
-  font-weight: bold;
-  text-decoration: none;
-}
+  .breadcrumb-delimiter {
+    font-size: 16px;
+  }
 
-.breadcrumb-link-item {
-  @extend .breadcrumb-item;
-  text-decoration: underline;
-  text-decoration-color: black;
-}
+  .breadcrumb-item {
+    display: inline-block;
+    margin-left: 0.5em;
+    color: black;
+  }
 
-.breadcrumb-link-item:link {
-  color: black;
-  text-decoration: underline;
-  text-decoration-color: black;
-}
+  .breadcrumb-last-item {
+    @extend .breadcrumb-item;
+    font-weight: bold;
+    text-decoration: none;
+  }
 
-.breadcrumb-link-item:visited {
-  color: black;
-  text-decoration: underline;
-  text-decoration-color: black;
-}
+  .breadcrumb-link-item {
+    @extend .breadcrumb-item;
+    text-decoration: underline;
+    text-decoration-color: black;
+  }
 
-.breadcrumb-link-item:hover {
-  color: #555;
-  text-decoration: underline;
-  text-decoration-color: black;
-}
+  .breadcrumb-link-item:link {
+    color: black;
+    text-decoration: underline;
+    text-decoration-color: black;
+  }
 
-.breadcrumb-link-item:active {
-  color: black;
-  text-decoration: underline;
-  text-decoration-color: black;
+  .breadcrumb-link-item:visited {
+    color: black;
+    text-decoration: underline;
+    text-decoration-color: black;
+  }
+
+  .breadcrumb-link-item:hover {
+    color: #555;
+    text-decoration: underline;
+    text-decoration-color: black;
+  }
+
+  .breadcrumb-link-item:active {
+    color: black;
+    text-decoration: underline;
+    text-decoration-color: black;
+  }
 }

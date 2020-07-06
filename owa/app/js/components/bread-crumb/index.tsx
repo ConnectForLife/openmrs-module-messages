@@ -13,12 +13,14 @@ import { IRootState } from '../../reducers';
 const ids = 'patientId&patientuuid=:patientUuid';
 
 const PATIENT_TEMPLATE_PATTERN = new UrlPattern(`/messages/:dashboardType/:${ids}/patient-template/:newOrEdit*`);
-const MANAGE_PATTERN = new UrlPattern(`/messages/:dashboardType/manage*`);
+const MANAGE_PATIENT_TEMPLATE_PATTERN = new UrlPattern(`/messages/:dashboardType/:${ids}/patient-template`);
+const MANAGE_PATTERN = new UrlPattern(`/messages/manage*`);
 const BASE_MESSAGES_PATTERN = new UrlPattern(`/messages/:dashboardType/:${ids}*`);
 
 const MODULE_ROUTE = '/';
 const OMRS_ROUTE = '../../';
-const PATIENT_TEMPLATE_ROUTE = (patientId, patientUuid, dashboardType) => `/messages/${dashboardType}/${patientId}&patientUuid=${patientUuid}/patient-template/`;
+const PATIENT_TEMPLATE_ROUTE = (patientId, patientUuid, dashboardType) => `/messages/${dashboardType}/${patientId}&patientUuid=${patientUuid}/patient-template`;
+const CALENDAR_OVERVIEW_ROUTE = (patientId, patientUuid, dashboardType) => `/messages/${dashboardType}/${patientId}&patientUuid=${patientUuid}`;
 const PATIENT_DASHBOARD_ROUTE = patientUuid => `${OMRS_ROUTE}coreapps/clinicianfacing/patient.page?patientId=${patientUuid}`;
 const SYSTEM_ADMINISTRATION_ROUTE = `${OMRS_ROUTE}coreapps/systemadministration/systemAdministration.page`;
 
@@ -61,7 +63,7 @@ class BreadCrumb extends React.PureComponent<IBreadCrumbProps, IBreadCrumbState>
     const { current } = this.state;
 
     return (
-      <div className="breadcrumb">
+      <div id="breadcrumbs" className="breadcrumb">
         {this.renderCrumbs(this.getCrumbs(current))}
       </div>
     );
@@ -70,6 +72,8 @@ class BreadCrumb extends React.PureComponent<IBreadCrumbProps, IBreadCrumbState>
   getCrumbs = (path: string): Array<ReactFragment> => {
     if (!!PATIENT_TEMPLATE_PATTERN.match(path.toLowerCase())) {
       return this.getPatientTemplateCrumbs(path);
+    } else if (!!MANAGE_PATIENT_TEMPLATE_PATTERN.match(path.toLowerCase())) {
+      return this.getManagePatientTemplateCrumbs(path);
     } else if (!!MANAGE_PATTERN.match(path.toLowerCase())) {
       return this.getManageBreadCrumbs();
     } else if (!!BASE_MESSAGES_PATTERN.match(path.toLowerCase())) {
@@ -97,6 +101,16 @@ class BreadCrumb extends React.PureComponent<IBreadCrumbProps, IBreadCrumbState>
     return this.renderCrumb(PATIENT_DASHBOARD_ROUTE(patientUuid), personName, true)
   }
 
+  getManagePatientTemplateCrumbs = (path: string): Array<ReactFragment> => {
+    const match = MANAGE_PATIENT_TEMPLATE_PATTERN.match(path.toLowerCase());
+    
+    return [
+      this.getPatientNameCrumb(path),
+      this.renderCrumb(CALENDAR_OVERVIEW_ROUTE(match.patientId, match.patientUuid, match.dashboardType), Msg.GENERAL_MODULE_BREADCRUMB),
+      this.renderLastCrumb(Msg.MANAGE_PATIENT_TEMPLATE_BREADCRUMB)
+    ];
+  }
+
   getPatientTemplateCrumbs = (path: string): Array<ReactFragment> => {
     const match = PATIENT_TEMPLATE_PATTERN.match(path.toLowerCase());
     let msg = "";
@@ -109,7 +123,8 @@ class BreadCrumb extends React.PureComponent<IBreadCrumbProps, IBreadCrumbState>
 
     return [
       this.getPatientNameCrumb(path),
-      this.renderCrumb(PATIENT_TEMPLATE_ROUTE(match.patientId, match.patientUuid, match.dashboardType), Msg.GENERAL_MODULE_BREADCRUMB),
+      this.renderCrumb(CALENDAR_OVERVIEW_ROUTE(match.patientId, match.patientUuid, match.dashboardType), Msg.GENERAL_MODULE_BREADCRUMB),
+      this.renderCrumb(PATIENT_TEMPLATE_ROUTE(match.patientId, match.patientUuid, match.dashboardType), Msg.MANAGE_PATIENT_TEMPLATE_BREADCRUMB),
       this.renderLastCrumb(msg)
     ];
   }
@@ -138,14 +153,14 @@ class BreadCrumb extends React.PureComponent<IBreadCrumbProps, IBreadCrumbState>
 
   renderDelimiter = () => {
     return (
-      <span className="breadcrumb-link-item">
-        <FontAwesomeIcon size="xs" icon={['fas', 'chevron-right']} />
+      <span className="breadcrumb-link-item breadcrumb-delimiter">
+        <FontAwesomeIcon size="sm" icon={['fas', 'chevron-right']} />
       </span>);
   }
 
   renderHomeCrumb = () => {
     return (
-      <a href={OMRS_ROUTE} className="breadcrumb-link-item">
+      <a href={OMRS_ROUTE} className="breadcrumb-link-item home-crumb">
         <FontAwesomeIcon icon={['fas', 'home']} />
       </a>);
   }
