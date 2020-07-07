@@ -7,7 +7,7 @@
     "url": "https://bitbucket.org/soldevelo/omrs-messages"
   },
   "dependencies": {
-    "@bit/soldevelo-omrs.cfl-components.calendar": "^1.0.40",
+    "@bit/soldevelo-omrs.cfl-components.calendar": "^1.0.41",
     "@bit/soldevelo-omrs.cfl-components.customize": "^1.0.5",
     "@bit/soldevelo-omrs.cfl-components.error-description": "^1.0.0",
     "@bit/soldevelo-omrs.cfl-components.form-entry": "^1.0.16",
