@@ -14,7 +14,7 @@
     "@bit/soldevelo-omrs.cfl-components.form-label": "^1.0.0",
     "@bit/soldevelo-omrs.cfl-components.localization-wrapper": "^1.0.2",
     "@bit/soldevelo-omrs.cfl-components.openmrs-date-picker": "^1.0.1",
-    "@bit/soldevelo-omrs.cfl-components.person-header": "^1.0.0",
+    "@bit/soldevelo-omrs.cfl-components.person-header": "^1.0.8",
     "@bit/soldevelo-omrs.cfl-components.person-status": "^1.0.0",
     "@bit/soldevelo-omrs.cfl-components.request-toast-handler": "^1.0.9",
     "@bit/soldevelo-omrs.cfl-components.table": "^1.0.9",
