@@ -342,11 +342,11 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
         <div className="row">
           <div className="col-md-12 col-xs-12">
             <h3>{Msg.CALENDAR_OVERVIEW_LABEL}</h3>
-            <Tabs activeKey={activeTabKey} onSelect={this.tabSelected} className="tabs-custom-css">
+            <Tabs activeKey={activeTabKey} onSelect={this.tabSelected}>
               {actorsResults.map((actorWithResults, index) => {
                 const tabName = actorWithResults.actorDisplayName;
                 return (
-                  <Tab title={tabName} key={tabName} eventKey={tabName} className="tab-custom-class">
+                  <Tab title={tabName} key={tabName} eventKey={tabName}>
                     <Row className="u-pl-1em">
                       <Col sm={9}>
                         <a href={`${window.location.href}/patient-template`}>

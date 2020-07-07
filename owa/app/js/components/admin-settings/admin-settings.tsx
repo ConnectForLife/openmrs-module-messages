@@ -124,13 +124,13 @@ class AdminSettings extends React.PureComponent<IAdminSettingsProps, IAdminSetti
           </Button>
           <div className="pull-right">
             <Button
-              className="btn btn-default btn-md"
+              className="btn btn-default btn-md sec-btn"
               disabled={!this.getNextSubsection()}
               onClick={this.handleNext}>
               {Msg.NEXT_BUTTON_LABEL}
             </Button>
             <Button
-              className="btn btn-success btn-md"
+              className="btn btn-success btn-md confirm"
               onClick={this.handleSave}>
               {Msg.SAVE_BUTTON_LABEL}
             </Button>

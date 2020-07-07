@@ -83,7 +83,7 @@ class BestContactTime extends React.PureComponent<IBestContactTimeProps, IBestCo
   renderSaveButton() {
     return (
       <Button
-        className="btn btn-success btn-md"
+        className="btn btn-success btn-md confirm"
         onClick={this.handleSave}>
         {Msg.SAVE_BUTTON_LABEL}
       </Button>
