@@ -113,7 +113,7 @@ class AdminSettings extends React.PureComponent<IAdminSettingsProps, IAdminSetti
     return (
       <div className="admin-settings">
         <div className="panel-body">
-          <h4>{Msg.MESSAGES_SETTINGS_LABEL}</h4>
+          <h2>{Msg.MESSAGES_SETTINGS_LABEL}</h2>
           {!this.props.loading && this.renderTemplateState()}
         </div>
         <div className="panel-body">
