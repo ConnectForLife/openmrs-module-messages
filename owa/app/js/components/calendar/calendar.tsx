@@ -341,7 +341,7 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
         <Timezone />
         <div className="row">
           <div className="col-md-12 col-xs-12">
-            <h3>{Msg.CALENDAR_OVERVIEW_LABEL}</h3>
+            <h2>{Msg.CALENDAR_OVERVIEW_LABEL}</h2>
             <Tabs activeKey={activeTabKey} onSelect={this.tabSelected}>
               {actorsResults.map((actorWithResults, index) => {
                 const tabName = actorWithResults.actorDisplayName;

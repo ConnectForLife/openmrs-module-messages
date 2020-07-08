@@ -154,7 +154,7 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
       <>
         <Timezone/>
         <div className="panel-body">
-          <h4>{Msg.EDIT_MESSAGES_TITLE}</h4>
+          <h2>{Msg.EDIT_MESSAGES_TITLE}</h2>
           {!this.props.loading && this.renderTemplateState()}
         </div>
         <div className="panel-body">

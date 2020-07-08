@@ -32,7 +32,7 @@ class AppManagement extends React.Component<IProps> {
         <div className="body-wrapper">
             <div className="content">
                 <Timezone />
-                <h3>{Msg.DEFAULT_SETTINGS}</h3>
+                <h2>{Msg.DEFAULT_SETTINGS}</h2>
                 <BestContactTime
                     loading={this.props.loading}
                     bestContactTimes={this.props.defaultBestContactTimes}
