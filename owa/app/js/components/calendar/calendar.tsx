@@ -335,6 +335,7 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
     let activeTabKey = this.state.activeTabKey;
     if (!activeTabKey && actorsResults.length > 0) {
       activeTabKey = actorsResults[0].actorDisplayName;
+      this.setState({ activeTabKey: activeTabKey });
     }
     return (
       <>
