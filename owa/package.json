@@ -17,7 +17,7 @@
     "@bit/soldevelo-omrs.cfl-components.person-header": "^1.0.8",
     "@bit/soldevelo-omrs.cfl-components.person-status": "^1.0.0",
     "@bit/soldevelo-omrs.cfl-components.request-toast-handler": "^1.0.9",
-    "@bit/soldevelo-omrs.cfl-components.table": "^1.0.9",
+    "@bit/soldevelo-omrs.cfl-components.table": "^1.0.14",
     "@bit/soldevelo-omrs.cfl-components.validation": "^1.0.1",
     "@fortawesome/fontawesome-svg-core": "1.2.25",
     "@fortawesome/free-brands-svg-icons": "5.11.2",
