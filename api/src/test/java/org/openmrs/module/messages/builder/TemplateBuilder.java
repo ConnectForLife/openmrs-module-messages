@@ -8,16 +8,21 @@ import org.openmrs.module.messages.api.model.TemplateFieldType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 public final class TemplateBuilder extends AbstractBuilder<Template> {
 
+    private static final int YEAR_2010 = 2010;
+    private static final int DAY = 16;
     private Integer id;
     private String serviceQuery;
     private String serviceQueryType;
     private String name;
     private User creator;
+    private Date dateCreated;
     private List<TemplateField> templateFields;
 
     public TemplateBuilder() {
@@ -26,6 +31,7 @@ public final class TemplateBuilder extends AbstractBuilder<Template> {
         serviceQueryType = "SQL";
         name = "Example service";
         creator = new User();
+        dateCreated = new Date(YEAR_2010, Calendar.NOVEMBER, DAY);
         templateFields = new ArrayList<>();
     }
 
@@ -40,6 +46,7 @@ public final class TemplateBuilder extends AbstractBuilder<Template> {
         template.setServiceQueryType(serviceQueryType);
         template.setName(name);
         template.setCreator(creator);
+        template.setDateCreated(dateCreated);
         template.setTemplateFields(templateFields);
         return template;
     }
@@ -76,6 +83,11 @@ public final class TemplateBuilder extends AbstractBuilder<Template> {
 
     public TemplateBuilder withTemplateField(TemplateField templateField) {
         this.templateFields = Collections.singletonList(templateField);
+        return this;
+    }
+
+    public TemplateBuilder withDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
         return this;
     }
 

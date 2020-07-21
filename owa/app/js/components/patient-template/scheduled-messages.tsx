@@ -179,7 +179,6 @@ class ScheduledMessages extends React.PureComponent<IScheduledMessagesProps, ISc
       };
     },
     Cell: props => {
-      //TODO in CFLm-376: Change link to proper messages sidebar val
       const {patientId, patientUuid, dashboardType} = this.props;
 
       const link = `#messages/${dashboardType}/${patientId}&patientuuid=${patientUuid}/patient-template/edit/${props.value}`;

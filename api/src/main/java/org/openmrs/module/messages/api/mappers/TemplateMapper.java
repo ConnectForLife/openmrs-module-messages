@@ -25,6 +25,7 @@ public class TemplateMapper extends AbstractMapper<TemplateDTO, Template>
                 .setServiceQueryType(dao.getServiceQueryType())
                 .setTemplateFields(templateFields)
                 .setName(dao.getName())
+                .setCreatedAt(dao.getDateCreated())
                 .setUuid(dao.getUuid());
     }
 

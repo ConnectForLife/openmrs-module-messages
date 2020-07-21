@@ -118,7 +118,9 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
     const subsections = [] as Array<FormSubSection>;
     const patientId = parseInt(this.props.match.params.patientId);
 
-    this.props.templates.forEach((template: TemplateUI) => {
+    let templates = this.props.templates;
+    templates = _.orderBy(templates, ['createdAt'], ['asc']);
+    templates.forEach((template: TemplateUI) => {
       const name = this.getTemplateName(template);
 
       const patientTemplates: ReadonlyArray<PatientTemplateUI> =

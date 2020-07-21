@@ -53,6 +53,7 @@ public class TemplateMapperTest {
         assertEquals(dao.getName(), templateDTO.getName());
         assertEquals(dao.getServiceQuery(), templateDTO.getServiceQuery());
         assertEquals(dao.getServiceQueryType(), templateDTO.getServiceQueryType());
+        assertEquals(dao.getDateCreated(), templateDTO.getCreatedAt());
         assertEquals(dao.getUuid(), templateDTO.getUuid());
     }
 

@@ -3959,4 +3959,19 @@
             <where>property='messages.notificationTemplate.adherence-feedback'</where>
         </delete>
     </changeSet>
+
+    <changeSet id="messages-79" author="Arkadiusz Lalo">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                SELECT COUNT(*) FROM messages_template WHERE uuid = '9556f9ab-20b2-11ea-ac12-0242c0a82002'
+            </sqlCheck>
+        </preConditions>
+        <comment>
+            Updated the template date of created in order to change the templates display order.
+        </comment>
+        <update tableName="messages_template">
+            <column name="date_created" value="2020-01-17 16:22:16"/>
+            <where>uuid = '9556f9ab-20b2-11ea-ac12-0242c0a82002'</where>
+        </update>
+    </changeSet>
 </databaseChangeLog>

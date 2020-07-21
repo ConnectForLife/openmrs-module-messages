@@ -4,6 +4,7 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -24,6 +25,8 @@ public class TemplateDTO extends BaseDTO implements DTO {
 
     @Valid
     private List<TemplateFieldDTO> templateFields = new ArrayList<>();
+
+    private Date createdAt;
 
     private String uuid;
 
@@ -69,6 +72,15 @@ public class TemplateDTO extends BaseDTO implements DTO {
 
     public TemplateDTO setName(String name) {
         this.name = name;
+        return this;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public TemplateDTO setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
         return this;
     }
 
