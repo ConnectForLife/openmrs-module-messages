@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
-import * as Msg from '../../shared/utils/messages';
+import * as Default from '../../shared/utils/messages';
+import { getIntl } from '@openmrs/react-components/lib/components/localization/withLocalization';
 import { IRootState } from '../../reducers';
 import { connect } from 'react-redux';
 import { getBestContactTime, postBestContactTime, updateBestConstactTime } from '../../reducers/best-contact-time.reducer';
@@ -14,7 +15,7 @@ import _ from 'lodash';
 import { Moment } from 'moment';
 import { IActor } from '../../shared/model/actor.model';
 import { IContactTime } from '../../shared/model/contact-time.model';
-import {DashboardType} from "../../shared/model/dashboard-type";
+import { DashboardType } from '../../shared/model/dashboard-type';
 
 interface IBestContactTimeProps extends DispatchProps, StateProps {
   patientId: number,
@@ -75,7 +76,7 @@ class BestContactTime extends React.PureComponent<IBestContactTimeProps, IBestCo
       <Button
         className="btn btn-secondary btn-md"
         onClick={this.handleCalendarOverview}>
-        {Msg.CALENDAR_OVERVIEW_LABEL}
+        {getIntl().formatMessage({ id: 'MESSAGES_CALENDAR_OVERVIEW_LABEL', defaultMessage: Default.CALENDAR_OVERVIEW_LABEL })}
       </Button>
     );
   }
@@ -85,7 +86,7 @@ class BestContactTime extends React.PureComponent<IBestContactTimeProps, IBestCo
       <Button
         className="btn btn-success btn-md confirm"
         onClick={this.handleSave}>
-        {Msg.SAVE_BUTTON_LABEL}
+        {getIntl().formatMessage({ id: 'MESSAGES_SAVE_BUTTON_LABEL', defaultMessage: Default.SAVE_BUTTON_LABEL })}
       </Button>
     );
   }
@@ -141,9 +142,9 @@ class BestContactTime extends React.PureComponent<IBestContactTimeProps, IBestCo
         {bestContactTimes.map((e, i) => {
           let label: string = `Person ${e.personId}`;
           if (!this.isPatient()) {
-            label = Msg.CAREGIVER_ROLE;
+            label = getIntl().formatMessage({ id: 'MESSAGES_CAREGIVER_ROLE', defaultMessage: Default.CAREGIVER_ROLE });
           } else if (this.isActorPatient(e)) {
-            label = Msg.PATIENT_ROLE;
+            label = getIntl().formatMessage({ id: 'MESSAGES_PATIENT_ROLE', defaultMessage: Default.PATIENT_ROLE });
           } else {
             const actor: IActor | undefined = _.find(this.props.actorResultList, (a) => a.actorId === e.personId);
             if (!!actor) {
@@ -173,7 +174,7 @@ class BestContactTime extends React.PureComponent<IBestContactTimeProps, IBestCo
           {this.renderSaveButton()}
         </div>
         <fieldset>
-          <legend>{Msg.BEST_CONTACT_TIME_LABEL}</legend>
+          <legend>{getIntl().formatMessage({ id: 'MESSAGES_BEST_CONTACT_TIME_LABEL', defaultMessage: Default.BEST_CONTACT_TIME_LABEL })}</legend>
           {!loading && this.renderTimePickers()}
         </fieldset>
       </div>

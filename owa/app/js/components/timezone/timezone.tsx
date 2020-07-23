@@ -8,13 +8,13 @@
  */
 
 import React from 'react';
-import {connect} from 'react-redux';
-import {IRootState} from '../../reducers';
+import { connect } from 'react-redux';
+import { IRootState } from '../../reducers';
 import {
   getTimezone,
 } from '../../reducers/timezone.reducer';
-import * as Msg from '../../shared/utils/messages';
-
+import * as Default from '../../shared/utils/messages';
+import { getIntl } from '@openmrs/react-components/lib/components/localization/withLocalization';
 
 interface ITimezoneProps extends DispatchProps, StateProps {
 }
@@ -32,11 +32,11 @@ class Timezone extends React.PureComponent<ITimezoneProps, ITimezoneState> {
     this.props.getTimezone();
   };
 
-  private isLocalTimezoneDifferent = () : boolean => {
+  private isLocalTimezoneDifferent = (): boolean => {
     return !this.props.timezoneLoading && (this.getLocalTimezone() !== this.props.timezone);
   };
 
-  private getLocalTimezone = () : string => {
+  private getLocalTimezone = (): string => {
     return Intl.DateTimeFormat().resolvedOptions().timeZone;
   };
 
@@ -45,8 +45,10 @@ class Timezone extends React.PureComponent<ITimezoneProps, ITimezoneState> {
       <div className="note-container">
         <div className="note warning">
           <div className="note-content">
-            <span className="toast-item-image toast-item-image-alert"/>
-            <div className="message">{Msg.DIFFERENT_TIMEZONE + this.props.timezone}</div>
+            <span className="toast-item-image toast-item-image-alert" />
+            <div className="message">
+              {getIntl().formatMessage({ id: 'MESSAGES_DIFFERENT_TIMEZONE', defaultMessage: Default.DIFFERENT_TIMEZONE }) + this.props.timezone}
+            </div>
           </div>
         </div>
       </div>
@@ -56,15 +58,15 @@ class Timezone extends React.PureComponent<ITimezoneProps, ITimezoneState> {
   render() {
     return (
       <>
-        { this.isLocalTimezoneDifferent() && this.renderDifferentTimezoneNotification() }
+        {this.isLocalTimezoneDifferent() && this.renderDifferentTimezoneNotification()}
       </>
     );
   };
 }
 
-const mapStateToProps = ({timezone}: IRootState) => ({
+const mapStateToProps = ({ timezone }: IRootState) => ({
   timezone: timezone.timezone,
-  timezoneLoading:  timezone.timezoneLoading
+  timezoneLoading: timezone.timezoneLoading
 });
 
 const mapDispatchToProps = ({

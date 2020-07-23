@@ -7,24 +7,27 @@
  * graphic logo is a trademark of OpenMRS Inc.
  */
 import React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import Calendar from '@bit/soldevelo-omrs.cfl-components.calendar';
-import {Button, Checkbox, Col, Row, Tab, Tabs} from 'react-bootstrap';
-import {IRootState} from '../../reducers';
-import {getServiceResultLists} from '../../reducers/calendar.reducer'
-import {ServiceStatus} from '../../shared/enums/service-status';
-import {ServiceResultListUI} from '../../shared/model/service-result-list-ui';
-import moment, {Moment} from 'moment';
-import {getTemplates} from '../../reducers/patient-template.reducer'
-import {TemplateUI} from '../../shared/model/template-ui';
+import { Button, Checkbox, Col, Row, Tab, Tabs } from 'react-bootstrap';
+import { IRootState } from '../../reducers';
+import { getServiceResultLists } from '../../reducers/calendar.reducer'
+import { ServiceStatus } from '../../shared/enums/service-status';
+import { ServiceResultListUI } from '../../shared/model/service-result-list-ui';
+import moment, { Moment } from 'moment';
+import { getTemplates } from '../../reducers/patient-template.reducer'
+import { TemplateUI } from '../../shared/model/template-ui';
 import _ from 'lodash';
-import {RouteComponentProps} from 'react-router-dom';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {getPersonStatus} from '@bit/soldevelo-omrs.cfl-components.person-status/person-status/person-status.reducer';
-import * as Msg from '../../shared/utils/messages';
-import {getActorList} from '../../reducers/actor.reducer';
-import Timezone from "../timezone/timezone";
-import {DashboardType} from "../../shared/model/dashboard-type";
+import { RouteComponentProps } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { getPersonStatus } from '@bit/soldevelo-omrs.cfl-components.person-status/person-status/person-status.reducer';
+import * as Default from '../../shared/utils/messages';
+import { getIntl } from '@openmrs/react-components/lib/components/localization/withLocalization';
+import { getActorList } from '../../reducers/actor.reducer';
+import Timezone from '../timezone/timezone';
+import { DashboardType } from '../../shared/model/dashboard-type';
+import { getPersonStatusConfig } from '../../shared/utils/person-status';
+import { MESSAGE_STATUS_FUTURE } from '../../shared/utils/statuses';
 
 interface ICalendarViewProps extends DispatchProps, StateProps, RouteComponentProps<{ patientId: string }> {
   patientUuid: string;
@@ -86,7 +89,7 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
       this.props.getPersonStatus(this.state.patientUuid)
     }
   }
-  
+
   componentWillUpdate(nextProps: ICalendarViewProps, nextState: ICalendarViewState) {
     if (nextProps.loading === false && this.props.loading === true) {
       let initialFilters = {};
@@ -296,8 +299,8 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
       status: entry.status,
       start: entry.executionDate.toISOString(),
       services: entry.services,
-      isDisabled: entry.status && entry.status.toString() === Msg.MESSAGE_STATUS_FUTURE
-          && this.props.personStatus.value !== Msg.PERSON_STATUSES.ACTIVATED.value
+      isDisabled: entry.status && entry.status.toString() === MESSAGE_STATUS_FUTURE
+        && this.props.personStatus.value !== getPersonStatusConfig().ACTIVATED.value
     }))
   };
 
@@ -342,7 +345,7 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
         <Timezone />
         <div className="row">
           <div className="col-md-12 col-xs-12">
-            <h2>{Msg.CALENDAR_OVERVIEW_LABEL}</h2>
+            <h2>{getIntl().formatMessage({ id: 'MESSAGES_CALENDAR_OVERVIEW_LABEL', defaultMessage: Default.CALENDAR_OVERVIEW_LABEL })}</h2>
             <Tabs activeKey={activeTabKey} onSelect={this.tabSelected}>
               {actorsResults.map((actorWithResults, index) => {
                 const tabName = actorWithResults.actorDisplayName;
@@ -352,7 +355,7 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
                       <Col sm={9}>
                         <a href={`${window.location.href}/patient-template`}>
                           <Button className="btn btn-md pull-right btn-manage-messages">
-                            {Msg.MANAGE_MESSAGES_LABEL}
+                            {getIntl().formatMessage({ id: 'MESSAGES_MANAGE_MESSAGES_LABEL', defaultMessage: Default.MANAGE_MESSAGES_LABEL })}
                           </Button>
                         </a>
                         <div className={this.getClassForCalendarArea()}>
@@ -367,7 +370,7 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
                       <Col sm={3} className="u-p-0 u-mt-4_5em u-mr-0 calendar-filters">
                         <span>
                           <FontAwesomeIcon icon={['fas', 'filter']} />{' '}
-                          <span className="display-header">{Msg.DISPLAY_HEADER}</span>
+                          <span className="display-header">{getIntl().formatMessage({ id: 'MESSAGES_DISPLAY_HEADER', defaultMessage: Default.DISPLAY_HEADER })}</span>
                         </span>
                         {_.uniqBy(this.props.templates, 'name').map((template) => this.renderTemplateFilter(template))}
                       </Col>

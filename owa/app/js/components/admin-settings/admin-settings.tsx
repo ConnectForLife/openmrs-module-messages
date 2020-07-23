@@ -1,17 +1,18 @@
-import React, {ReactFragment} from 'react';
-import {connect} from 'react-redux';
-import {IRootState} from '../../reducers';
-import {Button, SelectCallback} from 'react-bootstrap';
-import * as Msg from '../../shared/utils/messages';
+import React, { ReactFragment } from 'react';
+import { connect } from 'react-redux';
+import { IRootState } from '../../reducers';
+import { Button, SelectCallback } from 'react-bootstrap';
+import * as Default from '../../shared/utils/messages';
+import { getIntl } from '@openmrs/react-components/lib/components/localization/withLocalization';
 import FormSection from '@bit/soldevelo-omrs.cfl-components.form-entry/model/form-section';
 import FormSubSection from '@bit/soldevelo-omrs.cfl-components.form-entry/model/form-subsection';
 import FormEntry from '@bit/soldevelo-omrs.cfl-components.form-entry';
 import './admin-settings.scss';
-import {TemplateForm} from '../default-settings/template-form';
-import {TemplateUI} from '../../shared/model/template-ui';
-import {getActorTypes, updateTemplate} from '../../reducers/admin-settings.reducer';
-import {IActorType} from "../../shared/model/actor-type.model";
-import {history} from '../../config/redux-store';
+import { TemplateForm } from '../default-settings/template-form';
+import { TemplateUI } from '../../shared/model/template-ui';
+import { getActorTypes, updateTemplate } from '../../reducers/admin-settings.reducer';
+import { IActorType } from '../../shared/model/actor-type.model';
+import { history } from '../../config/redux-store';
 
 interface IAdminSettingsProps extends DispatchProps, StateProps {
   templates: Array<TemplateUI>,
@@ -57,7 +58,7 @@ class AdminSettings extends React.PureComponent<IAdminSettingsProps, IAdminSetti
   };
 
   getNextSubsection = () => {
-    const {templates} = this.props;
+    const { templates } = this.props;
     const currentTemplateName = this.props.activeSection;
     const nextTemplateIndex = templates.findIndex(template => template.name === currentTemplateName) + 1;
     return nextTemplateIndex < templates.length ? templates[nextTemplateIndex] : null;
@@ -70,7 +71,7 @@ class AdminSettings extends React.PureComponent<IAdminSettingsProps, IAdminSetti
   renderTemplateState = () => {
     const sections = this.mapTemplatesToSections();
     return (
-      <FormEntry sections={sections} activeSection={this.props.activeSection}/>
+      <FormEntry sections={sections} activeSection={this.props.activeSection} />
     );
   };
 
@@ -113,26 +114,26 @@ class AdminSettings extends React.PureComponent<IAdminSettingsProps, IAdminSetti
     return (
       <div className="admin-settings">
         <div className="panel-body">
-          <h2>{Msg.MESSAGES_SETTINGS_LABEL}</h2>
+          <h2>{getIntl().formatMessage({ id: 'MESSAGES_MESSAGES_SETTINGS_LABEL', defaultMessage: Default.MESSAGES_SETTINGS_LABEL })}</h2>
           {!this.props.loading && this.renderTemplateState()}
         </div>
         <div className="panel-body">
           <Button
             className="btn btn-danger btn-md"
             onClick={this.handleCancel}>
-            {Msg.CANCEL_BUTTON_LABEL}
+            {getIntl().formatMessage({ id: 'MESSAGES_CANCEL_BUTTON_LABEL', defaultMessage: Default.CANCEL_BUTTON_LABEL })}
           </Button>
           <div className="pull-right">
             <Button
               className="btn btn-default btn-md sec-btn"
               disabled={!this.getNextSubsection()}
               onClick={this.handleNext}>
-              {Msg.NEXT_BUTTON_LABEL}
+              {getIntl().formatMessage({ id: 'MESSAGES_NEXT_BUTTON_LABEL', defaultMessage: Default.NEXT_BUTTON_LABEL })}
             </Button>
             <Button
               className="btn btn-success btn-md confirm"
               onClick={this.handleSave}>
-              {Msg.SAVE_BUTTON_LABEL}
+              {getIntl().formatMessage({ id: 'MESSAGES_SAVE_BUTTON_LABEL', defaultMessage: Default.SAVE_BUTTON_LABEL })}
             </Button>
           </div>
         </div>
@@ -141,7 +142,7 @@ class AdminSettings extends React.PureComponent<IAdminSettingsProps, IAdminSetti
   }
 }
 
-const mapStateToProps = ({adminSettings}: IRootState) => ({
+const mapStateToProps = ({ adminSettings }: IRootState) => ({
   loading: adminSettings.loading,
   actorTypes: adminSettings.actorTypes
 });

@@ -6,7 +6,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import UrlPattern from 'url-pattern';
 import './bread-crumb.scss';
 import { UnregisterCallback } from 'history';
-import * as Msg from '../../shared/utils/messages';
+import * as Default from '../../shared/utils/messages';
+import { getIntl } from '@openmrs/react-components/lib/components/localization/withLocalization';
 import { getPerson } from '../../reducers/person.reducer';
 import { IRootState } from '../../reducers';
 
@@ -79,14 +80,14 @@ class BreadCrumb extends React.PureComponent<IBreadCrumbProps, IBreadCrumbState>
     } else if (!!BASE_MESSAGES_PATTERN.match(path.toLowerCase())) {
       return this.getBaseMessagesCrumbs(path);
     } else {
-      return [this.renderLastCrumb(Msg.GENERAL_MODULE_BREADCRUMB)];
+      return [this.renderLastCrumb(getIntl().formatMessage({ id: 'MESSAGES_GENERAL_MODULE_BREADCRUMB', defaultMessage: Default.GENERAL_MODULE_BREADCRUMB }))];
     }
   }
 
   getBaseMessagesCrumbs = (path: string) => {
     return [
       this.getPatientNameCrumb(path),
-      this.renderLastCrumb(Msg.GENERAL_MODULE_BREADCRUMB)
+      this.renderLastCrumb(getIntl().formatMessage({ id: 'MESSAGES_GENERAL_MODULE_BREADCRUMB', defaultMessage: Default.GENERAL_MODULE_BREADCRUMB }))
     ];
   }
 
@@ -103,11 +104,12 @@ class BreadCrumb extends React.PureComponent<IBreadCrumbProps, IBreadCrumbState>
 
   getManagePatientTemplateCrumbs = (path: string): Array<ReactFragment> => {
     const match = MANAGE_PATIENT_TEMPLATE_PATTERN.match(path.toLowerCase());
-    
+
     return [
       this.getPatientNameCrumb(path),
-      this.renderCrumb(CALENDAR_OVERVIEW_ROUTE(match.patientId, match.patientUuid, match.dashboardType), Msg.GENERAL_MODULE_BREADCRUMB),
-      this.renderLastCrumb(Msg.MANAGE_PATIENT_TEMPLATE_BREADCRUMB)
+      this.renderCrumb(CALENDAR_OVERVIEW_ROUTE(match.patientId, match.patientUuid, match.dashboardType),
+        getIntl().formatMessage({ id: 'MESSAGES_GENERAL_MODULE_BREADCRUMB', defaultMessage: Default.GENERAL_MODULE_BREADCRUMB })),
+      this.renderLastCrumb(getIntl().formatMessage({ id: 'MESSAGES_MANAGE_PATIENT_TEMPLATE_BREADCRUMB', defaultMessage: Default.MANAGE_PATIENT_TEMPLATE_BREADCRUMB }))
     ];
   }
 
@@ -116,23 +118,27 @@ class BreadCrumb extends React.PureComponent<IBreadCrumbProps, IBreadCrumbState>
     let msg = "";
 
     if (match.newOrEdit === "new") {
-      msg = Msg.NEW_PATIENT_TEMPLATE_BREADCRUMB;
+      msg = getIntl().formatMessage({ id: 'MESSAGES_NEW_PATIENT_TEMPLATE_BREADCRUMB', defaultMessage: Default.NEW_PATIENT_TEMPLATE_BREADCRUMB });
     } else if (match.newOrEdit === "edit") {
-      msg = Msg.EDIT_PATIENT_TEMPLATE_BREADCRUMB;
+      msg = getIntl().formatMessage({ id: 'MESSAGES_EDIT_PATIENT_TEMPLATE_BREADCRUMB', defaultMessage: Default.EDIT_PATIENT_TEMPLATE_BREADCRUMB });
     }
 
     return [
       this.getPatientNameCrumb(path),
-      this.renderCrumb(CALENDAR_OVERVIEW_ROUTE(match.patientId, match.patientUuid, match.dashboardType), Msg.GENERAL_MODULE_BREADCRUMB),
-      this.renderCrumb(PATIENT_TEMPLATE_ROUTE(match.patientId, match.patientUuid, match.dashboardType), Msg.MANAGE_PATIENT_TEMPLATE_BREADCRUMB),
+      this.renderCrumb(CALENDAR_OVERVIEW_ROUTE(match.patientId, match.patientUuid, match.dashboardType),
+        getIntl().formatMessage({ id: 'MESSAGES_GENERAL_MODULE_BREADCRUMB', defaultMessage: Default.GENERAL_MODULE_BREADCRUMB })),
+      this.renderCrumb(PATIENT_TEMPLATE_ROUTE(match.patientId, match.patientUuid, match.dashboardType),
+        getIntl().formatMessage({ id: 'MESSAGES_MANAGE_PATIENT_TEMPLATE_BREADCRUMB', defaultMessage: Default.MANAGE_PATIENT_TEMPLATE_BREADCRUMB })),
       this.renderLastCrumb(msg)
     ];
   }
 
   getManageBreadCrumbs = () => {
     return [
-      this.renderCrumb(SYSTEM_ADMINISTRATION_ROUTE, Msg.SYSTEM_ADMINITRATION_BREADCRUMB, true),
-      this.renderLastCrumb(Msg.MANAGE_BREADCRUMB)
+      this.renderCrumb(SYSTEM_ADMINISTRATION_ROUTE,
+        getIntl().formatMessage({ id: 'MESSAGES_SYSTEM_ADMINISTRATION_BREADCRUMB', defaultMessage: Default.SYSTEM_ADMINISTRATION_BREADCRUMB }),
+        true),
+      this.renderLastCrumb(getIntl().formatMessage({ id: 'MESSAGES_MANAGE_BREADCRUMB', defaultMessage: Default.MANAGE_BREADCRUMB }))
     ];
   }
 

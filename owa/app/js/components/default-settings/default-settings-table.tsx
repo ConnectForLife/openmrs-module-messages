@@ -5,7 +5,8 @@ import { IRootState } from '../../reducers';
 import { updateTemplate, getActorTypes } from '../../reducers/admin-settings.reducer';
 import { TemplateUI } from '../../shared/model/template-ui';
 import { TemplateForm } from './template-form';
-import * as Msg from '../../shared/utils/messages';
+import * as Default from '../../shared/utils/messages';
+import { getIntl } from '@openmrs/react-components/lib/components/localization/withLocalization';
 import { IColumn } from '../../shared/model/column.model';
 import { FragmentTable } from './fragment-table';
 import { IFragmentRow } from '../../shared/model/fragment-table-row.model';
@@ -26,7 +27,7 @@ class DefaultSettingsTable extends React.Component<IProps> {
 
   getColumns = (): ReadonlyArray<IColumn> => this.getActorTypes().map(actorType => ({
       key: actorType.display,
-      label: actorType.display + Msg.DEFAULT_SETTINGS_POSTFIX
+      label: actorType.display + getIntl().formatMessage({ id: 'MESSAGES_DEFAULT_SETTINGS_POSTFIX', defaultMessage: Default.DEFAULT_SETTINGS_POSTFIX })
     }));
 
   getTemplateFragmentRows = (): ReadonlyArray<IFragmentRow> => 
@@ -49,7 +50,7 @@ class DefaultSettingsTable extends React.Component<IProps> {
 
   render = () => (
     <div>
-      <h4>{Msg.DEFAULT_SETTINGS_TABLE_TITLE}</h4>
+      <h4>{getIntl().formatMessage({ id: 'MESSAGES_DEFAULT_SETTINGS_TABLE_TITLE', defaultMessage: Default.DEFAULT_SETTINGS_TABLE_TITLE })}</h4>
       <FragmentTable 
         columns={this.getColumns()}
         fragments={this.getTemplateFragmentRows()}

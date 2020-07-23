@@ -4,7 +4,7 @@ import Select from 'react-select';
 import './dynamic-multiselect.scss';
 import FormLabel from '@bit/soldevelo-omrs.cfl-components.form-label';
 import MultiselectOption from '../../../shared/model/multiselect-option';
-import { CATEGORIES_MAP } from '../../../shared/utils/messages';
+import { getHealthTipConfig } from '../../../shared/utils/health-tips';
 
 interface IProps {
   options: ReadonlyArray<string>
@@ -37,7 +37,7 @@ export default class DynamicMultiselect extends React.Component<IProps, IState> 
   }
 
   getCategoryOptionLabel = (optionName: string) => {
-    const mappedLabel = CATEGORIES_MAP[optionName];
+    const mappedLabel = getHealthTipConfig()[optionName];
     return !!mappedLabel ? mappedLabel : optionName;
   }
 

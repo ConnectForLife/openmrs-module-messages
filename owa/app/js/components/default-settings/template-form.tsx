@@ -7,12 +7,12 @@ import FormLabel from '@bit/soldevelo-omrs.cfl-components.form-label';
 import {
   PATIENT_TEMPLATE_START_DATE,
   PATIENT_TEMPLATE_END_DATE,
-  SERVICE_TYPE_VALUES,
-  DAY_OF_WEEK_VALUES,
-  MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY_VALUES,
-  MESSAGING_FREQUENCY_WEEKLY_OR_MONTHLY_VALUES,
-  CATEGORIES_MAP
 } from '../../shared/utils/messages';
+import { 
+  getServiceTypeValues,
+  getDayOfWeekValues,
+  getMessagingFrequencyDailyOrWeeklyOrMonthlyValues,
+  getMessagingFrequencyWeeklyOrMonthlyValues } from '../../shared/utils/field-values';
 import { TemplateFieldUI } from '../../shared/model/template-field-ui';
 import RadioWrappedContainer, { InitInput } from '../patient-template/form/radio-wrapper';
 import { factory } from '../patient-template/form/type-factory';
@@ -24,6 +24,7 @@ import InputField from '../patient-template/form/input-field';
 import { TemplateUI } from '../../shared/model/template-ui';
 import { TemplateFieldType } from '../../shared/model/template-field-type';
 import { IActorType } from '../../shared/model/actor-type.model';
+import { getHealthTipConfig } from '../../shared/utils/health-tips';
 
 interface IProps {
   template: TemplateUI;
@@ -110,19 +111,19 @@ export class TemplateForm extends React.Component<IProps> {
 
     switch (fieldType) {
       case TemplateFieldType.SERVICE_TYPE:
-        return this.renderDynamicRadioButton(templateField, SERVICE_TYPE_VALUES, fieldName, value);
+        return this.renderDynamicRadioButton(templateField, getServiceTypeValues(), fieldName, value);
       case TemplateFieldType.DAY_OF_WEEK:
-        return this.renderDynamicDayOfWeekButton(templateField, DAY_OF_WEEK_VALUES, fieldName, value);
+        return this.renderDynamicDayOfWeekButton(templateField, getDayOfWeekValues(), fieldName, value);
       case TemplateFieldType.DAY_OF_WEEK_SINGLE:
-        return this.renderDynamicRadioButton(templateField, DAY_OF_WEEK_VALUES, fieldName, value);
+        return this.renderDynamicRadioButton(templateField, getDayOfWeekValues(), fieldName, value);
       case TemplateFieldType.MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY:
         return this.renderDynamicRadioButton(templateField,
-          MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY_VALUES, fieldName, value);
+          getMessagingFrequencyDailyOrWeeklyOrMonthlyValues(), fieldName, value);
       case TemplateFieldType.MESSAGING_FREQUENCY_WEEKLY_OR_MONTHLY:
         return this.renderDynamicRadioButton(templateField,
-          MESSAGING_FREQUENCY_WEEKLY_OR_MONTHLY_VALUES, fieldName, value);
+          getMessagingFrequencyWeeklyOrMonthlyValues(), fieldName, value);
       case TemplateFieldType.CATEGORY_OF_MESSAGE:
-        return this.renderDynamicMultiselect(templateField, Object.keys(CATEGORIES_MAP), fieldName, value);
+        return this.renderDynamicMultiselect(templateField, Object.keys(getHealthTipConfig()), fieldName, value);
       case TemplateFieldType.START_OF_MESSAGES:
         return this.renderDatePicker(templateField, PATIENT_TEMPLATE_START_DATE, value);
       case TemplateFieldType.END_OF_MESSAGES:
@@ -242,7 +243,7 @@ export class TemplateForm extends React.Component<IProps> {
       .templateFields
       .find(f => f.type === TemplateFieldType.MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY);
     if (!!dailyWeeklyMonthlyFrequency) {
-      const daily = MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY_VALUES[0];
+      const daily = getMessagingFrequencyDailyOrWeeklyOrMonthlyValues()[0];
       return this.getValueForField(dailyWeeklyMonthlyFrequency) === daily;
     }
 

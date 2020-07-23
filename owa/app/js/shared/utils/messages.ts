@@ -28,7 +28,7 @@ export const PATIENT_TEMPLATE_BREADCRUMB = 'Patient Template';
 export const MANAGE_BREADCRUMB = 'Manage';
 export const NEW_PATIENT_TEMPLATE_BREADCRUMB = 'New';
 export const EDIT_PATIENT_TEMPLATE_BREADCRUMB = 'Edit';
-export const SYSTEM_ADMINITRATION_BREADCRUMB = 'System Administration';
+export const SYSTEM_ADMINISTRATION_BREADCRUMB = 'System Administration';
 export const MANAGE_PATIENT_TEMPLATE_BREADCRUMB = 'Manage Messages';
 
 // Best contact time
@@ -53,24 +53,32 @@ export const PATIENT_ROLE = 'Patient';
 export const CAREGIVER_ROLE = 'Caregiver';
 export const ISO_DATE_FORMAT = 'YYYY-MM-DD';
 export const DATE_FORMAT = 'dd MMM yyyy';
-export const SETTINGS_SAVE_SUCCESS = 'The settings have been saved successfully.';
+export const SETTINGS_SAVE_SUCCESS = 'The settings have been successfully saved.';
 export const MESSAGES_SETTINGS_LABEL = 'Messages settings';
 
 // Patient template
 export const ALL_DEFAULT_VALUES_USED_MESSAGE = 'This is the default schedule for messages. Click Save to confirm and start messages sending.';
 export const SOME_DEFAULT_VALUES_USED_MESSAGE = 'There are new messages scheduled by default. Click Save to confirm and start sending new messages.';
-export const SERVICE_TYPE_VALUES = ['Call', 'SMS', 'Deactivate service'];
-export const DAY_OF_WEEK_VALUES = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-export const MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY_VALUES = ['Daily', 'Weekly', 'Monthly'];
-export const MESSAGING_FREQUENCY_WEEKLY_OR_MONTHLY_VALUES = ['Weekly', 'Monthly'];
-export const CATEGORIES_MAP = {
-  'HT_CONTACT_TRACING': 'Contact Tracing',
-  'HT_CAREGIVER': 'Caregiver',
-  'HT_SIDE_EFFECTS': 'Side Effects',
-  'HT_TREATMENT': 'Treatment',
-  'HT_PREVENTION': 'Prevention',
-  'HT_SPREAD': 'Spread'
-};
+export const CALL_LABEL = 'Call';
+export const SMS_LABEL = 'SMS';
+export const DEACTIVATE_SERVICE_LABEL = 'Deactivate service';
+export const MONDAY = 'Monday';
+export const TUESDAY = 'Tuesday';
+export const WEDNESDAY = 'Wednesday';
+export const THURSDAY = 'Thursday';
+export const FRIDAY = 'Friday';
+export const SATURDAY = 'Saturday';
+export const SUNDAY = 'Sunday';
+export const DAILY = 'Daily';
+export const WEEKLY = 'Weekly';
+export const MONTHLY = 'Monthly';
+export const HT_CONTACT_TRACING_LABEL = 'Contact Tracing';
+export const HT_CAREGIVER_LABEL = 'Caregiver';
+export const HT_SIDE_EFFECTS_LABEL = 'Side Effects';
+export const HT_TREATMENT_LABEL = 'Treatment';
+export const HT_PREVENTION_LABEL = 'Prevention';
+export const HT_SPREAD_LABEL = 'Spread';
+
 export const DEFAULT_GENERATION_SUCCESS = 'The default values of the templates have been successfully saved to patient.';
 export const DEFAULT_GENERATION_FAILURE = 'Cannot save the default values of the templates';
 
@@ -79,35 +87,12 @@ export const PERSON_STATUS_NO_CONSENT = 'No consent';
 export const PERSON_STATUS_ACTIVATED = 'Activated';
 export const PERSON_STATUS_DEACTIVATED = 'Deactivated';
 export const PERSON_STATUS_MISSING_VALUE = 'Missing value';
-export const DEACTIVATED_KEY = 'DEACTIVATED';
-export const ACTIVATED_KEY = 'ACTIVATED';
-export const MISSING_VALUE_KEY = 'MISSING_VALUE';
-export const NO_CONSENT_KEY = 'NO_CONSENT';
-export const PERSON_STATUSES = {
-  NO_CONSENT: {
-    value: NO_CONSENT_KEY,
-    label: PERSON_STATUS_NO_CONSENT
-  },
-  ACTIVATED: {
-    value: ACTIVATED_KEY,
-    label: PERSON_STATUS_ACTIVATED
-  },
-  DEACTIVATED: {
-    value: DEACTIVATED_KEY,
-    label: PERSON_STATUS_DEACTIVATED
-  },
-  MISSING_VALUE: {
-    value: MISSING_VALUE_KEY,
-    label: PERSON_STATUS_MISSING_VALUE
-  }
-};
 
 export const CANCEL = 'Cancel';
 export const CONFIRM = 'Confirm';
 export const DEACTIVATED_STATUS_NOTIFICATION = 'Person status is deactivated. The scheduled messages won\'t be sent to this person.';
 export const NO_CONSENT_STATUS_NOTIFICATION = 'Person status is no consent. The scheduled messages won\'t be sent to this person.';
 export const MISSING_VALUE_STATUS_NOTIFICATION = 'Person status is missing value. The scheduled messages won\'t be sent to this person.';
-export const MESSAGE_STATUS_FUTURE = 'FUTURE';
 
 // Edit messages
 export const EDIT_MESSAGES_TITLE = 'Create messages';

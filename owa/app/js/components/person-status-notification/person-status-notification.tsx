@@ -17,8 +17,10 @@ import {
   putPersonStatus,
   getPossibleReasons
 } from '@bit/soldevelo-omrs.cfl-components.person-status/person-status/person-status.reducer';
-import * as Msg from '../../shared/utils/messages';
+import * as Default from '../../shared/utils/messages';
+import { getIntl } from '@openmrs/react-components/lib/components/localization/withLocalization';
 import './person-status-notification.scss';
+import { getPersonStatusConfig } from '../../shared/utils/person-status'
 
 interface IPersonStatusNotificationProps extends DispatchProps, StateProps {
   patientUuid: string
@@ -42,12 +44,16 @@ class PersonStatusNotification extends React.PureComponent<IPersonStatusNotifica
 
   renderDeactivatedStatusNotificationIfNeeded = () => {
     switch (this.props.personStatus.status.value) {
-      case Msg.PERSON_STATUSES.DEACTIVATED.value:
-        return this.renderNotification(Msg.DEACTIVATED_STATUS_NOTIFICATION);
-      case Msg.PERSON_STATUSES.NO_CONSENT.value:
-        return this.renderNotification(Msg.NO_CONSENT_STATUS_NOTIFICATION);
-      case Msg.PERSON_STATUSES.MISSING_VALUE.value:
-        return this.renderNotification(Msg.MISSING_VALUE_STATUS_NOTIFICATION);
+      case getPersonStatusConfig().DEACTIVATED.value:
+        return this.renderNotification(
+          getIntl().formatMessage({ id: 'MESSAGES_DEACTIVATED_STATUS_NOTIFICATION', defaultMessage: Default.DEACTIVATED_STATUS_NOTIFICATION }));
+      case getPersonStatusConfig().NO_CONSENT.value:
+        return this.renderNotification(
+          getIntl().formatMessage({ id: 'MESSAGES_NO_CONSENT_STATUS_NOTIFICATION', defaultMessage: Default.NO_CONSENT_STATUS_NOTIFICATION }));
+      case getPersonStatusConfig().MISSING_VALUE.value:
+        return this.renderNotification(
+          getIntl().formatMessage({ id: 'MESSAGES_MISSING_VALUE_STATUS_NOTIFICATION', defaultMessage: Default.MISSING_VALUE_STATUS_NOTIFICATION })
+        );
       default:
         return null;
     }

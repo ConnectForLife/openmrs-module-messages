@@ -1,31 +1,32 @@
-import React, {ReactFragment} from 'react';
-import {connect} from 'react-redux';
-import {RouteComponentProps} from 'react-router-dom';
+import React, { ReactFragment } from 'react';
+import { connect } from 'react-redux';
+import { RouteComponentProps } from 'react-router-dom';
 import {
   getTemplates,
   getPatientTemplates,
   putPatientTemplates
 } from '../../reducers/patient-template.reducer'
-import {getActorList} from '../../reducers/actor.reducer';
-import {IRootState} from '../../reducers';
-import {Button, SelectCallback} from 'react-bootstrap';
-import * as Msg from '../../shared/utils/messages';
+import { getActorList } from '../../reducers/actor.reducer';
+import { IRootState } from '../../reducers';
+import { Button, SelectCallback } from 'react-bootstrap';
+import * as Default from '../../shared/utils/messages';
+import { getIntl } from '@openmrs/react-components/lib/components/localization/withLocalization';
 import FormSection from '@bit/soldevelo-omrs.cfl-components.form-entry/model/form-section';
 import FormSubSection from '@bit/soldevelo-omrs.cfl-components.form-entry/model/form-subsection';
 import FormEntry from '@bit/soldevelo-omrs.cfl-components.form-entry';
 import './patient-template.scss';
 import PatientTemplateForm from './patient-template-form';
-import {TemplateUI} from '../../shared/model/template-ui';
+import { TemplateUI } from '../../shared/model/template-ui';
 import {
   getPatientTemplateWithTemplateId,
   getPatientTemplateWithActorId
 } from '../../selectors/patient-template-selector';
-import {PatientTemplateUI} from '../../shared/model/patient-template-ui';
+import { PatientTemplateUI } from '../../shared/model/patient-template-ui';
 import _ from 'lodash';
-import {IActor} from '../../shared/model/actor.model';
-import {getActorTypes} from '../../reducers/admin-settings.reducer';
-import Timezone from "../timezone/timezone";
-import {DashboardType} from "../../shared/model/dashboard-type";
+import { IActor } from '../../shared/model/actor.model';
+import { getActorTypes } from '../../reducers/admin-settings.reducer';
+import Timezone from '../timezone/timezone';
+import { DashboardType } from '../../shared/model/dashboard-type';
 
 interface IPatientTemplateEditProps extends DispatchProps, StateProps, RouteComponentProps<{
   patientId: string,
@@ -59,7 +60,7 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
   }
 
   handleSave = () => {
-    const {patientId, patientUuid, dashboardType} = this.props.match.params;
+    const { patientId, patientUuid, dashboardType } = this.props.match.params;
     this.props.putPatientTemplates(
       this.props.patientTemplates,
       this.props.templates,
@@ -77,12 +78,12 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
   };
 
   resolveSubsectionUrl = (subsectionName: string) => {
-    const {patientId, patientUuid, dashboardType} = this.props.match.params;
+    const { patientId, patientUuid, dashboardType } = this.props.match.params;
     return `/messages/${dashboardType}/${patientId}&patientuuid=${patientUuid}/patient-template/edit/${subsectionName}`;
   };
 
   getNextSubsection = () => {
-    const {templates} = this.props;
+    const { templates } = this.props;
     const currentTemplateName = this.props.match.params.activeSection;
     const nextTemplateIndex = templates.findIndex(template => template.name === currentTemplateName) + 1;
     return nextTemplateIndex < templates.length ? templates[nextTemplateIndex] : null;
@@ -96,21 +97,21 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
     const sections = this.mapTemplatesToSections();
     if (this.props.isNew) {
       return (
-        <FormEntry sections={sections} activeSection={this.props.match.params.activeSection}/>
+        <FormEntry sections={sections} activeSection={this.props.match.params.activeSection} />
       );
     } else {
       return (
-        <FormEntry sections={sections} activeSection={this.props.match.params.activeSection}/>
+        <FormEntry sections={sections} activeSection={this.props.match.params.activeSection} />
       );
     }
   }
 
   buildActorTemplate = (patientTemplates: ReadonlyArray<PatientTemplateUI>, template: TemplateUI, actor?: IActor): ReactFragment =>
     <PatientTemplateForm key={`template-form-${actor ? actor.actorId : parseInt(this.props.match.params.patientId)}`}
-                         patientTemplate={patientTemplates.length ? patientTemplates[0] : undefined}
-                         template={template}
-                         patientId={parseInt(this.props.match.params.patientId)}
-                         actor={actor}
+      patientTemplate={patientTemplates.length ? patientTemplates[0] : undefined}
+      template={template}
+      patientId={parseInt(this.props.match.params.patientId)}
+      actor={actor}
     />
 
   mapTemplatesToSections = (): Array<FormSection> => {
@@ -154,28 +155,28 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
   render() {
     return (
       <>
-        <Timezone/>
+        <Timezone />
         <div className="panel-body">
-          <h2>{Msg.EDIT_MESSAGES_TITLE}</h2>
+          <h2>{getIntl().formatMessage({ id: 'MESSAGES_EDIT_MESSAGES_TITLE', defaultMessage: Default.EDIT_MESSAGES_TITLE })}</h2>
           {!this.props.loading && this.renderTemplateState()}
         </div>
         <div className="panel-body">
           <Button
             className="btn btn-danger btn-md"
             onClick={this.handleCancel}>
-            {Msg.CANCEL_BUTTON_LABEL}
+            {getIntl().formatMessage({ id: 'MESSAGES_CANCEL_BUTTON_LABEL', defaultMessage: Default.CANCEL_BUTTON_LABEL })}
           </Button>
           <div className="pull-right">
             <Button
               className="btn btn-default btn-md sec-btn"
               disabled={!this.getNextSubsection()}
               onClick={this.handleNext}>
-              {Msg.NEXT_BUTTON_LABEL}
+              {getIntl().formatMessage({ id: 'MESSAGES_NEXT_BUTTON_LABEL', defaultMessage: Default.NEXT_BUTTON_LABEL })}
             </Button>
             <Button
               className="btn btn-success btn-md confirm"
               onClick={this.handleSave}>
-              {Msg.SAVE_BUTTON_LABEL}
+              {getIntl().formatMessage({ id: 'MESSAGES_SAVE_BUTTON_LABEL', defaultMessage: Default.SAVE_BUTTON_LABEL })}
             </Button>
           </div>
         </div>
@@ -184,7 +185,7 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
   }
 }
 
-const mapStateToProps = ({actor, patientTemplate, adminSettings}: IRootState) => ({
+const mapStateToProps = ({ actor, patientTemplate, adminSettings }: IRootState) => ({
   templates: patientTemplate.templates,
   patientTemplates: patientTemplate.patientTemplates,
   loading: patientTemplate.patientTemplatesLoading || patientTemplate.templatesLoading || adminSettings.loading,

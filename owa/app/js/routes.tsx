@@ -15,8 +15,11 @@ import BreadCrumb from './components/bread-crumb';
 import { CalendarWithHeader as Calendar } from './components/hoc/with-patient-header';
 import Customize from '@bit/soldevelo-omrs.cfl-components.customize'
 import { initializeLocalizationWrapper } from '@bit/soldevelo-omrs.cfl-components.localization-wrapper';
+import messagesEN from "./translations/en.json";
 
-initializeLocalizationWrapper({});
+initializeLocalizationWrapper({
+  en: messagesEN,
+});
 
 export default (store) => (
     <div>

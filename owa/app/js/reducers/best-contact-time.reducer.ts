@@ -3,7 +3,8 @@ import _ from 'lodash';
 import { REQUEST, SUCCESS, FAILURE } from './action-type.util'
 import 'react-toastify/dist/ReactToastify.css';
 import { handleRequest } from '@bit/soldevelo-omrs.cfl-components.request-toast-handler';
-import * as Msg from '../shared/utils/messages';
+import * as Default from '../shared/utils/messages';
+import { getIntl } from '@openmrs/react-components/lib/components/localization/withLocalization';
 import { IBestContactTime } from '../shared/model/best-contact-time.model';
 import { mapFromRequest, mapToRequest } from '../shared/model/contact-time.model';
 import axiosInstance from '../config/axios';
@@ -86,7 +87,9 @@ export const postBestContactTime = (bestContactTimes: Array<IBestContactTime>) =
     type: ACTION_TYPES.POST_BEST_CONTACT_TIME,
     payload: axiosInstance.post(contactTimeUrl, _.map(bestContactTimes, mapToRequest))
   }
-  await handleRequest(dispatch, body, Msg.BEST_CONTACT_TIME_SAVE_SUCCESS, Msg.BEST_CONTACT_TIME_SAVE_FAILURE);
+  await handleRequest(dispatch, body,
+    getIntl().formatMessage({ id: 'MESSAGES_BEST_CONTACT_TIME_SAVE_SUCCESS', defaultMessage: Default.BEST_CONTACT_TIME_SAVE_SUCCESS }),
+    getIntl().formatMessage({ id: 'MESSAGES_BEST_CONTACT_TIME_SAVE_FAILURE', defaultMessage: Default.BEST_CONTACT_TIME_SAVE_FAILURE }));
 };
 
 export const updateBestConstactTime = (newValue: Array<IBestContactTime>) => async (dispatch) => {

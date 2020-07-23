@@ -5,10 +5,11 @@ import BestContactTime from './best-contact-time';
 import ScheduledMessages from './scheduled-messages';
 import { checkIfDefaultValuesUsed, generateDefaultPatientTemplates } from '../../reducers/patient-template.reducer';
 import { IRootState } from '../../reducers';
-import * as Msg from '../../shared/utils/messages';
+import * as Default from '../../shared/utils/messages';
+import { getIntl } from '@openmrs/react-components/lib/components/localization/withLocalization';
 import './patient-template.scss';
-import Timezone from "../timezone/timezone";
-import {DashboardType} from "../../shared/model/dashboard-type";
+import Timezone from '../timezone/timezone';
+import { DashboardType } from '../../shared/model/dashboard-type';
 
 interface IManageMessagesProps extends DispatchProps, StateProps, RouteComponentProps<{ patientId: string, patientUuid: string, dashboardType: DashboardType }> {
 };
@@ -53,7 +54,8 @@ class ManageMessages extends React.PureComponent<IManageMessagesProps, IManageMe
 
   private getDefaultValuesMessage(): string {
     return this.props.defaultValuesState.allValuesDefault ?
-      Msg.ALL_DEFAULT_VALUES_USED_MESSAGE : Msg.SOME_DEFAULT_VALUES_USED_MESSAGE;
+      getIntl().formatMessage({ id: 'MESSAGES_ALL_DEFAULT_VALUES_USED_MESSAGE', defaultMessage: Default.ALL_DEFAULT_VALUES_USED_MESSAGE }) :
+      getIntl().formatMessage({ id: 'MESSAGES_SOME_DEFAULT_VALUES_USED_MESSAGE', defaultMessage: Default.SOME_DEFAULT_VALUES_USED_MESSAGE });
   }
 
   render() {

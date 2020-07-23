@@ -12,11 +12,12 @@ import { connect } from 'react-redux';
 
 import { IRootState } from '../reducers';
 import { getConfig, saveConfig } from '../reducers/admin-settings.reducer';
-import * as Msg from '../shared/utils/messages';
+import * as Default from '../shared/utils/messages';
+import { getIntl } from '@openmrs/react-components/lib/components/localization/withLocalization';
 import BestContactTime from './default-settings/default-best-contact-time';
-import AdminSettings from "./admin-settings/admin-settings";
-import {RouteComponentProps} from "react-router-dom";
-import Timezone from "./timezone/timezone";
+import AdminSettings from './admin-settings/admin-settings';
+import { RouteComponentProps } from 'react-router-dom';
+import Timezone from './timezone/timezone';
 
 interface IProps extends StateProps, DispatchProps, RouteComponentProps<{
     activeSection?: string
@@ -32,14 +33,14 @@ class AppManagement extends React.Component<IProps> {
         <div className="body-wrapper">
             <div className="content">
                 <Timezone />
-                <h2>{Msg.DEFAULT_SETTINGS}</h2>
+                <h2>{getIntl().formatMessage({ id: 'MESSAGES_DEFAULT_SETTINGS', defaultMessage: Default.DEFAULT_SETTINGS })}</h2>
                 <BestContactTime
                     loading={this.props.loading}
                     bestContactTimes={this.props.defaultBestContactTimes}
                     actorTypes={this.props.actorTypes} />
                 <AdminSettings templates={this.props.templates}
-                               activeSection={this.props.match.params.activeSection}
-                               onSaveCallback={this.handleSave} />
+                    activeSection={this.props.match.params.activeSection}
+                    onSaveCallback={this.handleSave} />
             </div>
         </div>
 }

@@ -5,7 +5,8 @@ import { PatientTemplateUI } from '../shared/model/patient-template-ui';
 import { TemplateUI } from '../shared/model/template-ui';
 import { toModel, mergeWithObjectUIs } from '../shared/model/object-ui';
 import { handleRequest } from '@bit/soldevelo-omrs.cfl-components.request-toast-handler';
-import * as Msg from '../shared/utils/messages';
+import * as Default from '../shared/utils/messages';
+import { getIntl } from '@openmrs/react-components/lib/components/localization/withLocalization';
 import { history } from '../config/redux-store';
 import axiosInstance, { ALL_RECORDS_PAGE } from '../config/axios';
 import MessageDetails from '../shared/model/message-details';
@@ -210,7 +211,9 @@ export const generateDefaultPatientTemplates = (patientId: number) => async (dis
     type: ACTION_TYPES.GENERATE_DEFAULT_PATIENT_TEMPLATES,
     payload: axiosInstance.post(requestUrl)
   }
-  await handleRequest(dispatch, body, Msg.DEFAULT_GENERATION_SUCCESS, Msg.DEFAULT_GENERATION_FAILURE);
+  await handleRequest(dispatch, body,
+    getIntl().formatMessage({ id: 'MESSAGES_DEFAULT_GENERATION_SUCCESS', defaultMessage: Default.DEFAULT_GENERATION_SUCCESS }),
+    getIntl().formatMessage({ id: 'MESSAGES_DEFAULT_GENERATION_FAILURE', defaultMessage: Default.DEFAULT_GENERATION_FAILURE }));
 };
 
 export const reset = () => ({
@@ -226,7 +229,9 @@ export const putPatientTemplates = (patientTemplates: Array<PatientTemplateUI>,
         type: ACTION_TYPES.PUT_PATIENT_TEMPLATES,
         payload: axiosInstance.post(requestUrl, { patientTemplates: _.map(validated, toModel) })
       }
-      await handleRequest(dispatch, body, Msg.GENERIC_SUCCESS, Msg.GENERIC_FAILURE);
+      await handleRequest(dispatch, body,
+        getIntl().formatMessage({ id: 'MESSAGES_GENERIC_SUCCESS', defaultMessage: Default.GENERIC_SUCCESS }),
+        getIntl().formatMessage({ id: 'MESSAGES_GENERIC_FAILURE', defaultMessage: Default.GENERIC_FAILURE }));
       history.push(`/messages/${dashboardType}/${patientId}&patientuuid=${patientUuid}`);
     } else {
       dispatch(updatePatientTemplates(validated));

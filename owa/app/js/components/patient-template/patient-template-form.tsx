@@ -28,19 +28,19 @@ import RadioWrappedContainer, { InitInput } from './form/radio-wrapper';
 import {
   PATIENT_TEMPLATE_START_DATE,
   PATIENT_TEMPLATE_END_DATE,
-  PATIENT_ROLE,
-  SERVICE_TYPE_VALUES,
-  DAY_OF_WEEK_VALUES,
-  MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY_VALUES,
-  MESSAGING_FREQUENCY_WEEKLY_OR_MONTHLY_VALUES,
-  CATEGORIES_MAP
+  PATIENT_ROLE
 } from '../../shared/utils/messages';
+import { 
+  getServiceTypeValues,
+  getDayOfWeekValues,
+  getMessagingFrequencyDailyOrWeeklyOrMonthlyValues,
+  getMessagingFrequencyWeeklyOrMonthlyValues } from '../../shared/utils/field-values';
 import { factory } from './form/type-factory';
 import { InputTypeEnum } from './form/radio-wrapper/parsable-input';
 import { IActor } from '../../shared/model/actor.model';
 import { IRootState } from '../../reducers';
 import { IActorType } from '../../shared/model/actor-type.model';
-
+import { getHealthTipConfig } from '../../shared/utils/health-tips';
 
 interface IReactProps {
   patientTemplate: PatientTemplateUI | undefined;
@@ -102,19 +102,19 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
     const isMandatory: boolean = tfv.isMandatory(this.props.template);
     switch (fieldType) {
       case TemplateFieldType.SERVICE_TYPE:
-        return this.renderDynamicRadioButton(tfv, SERVICE_TYPE_VALUES, fieldName, isMandatory);
+        return this.renderDynamicRadioButton(tfv, getServiceTypeValues(), fieldName, isMandatory);
       case TemplateFieldType.DAY_OF_WEEK:
-        return this.renderDynamicDayOfWeekButton(tfv, DAY_OF_WEEK_VALUES, fieldName, isMandatory);
+        return this.renderDynamicDayOfWeekButton(tfv, getDayOfWeekValues(), fieldName, isMandatory);
       case TemplateFieldType.DAY_OF_WEEK_SINGLE:
-        return this.renderDynamicRadioButton(tfv, DAY_OF_WEEK_VALUES, fieldName, isMandatory);
+        return this.renderDynamicRadioButton(tfv, getDayOfWeekValues(), fieldName, isMandatory);
       case TemplateFieldType.MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY:
-        return this.renderDynamicRadioButton(tfv, MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY_VALUES,
+        return this.renderDynamicRadioButton(tfv, getMessagingFrequencyDailyOrWeeklyOrMonthlyValues(),
           fieldName, isMandatory);
       case TemplateFieldType.MESSAGING_FREQUENCY_WEEKLY_OR_MONTHLY:
-        return this.renderDynamicRadioButton(tfv, MESSAGING_FREQUENCY_WEEKLY_OR_MONTHLY_VALUES,
+        return this.renderDynamicRadioButton(tfv, getMessagingFrequencyWeeklyOrMonthlyValues(),
           fieldName, isMandatory);
       case TemplateFieldType.CATEGORY_OF_MESSAGE:
-        return this.renderDynamicMultiselect(tfv, Object.keys(CATEGORIES_MAP), fieldName, isMandatory);
+        return this.renderDynamicMultiselect(tfv, Object.keys(getHealthTipConfig()), fieldName, isMandatory);
       case TemplateFieldType.START_OF_MESSAGES:
         return this.renderDatePicker(tfv, PATIENT_TEMPLATE_START_DATE, isMandatory,
           ['Start of daily messages', 'Start of messages'].includes(fieldName));
@@ -248,7 +248,7 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
       .templateFieldValues
       .find(f => f.getFieldType(this.props.template) === TemplateFieldType.MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY);
     if (!!dailyWeeklyMonthlyFrequency) {
-      const daily = MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY_VALUES[0];
+      const daily = getMessagingFrequencyDailyOrWeeklyOrMonthlyValues()[0];
       return dailyWeeklyMonthlyFrequency.value === daily;
     }
 

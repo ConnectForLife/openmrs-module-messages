@@ -6,7 +6,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { TemplateUI } from '../shared/model/template-ui';
 import axiosInstance from '../config/axios';
 import { toModel, mergeWithObjectUIs } from '../shared/model/object-ui';
-import * as Msg from '../shared/utils/messages';
+import * as Default from '../shared/utils/messages';
+import { getIntl } from '@openmrs/react-components/lib/components/localization/withLocalization';
 import { IDefaultBestContactTime } from '../shared/model/default-best-contact-time.model';
 import { IActorType } from '../shared/model/actor-type.model';
 import { mapFromRequest, mapToRequest } from '../shared/model/contact-time.model';
@@ -140,9 +141,13 @@ export const saveConfig = (templates: Array<TemplateUI>, contactTimes: Array<IDe
   const toastId = initRequestHandling();
   await dispatch(putDefaultContactTimes(contactTimes)).then(
     response => dispatch(putTemplates(templates)).then(
-      response => continueRequestHandling(toastId, dispatch, getConfig(), Msg.SETTINGS_SAVE_SUCCESS, Msg.GENERIC_FAILURE),
-      error => handleRequestFailure(error, toastId, Msg.GENERIC_FAILURE)),
-    error => handleRequestFailure(error, toastId, Msg.GENERIC_FAILURE))
+      response => continueRequestHandling(toastId, dispatch, getConfig(),
+        getIntl().formatMessage({ id: 'MESSAGES_SETTINGS_SAVE_SUCCESS', defaultMessage: Default.SETTINGS_SAVE_SUCCESS }),
+        getIntl().formatMessage({ id: 'MESSAGES_GENERIC_FAILURE', defaultMessage: Default.GENERIC_FAILURE })),
+      error => handleRequestFailure(error, toastId,
+        getIntl().formatMessage({ id: 'MESSAGES_GENERIC_FAILURE', defaultMessage: Default.GENERIC_FAILURE }))),
+    error => handleRequestFailure(error, toastId,
+      getIntl().formatMessage({ id: 'MESSAGES_GENERIC_FAILURE', defaultMessage: Default.GENERIC_FAILURE })))
 }
 
 export const putDefaultContactTimes = (contactTimes: Array<IDefaultBestContactTime>) => ({
