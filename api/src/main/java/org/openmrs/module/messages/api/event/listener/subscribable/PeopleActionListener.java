@@ -18,21 +18,22 @@ import org.openmrs.api.context.Daemon;
 import org.openmrs.event.Event;
 import org.openmrs.event.SubscribableEventListener;
 import org.openmrs.module.DaemonToken;
+import org.openmrs.module.DaemonTokenAware;
 import org.openmrs.module.messages.api.constants.MessagesConstants;
 import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
-import java.util.List;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Abstract class for subscribable event listening.
  */
-public abstract class PeopleActionListener implements SubscribableEventListener {
+public abstract class PeopleActionListener implements SubscribableEventListener, DaemonTokenAware {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PeopleActionListener.class);
 

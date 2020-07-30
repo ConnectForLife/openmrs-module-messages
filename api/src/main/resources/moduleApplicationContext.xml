@@ -100,6 +100,15 @@
         </property>
     </bean>
 
+    <bean parent="serviceContext">
+        <property name="moduleService">
+            <list merge="true">
+                <value>org.openmrs.module.messages.api.service.PatientTemplateService</value>
+                <ref local="messages.patientTemplateService"/>
+            </list>
+        </property>
+    </bean>
+
     <bean id="messages.templateService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="transactionManager">
             <ref bean="transactionManager"/>
@@ -459,6 +468,16 @@
           parent="messages.peopleActionListener">
         <property name="configService">
             <ref local="messages.configService"/>
+        </property>
+    </bean>
+
+    <bean id="messages.removingPeopleListener"
+          class="org.openmrs.module.messages.api.event.listener.subscribable.RemovingPeopleListener"
+          init-method="init"
+          destroy-method="close"
+          parent="messages.peopleActionListener">
+        <property name="patientTemplateService">
+            <ref local="messages.patientTemplateService"/>
         </property>
     </bean>
 
