@@ -33,13 +33,23 @@ public class PatientTemplateServiceImpl extends BaseOpenmrsDataService<PatientTe
     public void voidForPerson(int personId, String reason) throws APIException {
         List<PatientTemplate> templatesForActor = findAllByCriteria(PatientTemplateCriteria.forActorId(personId));
         //Required to use AOP during voiding
-        PatientTemplateService openMRSService = Context.getService(PatientTemplateService.class);
+        PatientTemplateService patientTemplateService = Context.getService(PatientTemplateService.class);
         for (PatientTemplate template : templatesForActor) {
-            openMRSService.voidPatientTemplate(template, reason);
+            patientTemplateService.voidPatientTemplate(template, reason);
         }
         List<PatientTemplate> templatesForPatient = findAllByCriteria(PatientTemplateCriteria.forPatientId(personId));
         for (PatientTemplate template : templatesForPatient) {
-            openMRSService.voidPatientTemplate(template, reason);
+            patientTemplateService.voidPatientTemplate(template, reason);
+        }
+    }
+
+    @Override
+    public void voidForRelationship(int relationshipId, String reason) {
+        List<PatientTemplate> templates = findAllByCriteria(PatientTemplateCriteria.forActorType(relationshipId));
+        //Required to use AOP during voiding
+        PatientTemplateService patientTemplateService = Context.getService(PatientTemplateService.class);
+        for (PatientTemplate template : templates) {
+            patientTemplateService.voidPatientTemplate(template, reason);
         }
     }
 

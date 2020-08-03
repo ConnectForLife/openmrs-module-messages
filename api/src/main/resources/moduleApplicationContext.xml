@@ -461,6 +461,12 @@
         <property name="personService" ref="personService"/>
     </bean>
 
+    <bean id="messages.relationshipActionListener"
+          class="org.openmrs.module.messages.api.event.listener.subscribable.RelationshipActionListener"
+          abstract="true">
+        <property name="personService" ref="personService"/>
+    </bean>
+
     <bean id="messages.personCreatedListener"
           class="org.openmrs.module.messages.api.event.listener.subscribable.InitialPersonAttributeListener"
           init-method="init"
@@ -476,6 +482,16 @@
           init-method="init"
           destroy-method="close"
           parent="messages.peopleActionListener">
+        <property name="patientTemplateService">
+            <ref local="messages.patientTemplateService"/>
+        </property>
+    </bean>
+
+    <bean id="messages.removingRelationshipListener"
+          class="org.openmrs.module.messages.api.event.listener.subscribable.RemovingRelationshipListener"
+          init-method="init"
+          destroy-method="close"
+          parent="messages.relationshipActionListener">
         <property name="patientTemplateService">
             <ref local="messages.patientTemplateService"/>
         </property>

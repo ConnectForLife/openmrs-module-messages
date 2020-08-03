@@ -41,17 +41,6 @@ public class PatientTemplate extends AbstractBaseOpenmrsData {
 
     private static final long serialVersionUID = 4808798852617376186L;
 
-    public PatientTemplate() { }
-
-    public PatientTemplate(Person actor, Relationship actorType, Patient patient,
-                           List<TemplateFieldValue> templateFieldValues, Template template) {
-        this.actor = actor;
-        this.actorType = actorType;
-        this.patient = patient;
-        this.templateFieldValues = templateFieldValues;
-        this.template = template;
-    }
-
     @Id
     @GeneratedValue
     @Column(name = "messages_patient_template_id")
@@ -81,6 +70,17 @@ public class PatientTemplate extends AbstractBaseOpenmrsData {
     @ManyToOne
     @JoinColumn(name = "template_id", nullable = false)
     private Template template;
+
+    public PatientTemplate() { }
+
+    public PatientTemplate(Person actor, Relationship actorType, Patient patient,
+                           List<TemplateFieldValue> templateFieldValues, Template template) {
+        this.actor = actor;
+        this.actorType = actorType;
+        this.patient = patient;
+        this.templateFieldValues = templateFieldValues;
+        this.template = template;
+    }
 
     @Override
     public Integer getId() {

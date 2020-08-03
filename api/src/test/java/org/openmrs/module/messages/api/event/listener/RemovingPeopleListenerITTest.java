@@ -1,6 +1,7 @@
 package org.openmrs.module.messages.api.event.listener;
 
 import org.apache.activemq.command.ActiveMQMapMessage;
+import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,15 +22,13 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.is;
-
 public class RemovingPeopleListenerITTest extends ContextSensitiveWithActivatorTest {
 
     private static final String DATASET_NAME = "MessageDataSet.xml";
     private static final int INITIAL_TEMPLATE_COUNT_FOR_PATIENT_AS_ACTOR = 2;
     private static final int INITIAL_TEMPLATE_COUNT_FOR_PATIENT_AS_PATIENT = 1;
     private static final String GENERAL_VOIDING_REASON = "General voiding reason";
-    public static final int EXPECTED_TEMPLATE_COUNT = 0;
+    private static final int EXPECTED_TEMPLATE_COUNT = 0;
 
     private Patient patient;
 
@@ -59,8 +58,8 @@ public class RemovingPeopleListenerITTest extends ContextSensitiveWithActivatorT
         mockFireEvent(buildMessage(patient));
         List<PatientTemplate> templateAfter = patientTemplateService.findAllByCriteria(
                 PatientTemplateCriteria.forActorId(DatasetConstants.DEFAULT_PERSON_ID));
-        Assert.assertThat(templateBefore.size(), is(INITIAL_TEMPLATE_COUNT_FOR_PATIENT_AS_ACTOR));
-        Assert.assertThat(templateAfter.size(), is(EXPECTED_TEMPLATE_COUNT));
+        Assert.assertThat(templateBefore.size(), CoreMatchers.is(INITIAL_TEMPLATE_COUNT_FOR_PATIENT_AS_ACTOR));
+        Assert.assertThat(templateAfter.size(), CoreMatchers.is(EXPECTED_TEMPLATE_COUNT));
     }
 
     @Test
@@ -71,8 +70,8 @@ public class RemovingPeopleListenerITTest extends ContextSensitiveWithActivatorT
         mockFireEvent(buildMessage(patient));
         List<PatientTemplate> templateAfter = patientTemplateService.findAllByCriteria(
                 PatientTemplateCriteria.forPatientId(DatasetConstants.DEFAULT_PERSON_ID));
-        Assert.assertThat(templateBefore.size(), is(INITIAL_TEMPLATE_COUNT_FOR_PATIENT_AS_PATIENT));
-        Assert.assertThat(templateAfter.size(), is(EXPECTED_TEMPLATE_COUNT));
+        Assert.assertThat(templateBefore.size(), CoreMatchers.is(INITIAL_TEMPLATE_COUNT_FOR_PATIENT_AS_PATIENT));
+        Assert.assertThat(templateAfter.size(), CoreMatchers.is(EXPECTED_TEMPLATE_COUNT));
     }
 
     private void mockFireEvent(Message message) {

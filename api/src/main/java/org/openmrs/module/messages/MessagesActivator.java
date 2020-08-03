@@ -27,6 +27,7 @@ import org.openmrs.module.messages.api.constants.MessagesConstants;
 import org.openmrs.module.messages.api.event.AbstractMessagesEventListener;
 import org.openmrs.module.messages.api.event.listener.MessagesEventListenerFactory;
 import org.openmrs.module.messages.api.event.listener.subscribable.PeopleActionListener;
+import org.openmrs.module.messages.api.event.listener.subscribable.RelationshipActionListener;
 import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
 import org.openmrs.module.messages.api.scheduler.job.JobRepeatInterval;
 import org.openmrs.module.messages.api.scheduler.job.MessageDeliveriesJobDefinition;
@@ -84,6 +85,12 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
         List<PeopleActionListener> listeners = Context.getRegisteredComponents(PeopleActionListener.class);
         for (PeopleActionListener peopleActionListener : listeners) {
             peopleActionListener.setDaemonToken(token);
+        }
+
+        List<RelationshipActionListener> relationshipListeners =
+                Context.getRegisteredComponents(RelationshipActionListener.class);
+        for (RelationshipActionListener relationshipActionListener : relationshipListeners) {
+            relationshipActionListener.setDaemonToken(token);
         }
 
         List<AbstractMessagesEventListener> eventComponents =

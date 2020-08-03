@@ -10,25 +10,23 @@
 package org.openmrs.module.messages.api.event.listener.subscribable;
 
 import org.openmrs.OpenmrsObject;
-import org.openmrs.Patient;
-import org.openmrs.Person;
+import org.openmrs.Relationship;
 import org.openmrs.api.PersonService;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.api.constants.MessagesConstants;
 import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jms.Message;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Abstract class for subscribable event listening.
  */
-public abstract class PeopleActionListener extends BaseActionListener {
+public abstract class RelationshipActionListener extends BaseActionListener {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PeopleActionListener.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RelationshipActionListener.class);
 
     private PersonService personService;
 
@@ -37,7 +35,7 @@ public abstract class PeopleActionListener extends BaseActionListener {
      */
     @Override
     public List<Class<? extends OpenmrsObject>> subscribeToObjects() {
-        return Arrays.asList(Person.class, Patient.class);
+        return Collections.singletonList(Relationship.class);
     }
 
     public void setPersonService(PersonService personService) {
@@ -49,24 +47,24 @@ public abstract class PeopleActionListener extends BaseActionListener {
     }
 
     /**
-     * Extracts the person from the received messages.
-     * Fetch the {@link Person} object from DB based on UUID from message properties.
+     * Extracts the relationship from the received messages.
+     * Fetch the {@link org.openmrs.Relationship} object from DB based on UUID from message properties.
      * @param message message with properties.
-     * @return retrieved patient
+     * @return retrieved relationship
      */
-    protected Person extractPerson(Message message) {
+    protected Relationship extractRelationship(Message message) {
         LOGGER.trace("Handle extractPerson");
-        String personUuid = getMessagePropertyValue(message, MessagesConstants.UUID_KEY);
-        return getPerson(personUuid);
+        String relationshipUuid = getMessagePropertyValue(message, MessagesConstants.UUID_KEY);
+        return getRelationship(relationshipUuid);
     }
 
-    private Person getPerson(String personUuid) {
-        LOGGER.debug(String.format("Handle getPerson for '%s' uuid", personUuid));
-        Person person = personService.getPersonByUuid(personUuid);
-        if (person == null) {
-            throw new MessagesRuntimeException(String.format("Unable to retrieve person by uuid: %s", personUuid));
+    private Relationship getRelationship(String relationshipUuid) {
+        LOGGER.debug(String.format("Handle getRelationship for '%s' uuid", relationshipUuid));
+        Relationship relationship = personService.getRelationshipByUuid(relationshipUuid);
+        if (relationship == null) {
+            throw new MessagesRuntimeException(
+                    String.format("Unable to retrieve relationship by uuid: %s", relationshipUuid));
         }
-        Context.refreshEntity(person); //person caching issue fix
-        return person;
+        return relationship;
     }
 }

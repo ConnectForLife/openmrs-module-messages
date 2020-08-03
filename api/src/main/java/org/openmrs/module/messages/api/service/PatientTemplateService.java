@@ -26,10 +26,20 @@ public interface PatientTemplateService extends BaseOpenmrsCriteriaDataService<P
      * Voids patient templates for person which acts as a patient or actor.
      *
      * @param personId id of person for whom patient templates are voided
-     * @param reason reason for voiding patient
+     * @param reason reason for voiding patient templates
      * @throws APIException
      */
     void voidForPerson(int personId, String reason) throws APIException;
+
+    /**
+     * Voids patient templates which are based on specific relationship.
+     * Could be called after removing connection between people in order to avoid sending undesired messages.
+     *
+     * @param relationshipId id of related relationship
+     * @param reason reason for voiding patient templates
+     * @throws APIException
+     */
+    void voidForRelationship(int relationshipId, String reason);
 
     /**
      * Voids patient template (functionally delete patient template from system).

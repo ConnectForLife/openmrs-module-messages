@@ -5,6 +5,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.sql.JoinType;
 import org.openmrs.Patient;
 import org.openmrs.Person;
+import org.openmrs.Relationship;
 import org.openmrs.RelationshipType;
 import org.openmrs.module.messages.api.constants.MessagesConstants;
 import org.openmrs.module.messages.api.model.Actor;
@@ -24,16 +25,55 @@ public class PatientTemplateCriteria extends BaseCriteria implements Serializabl
 
     private Person actor;
 
+    private Relationship actorType;
+
     public PatientTemplateCriteria(Patient patient) {
         this.patient = patient;
-        this.actor = null;
     }
 
     public PatientTemplateCriteria(Person actor) {
         this.actor = actor;
-        this.patient = null;
     }
 
+    public PatientTemplateCriteria(Relationship actorType) {
+        this.actorType = actorType;
+    }
+
+    /**
+     * Factory method used to create criteria for specific patient
+     *
+     * @param patientId id of related patient
+     */
+    public static PatientTemplateCriteria forPatientId(Integer patientId) {
+        Patient patient = new Patient(patientId);
+        return new PatientTemplateCriteria(patient);
+    }
+
+    /**
+     * Factory method used to create criteria for specific actor
+     *
+     * @param personId id of related actor
+     */
+    public static PatientTemplateCriteria forActorId(Integer personId) {
+        Person actor = new Person(personId);
+        return new PatientTemplateCriteria(actor);
+    }
+
+    /**
+     * Factory method used to create criteria for specific actor type (relationship)
+     *
+     * @param relationshipId id of related relationship
+     */
+    public static PatientTemplateCriteria forActorType(Integer relationshipId) {
+        Relationship actorType = new Relationship(relationshipId);
+        return new PatientTemplateCriteria(actorType);
+    }
+
+    /**
+     * Return person id. It can be patient or actor id depending on criteria configuration.
+     *
+     * @return person id
+     */
     public Integer getPersonId() {
         if (patient != null) {
             return patient.getPersonId();
@@ -43,6 +83,9 @@ public class PatientTemplateCriteria extends BaseCriteria implements Serializabl
         return null;
     }
 
+    /**
+     * @see BaseCriteria#loadHibernateCriteria(Criteria)
+     */
     @Override
     public void loadHibernateCriteria(Criteria hibernateCriteria) {
         if (patient != null) {
@@ -60,17 +103,10 @@ public class PatientTemplateCriteria extends BaseCriteria implements Serializabl
             hibernateCriteria
                     .add(Restrictions.eq("actor", actor));
                     //consider filtering by relationship type
+        } else if (actorType != null) {
+            hibernateCriteria
+                    .add(Restrictions.eq("actorType", actorType));
         }
-    }
-
-    public static PatientTemplateCriteria forPatientId(Integer patientId) {
-        Patient patient = new Patient(patientId);
-        return new PatientTemplateCriteria(patient);
-    }
-
-    public static PatientTemplateCriteria forActorId(Integer personId) {
-        Person actor = new Person(personId);
-        return new PatientTemplateCriteria(actor);
     }
 
     private List<RelationshipType> getActorTypeRelationshipTypes(Patient patient) {
