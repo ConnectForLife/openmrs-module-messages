@@ -9,7 +9,7 @@
 
 package org.openmrs.module.messages.api.service.impl;
 
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
 import org.openmrs.module.messages.api.scheduler.job.JobDefinition;
