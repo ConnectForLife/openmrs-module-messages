@@ -32,7 +32,7 @@ public interface MessagingService extends BaseOpenmrsCriteriaDataService<Schedul
      * @param executionId        is the id coming in from the module that is doing the messaging (eg. from the sms module)
      * @return the updated scheduled service
      * @throws EntityNotFoundException when scheduled service with passed id does not exist.
-     * @throws IllegalArgumentException when {@param status} could not by parsed to {@link ServiceStatus}
+     * @throws IllegalArgumentException when status could not by parsed to {@link ServiceStatus}
      *                                  and when is PENDING or FUTURE.
      */
     ScheduledService registerAttempt(int scheduledServiceId, String status, Date timestamp, String executionId);
@@ -47,19 +47,19 @@ public interface MessagingService extends BaseOpenmrsCriteriaDataService<Schedul
      * @param executionId        is the id coming in from the module that is doing the messaging (eg. from the sms module)
      * @return the updated scheduled service
      * @throws EntityNotFoundException when scheduled service with passed id does not exist.
-     * @throws IllegalArgumentException when {@param status} is PENDING or FUTURE.
+     * @throws IllegalArgumentException when status is PENDING or FUTURE.
      */
     ScheduledService registerAttempt(int scheduledServiceId, ServiceStatus status, Date timestamp, String executionId);
 
     /**
-     * The API to be called in order to update the delivery status of a given {@param scheduledService}.
+     * The API to be called in order to update the delivery status of a given scheduledService.
      *
      * @param scheduledService is an id of the ScheduledService for which the status should be updated
      * @param status           is a new value of a service delivery which should be set (eg. delivered, failed)
      * @param timestamp        describes the time when the update took place
      * @param executionId      is the id coming in from the module that is doing the messaging (eg. from the sms module)
      * @return the updated scheduled service
-     * @throws IllegalArgumentException when {@param status} is PENDING or FUTURE.
+     * @throws IllegalArgumentException when status is PENDING or FUTURE.
      */
     ScheduledService registerAttempt(ScheduledService scheduledService, ServiceStatus status, Date timestamp,
                                      String executionId);
@@ -114,7 +114,7 @@ public interface MessagingService extends BaseOpenmrsCriteriaDataService<Schedul
      * @param executionId  is the id coming in from the module that is doing the messaging (eg. from the sms module)
      * @return the created actor response.
      * @throws EntityNotFoundException when scheduled service with passed id does not exist.
-     * @throws IllegalArgumentException when {@param status} could not by parsed to {@link ServiceStatus}
+     * @throws IllegalArgumentException when status could not by parsed to {@link ServiceStatus}
      *                                  and when is PENDING or FUTURE.
      *
      */
@@ -146,7 +146,7 @@ public interface MessagingService extends BaseOpenmrsCriteriaDataService<Schedul
      * @param executionId  is the id coming in from the module that is doing the messaging (eg. from the sms module)
      * @return the created actor response.
      * @throws EntityNotFoundException when scheduled service with passed id does not exist.
-     * @throws IllegalArgumentException when {@param status} is PENDING or FUTURE.
+     * @throws IllegalArgumentException when status is PENDING or FUTURE.
      */
     @SuppressWarnings("checkstyle:ParameterNumber")
     ScheduledService registerResponseAndStatus(Integer scheduledId,
