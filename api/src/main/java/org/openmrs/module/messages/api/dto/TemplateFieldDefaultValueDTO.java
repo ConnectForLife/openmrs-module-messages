@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
  */
 public class TemplateFieldDefaultValueDTO extends BaseDTO implements DTO {
 
+    private static final long serialVersionUID = 1621309286956928320L;
     private Integer id;
 
     @NotNull

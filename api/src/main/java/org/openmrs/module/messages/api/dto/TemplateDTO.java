@@ -12,6 +12,7 @@ import java.util.List;
  */
 public class TemplateDTO extends BaseDTO implements DTO {
 
+    private static final long serialVersionUID = -5811081839642950864L;
     private Integer id;
 
     @NotBlank
