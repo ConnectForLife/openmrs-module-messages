@@ -46,6 +46,9 @@ public class TemplateField extends AbstractBaseOpenmrsData {
     @Enumerated(EnumType.STRING)
     private TemplateFieldType templateFieldType;
 
+    @Column(name = "possible_values")
+    private String possibleValues;
+
     /**
      * default empty constructor
      */
@@ -123,6 +126,14 @@ public class TemplateField extends AbstractBaseOpenmrsData {
 
     public void setDefaultValues(List<TemplateFieldDefaultValue> defaultValues) {
         this.defaultValues = defaultValues;
+    }
+
+    public String getPossibleValues() {
+        return this.possibleValues;
+    }
+
+    public void setPossibleValues(String possibleValues) {
+        this.possibleValues = possibleValues;
     }
 
     @Transient

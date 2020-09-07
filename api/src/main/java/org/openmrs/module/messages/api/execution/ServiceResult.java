@@ -13,7 +13,6 @@ import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.openmrs.module.messages.api.dto.DTO;
-import org.openmrs.module.messages.api.model.ChannelType;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
 import org.openmrs.module.messages.api.util.DateUtil;
@@ -42,7 +41,7 @@ public class ServiceResult implements Serializable, DTO {
 
     private Date executionDate;
     private Object messageId;
-    private ChannelType channelType;
+    private String channelType;
     private ServiceStatus serviceStatus = ServiceStatus.FUTURE;
     private Map<String, Object> additionalParams = new HashMap<>();
     private Integer patientTemplateId;
@@ -54,7 +53,7 @@ public class ServiceResult implements Serializable, DTO {
 
         Date date = null;
         Object msgId = null;
-        ChannelType channel = null;
+        String channelType = null;
         ServiceStatus status = ServiceStatus.FUTURE;
         Map<String, Object> params = new HashMap<>();
 
@@ -67,7 +66,7 @@ public class ServiceResult implements Serializable, DTO {
                     msgId = entry.getValue();
                     break;
                 case CHANNEL_NAME_ALIAS:
-                    channel = ChannelType.fromName(String.valueOf(entry.getValue()));
+                    channelType = String.valueOf(entry.getValue());
                     break;
                 case STATUS_COL_ALIAS:
                     status = parseStatus((String) entry.getValue());
@@ -79,7 +78,7 @@ public class ServiceResult implements Serializable, DTO {
         }
 
         date = adjustTimezoneIfFuturePlannedEvent(date, status);
-        return new ServiceResult(date, msgId, channel, status, params);
+        return new ServiceResult(date, msgId, channelType, status, params);
     }
 
     public static List<ServiceResult> parseList(List<Map<String, Object>> list, PatientTemplate patientTemplate) {
@@ -107,7 +106,7 @@ public class ServiceResult implements Serializable, DTO {
     public ServiceResult(
             Date executionDate,
             Object messageId,
-            ChannelType channelType,
+            String channelType,
             ServiceStatus serviceStatus,
             Map<String, Object> additionalParams
     ) {
@@ -150,11 +149,11 @@ public class ServiceResult implements Serializable, DTO {
         this.messageId = messageId;
     }
 
-    public ChannelType getChannelType() {
+    public String getChannelType() {
         return channelType;
     }
 
-    public void setChannelType(ChannelType channelType) {
+    public void setChannelType(String channelType) {
         this.channelType = channelType;
     }
 

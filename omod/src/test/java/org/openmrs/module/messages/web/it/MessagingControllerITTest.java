@@ -11,6 +11,7 @@ import org.openmrs.Person;
 import org.openmrs.Relationship;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
+import org.openmrs.module.messages.Constant;
 import org.openmrs.module.messages.api.dao.PatientTemplateDao;
 import org.openmrs.module.messages.api.dao.TemplateDao;
 import org.openmrs.module.messages.api.dto.ActorScheduleDTO;
@@ -18,7 +19,6 @@ import org.openmrs.module.messages.api.dto.MessageDTO;
 import org.openmrs.module.messages.api.dto.MessageDetailsDTO;
 import org.openmrs.module.messages.api.execution.ServiceResult;
 import org.openmrs.module.messages.api.execution.ServiceResultList;
-import org.openmrs.module.messages.api.model.ChannelType;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.Template;
 import org.openmrs.module.messages.api.model.TemplateField;
@@ -278,7 +278,7 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
 
         ServiceResult serviceResult = serviceResultList.getResults().get(0);
         assertThat(serviceResult.getMessageId(), is(1));
-        assertThat(serviceResult.getChannelType(), is(ChannelType.CALL));
+        assertThat(serviceResult.getChannelType(), is(Constant.CHANNEL_TYPE_CALL));
     }
 
     private void assertMessageDetailsDTO(MessageDetailsDTO dto, String queryType, Integer patientId) {
@@ -323,7 +323,7 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
     private TemplateFieldValue crateTemplateFieldValue(Template template, PatientTemplate patientTemplate) {
         return new TemplateFieldValueBuilder()
                     .withTemplateField(template.getTemplateFields().get(0))
-                    .withValue(ChannelType.CALL.getName())
+                    .withValue(Constant.CHANNEL_TYPE_CALL)
                     .withPatientTemplate(patientTemplate)
                     .buildAsNew();
     }
@@ -347,7 +347,7 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
     private List<TemplateField> createTemplateFields(Template template) {
         TemplateField templateField = new TemplateFieldBuilder()
                 .withTemplateFieldType(TemplateFieldType.SERVICE_TYPE)
-                .withDefaultValue(ChannelType.CALL.getName())
+                .withDefaultValue(Constant.CHANNEL_TYPE_CALL)
                 .withTemplate(template)
                 .buildAsNew();
         return Collections.singletonList(templateField);

@@ -101,6 +101,19 @@ public final class ConfigConstants {
             + "supports multiple channels next entries must be separated by a comma. Example of usage: "
             + "'channelType1:beanName1,channelType2:beanName2'.";
 
+    public static final String DEFAULT_SERVICE_RESULT_HANDLER = "messages.defaultServiceResultHandlerService";
+
+    public static final String SERVICE_RESULT_HANDLERS = "messages.serviceResultsHandlers";
+    public static final String SERVICE_RESULT_HANDLERS_DEFAULT_VALUE =
+            "SMS:messages.smsServiceResultHandlerService,"
+                    + "Call:messages.callFlowServiceResultHandlerService";
+    public static final String SERVICE_RESULT_HANDLERS_DESCRIPTION =
+            "Used to determine the name of the Spring Bean which should be used to handle the service results. The "
+                    + "value could represent multiple handlers. Each of them is dedicated to a specific channel type. The "
+                    + "particular bean is represented by channel name and bean name separated by a colon. If the system "
+                    + "supports multiple channels next entries must be separated by a comma. Example of usage: "
+                    + "'channelType1:beanName1,channelType2:beanName2'.";
+
     public static final String MAX_NUMBER_OF_ATTEMPTS_KEY = "messages.maxNumberOfAttempts";
     public static final String MAX_NUMBER_OF_ATTEMPTS_DEFAULT_VALUE = "3";
     public static final String MAX_NUMBER_OF_ATTEMPTS_DESCRIPTION =

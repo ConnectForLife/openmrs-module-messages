@@ -14,10 +14,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.api.constants.MessagesConstants;
-import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
-import org.openmrs.module.messages.api.model.ChannelType;
 import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
 import org.openmrs.module.messages.api.model.ScheduledService;
+import org.openmrs.module.messages.api.service.ConfigService;
 import org.openmrs.module.messages.api.service.MessagingService;
 import org.openmrs.module.messages.api.service.ServiceResultsHandlerService;
 import org.openmrs.module.messages.api.util.DateUtil;
@@ -81,43 +80,35 @@ public class ServiceGroupDeliveryJobDefinition extends JobDefinition {
     }
 
     private void handleGroupedResults() {
-        List<ScheduledService> smsList = new ArrayList<>();
-        List<ScheduledService> calls = new ArrayList<>();
+        Map<String, List<ScheduledService>> groupedServicesByChannel = groupByChannelType();
 
+        for (String channelType : groupedServicesByChannel.keySet()) {
+            ServiceResultsHandlerService handler = getConfigService().getResultsHandlerOrDefault(channelType);
+            handler.handle(groupedServicesByChannel.get(channelType), executionContext);
+        }
+    }
+
+    private Map<String, List<ScheduledService>> groupByChannelType() {
+        Map<String, List<ScheduledService>> groupedServicesByChannel = new HashMap<>();
         for (ScheduledService service : getScheduledServices()) {
-            if (ChannelType.CALL.nameEquals(service.getChannelType())) {
-                calls.add(service);
-            } else if (ChannelType.SMS.nameEquals(service.getChannelType())) {
-                smsList.add(service);
-            } else if (ChannelType.DEACTIVATED.nameEquals(service.getChannelType())) {
-                LOGGER.info(String.format("Skipped task handling with id %s due to channel " +
-                        "deactivation", taskDefinition.getId()));
+            if (MessagesConstants.DEACTIVATED_SERVICE.equalsIgnoreCase(service.getChannelType())) {
+                LOGGER.info(String.format("Skipped task handling with id %s due to channel deactivation",
+                        taskDefinition.getId()));
             } else {
-                throw new MessagesRuntimeException(
-                    String.format("Unsupported channel: %s", service.getChannelType()));
+                String channelType = service.getChannelType();
+                if (!groupedServicesByChannel.containsKey(channelType)) {
+                    groupedServicesByChannel.put(channelType, new ArrayList<>());
+                }
+                groupedServicesByChannel.get(channelType).add(service);
             }
         }
-
-        getCallFlowsServiceResultHandlerService().handle(calls, executionContext);
-        getSmsServiceResultHandlerService().handle(smsList, executionContext);
+        return groupedServicesByChannel;
     }
 
     private List<ScheduledService> getScheduledServices() {
         return getMessagingService().findAllByCriteria(
                 ScheduledServiceCriteria.forIds(executionContext.getServiceIdsToExecute())
         );
-    }
-
-    private ServiceResultsHandlerService getCallFlowsServiceResultHandlerService() {
-        return Context.getRegisteredComponent(
-            MessagesConstants.CALL_FLOW_SERVICE_RESULT_HANDLER_SERVICE,
-            ServiceResultsHandlerService.class);
-    }
-
-    private ServiceResultsHandlerService getSmsServiceResultHandlerService() {
-        return Context.getRegisteredComponent(
-            MessagesConstants.SMS_SERVICE_RESULT_HANDLER_SERVICE,
-            ServiceResultsHandlerService.class);
     }
 
     private MessagingService getMessagingService() {
@@ -130,5 +121,10 @@ public class ServiceGroupDeliveryJobDefinition extends JobDefinition {
         HashMap<String, String> map = new HashMap<>();
         map.put(key, value);
         return map;
+    }
+
+    private ConfigService getConfigService() {
+        return Context.getRegisteredComponent(
+                MessagesConstants.CONFIG_SERVICE, ConfigService.class);
     }
 }

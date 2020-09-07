@@ -14,9 +14,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.openmrs.module.messages.Constant;
 import org.openmrs.module.messages.ContextSensitiveTest;
 import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
-import org.openmrs.module.messages.api.model.ChannelType;
 import org.openmrs.module.messages.api.model.DeliveryAttempt;
 import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
 import org.openmrs.module.messages.api.model.ScheduledService;
@@ -57,7 +57,7 @@ public abstract class BaseReschedulingStrategyITTest extends ContextSensitiveTes
 
     protected static final Long NEVER_REPEAT = 0L;
     protected static final int MAX_ATTEMPTS = 3;
-    public static final String CHANNEL_TYPE_1_NAME = ChannelType.CALL.getName();
+    public static final String CHANNEL_TYPE_1_NAME = Constant.CHANNEL_TYPE_CALL;
 
     @Autowired
     @Qualifier("schedulerService")

@@ -18,6 +18,7 @@ import org.openmrs.module.messages.api.dto.PersonStatusConfigDTO;
 import org.openmrs.module.messages.api.model.PersonStatus;
 import org.openmrs.module.messages.api.model.RelationshipTypeDirection;
 import org.openmrs.module.messages.api.service.ConfigService;
+import org.openmrs.module.messages.api.service.ServiceResultsHandlerService;
 import org.openmrs.module.messages.api.strategy.ReschedulingStrategy;
 import org.openmrs.module.messages.api.constants.ConfigConstants;
 import org.openmrs.module.messages.api.util.GlobalPropertyUtil;
@@ -55,6 +56,20 @@ public class ConfigServiceImpl implements ConfigService {
             beanName = ConfigConstants.DEFAULT_RESCHEDULING_STRATEGY;
         }
         return Context.getRegisteredComponent(beanName, ReschedulingStrategy.class);
+    }
+
+    @Override
+    public ServiceResultsHandlerService getResultsHandlerOrDefault(String channelType) {
+        String gpName = ConfigConstants.SERVICE_RESULT_HANDLERS;
+        Map<String, String> strategyByChannel = GlobalPropertyUtil.parseMap(gpName, getGp(gpName));
+
+        String beanName = strategyByChannel.get(channelType.toUpperCase());
+        if (StringUtils.isBlank(beanName)) {
+            beanName = ConfigConstants.DEFAULT_SERVICE_RESULT_HANDLER;
+            LOGGER.warn(String.format("Service result handler for channelType=%s is not defined in GP (%s). " +
+                    "The default handler will be used: %s", channelType, gpName, beanName));
+        }
+        return Context.getRegisteredComponent(beanName, ServiceResultsHandlerService.class);
     }
 
     /**

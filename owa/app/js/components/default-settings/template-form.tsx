@@ -111,7 +111,7 @@ export class TemplateForm extends React.Component<IProps> {
 
     switch (fieldType) {
       case TemplateFieldType.SERVICE_TYPE:
-        return this.renderDynamicRadioButton(templateField, getServiceTypeValues(), fieldName, value);
+        return this.renderDynamicRadioButton(templateField, getServiceTypeValues(templateField.possibleValues), fieldName, value);
       case TemplateFieldType.DAY_OF_WEEK:
         return this.renderDynamicDayOfWeekButton(templateField, getDayOfWeekValues(), fieldName, value);
       case TemplateFieldType.DAY_OF_WEEK_SINGLE:

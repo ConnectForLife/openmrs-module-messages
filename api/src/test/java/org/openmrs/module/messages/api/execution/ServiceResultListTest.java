@@ -7,7 +7,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.openmrs.Patient;
 import org.openmrs.Person;
-import org.openmrs.module.messages.api.model.ChannelType;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.Range;
 import org.openmrs.module.messages.api.model.Template;
@@ -100,7 +99,7 @@ public class ServiceResultListTest {
         ServiceResult result = resultList.getResults().get(actualIdentifier);
         assertEquals(EXEC_DATES.get(expectedIdentifier), result.getExecutionDate());
         assertEquals(MSG_IDS.get(expectedIdentifier), result.getMessageId());
-        assertEquals(ChannelType.fromName(CHANNEL_NAMES.get(expectedIdentifier).toUpperCase()),
+        assertEquals(CHANNEL_NAMES.get(expectedIdentifier),
             result.getChannelType());
     }
 

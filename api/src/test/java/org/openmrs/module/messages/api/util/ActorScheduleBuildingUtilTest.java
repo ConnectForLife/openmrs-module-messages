@@ -4,7 +4,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.module.messages.api.constants.MessagesConstants;
 import org.openmrs.module.messages.api.dto.ActorScheduleDTO;
-import org.openmrs.module.messages.api.model.ChannelType;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.TemplateFieldType;
 import org.openmrs.module.messages.api.model.TemplateFieldValue;
@@ -76,7 +75,7 @@ public class ActorScheduleBuildingUtilTest {
         TemplateFieldValue tfv = buildTemplateFieldWithValue(TemplateFieldType.START_OF_MESSAGES,
             TEST_DATE_1);
         TemplateFieldValue tfv2 = buildTemplateFieldWithValue(TemplateFieldType.SERVICE_TYPE,
-            ChannelType.DEACTIVATED.getName());
+            MessagesConstants.DEACTIVATED_SERVICE);
         PatientTemplate patientTemplate = new PatientTemplateBuilder()
             .withTemplateFieldValues(Arrays.asList(tfv, tfv2))
             .build();
@@ -229,28 +228,6 @@ public class ActorScheduleBuildingUtilTest {
         ActorScheduleDTO schedule = ActorScheduleBuildingUtil.build(patientTemplate);
 
         Assert.assertEquals(String.format("Categories: %s", TEST_OUTPUT_CATEGORIES), schedule.getSchedule());
-    }
-
-    @Test
-    public void shouldNotThrowExceptionButReturnErrorInformation() {
-
-        TemplateFieldValue tfv1 = buildTemplateFieldWithValue(TemplateFieldType.CATEGORY_OF_MESSAGE,
-            null);
-        TemplateFieldValue tfv2 = buildTemplateFieldWithValue(TemplateFieldType.SERVICE_TYPE,
-            null);
-
-        TemplateFieldValue tfv3 = buildTemplateFieldWithValue(TemplateFieldType.START_OF_MESSAGES,
-            null);
-        TemplateFieldValue tfv4 = buildTemplateFieldWithValue(TemplateFieldType.END_OF_MESSAGES,
-            null);
-
-        PatientTemplate patientTemplate = new PatientTemplateBuilder()
-            .withTemplateFieldValues(Arrays.asList(tfv1, tfv2, tfv3, tfv4))
-            .build();
-
-        ActorScheduleDTO schedule = ActorScheduleBuildingUtil.build(patientTemplate);
-
-        Assert.assertEquals(ActorScheduleBuildingUtil.SCHEDULE_ERROR_INFORMATION, schedule.getSchedule());
     }
 
     private TemplateFieldValue buildTemplateFieldWithValue(TemplateFieldType type, String value) {

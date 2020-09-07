@@ -113,6 +113,7 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
         createActorTypeConfig();
         createDaysBeforeVisitReminderConfig();
         createReschedulingStrategyConfig();
+        createServiceResultHandlersConfig();
         createConsentConfig();
         createPersonStatusConfig();
         createAdherenceFeedbackConfig();
@@ -174,6 +175,12 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
         createGlobalSettingIfNotExists(ConfigConstants.TIME_INTERVAL_TO_NEXT_RESCHEDULE_KEY,
                 ConfigConstants.TIME_INTERVAL_TO_NEXT_RESCHEDULE_DEFAULT_VALUE,
                 ConfigConstants.TIME_INTERVAL_TO_NEXT_RESCHEDULE_DESCRIPTION);
+    }
+
+    private void createServiceResultHandlersConfig() {
+        createGlobalSettingIfNotExists(ConfigConstants.SERVICE_RESULT_HANDLERS,
+                ConfigConstants.SERVICE_RESULT_HANDLERS_DEFAULT_VALUE,
+                ConfigConstants.SERVICE_RESULT_HANDLERS_DESCRIPTION);
     }
 
     private void createAdherenceFeedbackConfig() {

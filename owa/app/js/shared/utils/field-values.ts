@@ -10,10 +10,8 @@
 import * as Default from './messages';
 import { getIntl } from '@openmrs/react-components/lib/components/localization/withLocalization';
 
-export const getServiceTypeValues = () => {
-    return [getIntl().formatMessage({ id: 'MESSAGES_CALL_LABEL', defaultMessage: Default.CALL_LABEL }),
-    getIntl().formatMessage({ id: 'MESSAGES_SMS_LABEL', defaultMessage: Default.SMS_LABEL }),
-    getIntl().formatMessage({ id: 'MESSAGES_DEACTIVATE_SERVICE_LABEL', defaultMessage: Default.DEACTIVATE_SERVICE_LABEL })];
+export const getServiceTypeValues = (possibleValues: Array<string>) => {
+    return possibleValues.map(v => getIntl().formatMessage({ id: 'MESSAGES_SERVICE_TYPE_' + v.toUpperCase().replace(' ', '_'), defaultMessage: v }));
 };
 
 export const getDayOfWeekValues = () => {

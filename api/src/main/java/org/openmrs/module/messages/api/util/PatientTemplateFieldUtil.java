@@ -10,19 +10,17 @@
 package org.openmrs.module.messages.api.util;
 
 import org.apache.commons.lang.StringUtils;
-import org.openmrs.module.messages.api.model.ChannelType;
+import org.openmrs.module.messages.api.constants.MessagesConstants;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.TemplateFieldType;
 import org.openmrs.module.messages.api.model.TemplateFieldValue;
-
-import static org.openmrs.module.messages.api.model.ChannelType.DEACTIVATED;
 
 public final class PatientTemplateFieldUtil {
 
     public static boolean isDeactivated(PatientTemplate patientTemplate) {
         String serviceType = getTemplateFieldValue(patientTemplate, TemplateFieldType.SERVICE_TYPE, true);
         return StringUtils.isBlank(serviceType)
-                || DEACTIVATED.equals(ChannelType.fromName(serviceType));
+                || MessagesConstants.DEACTIVATED_SERVICE.equalsIgnoreCase(serviceType);
     }
 
     public static String getTemplateFieldValue(PatientTemplate patientTemplate,

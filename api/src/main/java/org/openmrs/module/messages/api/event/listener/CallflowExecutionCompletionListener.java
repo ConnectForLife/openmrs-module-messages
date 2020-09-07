@@ -15,7 +15,6 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.messages.api.event.AbstractMessagesEventListener;
 import org.openmrs.module.messages.api.event.CallFlowParamConstants;
 import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
-import org.openmrs.module.messages.api.model.ChannelType;
 import org.openmrs.module.messages.api.service.ConfigService;
 import org.openmrs.module.messages.api.service.MessagesExecutionService;
 import org.openmrs.module.messages.api.util.Properties;
@@ -23,15 +22,11 @@ import org.openmrs.module.messages.api.util.Properties;
 public class CallflowExecutionCompletionListener extends AbstractMessagesEventListener {
 
     private static final Log LOGGER = LogFactory.getLog(CallflowExecutionCompletionListener.class);
-
     public static final String CALLFLOWS_CALL_STATUS_SUBJECT = "callflows-call-status";
-
     public static final String PARAM_CALL_ID = "callId";
     public static final String UNKNOWN_CALL_ID = "unknown";
-
     public static final String PARAM_STATUS = "status";
-
-    private static final String CHANNEL_TYPE = ChannelType.CALL.getName();
+    private static final String CHANNEL_TYPE = "Call";
 
     @Override
     public String getSubject() {

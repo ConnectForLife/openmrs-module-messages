@@ -38,9 +38,6 @@
     "MESSAGES_MESSAGES_SETTINGS_LABEL": "Messages settings",
     "MESSAGES_ALL_DEFAULT_VALUES_USED_MESSAGE": "This is the default schedule for messages. Click Save to confirm and start messages sending.",
     "MESSAGES_SOME_DEFAULT_VALUES_USED_MESSAGE": "There are new messages scheduled by default. Click Save to confirm and start sending new messages.",
-    "MESSAGES_CALL_LABEL": "Call",
-    "MESSAGES_SMS_LABEL": "SMS",
-    "MESSAGES_DEACTIVATE_SERVICE_LABEL": "Deactivate service",
     "MESSAGES_MONDAY": "Monday",
     "MESSAGES_TUESDAY": "Tuesday",
     "MESSAGES_WEDNESDAY": "Wednesday",
@@ -71,5 +68,8 @@
     "MESSAGES_EDIT_MESSAGES_TITLE": "Create messages",
     "MESSAGES_DIFFERENT_TIMEZONE": "Your local timezone is different than the one configured for this system. Please enter scheduling information in the following time zone: ",
     "MESSAGES_MANAGE_MESSAGES_LABEL": "Manage messages",
-    "MESSAGES_DISPLAY_HEADER": "Display:"
+    "MESSAGES_DISPLAY_HEADER": "Display:",
+    "MESSAGES_SERVICE_TYPE_CALL": "Call",
+    "MESSAGES_SERVICE_TYPE_SMS": "SMS",
+    "MESSAGES_SERVICE_TYPE_DEACTIVATE_SERVICE": "Deactivate service"
 }

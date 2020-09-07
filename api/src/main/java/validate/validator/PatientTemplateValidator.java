@@ -1,17 +1,14 @@
 package validate.validator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.api.exception.ValidationException;
-import org.openmrs.module.messages.api.model.ChannelType;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.Template;
 import org.openmrs.module.messages.api.model.TemplateField;
 import org.openmrs.module.messages.api.model.TemplateFieldValue;
 import org.openmrs.module.messages.api.service.TemplateFieldService;
 import org.openmrs.module.messages.api.service.TemplateService;
-import org.springframework.util.StringUtils;
 import validate.annotation.ValidPatientTemplate;
 
 import javax.validation.ConstraintValidator;
@@ -27,7 +24,6 @@ public class PatientTemplateValidator implements ConstraintValidator<ValidPatien
 
     private static final String TEMPLATE_FIELD_VALUES_PATH = "patientTemplate.templateFieldValues";
     private static final String TEMPLATE_ID_PATH = "patientTemplate.templateId";
-    private final Log logger = LogFactory.getLog(getClass());
 
     @Override
     public boolean isValid(PatientTemplate patientTemplate, ConstraintValidatorContext ctx) {
@@ -60,7 +56,7 @@ public class PatientTemplateValidator implements ConstraintValidator<ValidPatien
 
     private void validateFieldNotEmpty(List<TemplateFieldValue> emptyButRequired, TemplateFieldValue templateFieldValue) {
         if (getTemplateFieldService().getById(templateFieldValue.getTemplateField().getId()).getMandatory()
-                && StringUtils.isEmpty(templateFieldValue.getValue())) {
+                && StringUtils.isBlank(templateFieldValue.getValue())) {
             emptyButRequired.add(templateFieldValue);
         }
     }
@@ -75,18 +71,8 @@ public class PatientTemplateValidator implements ConstraintValidator<ValidPatien
     }
 
     private void validateServiceType(TemplateFieldValue tfv) {
-        boolean isValid;
-        try {
-            ChannelType.fromName(tfv.getValue());
-            isValid = true;
-
-        } catch (Exception ex) {
-            logger.error(ex);
-            isValid = false;
-        }
-        if (!isValid) {
-            throw new ValidationException(String.format("Invalid service type: %s",
-                    tfv.getValue()));
+        if (StringUtils.isBlank(tfv.getValue())) {
+            throw new ValidationException(String.format("Invalid blank service type"));
         }
     }
 

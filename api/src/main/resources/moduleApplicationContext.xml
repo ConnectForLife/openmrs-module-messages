@@ -354,6 +354,10 @@
         </property>
     </bean>
 
+    <bean id="messages.defaultServiceResultHandlerService"
+          class="org.openmrs.module.messages.api.service.impl.DefaultServiceResultsHandlerServiceImpl"
+          parent="messages.abstractServiceResultHandlerService"/>
+
     <bean id="messages.callFlowServiceResultHandlerService"
           class="org.openmrs.module.messages.api.service.impl.CallFlowServiceResultsHandlerServiceImpl"
           parent="messages.abstractServiceResultHandlerService"/>

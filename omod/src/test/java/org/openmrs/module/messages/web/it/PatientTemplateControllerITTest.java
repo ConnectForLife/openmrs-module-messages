@@ -1,28 +1,13 @@
 package org.openmrs.module.messages.web.it;
 
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.openmrs.module.messages.ApiConstant.PAGE_PARAM;
-import static org.openmrs.module.messages.ApiConstant.ROWS_PARAM;
-import static org.openmrs.module.messages.util.TestUtil.loadSystemRelationshipsToActorTypes;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.messages.ApiConstant;
+import org.openmrs.module.messages.Constant;
+import org.openmrs.module.messages.api.constants.MessagesConstants;
 import org.openmrs.module.messages.api.dto.PatientTemplateDTO;
 import org.openmrs.module.messages.api.dto.TemplateFieldValueDTO;
 import org.openmrs.module.messages.api.mappers.PatientTemplateMapper;
-import org.openmrs.module.messages.api.model.ChannelType;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.service.PatientTemplateService;
 import org.openmrs.module.messages.domain.criteria.PatientTemplateCriteria;
@@ -37,6 +22,23 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.openmrs.module.messages.ApiConstant.PAGE_PARAM;
+import static org.openmrs.module.messages.ApiConstant.ROWS_PARAM;
+import static org.openmrs.module.messages.util.TestUtil.loadSystemRelationshipsToActorTypes;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebAppConfiguration
 public class PatientTemplateControllerITTest extends BaseModuleWebContextSensitiveTest {
@@ -63,12 +65,12 @@ public class PatientTemplateControllerITTest extends BaseModuleWebContextSensiti
     private static final int PATIENT_3_ACTOR_TYPE_ID = 103;
     private static final int PATIENT_2_ACTOR_TYPE_ID = 102;
 
-    private static final String PATIENT_3_TEMPLATE_FIELD_VALUE_1_VALUE = ChannelType.DEACTIVATED.getName();
+    private static final String PATIENT_3_TEMPLATE_FIELD_VALUE_1_VALUE = MessagesConstants.DEACTIVATED_SERVICE;
     private static final int PATIENT_2_TEMPLATE_FIELD_VALUE_1_ID = 4;
-    private static final String PATIENT_2_TEMPLATE_FIELD_VALUE_1_VALUE = ChannelType.CALL.getName();
+    private static final String PATIENT_2_TEMPLATE_FIELD_VALUE_1_VALUE = Constant.CHANNEL_TYPE_CALL;
     private static final String PATIENT_2_TEMPLATE_FIELD_VALUE_1_UUID = "e8f09dc3-0655-486f-af1e-b3c39f39f101";
     private static final int PATIENT_2_TEMPLATE_FIELD_VALUE_2_ID = 5;
-    private static final String PATIENT_2_TEMPLATE_FIELD_VALUE_2_VALUE = ChannelType.SMS.getName();
+    private static final String PATIENT_2_TEMPLATE_FIELD_VALUE_2_VALUE = Constant.CHANNEL_TYPE_SMS;
     private static final String PATIENT_2_TEMPLATE_FIELD_VALUE_2_UUID = "1c0055b3-b323-4f23-bad6-e75e0362af46";
 
     private static final int NON_EXISTING_PATIENT_ID = 999999;
@@ -278,7 +280,7 @@ public class PatientTemplateControllerITTest extends BaseModuleWebContextSensiti
 
     @Test
     public void shouldBeSavedTogetherWithNestedTemplateFieldValues() throws Exception {
-        final String expectedValue = ChannelType.CALL.getName();
+        final String expectedValue = Constant.CHANNEL_TYPE_CALL;
 
         TemplateFieldValueDTO valueDTO = new TemplateFieldValueDTO()
                 .withValue(expectedValue)

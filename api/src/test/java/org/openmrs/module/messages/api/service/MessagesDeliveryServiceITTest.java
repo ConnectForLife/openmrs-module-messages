@@ -14,13 +14,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.openmrs.module.messages.Constant;
 import org.openmrs.module.messages.ContextSensitiveTest;
 import org.openmrs.module.messages.api.execution.ActorWithDate;
 import org.openmrs.module.messages.api.execution.GroupedServiceResultList;
 import org.openmrs.module.messages.api.execution.ServiceResult;
 import org.openmrs.module.messages.api.execution.ServiceResultList;
 import org.openmrs.module.messages.api.mappers.ScheduledGroupMapper;
-import org.openmrs.module.messages.api.model.ChannelType;
 import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
 import org.openmrs.module.messages.api.model.ScheduledServiceGroup;
 import org.openmrs.module.messages.api.util.JsonUtil;
@@ -46,8 +46,6 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.openmrs.module.messages.api.constants.MessagesConstants.PATIENT_DEFAULT_ACTOR_TYPE;
-import static org.openmrs.module.messages.api.model.ChannelType.CALL;
-import static org.openmrs.module.messages.api.model.ChannelType.SMS;
 import static org.openmrs.module.messages.api.scheduler.job.ServiceGroupDeliveryJobDefinition.EXECUTION_CONTEXT;
 import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_PATIENT_ID;
 import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_PATIENT_TEMPLATE_ID;
@@ -134,16 +132,16 @@ public class MessagesDeliveryServiceITTest extends ContextSensitiveTest {
 
     private ServiceResultList createServiceResults(Date date) {
         List<ServiceResult> results = new ArrayList<>();
-        results.add(getServiceResult(date, SMS));
-        results.add(getServiceResult(date, CALL));
+        results.add(getServiceResult(date, Constant.CHANNEL_TYPE_SMS));
+        results.add(getServiceResult(date, Constant.CHANNEL_TYPE_CALL));
         return getDefaultPersonResultList(results);
     }
 
-    private ServiceResult getServiceResult(Date date, ChannelType channelType) {
+    private ServiceResult getServiceResult(Date date, String channelType) {
         return getServiceResult(date, channelType, new HashMap<>());
     }
 
-    private ServiceResult getServiceResult(Date date, ChannelType channelType, Map<String, Object> additionalParams) {
+    private ServiceResult getServiceResult(Date date, String channelType, Map<String, Object> additionalParams) {
         return new ServiceResultBuilder().withExecutionDate(date)
                 .withPatientTemplate(DEFAULT_PATIENT_TEMPLATE_ID)
                 .withParams(additionalParams)

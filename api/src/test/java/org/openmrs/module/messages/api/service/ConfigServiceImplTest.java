@@ -44,6 +44,10 @@ public class ConfigServiceImplTest extends ContextSensitiveTest {
             "messages.failedAndPendingMessagesReschedulingStrategy";
     private static final String CALL_CHANNEL_RESCHEDULING_STRATEGY =
             "messages.failedAndPendingMessagesReschedulingStrategy";
+    private static final String SMS_RESULT_HANDLER =
+            "messages.smsServiceResultHandlerService";
+    private static final String CALL_RESULT_HANDLER =
+            "messages.callFlowServiceResultHandlerService";
     private static final String SMS_CHANNEL_NAME = "SMS";
     private static final String CALL_CHANNEL_NAME = "Call";
     private static final String CHANNEL_NAME_WITHOUT_RESCHEDULING_STRATEGY = "channelNameWithoutReschedulingStrategy";
@@ -86,6 +90,18 @@ public class ConfigServiceImplTest extends ContextSensitiveTest {
     private ReschedulingStrategy smsChannelReschedulingStrategy;
 
     @Autowired
+    @Qualifier(ConfigConstants.DEFAULT_SERVICE_RESULT_HANDLER)
+    private ServiceResultsHandlerService defaultResultHandler;
+
+    @Autowired
+    @Qualifier(CALL_RESULT_HANDLER)
+    private ServiceResultsHandlerService callResultHandler;
+
+    @Autowired
+    @Qualifier(SMS_RESULT_HANDLER)
+    private ServiceResultsHandlerService smsResultHandler;
+
+    @Autowired
     @Qualifier("messages.configService")
     private ConfigService configService;
 
@@ -114,6 +130,28 @@ public class ConfigServiceImplTest extends ContextSensitiveTest {
         ReschedulingStrategy actual = configService.getReschedulingStrategy(CHANNEL_NAME_WITHOUT_RESCHEDULING_STRATEGY);
 
         assertThat(actual, is(defaultReschedulingStrategy));
+    }
+
+    @Test
+    public void shouldReturnHandlerForCallChannel() {
+        ServiceResultsHandlerService actual = configService.getResultsHandlerOrDefault(CALL_CHANNEL_NAME);
+
+        assertThat(actual, is(callResultHandler));
+    }
+
+    @Test
+    public void shouldReturnHandlerSmsChannel() {
+        ServiceResultsHandlerService actual = configService.getResultsHandlerOrDefault(SMS_CHANNEL_NAME);
+
+        assertThat(actual, is(smsResultHandler));
+    }
+
+    @Test
+    public void shouldReturnDefaultHandlerIfNotDefinedInGp() {
+        ServiceResultsHandlerService actual =
+                configService.getResultsHandlerOrDefault(CHANNEL_NAME_WITHOUT_RESCHEDULING_STRATEGY);
+
+        assertThat(actual, is(defaultResultHandler));
     }
 
     @Test

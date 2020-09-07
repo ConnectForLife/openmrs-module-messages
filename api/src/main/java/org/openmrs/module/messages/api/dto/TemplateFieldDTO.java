@@ -24,6 +24,8 @@ public class TemplateFieldDTO extends BaseDTO implements DTO {
 
     private List<TemplateFieldDefaultValueDTO> defaultValues = new ArrayList<>();
 
+    private List<String> possibleValues;
+
     @NotBlank
     @ValueOfEnum(enumClass = TemplateFieldType.class)
     private String type;
@@ -90,6 +92,15 @@ public class TemplateFieldDTO extends BaseDTO implements DTO {
 
     public TemplateFieldDTO setDefaultValues(List<TemplateFieldDefaultValueDTO> defaultValues) {
         this.defaultValues = defaultValues;
+        return this;
+    }
+
+    public List<String> getPossibleValues() {
+        return this.possibleValues;
+    }
+
+    public TemplateFieldDTO setPossibleValues(List<String> possibleValues) {
+        this.possibleValues = possibleValues;
         return this;
     }
 }

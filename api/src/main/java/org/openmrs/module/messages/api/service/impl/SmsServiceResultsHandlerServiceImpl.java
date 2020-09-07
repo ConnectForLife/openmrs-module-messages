@@ -15,7 +15,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.messages.api.event.MessagesEvent;
 import org.openmrs.module.messages.api.event.SmsEventParamConstants;
-import org.openmrs.module.messages.api.model.ChannelType;
 import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
 import org.openmrs.module.messages.api.model.ScheduledService;
 import org.openmrs.module.messages.api.model.ScheduledServiceGroup;
@@ -41,7 +40,7 @@ public class SmsServiceResultsHandlerServiceImpl extends AbstractServiceResultsH
 
     private static final String DEFAULT_MESSAGE = "Not yet specified";
 
-    private static final String CHANNEL_TYPE = ChannelType.SMS.getName();
+    private static final String CHANNEL_TYPE = "SMS";
 
     private NotificationTemplateService notificationTemplateService;
 

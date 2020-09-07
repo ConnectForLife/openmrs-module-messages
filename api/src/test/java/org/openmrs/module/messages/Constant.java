@@ -32,6 +32,9 @@ public final class Constant {
     public static final String ACTOR_RESPONSE_TEXT_QUESTION = "Question?";
     public static final String ACTOR_RESPONSE_TEXT_RESPONSE = "Response";
 
+    public static final String CHANNEL_TYPE_CALL = "Call";
+    public static final String CHANNEL_TYPE_SMS = "SMS";
+
     private Constant() {
     }
 }

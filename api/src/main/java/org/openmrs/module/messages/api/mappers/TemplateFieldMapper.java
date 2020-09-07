@@ -1,9 +1,14 @@
 package org.openmrs.module.messages.api.mappers;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.module.messages.api.dto.TemplateFieldDTO;
 import org.openmrs.module.messages.api.model.TemplateField;
 import org.openmrs.module.messages.api.model.TemplateFieldDefaultValue;
 import org.openmrs.module.messages.api.model.TemplateFieldType;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Convert between {@link org.openmrs.module.messages.api.model.TemplateField}
@@ -11,6 +16,7 @@ import org.openmrs.module.messages.api.model.TemplateFieldType;
  */
 public class TemplateFieldMapper extends AbstractMapper<TemplateFieldDTO, TemplateField> {
 
+    public static final String POSSIBLE_VALUES_SEPARATOR = "|";
     private TemplateFieldDefaultValueMapper templateFieldDefaultValueMapper;
 
     @Override
@@ -24,7 +30,8 @@ public class TemplateFieldMapper extends AbstractMapper<TemplateFieldDTO, Templa
                 .setDefaultValue(dao.getDefaultValue())
                 .setType(fieldType)
                 .setUuid(dao.getUuid())
-                .setDefaultValues(templateFieldDefaultValueMapper.toDtos(dao.getDefaultValues()));
+                .setDefaultValues(templateFieldDefaultValueMapper.toDtos(dao.getDefaultValues()))
+                .setPossibleValues(extractPossibleValues(dao.getPossibleValues()));
     }
 
     @Override
@@ -43,6 +50,7 @@ public class TemplateFieldMapper extends AbstractMapper<TemplateFieldDTO, Templa
         for (TemplateFieldDefaultValue defaultValue : templateField.getDefaultValues()) {
             defaultValue.setTemplateField(templateField);
         }
+        templateField.setPossibleValues(mergePossibleValues(dto.getPossibleValues()));
         return templateField;
     }
 
@@ -56,11 +64,21 @@ public class TemplateFieldMapper extends AbstractMapper<TemplateFieldDTO, Templa
         for (TemplateFieldDefaultValue defaultValue : target.getDefaultValues()) {
             defaultValue.setTemplateField(target);
         }
+        target.setPossibleValues(mergePossibleValues(source.getPossibleValues()));
     }
 
     public TemplateFieldMapper setTemplateFieldDefaultValueMapper(
             TemplateFieldDefaultValueMapper templateFieldDefaultValueMapper) {
         this.templateFieldDefaultValueMapper = templateFieldDefaultValueMapper;
         return this;
+    }
+
+    private List<String> extractPossibleValues(String possibleValues) {
+        return StringUtils.isBlank(possibleValues) ? new ArrayList<>()
+                : Arrays.asList(StringUtils.split(possibleValues, POSSIBLE_VALUES_SEPARATOR));
+    }
+
+    private String mergePossibleValues(List<String> possibleValues) {
+        return StringUtils.join(possibleValues, POSSIBLE_VALUES_SEPARATOR);
     }
 }

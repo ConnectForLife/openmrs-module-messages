@@ -8,7 +8,8 @@ export interface ITemplateField {
   mandatory: boolean;
   defaultValue: string;
   type: TemplateFieldType;
-  defaultValues: Array<TemplateFieldDefaultValue>
+  defaultValues: Array<TemplateFieldDefaultValue>;
+  possibleValues: Array<string>;
   // value_concept is skipped for now
 }
 
@@ -18,5 +19,6 @@ export const getDefaultValue = (): ITemplateField => ({
   mandatory: true,
   defaultValue: '',
   type: TemplateFieldType.DAY_OF_WEEK,
-  defaultValues: []
+  defaultValues: [],
+  possibleValues: []
 });

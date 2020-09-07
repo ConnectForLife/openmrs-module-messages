@@ -32,6 +32,16 @@ public interface ConfigService {
     ReschedulingStrategy getReschedulingStrategy(String channelType);
 
     /**
+     * Provides results handler {@link ServiceResultsHandlerService} for specific channel type
+     *
+     * @param channelType - name of specific channel type (case insensitive)
+     * @return - the specified handler or default
+     * {@link ConfigConstants#DEFAULT_SERVICE_RESULT_HANDLER} if missing
+     * value for specified channel type
+     */
+    ServiceResultsHandlerService getResultsHandlerOrDefault(String channelType);
+
+    /**
      * Provides the maximum number of attempts that can be taken for failing ScheduledServices.
      * After exceeding the number of retries, services will be denied rescheduling next task.
      *

@@ -1,7 +1,8 @@
 package org.openmrs.module.messages.builder;
 
 import org.openmrs.User;
-import org.openmrs.module.messages.api.model.ChannelType;
+import org.openmrs.module.messages.Constant;
+import org.openmrs.module.messages.api.constants.MessagesConstants;
 import org.openmrs.module.messages.api.model.Template;
 import org.openmrs.module.messages.api.model.TemplateField;
 import org.openmrs.module.messages.api.model.TemplateFieldType;
@@ -102,13 +103,13 @@ public final class TemplateBuilder extends AbstractBuilder<Template> {
         TemplateField serviceType = new TemplateFieldBuilder()
                 .withName("Service type")
                 .withMandatory(true)
-                .withDefaultValue(ChannelType.SMS.getName())
+                .withDefaultValue(Constant.CHANNEL_TYPE_SMS)
                 .withTemplate(template)
                 .withTemplateFieldType(TemplateFieldType.SERVICE_TYPE)
                 .build();
         serviceType.setDefaultValues(Collections.singletonList(new TemplateFieldDefaultValueBuilder()
                 .withTemplateField(serviceType)
-                .withDefaultValue(ChannelType.DEACTIVATED.getName())
+                .withDefaultValue(MessagesConstants.DEACTIVATED_SERVICE)
                 .build()));
         return serviceType;
     }

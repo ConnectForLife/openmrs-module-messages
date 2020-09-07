@@ -17,6 +17,7 @@ public final class TemplateFieldBuilder extends AbstractBuilder<TemplateField> {
     private Template template;
     private TemplateFieldType templateFieldType;
     private List<TemplateFieldDefaultValue> defaultValues;
+    private final String possibleValues;
 
     public TemplateFieldBuilder() {
         super();
@@ -26,6 +27,7 @@ public final class TemplateFieldBuilder extends AbstractBuilder<TemplateField> {
         defaultValue = "default value";
         templateFieldType = TemplateFieldType.SERVICE_TYPE;
         defaultValues = new ArrayList<>();
+        possibleValues = "Deactivate service|SMS|Call";
     }
 
     @Override
@@ -41,6 +43,7 @@ public final class TemplateFieldBuilder extends AbstractBuilder<TemplateField> {
         templateField.setTemplate(template);
         templateField.setTemplateFieldType(templateFieldType);
         templateField.setDefaultValues(defaultValues);
+        templateField.setPossibleValues(possibleValues);
         return templateField;
     }
 

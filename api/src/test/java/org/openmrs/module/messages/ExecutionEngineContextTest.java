@@ -9,17 +9,6 @@
 
 package org.openmrs.module.messages;
 
-import static org.junit.Assert.assertEquals;
-import static org.openmrs.module.messages.TestUtil.getMaxTimeForDate;
-import static org.openmrs.module.messages.TestUtil.getMinTimeForDate;
-import static org.openmrs.module.messages.api.model.TemplateFieldType.END_OF_MESSAGES;
-import static org.openmrs.module.messages.api.model.TemplateFieldType.MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY;
-import static org.openmrs.module.messages.api.model.TemplateFieldType.START_OF_MESSAGES;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Test;
 import org.openmrs.Patient;
@@ -32,7 +21,6 @@ import org.openmrs.module.messages.api.execution.ExecutionException;
 import org.openmrs.module.messages.api.execution.ServiceExecutor;
 import org.openmrs.module.messages.api.execution.ServiceResult;
 import org.openmrs.module.messages.api.execution.ServiceResultList;
-import org.openmrs.module.messages.api.model.ChannelType;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.Range;
 import org.openmrs.module.messages.api.model.Template;
@@ -48,6 +36,18 @@ import org.openmrs.module.messages.builder.TemplateFieldBuilder;
 import org.openmrs.module.messages.builder.TemplateFieldValueBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.openmrs.module.messages.TestUtil.getMaxTimeForDate;
+import static org.openmrs.module.messages.TestUtil.getMinTimeForDate;
+import static org.openmrs.module.messages.api.model.TemplateFieldType.END_OF_MESSAGES;
+import static org.openmrs.module.messages.api.model.TemplateFieldType.MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY;
+import static org.openmrs.module.messages.api.model.TemplateFieldType.START_OF_MESSAGES;
 
 public class ExecutionEngineContextTest extends ContextSensitiveTest {
 
@@ -105,7 +105,7 @@ public class ExecutionEngineContextTest extends ContextSensitiveTest {
 
         ServiceResult result = serviceResultList.getResults().get(0);
         assertEquals("msg", result.getMessageId());
-        assertEquals(ChannelType.CALL, result.getChannelType());
+        assertEquals(Constant.CHANNEL_TYPE_CALL, result.getChannelType());
         assertEquals(ServiceStatus.FUTURE, result.getServiceStatus());
         // query adds 1 year to the birth date
         assertEquals(DateUtils.addYears(BIRTH_DATE, 1).getTime(), result.getExecutionDate().getTime());

@@ -3,6 +3,9 @@ package org.openmrs.module.messages.builder;
 import org.openmrs.module.messages.api.dto.TemplateFieldDTO;
 import org.openmrs.module.messages.api.model.TemplateField;
 
+import java.util.Arrays;
+import java.util.List;
+
 public final class TemplateFieldDTOBuilder extends AbstractBuilder<TemplateFieldDTO> {
 
     private Integer id;
@@ -17,6 +20,8 @@ public final class TemplateFieldDTOBuilder extends AbstractBuilder<TemplateField
 
     private String uuid;
 
+    private List<String> possibleValues;
+
     public TemplateFieldDTOBuilder() {
         super();
         TemplateField temmplateField = new TemplateFieldBuilder().build();
@@ -26,6 +31,7 @@ public final class TemplateFieldDTOBuilder extends AbstractBuilder<TemplateField
         defaultValue = temmplateField.getDefaultValue();
         type = temmplateField.getTemplateFieldType().name();
         uuid = temmplateField.getUuid();
+        possibleValues = Arrays.asList("Deactivate service", "SMS", "Call");
     }
 
     @Override
@@ -36,7 +42,8 @@ public final class TemplateFieldDTOBuilder extends AbstractBuilder<TemplateField
                 .setMandatory(mandatory)
                 .setDefaultValue(defaultValue)
                 .setType(type)
-                .setUuid(uuid);
+                .setUuid(uuid)
+                .setPossibleValues(possibleValues);
     }
 
     @Override

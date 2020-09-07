@@ -58,6 +58,8 @@ public final class MessagesConstants {
 
     public static final String DEFAULT_ACTOR_RESPONSE_TYPE = "SCHEDULED_SERVICE_GROUP";
 
+    public static final String DEACTIVATED_SERVICE = "Deactivate service";
+
     private MessagesConstants() {
         // private. So can't be initialized
     }

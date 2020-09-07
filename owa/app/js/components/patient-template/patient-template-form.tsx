@@ -102,7 +102,8 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
     const isMandatory: boolean = tfv.isMandatory(this.props.template);
     switch (fieldType) {
       case TemplateFieldType.SERVICE_TYPE:
-        return this.renderDynamicRadioButton(tfv, getServiceTypeValues(), fieldName, isMandatory);
+        const possibleValues = tfv.getFieldDefinitions(this.props.template).possibleValues;
+        return this.renderDynamicRadioButton(tfv, getServiceTypeValues(possibleValues), fieldName, isMandatory);
       case TemplateFieldType.DAY_OF_WEEK:
         return this.renderDynamicDayOfWeekButton(tfv, getDayOfWeekValues(), fieldName, isMandatory);
       case TemplateFieldType.DAY_OF_WEEK_SINGLE:

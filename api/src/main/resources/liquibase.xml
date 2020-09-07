@@ -3974,4 +3974,28 @@
             <where>uuid = '9556f9ab-20b2-11ea-ac12-0242c0a82002'</where>
         </update>
     </changeSet>
+
+    <changeSet id="messages-80" author="Arkadiusz Lalo">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="messages_template_field"/>
+            <not><columnExists tableName="messages_template_field" columnName="possible_values"/></not>
+        </preConditions>
+        <comment>Adds the possible_values column which can be used to store
+            the set of possible values for specific field type</comment>
+        <addColumn tableName="messages_template_field">
+            <column name="possible_values" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="messages-81" author="Arkadiusz Lalo">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="messages_template_field"/>
+            <columnExists tableName="messages_template_field" columnName="possible_values"/>
+        </preConditions>
+        <comment>Fill the default possible values for all of the SERVICE_TYPE fields</comment>
+        <update tableName="messages_template_field">
+            <column name="possible_values" value="Deactivate service|SMS|Call"/>
+            <where>possible_values is NULL AND template_field_type = 'SERVICE_TYPE'</where>
+        </update>
+    </changeSet>
 </databaseChangeLog>

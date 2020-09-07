@@ -61,6 +61,12 @@ export class TemplateFieldValueUI extends ObjectUI<ITemplateFieldValue> implemen
       .mandatory;
   }
 
+  getFieldDefinitions(template: TemplateUI): TemplateFieldUI {
+    return _(template.templateFields)
+      .filter(templateField => templateField.id === this.templateFieldId)
+      .first()!;
+  }
+
   getFieldType(template: TemplateUI): TemplateFieldType {
     return _(template.templateFields)
       .filter(templateField => templateField.id === this.templateFieldId)

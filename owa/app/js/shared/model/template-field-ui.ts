@@ -13,6 +13,7 @@ export class TemplateFieldUI extends ObjectUI<ITemplateField> implements ITempla
   defaultValue: string;
   type: TemplateFieldType;
   defaultValues: Array<TemplateFieldDefaultValue>;
+  possibleValues: Array<string>;
 
   isEnabled: boolean;
   isEdited: boolean;

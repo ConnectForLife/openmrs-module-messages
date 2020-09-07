@@ -9,6 +9,28 @@
 
 package org.openmrs.module.messages.api.service;
 
+import com.google.gson.Gson;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.openmrs.module.messages.Constant;
+import org.openmrs.module.messages.ContextSensitiveTest;
+import org.openmrs.module.messages.api.exception.EntityNotFoundException;
+import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
+import org.openmrs.module.messages.api.model.ScheduledService;
+import org.openmrs.module.messages.api.model.ScheduledServiceGroup;
+import org.openmrs.module.messages.api.model.types.ServiceStatus;
+import org.openmrs.module.messages.api.util.DateUtil;
+import org.openmrs.module.messages.api.util.JsonUtil;
+import org.openmrs.scheduler.SchedulerException;
+import org.openmrs.scheduler.SchedulerService;
+import org.openmrs.scheduler.TaskDefinition;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+
+import java.util.ArrayList;
+
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.Matchers.hasItem;
@@ -32,32 +54,9 @@ import static org.openmrs.module.messages.api.service.DatasetConstants.PENDING_S
 import static org.openmrs.module.messages.api.service.DatasetConstants.SCHEDULED_SERVICE_GROUP;
 import static org.openmrs.module.messages.api.service.DatasetConstants.XML_DATA_SET_PATH;
 
-import com.google.gson.Gson;
-import java.util.ArrayList;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.openmrs.module.messages.Constant;
-import org.openmrs.module.messages.ContextSensitiveTest;
-import org.openmrs.module.messages.api.exception.EntityNotFoundException;
-import org.openmrs.module.messages.api.model.ChannelType;
-import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
-import org.openmrs.module.messages.api.model.ScheduledService;
-import org.openmrs.module.messages.api.model.ScheduledServiceGroup;
-import org.openmrs.module.messages.api.model.types.ServiceStatus;
-import org.openmrs.module.messages.api.util.DateUtil;
-import org.openmrs.module.messages.api.util.JsonUtil;
-import org.openmrs.scheduler.SchedulerException;
-import org.openmrs.scheduler.SchedulerService;
-import org.openmrs.scheduler.TaskDefinition;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-
 public class MessagesExecutionServiceITTest extends ContextSensitiveTest {
 
-    private static final String CHANNEL_TYPE_1_NAME = ChannelType.CALL.getName();
-    private static final String CHANNEL_TYPE_2_NAME = ChannelType.SMS.getName();
+    private static final String CHANNEL_TYPE_1_NAME = Constant.CHANNEL_TYPE_CALL;
     private static final String EXECUTION_ID = "executionId123";
 
     @Autowired

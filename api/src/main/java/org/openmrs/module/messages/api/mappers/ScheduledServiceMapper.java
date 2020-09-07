@@ -23,7 +23,7 @@ public class ScheduledServiceMapper extends AbstractMapper<ServiceResult, Schedu
         PatientTemplate template = new PatientTemplate();
         template.setId(dto.getPatientTemplateId());
         result.setPatientTemplate(template);
-        result.setChannelType(dto.getChannelType().getName());
+        result.setChannelType(dto.getChannelType());
         result.setScheduledServiceParameters(paramsMapper.fromDto(dto));
         return result;
     }
