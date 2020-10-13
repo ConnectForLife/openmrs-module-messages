@@ -1,14 +1,22 @@
 package org.openmrs.module.messages.api.service.impl;
 
+import org.openmrs.Patient;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.messages.api.dao.TemplateDao;
+import org.openmrs.module.messages.api.dao.TemplateFieldDao;
 import org.openmrs.module.messages.api.dto.PatientTemplateDTO;
 import org.openmrs.module.messages.api.mappers.PatientTemplateMapper;
 import org.openmrs.module.messages.api.model.PatientTemplate;
+import org.openmrs.module.messages.api.model.Template;
+import org.openmrs.module.messages.api.model.TemplateField;
+import org.openmrs.module.messages.api.model.TemplateFieldValue;
 import org.openmrs.module.messages.api.service.PatientTemplateService;
+import org.openmrs.module.messages.api.util.DateUtil;
 import org.openmrs.module.messages.domain.criteria.PatientTemplateCriteria;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -18,6 +26,14 @@ public class PatientTemplateServiceImpl extends BaseOpenmrsDataService<PatientTe
         implements PatientTemplateService {
 
     private PatientTemplateMapper patientTemplateMapper;
+
+    private static final String TEMPLATE_DAO_BEAN_NAME = "messages.TemplateDao";
+    private static final String TEMPLATE_FIELD_DAO_BEAN_NAME = "messages.TemplateFieldDao";
+
+    private static final String VISIT_REMINDER_TEMPLATE_UUID = "95573fe3-20b2-11ea-ac12-0242c0a82002";
+    private static final String VISIT_REMINDER_CHANNEL_UUID = "95574976-20b2-11ea-ac12-0242c0a82002";
+    private static final String VISIT_REMINDER_DATE_STARTED_UUID = "95575327-20b2-11ea-ac12-0242c0a82002";
+    private static final String VISIT_REMINDER_DATE_END_UUID = "95575cbd-20b2-11ea-ac12-0242c0a82002";
 
     @Override
     @Transactional
@@ -60,6 +76,43 @@ public class PatientTemplateServiceImpl extends BaseOpenmrsDataService<PatientTe
         }
         //call the DAO layer directly to avoid any further AOP around save*
         return getDao().saveOrUpdate(patientTemplate);
+    }
+
+    @Override
+    @Transactional
+    public PatientTemplate createVisitReminder(String channel, String patientUuid) {
+        PatientTemplate visitReminder = new PatientTemplate();
+        Template savedTemplate = Context.getRegisteredComponent(TEMPLATE_DAO_BEAN_NAME, TemplateDao.class)
+                .getByUuid(VISIT_REMINDER_TEMPLATE_UUID);
+
+        TemplateFieldDao templateFieldDao = Context.getRegisteredComponent(TEMPLATE_FIELD_DAO_BEAN_NAME,
+                TemplateFieldDao.class);
+        TemplateField channelType = templateFieldDao.getByUuid(VISIT_REMINDER_CHANNEL_UUID);
+        TemplateField dateStart = templateFieldDao.getByUuid(VISIT_REMINDER_DATE_STARTED_UUID);
+        TemplateField dateEnd = templateFieldDao.getByUuid(VISIT_REMINDER_DATE_END_UUID);
+
+        TemplateFieldValue channelTypeValue = new TemplateFieldValue();
+        channelTypeValue.setTemplateField(channelType);
+        channelTypeValue.setValue(channel);
+        channelTypeValue.setPatientTemplate(visitReminder);
+
+        TemplateFieldValue dateStartValue = new TemplateFieldValue();
+        dateStartValue.setTemplateField(dateStart);
+        dateStartValue.setValue(DateUtil.convertDate(DateUtil.now(), "yyyy-MM-dd"));
+        dateStartValue.setPatientTemplate(visitReminder);
+
+        TemplateFieldValue dateEndValue = new TemplateFieldValue();
+        dateEndValue.setTemplateField(dateEnd);
+        dateEndValue.setValue("NO_DATE|EMPTY");
+        dateEndValue.setPatientTemplate(visitReminder);
+
+        Patient patient = Context.getPatientService().getPatientByUuid(patientUuid);
+        visitReminder.setActor(patient.getPerson());
+        visitReminder.setPatient(patient);
+        visitReminder.setTemplate(savedTemplate);
+        visitReminder.setTemplateFieldValues(Arrays.asList(channelTypeValue, dateStartValue, dateEndValue));
+
+        return getDao().saveOrUpdate(visitReminder);
     }
 
     public void setPatientTemplateMapper(PatientTemplateMapper patientTemplateMapper) {

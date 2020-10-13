@@ -51,4 +51,6 @@ public interface PatientTemplateService extends BaseOpenmrsCriteriaDataService<P
      * @throws APIException
      */
     PatientTemplate voidPatientTemplate(PatientTemplate patientTemplate, String reason) throws APIException;
+
+    PatientTemplate createVisitReminder(String channel, String patientUuid);
 }
