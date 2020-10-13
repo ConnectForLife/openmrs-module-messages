@@ -42,9 +42,21 @@ UPDATE messages_template SET service_query =
                         WHERE
                             vat.name = \'Visit Time\'
                     ) AS visit_times ON v.visit_id = visit_times.visit_id
+                    LEFT JOIN (
+                        SELECT
+                            visit_id,
+                            value_reference as visit_status
+                        FROM
+                            visit_attribute va
+                            JOIN visit_attribute_type vat ON va.attribute_type_id = vat.visit_attribute_type_id
+                        WHERE
+                            vat.name = \'Visit Status\'
+                            AND va.voided = 0
+                    ) AS visit_statuses ON v.visit_id = visit_statuses.visit_id
                 WHERE
                     v.patient_id = :patientId
                     AND v.voided = 0
+                    AND visit_statuses.visit_status = \'SCHEDULED\'
             ) dates_of_visit
         WHERE concat(\',\',(
             SELECT property_value
