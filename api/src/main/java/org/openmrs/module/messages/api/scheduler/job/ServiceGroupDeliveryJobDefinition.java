@@ -96,10 +96,21 @@ public class ServiceGroupDeliveryJobDefinition extends JobDefinition {
                         taskDefinition.getId()));
             } else {
                 String channelType = service.getChannelType();
-                if (!groupedServicesByChannel.containsKey(channelType)) {
-                    groupedServicesByChannel.put(channelType, new ArrayList<>());
+                String[] splittedChannelTypes;
+                if (channelType.contains(",")) {
+                    splittedChannelTypes = channelType.split(",");
+                    for (String channel : splittedChannelTypes) {
+                        if (!groupedServicesByChannel.containsKey(channel)) {
+                            groupedServicesByChannel.put(channel, new ArrayList<>());
+                        }
+                        groupedServicesByChannel.get(channel).add(service);
+                    }
+                } else {
+                    if (!groupedServicesByChannel.containsKey(channelType)) {
+                        groupedServicesByChannel.put(channelType, new ArrayList<>());
+                    }
+                    groupedServicesByChannel.get(channelType).add(service);
                 }
-                groupedServicesByChannel.get(channelType).add(service);
             }
         }
         return groupedServicesByChannel;
