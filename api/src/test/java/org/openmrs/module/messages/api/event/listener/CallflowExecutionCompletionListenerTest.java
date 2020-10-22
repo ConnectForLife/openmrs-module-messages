@@ -9,6 +9,27 @@
 
 package org.openmrs.module.messages.api.event.listener;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.messages.BaseTest;
+import org.openmrs.module.messages.api.event.CallFlowParamConstants;
+import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
+import org.openmrs.module.messages.api.model.Message;
+import org.openmrs.module.messages.api.service.ConfigService;
+import org.openmrs.module.messages.api.service.DatasetConstants;
+import org.openmrs.module.messages.api.service.MessagesExecutionService;
+import org.openmrs.module.messages.api.util.Properties;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyInt;
@@ -19,30 +40,11 @@ import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.messages.BaseTest;
-import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
-import org.openmrs.module.messages.api.service.ConfigService;
-import org.openmrs.module.messages.api.service.DatasetConstants;
-import org.openmrs.module.messages.api.service.MessagesExecutionService;
-import org.openmrs.module.messages.api.util.Properties;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Context.class})
 public class CallflowExecutionCompletionListenerTest extends BaseTest {
 
     private static final String PARAM_CALL_ID = "callId";
-    private static final String PARAM_REF_KEY = "refKey";
-    private static final String PARAM_PARAMS = "params";
 
     private static final String EXPECTED_CHANNEL_TYPE = "Call";
     private static final String DEFAULT_CALL_ID = "123";
@@ -91,12 +93,6 @@ public class CallflowExecutionCompletionListenerTest extends BaseTest {
                 eq(expectedGroupId),
                 eq(expectedExecutionId),
                 eq(EXPECTED_CHANNEL_TYPE));
-    }
-
-    @Test(expected = MessagesRuntimeException.class)
-    public void handleEventShouldThrowExceptionWhenPropertiesAreEmpty() {
-        Properties properties = new Properties(new HashMap<>());
-        listener.handleEvent(properties);
     }
 
     @Test(expected = MessagesRuntimeException.class)
@@ -161,14 +157,34 @@ public class CallflowExecutionCompletionListenerTest extends BaseTest {
                 eq(EXPECTED_CHANNEL_TYPE));
     }
 
+    @Test
+    public void handleEventShouldBeSkippedWhenCallIsNotFromMessages() {
+        Properties properties = getProperties(2, DEFAULT_CALL_ID, COMPLETED_STATUS, false);
+        listener.handleEvent(properties);
+
+        verify(configService, times(0)).getStatusesEndingCallflow();
+        verify(messagesExecutionService, times(0)).executionCompleted(anyInt(), anyString(), anyString());
+    }
+
     public Properties getProperties(Object refKey, Object callId, Object status) {
+        return getProperties(refKey, callId, status, true);
+    }
+
+    public Properties getProperties(Object refKey, Object callId, Object status, boolean messagesCall) {
         HashMap<String, Object> nestedParams = new HashMap<>();
-        nestedParams.put(PARAM_REF_KEY, refKey);
+        nestedParams.put(CallFlowParamConstants.REF_KEY, refKey);
+
+        if (messagesCall) {
+            List<Map<String, Object>> messages = new ArrayList<>();
+            Message message = new Message("visit-reminder", 1, new HashMap<>());
+            messages.add(message.toPrimitivesMap());
+            nestedParams.put(CallFlowParamConstants.MESSAGES, messages);
+        }
 
         HashMap<String, Object> map = new HashMap<>();
         map.put(PARAM_CALL_ID, callId);
         map.put(PARAM_STATUS, status);
-        map.put(PARAM_PARAMS, nestedParams);
+        map.put(CallFlowParamConstants.ADDITIONAL_PARAMS, nestedParams);
         return new Properties(map);
     }
 

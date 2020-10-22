@@ -35,26 +35,33 @@ public class CallflowExecutionCompletionListener extends AbstractMessagesEventLi
 
     @Override
     protected void handleEvent(Properties properties) {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(String.format("Handling event: %s with properties %s", getSubject(), properties.toString()));
-        }
-
-        String status = getStatus(properties);
-        if (!getConfigService().getStatusesEndingCallflow().contains(status)) {
-            if (LOGGER.isTraceEnabled()) {
-                LOGGER.trace(String.format(
-                        "Skipped handling event with the status %s - it is not the end of a callflow: %s",
-                        status,
-                        properties.toString()));
+        if (isMessagesCall(properties)) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug(String.format("Handling event: %s with properties %s", getSubject(), properties.toString()));
             }
-            return;
+
+            String status = getStatus(properties);
+            if (!getConfigService().getStatusesEndingCallflow().contains(status)) {
+                if (LOGGER.isTraceEnabled()) {
+                    LOGGER.trace(String.format(
+                            "Skipped handling event with the status %s - it is not the end of a callflow: %s",
+                            status,
+                            properties.toString()));
+                }
+                return;
+            }
+
+            int groupId = getGroupId(properties);
+            String executionId = getExecutionId(properties);
+
+            getComponent("messages.messagesExecutionService", MessagesExecutionService.class)
+                    .executionCompleted(groupId, executionId, CHANNEL_TYPE);
+        } else {
+            if (LOGGER.isTraceEnabled()) {
+                LOGGER.trace(String.format("Skipped handling event: %s with properties %s "
+                        + "because this call is not from messages", getSubject(), properties.toString()));
+            }
         }
-
-        int groupId = getGroupId(properties);
-        String executionId = getExecutionId(properties);
-
-        getComponent("messages.messagesExecutionService", MessagesExecutionService.class)
-            .executionCompleted(groupId, executionId, CHANNEL_TYPE);
     }
 
     private String getStatus(Properties properties) {
@@ -84,6 +91,11 @@ public class CallflowExecutionCompletionListener extends AbstractMessagesEventLi
             callId = null;
         }
         return callId;
+    }
+
+    private boolean isMessagesCall(Properties properties) {
+        Properties params = properties.getNestedProperties(CallFlowParamConstants.ADDITIONAL_PARAMS);
+        return params.get(CallFlowParamConstants.MESSAGES) != null;
     }
 
     private ConfigService getConfigService() {
