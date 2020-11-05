@@ -12,6 +12,8 @@ package org.openmrs.module.messages.api.service.impl;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.GlobalProperty;
+import org.openmrs.api.context.Context;
 import org.openmrs.api.context.ServiceContext;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.messages.api.dao.NotificationTemplateDao;
@@ -70,6 +72,16 @@ public abstract class NotificationTemplateServiceImpl extends BaseOpenmrsService
         return loadTemplate(template, templateData);
     }
 
+    @Override
+    public String buildMessageByGlobalProperty(Map<String, Object> param, String globalPropertyName) {
+        GlobalProperty globalProperty = Context.getAdministrationService()
+                .getGlobalPropertyObject(globalPropertyName);
+        NotificationTemplate template = notificationTemplateDao.convertToNotificationTemplate(globalProperty);
+        String injectedServices = notificationTemplateDao.getInjectedServicesMap();
+        Map<String, Object> templateData = buildTemplateInputDataByPatient(param, injectedServices);
+        return loadTemplate(template, templateData);
+    }
+
     /**
      * Sets the notification template dao bean value
      *
@@ -118,6 +130,15 @@ public abstract class NotificationTemplateServiceImpl extends BaseOpenmrsService
         Map<String, String> servicesMap = MessagesUtils.parseStringToMap(injectedServices);
         this.loadServices(templateInputProperties, servicesMap);
         return templateInputProperties;
+    }
+
+    private Map<String, Object> buildTemplateInputDataByPatient(Map<String, Object> param,
+                                                                String injectedServices) {
+        Map<String, Object> templateProps = param == null ? new HashMap<>() : new HashMap<>(param);
+        this.loadBaseClasses(templateProps);
+        Map<String, String> servicesMap = MessagesUtils.parseStringToMap(injectedServices);
+        this.loadServices(templateProps, servicesMap);
+        return templateProps;
     }
 
     /**

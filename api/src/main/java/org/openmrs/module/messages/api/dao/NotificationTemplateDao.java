@@ -9,6 +9,7 @@
 
 package org.openmrs.module.messages.api.dao;
 
+import org.openmrs.GlobalProperty;
 import org.openmrs.module.messages.api.model.NotificationTemplate;
 
 public interface NotificationTemplateDao {
@@ -30,4 +31,6 @@ public interface NotificationTemplateDao {
      * @should return empty string when services' configuration is missing
      */
     String getInjectedServicesMap();
+
+    NotificationTemplate convertToNotificationTemplate(GlobalProperty globalProperty);
 }

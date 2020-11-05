@@ -29,4 +29,5 @@ public interface NotificationTemplateService extends OpenmrsService {
      */
     String buildMessageForService(PatientTemplate patientTemplate, Map<String, String> serviceParam);
 
+    String buildMessageByGlobalProperty(Map<String, Object> param, String globalPropertyName);
 }

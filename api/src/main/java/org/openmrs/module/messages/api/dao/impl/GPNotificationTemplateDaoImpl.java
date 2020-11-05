@@ -62,6 +62,24 @@ public class GPNotificationTemplateDaoImpl implements NotificationTemplateDao {
     }
 
     /**
+     * Converts the {@link GlobalProperty} into the {@link NotificationTemplate} representation.
+     *
+     * @param globalProperty - given global property
+     * @return - notification template representation
+     * @should return null when null global property is given
+     */
+    @Override
+    public NotificationTemplate convertToNotificationTemplate(GlobalProperty globalProperty) {
+        NotificationTemplate notificationTemplate = null;
+        if (null != globalProperty) {
+            notificationTemplate = new NotificationTemplate();
+            notificationTemplate.setTemplateName(globalProperty.getProperty());
+            notificationTemplate.setValue(globalProperty.getPropertyValue());
+        }
+        return notificationTemplate;
+    }
+
+    /**
      * Sets a administration service bean value
      *
      * @param administrationService - administration service impl
@@ -85,22 +103,5 @@ public class GPNotificationTemplateDaoImpl implements NotificationTemplateDao {
                     globalPropertyName, templateName));
         }
         return globalPropertyName;
-    }
-
-    /**
-     * Converts the {@link GlobalProperty} into the {@link NotificationTemplate} representation.
-     *
-     * @param globalProperty - given global property
-     * @return - notification template representation
-     * @should return null when null global property is given
-     */
-    private NotificationTemplate convertToNotificationTemplate(GlobalProperty globalProperty) {
-        NotificationTemplate notificationTemplate = null;
-        if (null != globalProperty) {
-            notificationTemplate = new NotificationTemplate();
-            notificationTemplate.setTemplateName(globalProperty.getProperty());
-            notificationTemplate.setValue(globalProperty.getPropertyValue());
-        }
-        return notificationTemplate;
     }
 }
