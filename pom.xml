@@ -44,7 +44,7 @@
         <javax.servlet.version>3.0.1</javax.servlet.version>
         <uiframeworkVersion>3.9</uiframeworkVersion>
         <uiCommonsVersion>2.6.1</uiCommonsVersion>
-        <eventVersion>2.6.0</eventVersion>
+        <eventVersion>2.8.0</eventVersion>
         <jtsCoreVersion>1.14.0</jtsCoreVersion>
         <pmdPluginSkip>false</pmdPluginSkip>
         <checkStylePluginSkip>false</checkStylePluginSkip>
