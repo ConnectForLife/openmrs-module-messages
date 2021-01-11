@@ -24,17 +24,21 @@ public class VelocityNotificationTemplateServiceTest extends ContextSensitiveTes
 
     private static final String SIMPLE_TEST_SERVICE_NAME = "test";
 
-    private static final String SIMPLE_TEST_SERVICE_EXPECTED_MESSAGE = "This is test message.";
+    private static final String SIMPLE_TEST_SERVICE_EXPECTED_MESSAGE = "message:\"This is test message.\"";
 
     private static final String COMPLEX_TEST_SERVICE_NAME = "test service2";
 
-    private static final String COMPLEX_TEST_SERVICE_EXPECTED_MESSAGE = "This is test messages. "
+    private static final String COMPLEX_TEST_SERVICE_EXPECTED_MESSAGE = "message:\"This is test messages. "
             + "For patient 666. Value of injected services is administrationService:adminService,notExisting:notExisting. "
-            + "This is input service param `This is additional service parameter`";
+            + "This is input service param `This is additional service parameter`\"";
 
-    private static final String COMPLEX_TEST_SERVICE_EXPECTED_MESSAGE_WITHOUT_SERVICE_PARAM = "This is test messages. "
+    private static final String COMPLEX_TEST_SERVICE_EXPECTED_MESSAGE_WITHOUT_SERVICE_PARAM =
+            "message:\"This is test messages. "
             + "For patient 666. Value of injected services is administrationService:adminService,notExisting:notExisting. "
-            + "This is input service param `$test`";
+            + "This is input service param `$test`\"";
+
+    private static final String WHATSAPP_SERVICE_NAME = "whatsapp";
+    private static final String WHATSAPP_SERVICE_EXPECTED_TEMPLATE = "id:\"111\",language:\"EN\",patientId:\"666\"";
 
     private static final String SERVICE_TEST_PROP = "test";
 
@@ -55,83 +59,91 @@ public class VelocityNotificationTemplateServiceTest extends ContextSensitiveTes
     }
 
     @Test
-    public void buildMessageForServiceShouldReturnExpectedPlainMessage() {
+    public void parseTemplateForServiceShouldReturnExpectedPlainMessage() {
         PatientTemplate patientTemplate = buildPatientTemplate(SIMPLE_TEST_SERVICE_NAME);
         Map<String, String> serviceParam = buildServiceParams();
-        String actual = notificationTemplateService.buildMessageForService(patientTemplate, serviceParam);
+        String actual = notificationTemplateService.parseTemplate(patientTemplate, serviceParam);
         assertThat(actual, is(SIMPLE_TEST_SERVICE_EXPECTED_MESSAGE));
     }
 
     @Test
-    public void buildMessageForServiceShouldReturnExpectedComplexMessage() {
+    public void parseTemplateForServiceShouldReturnExpectedComplexMessage() {
         PatientTemplate patientTemplate = buildPatientTemplate(COMPLEX_TEST_SERVICE_NAME);
         Map<String, String> serviceParam = buildServiceParams();
-        String actual = notificationTemplateService.buildMessageForService(patientTemplate, serviceParam);
+        String actual = notificationTemplateService.parseTemplate(patientTemplate, serviceParam);
         assertThat(actual, is(COMPLEX_TEST_SERVICE_EXPECTED_MESSAGE));
     }
 
     @Test
-    public void buildMessageForServiceShouldReplaceWhitespaceToDash() {
+    public void parseTemplateForServiceShouldReplaceWhitespaceToDash() {
         PatientTemplate patientTemplate = buildPatientTemplate(COMPLEX_TEST_SERVICE_NAME);
         Map<String, String> serviceParam = buildServiceParams();
-        String actual = notificationTemplateService.buildMessageForService(patientTemplate, serviceParam);
+        String actual = notificationTemplateService.parseTemplate(patientTemplate, serviceParam);
         assertThat(actual, is(COMPLEX_TEST_SERVICE_EXPECTED_MESSAGE));
     }
 
     @Test
-    public void buildMessageForServiceShouldChangeServiceNameToLowerCase() {
+    public void parseTemplateForServiceShouldChangeServiceNameToLowerCase() {
         PatientTemplate patientTemplate = buildPatientTemplate(MIXED_LETTER_CASE_SERVICE_NAME);
         Map<String, String> serviceParam = buildServiceParams();
-        String actual = notificationTemplateService.buildMessageForService(patientTemplate, serviceParam);
+        String actual = notificationTemplateService.parseTemplate(patientTemplate, serviceParam);
         assertThat(actual, is(SIMPLE_TEST_SERVICE_EXPECTED_MESSAGE));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void buildMessageForServiceShouldThrowWhenServiceMapInWrongFormat() {
+    public void parseTemplateForServiceShouldThrowWhenServiceMapInWrongFormat() {
         Context.getAdministrationService().setGlobalProperty(ConfigConstants.NOTIFICATION_TEMPLATE_INJECTED_SERVICES,
                 WRONG_INJECTED_SERVICES_PROP_VALUE);
         PatientTemplate patientTemplate = buildPatientTemplate(SIMPLE_TEST_SERVICE_NAME);
         Map<String, String> serviceParam = buildServiceParams();
-        notificationTemplateService.buildMessageForService(patientTemplate, serviceParam);
+        notificationTemplateService.parseTemplate(patientTemplate, serviceParam);
     }
 
     @Test
-    public void buildMessageForServiceShouldReturnNullWhenTemplateDefinitionNotExists() {
+    public void parseTemplateForServiceShouldReturnNullWhenTemplateDefinitionNotExists() {
         PatientTemplate patientTemplate = buildPatientTemplate(NOT_EXISTING_SERVICE);
         Map<String, String> serviceParam = buildServiceParams();
-        String actual = notificationTemplateService.buildMessageForService(patientTemplate, serviceParam);
+        String actual = notificationTemplateService.parseTemplate(patientTemplate, serviceParam);
         assertThat(actual, is(nullValue()));
     }
 
     @Test
-    public void buildMessageForServiceShouldReturnNullWhenPatientTemplateIsNull() {
+    public void parseTemplateForServiceShouldReturnNullWhenPatientTemplateIsNull() {
         Map<String, String> serviceParam = buildServiceParams();
-        String actual = notificationTemplateService.buildMessageForService(null, serviceParam);
+        String actual = notificationTemplateService.parseTemplate(null, serviceParam);
         assertThat(actual, is(nullValue()));
     }
 
     @Test
-    public void buildMessageForServiceShouldReturnExpectedComplexMessageWhenServiceParamAreNull() {
+    public void parseTemplateForServiceShouldReturnExpectedComplexMessageWhenServiceParamAreNull() {
         PatientTemplate patientTemplate = buildPatientTemplate(COMPLEX_TEST_SERVICE_NAME);
-        String actual = notificationTemplateService.buildMessageForService(patientTemplate, null);
+        String actual = notificationTemplateService.parseTemplate(patientTemplate, null);
         assertThat(actual, is(COMPLEX_TEST_SERVICE_EXPECTED_MESSAGE_WITHOUT_SERVICE_PARAM));
     }
 
     @Test
-    public void buildMessageForServiceShouldReturnExpectedComplexMessageWhenServiceParamAreEmpty() {
+    public void parseTemplateForServiceShouldReturnExpectedComplexMessageWhenServiceParamAreEmpty() {
         PatientTemplate patientTemplate = buildPatientTemplate(COMPLEX_TEST_SERVICE_NAME);
         Map<String, String> serviceParam = new HashMap<>();
-        String actual = notificationTemplateService.buildMessageForService(patientTemplate, serviceParam);
+        String actual = notificationTemplateService.parseTemplate(patientTemplate, serviceParam);
         assertThat(actual, is(COMPLEX_TEST_SERVICE_EXPECTED_MESSAGE_WITHOUT_SERVICE_PARAM));
     }
 
     @Test
-    public void buildMessageForServiceShouldReturnNullIfMissingTemplate() {
+    public void parseTemplateForServiceShouldReturnNullIfMissingTemplate() {
         PatientTemplate patientTemplate = buildPatientTemplate(COMPLEX_TEST_SERVICE_NAME);
         patientTemplate.setTemplate(null);
         Map<String, String> serviceParam = buildServiceParams();
-        String actual = notificationTemplateService.buildMessageForService(patientTemplate, serviceParam);
+        String actual = notificationTemplateService.parseTemplate(patientTemplate, serviceParam);
         assertThat(actual, is(nullValue()));
+    }
+
+    @Test
+    public void parseTemplateForWhatsappServiceShouldReturnExpectedResult() {
+        PatientTemplate patientTemplate = buildPatientTemplate(WHATSAPP_SERVICE_NAME);
+        Map<String, String> serviceParam = buildServiceParams();
+        String actual = notificationTemplateService.parseTemplate(patientTemplate, serviceParam);
+        assertThat(actual, is(WHATSAPP_SERVICE_EXPECTED_TEMPLATE));
     }
 
     private PatientTemplate buildPatientTemplate(String serviceName) {

@@ -23,11 +23,14 @@ import org.openmrs.module.messages.api.service.MessagesExecutionService;
 import org.openmrs.module.messages.api.service.MessagingService;
 import org.openmrs.module.messages.api.service.NotificationTemplateService;
 import org.openmrs.module.messages.api.util.DateUtil;
+import org.openmrs.module.messages.api.util.JsonUtil;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.openmrs.module.messages.api.constants.MessagesConstants.SMS_INITIATE_EVENT;
 
 /**
  * Implements methods related to the handling of sms service results
@@ -36,11 +39,9 @@ public class SmsServiceResultsHandlerServiceImpl extends AbstractServiceResultsH
 
     private static final Log LOGGER = LogFactory.getLog(SmsServiceResultsHandlerServiceImpl.class);
 
-    private static final String SMS_INITIATE_EVENT = "send_sms";
-
     private static final String DEFAULT_MESSAGE = "Not yet specified";
-
     private static final String CHANNEL_TYPE = "SMS";
+    public static final String MESSAGE_KEY = "message";
 
     private NotificationTemplateService notificationTemplateService;
 
@@ -91,13 +92,22 @@ public class SmsServiceResultsHandlerServiceImpl extends AbstractServiceResultsH
         params.put(SmsEventParamConstants.MESSAGE_ID, smsService.getId());
         params.put(SmsEventParamConstants.RECIPIENTS, Arrays.asList(getPersonPhone(executionContext.getActorId())));
 
-        String message = notificationTemplateService.buildMessageForService(smsService.getPatientTemplate(),
+        String parsedTemplate = notificationTemplateService.parseTemplate(smsService.getPatientTemplate(),
                 buildServiceParams(smsService));
-        if (StringUtils.isBlank(message)) {
-            message = DEFAULT_MESSAGE;
+        Map<String, String> templateMap = JsonUtil.toMap(parsedTemplate, JsonUtil.STRING_TO_STRING_MAP);
+        String message = StringUtils.isBlank(parsedTemplate) || !templateMap.containsKey(MESSAGE_KEY)
+            ? DEFAULT_MESSAGE : templateMap.get(MESSAGE_KEY);
+
+        Map<String, String> smsServiceParameters = smsService.getParameters();
+        for (Map.Entry<String, String> entry : templateMap.entrySet()) {
+            String key = entry.getKey();
+            if (!key.equals(MESSAGE_KEY) && !smsServiceParameters.containsKey(key)) {
+                smsServiceParameters.put(key, entry.getValue());
+            }
         }
+
         params.put(SmsEventParamConstants.MESSAGE, message);
-        params.put(SmsEventParamConstants.CUSTOM_PARAMS, smsService.getParameters());
+        params.put(SmsEventParamConstants.CUSTOM_PARAMS, smsServiceParameters);
         return new MessagesEvent(SMS_INITIATE_EVENT, params);
     }
 

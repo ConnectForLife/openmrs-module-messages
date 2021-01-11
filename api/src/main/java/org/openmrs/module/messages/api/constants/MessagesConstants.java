@@ -29,6 +29,8 @@ public final class MessagesConstants {
 
     public static final String CALL_FLOW_INITIATE_CALL_EVENT = "callflows-call-initiate";
 
+    public static final String SMS_INITIATE_EVENT = "send_sms";
+
     public static final String CALL_FLOW_SERVICE_RESULT_HANDLER_SERVICE = MODULE_ID +
         ".callFlowServiceResultHandlerService";
     public static final String SMS_SERVICE_RESULT_HANDLER_SERVICE = MODULE_ID +

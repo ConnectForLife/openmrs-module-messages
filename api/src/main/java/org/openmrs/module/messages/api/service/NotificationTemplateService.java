@@ -20,14 +20,14 @@ import java.util.Map;
 public interface NotificationTemplateService extends OpenmrsService {
 
     /**
-     * Builds a String message for specific messaging service based on the stored notification template.
+     * Builds a String for specific messaging service based on the stored notification template.
      *
      * @param patientTemplate - the {@link PatientTemplate} which represent specific service
      * @param serviceParam - the additional context parameters
-     * @return - a string message
+     * @return - a parsed template
      * @should return null when template doesn't exists
      */
-    String buildMessageForService(PatientTemplate patientTemplate, Map<String, String> serviceParam);
+    String parseTemplate(PatientTemplate patientTemplate, Map<String, String> serviceParam);
 
     String buildMessageByGlobalProperty(Map<String, Object> param, String globalPropertyName);
 }

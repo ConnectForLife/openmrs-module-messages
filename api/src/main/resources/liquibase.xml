@@ -3998,4 +3998,95 @@
             <where>possible_values is NULL AND template_field_type = 'SERVICE_TYPE'</where>
         </update>
     </changeSet>
+
+    <changeSet id="messages-81" author="Artur Fijał">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_property"/>
+            <sqlCheck expectedResult="1">
+                SELECT COUNT(*) FROM global_property WHERE property='messages.notificationTemplate.adherence-report-daily'
+            </sqlCheck>
+        </preConditions>
+
+        <comment>
+            Removed messages.notificationTemplate.adherence-report-daily property in order
+            to update default value to one that contains parameters as map.
+        </comment>
+
+        <delete tableName="global_property">
+            <where>property='messages.notificationTemplate.adherence-report-daily'</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="messages-82" author="Artur Fijał">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_property"/>
+            <sqlCheck expectedResult="1">
+                SELECT COUNT(*) FROM global_property WHERE property='messages.notificationTemplate.adherence-report-weekly'
+            </sqlCheck>
+        </preConditions>
+
+        <comment>
+            Removed messages.notificationTemplate.adherence-report-weekly property in order
+            to update default value to one that contains parameters as map.
+        </comment>
+
+        <delete tableName="global_property">
+            <where>property='messages.notificationTemplate.adherence-report-weekly'</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="messages-84" author="Artur Fijał">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_property"/>
+            <sqlCheck expectedResult="1">
+                SELECT COUNT(*) FROM global_property WHERE property='messages.notificationTemplate.visit-reminder'
+            </sqlCheck>
+        </preConditions>
+
+        <comment>
+            Removed messages.notificationTemplate.visit-reminder property in order
+            to update default value to one that contains parameters as map.
+        </comment>
+
+        <delete tableName="global_property">
+            <where>property='messages.notificationTemplate.visit-reminder'</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="messages-85" author="Artur Fijał">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_property"/>
+            <sqlCheck expectedResult="1">
+                SELECT COUNT(*) FROM global_property WHERE property='messages.notificationTemplate.adherence-feedback'
+            </sqlCheck>
+        </preConditions>
+
+        <comment>
+            Removed messages.notificationTemplate.adherence-feedback property in order
+            to update default value to one that contains parameters as map.
+        </comment>
+
+        <delete tableName="global_property">
+            <where>property='messages.notificationTemplate.adherence-feedback'</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="messages-86" author="Artur Fijał">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_property"/>
+            <sqlCheck expectedResult="1">
+                SELECT COUNT(*) FROM global_property WHERE property='messages.notificationTemplate.health-tip'
+            </sqlCheck>
+        </preConditions>
+
+        <comment>
+            Removed messages.notificationTemplate.adherence-feedback property in order
+            to update default value to one that contains parameters as map.
+        </comment>
+
+        <delete tableName="global_property">
+            <where>property='messages.notificationTemplate.health-tip'</where>
+        </delete>
+    </changeSet>
+
 </databaseChangeLog>

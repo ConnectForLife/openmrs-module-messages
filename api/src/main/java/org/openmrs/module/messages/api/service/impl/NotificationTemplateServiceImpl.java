@@ -54,16 +54,8 @@ public abstract class NotificationTemplateServiceImpl extends BaseOpenmrsService
      */
     protected abstract String loadTemplate(NotificationTemplate template, Map<String, Object> templateData);
 
-    /**
-     * Builds a String message for specific messaging service based on the stored notification template.
-     *
-     * @param patientTemplate - the {@link PatientTemplate} which represent specific service
-     * @param serviceParam - the additional context parameters
-     * @return - a string message
-     * @should return null when template doesn't exists
-     */
     @Override
-    public String buildMessageForService(PatientTemplate patientTemplate, Map<String, String> serviceParam) {
+    public String parseTemplate(PatientTemplate patientTemplate, Map<String, String> serviceParam) {
         LOGGER.trace("handling the buildMessageForService(...)");
         String serviceTemplateName = getServiceTemplateName(patientTemplate);
         NotificationTemplate template = notificationTemplateDao.getTemplate(serviceTemplateName);

@@ -187,7 +187,7 @@ public final class ConfigConstants {
                     + " #set($textToRead = \"Hello $actor.getPersonName().toString(), "
                     + "Your patient's dosage is scheduled to be taken now. \")\n"
                     + "#end\n"
-                    + "$textToRead";
+                    + "{ message:\"$textToRead\" }";
     public static final String NOTIFICATION_TEMPLATE_ADHERENCE_DAILY_DESCRIPTION =
             "The notification template for adherence report daily message type.";
 
@@ -209,7 +209,7 @@ public final class ConfigConstants {
                     + "#end\n"
                     + "#set($textToRead2 = \"visit scheduled for $simpleDateFormat.format($simpleDateFormat"
                     + ".parse($dateStarted)) for the purpose of $visitPurpose.\")\n"
-                    + "$textToRead1 $textToRead2";
+                    + "{ message:\"$textToRead1 $textToRead2\" }";
     public static final String NOTIFICATION_TEMPLATE_VISIT_REMINDER_DESCRIPTION =
             "The notification template for visit reminder message type.";
 
@@ -221,7 +221,7 @@ public final class ConfigConstants {
                     + "#set ($healthTip = $conceptDAO.getConcept($healthTipId))\n"
                     + "#set ($localeClass = $conceptDAO.getClass().forName(\"java.util.Locale\"))\n"
                     + "#set ($healthTipText = $healthTip.getDescription().getDescription())\n"
-                    + "$healthTipText\n"
+                    + "{ message:\"$healthTipText\"\n }"
                     + "#set ($dummy = $messagesService.registerResponse($personId, $personId, $message_group_id, "
                     + "'SCHEDULED_SERVICE_GROUP', $healthTipId, '', 165270, '', $DateUtil.now()))";
     public static final String NOTIFICATION_TEMPLATE_HEALTH_TIP_DESCRIPTION =
@@ -240,7 +240,7 @@ public final class ConfigConstants {
                     + " #set($textToRead = \"Your patient's adherence for past week is $adfLevel "
                     + "and compare to last week your patient's adherence trend is $adfTrend\")\n"
                     + "#end\n"
-                    + "$textToRead";
+                    + "{ message:\"$textToRead\" }";
     public static final String NOTIFICATION_TEMPLATE_ADHERENCE_FEEDBACK_DESCRIPTION =
             "The notification template for adherence feedback message type.";
 
@@ -255,7 +255,7 @@ public final class ConfigConstants {
                     + " #set($textToRead = \"Hello $actor.getPersonName().toString(), "
                     + "Your patient's dosage is scheduled to be taken.\")\n"
                     + "#end\n"
-                    + "$textToRead";
+                    + "{ message:\"$textToRead\" }";
     public static final String NOTIFICATION_TEMPLATE_ADHERENCE_WEEKLY_DESCRIPTION =
             "The notification template for adherence report weekly message type.";
 

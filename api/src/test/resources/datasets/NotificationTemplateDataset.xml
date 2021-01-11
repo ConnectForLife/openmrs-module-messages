@@ -7,11 +7,15 @@
 
     <global_property
             property="messages.notificationTemplate.test"
-            property_value="This is test message."
+            property_value="#set($msg=&#34;This is test message.&#34;)message:&#34;$msg&#34;"
             uuid="36cdd856-464b-4b63-849f-20eec120b704"/>
 
     <global_property
             property="messages.notificationTemplate.test-service2"
-            property_value="This is test messages. For patient $patient.getPatientId(). Value of injected services is $administrationService.getGlobalProperty('messages.notificationTemplate.injectedServices'). This is input service param `$test`"
+            property_value="message:&#34;This is test messages. For patient $patient.getPatientId(). Value of injected services is $administrationService.getGlobalProperty('messages.notificationTemplate.injectedServices'). This is input service param `$test`&#34;"
             uuid="e6a44379-bb18-4339-a457-930c9043cc56"/>
+    <global_property
+            property="messages.notificationTemplate.whatsapp"
+            property_value="id:&#34;111&#34;,language:&#34;EN&#34;,patientId:&#34;$patient.getPatientId()&#34;"
+            uuid="e6a44379-bb18-4339-a457-930c9043cc57"/>
 </dataset>
