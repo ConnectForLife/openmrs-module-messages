@@ -26,7 +26,13 @@ public class MessagingGroupDaoImpl extends BaseOpenmrsDataDao<ScheduledServiceGr
         return countRows(criteria);
     }
 
+    @Override
+    public ScheduledServiceGroup saveGroup(ScheduledServiceGroup group) {
+         return (ScheduledServiceGroup) saveOrUpdateWithClearingSessionCache(group);
+    }
+
     public MessagingGroupDaoImpl() {
         super(ScheduledServiceGroup.class);
     }
+
 }

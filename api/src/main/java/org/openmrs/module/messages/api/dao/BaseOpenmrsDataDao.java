@@ -77,6 +77,21 @@ public abstract class BaseOpenmrsDataDao<T extends BaseOpenmrsData> extends Hibe
     }
 
     /**
+     * Writes all pending changes, clear the session cache memory and saves object to the database.
+     * These actions are performed due to performance issues when large amounts of data are loaded into the persistence
+     * context.
+     * Related ticket key: CFLM-1531
+     *
+     * @param object that will be saved to the database
+     */
+    protected Object saveOrUpdateWithClearingSessionCache(T object) {
+        getSession().flush();
+        getSession().clear();
+        getSession().saveOrUpdate(object);
+        return object;
+    }
+
+    /**
      * Loads the record count for the specified criteria into the specified paging object.
      * @param pagingInfo The {@link PagingInfo} object to load with the record count.
      * @param criteria The {@link Criteria} to execute against the hibernate data source or {@code null} to create a new one.

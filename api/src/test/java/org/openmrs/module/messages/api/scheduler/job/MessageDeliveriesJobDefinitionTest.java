@@ -129,9 +129,9 @@ public class MessageDeliveriesJobDefinitionTest extends BaseModuleContextSensiti
         List<ScheduledService> newlySaved = getNewlyAddedObjects(
                 listBeforeSave, findScheduledServicesByDefaultPatientAndActorId(DEFAULT_PATIENT_ID));
 
-        assertEquals(2, newlySaved.size());
-        assertServiceIsCorrect(expectedSmsService, newlySaved.get(0));
-        assertServiceIsCorrect(expectedCallService, newlySaved.get(1));
+        assertEquals(6, newlySaved.size());
+        assertServiceIsCorrect(expectedSmsService, newlySaved.get(4));
+        assertServiceIsCorrect(expectedCallService, newlySaved.get(5));
     }
 
     @Test
@@ -200,7 +200,7 @@ public class MessageDeliveriesJobDefinitionTest extends BaseModuleContextSensiti
         List<ScheduledServiceGroup> newlySaved = filterByDefaultPatient(
                 getNewlyAddedObjects(listBeforeSave, messagingGroupService.getAll(false)));
 
-        assertEquals(0, newlySaved.size());
+        assertEquals(1, newlySaved.size());
     }
 
     @Test

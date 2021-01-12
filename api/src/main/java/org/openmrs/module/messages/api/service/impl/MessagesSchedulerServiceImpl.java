@@ -57,12 +57,6 @@ public class MessagesSchedulerServiceImpl extends BaseOpenmrsDataService<Schedul
     @Override
     public void createNewTask(JobDefinition jobDefinition, Date startTime,
                               JobRepeatInterval repeatInterval) {
-        TaskDefinition previousTask = schedulerService.getTaskByName(jobDefinition.getTaskName());
-        if (previousTask != null) {
-            throw new MessagesRuntimeException(String.format("A task with name %s has been " +
-                "already scheduled", jobDefinition.getTaskName()));
-        }
-
         TaskDefinition newTask = prepareTask(jobDefinition, null, startTime, repeatInterval.getSeconds());
         scheduleTask(newTask);
     }

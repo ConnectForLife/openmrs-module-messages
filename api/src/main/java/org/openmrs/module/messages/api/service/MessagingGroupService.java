@@ -18,4 +18,6 @@ public interface MessagingGroupService extends OpenmrsDataService<ScheduledServi
      * @return true if a group exists.
      */
     boolean isGroupExists(int patientId, int actorId, Date msgSendTime);
+
+    ScheduledServiceGroup saveGroup(ScheduledServiceGroup group);
 }

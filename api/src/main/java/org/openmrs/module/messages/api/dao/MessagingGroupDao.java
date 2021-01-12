@@ -18,4 +18,6 @@ public interface MessagingGroupDao extends BaseOpenmrsPageableDao<ScheduledServi
      * @return number of rows
      */
     long countRowsByPatientIdActorIdAndMsgSendTime(int patientId, int actorId, Date msgSendTime);
+
+    ScheduledServiceGroup saveGroup(ScheduledServiceGroup group);
 }

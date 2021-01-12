@@ -97,7 +97,7 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
 
     private ScheduledServiceGroup convertAndSave(GroupedServiceResultList groupedResult) {
         ScheduledServiceGroup group = getGroupMapper().fromDto(groupedResult);
-        return getGroupService().saveOrUpdate(group);
+        return getGroupService().saveGroup(group);
     }
 
     private boolean isActive(Person person) {

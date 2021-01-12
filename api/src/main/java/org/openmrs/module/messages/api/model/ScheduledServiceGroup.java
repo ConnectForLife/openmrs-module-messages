@@ -33,7 +33,7 @@ import java.util.List;
 @Entity(name = "messages.ScheduledServiceGroup")
 @Table(name = "messages_scheduled_service_group")
 public class ScheduledServiceGroup extends AbstractBaseOpenmrsData {
-    
+
     private static final long serialVersionUID = -2938591098039855643L;
     
     @Id
