@@ -36,7 +36,7 @@ public class PersonStatusFragmentControllerTest {
         when(personStatusHelper.getStatus(PERSON_ID)).thenReturn(status);
         controller.controller(fragmentModel, personStatusHelper, PERSON_ID);
 
-        verify(fragmentModel).addAttribute("personId", PERSON_ID);
+        verify(fragmentModel).addAttribute("personIdOrUuid", PERSON_ID);
     }
 
     @Test
@@ -45,14 +45,14 @@ public class PersonStatusFragmentControllerTest {
         when(personStatusHelper.getStatus(PERSON_ID)).thenReturn(status);
         controller.controller(fragmentModel, personStatusHelper, PERSON_ID);
 
-        verify(fragmentModel).addAttribute("personId", PERSON_ID);
+        verify(fragmentModel).addAttribute("personIdOrUuid", PERSON_ID);
         verify(fragmentModel).addAttribute("personStatusValue", status.getTitle());
         verify(fragmentModel).addAttribute("personStatusMessageStyle", status.getStyle());
     }
 
     private PersonStatusDTO buildPersonStatus() {
         PersonStatusDTO personStatus = new PersonStatusDTO()
-                .setPersonId(PERSON_ID)
+                .setPersonId(Integer.parseInt(PERSON_ID))
                 .setStyle(STYLE)
                 .setTitle(TITLE);
         return personStatus;

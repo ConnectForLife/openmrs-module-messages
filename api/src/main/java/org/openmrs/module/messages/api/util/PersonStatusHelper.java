@@ -39,24 +39,25 @@ public class PersonStatusHelper {
 
     /**
      * Provides the {@link PersonStatusDTO} which contains all required values, related to person status.
-     * @param personId - value which can be used to identify the person (DB id or UUID)
+     * @param personIdOrUuid - value which can be used to identify the person (DB id or UUID)
      * @return - the actual value of person status, if missing then the {@link PersonStatus#MISSING_VALUE} will be return
      */
-    public PersonStatusDTO getStatus(String personId) {
-        LOGGER.debug(String.format("Get status attribute for person %s", personId));
-        Person person = getPersonFromDashboardPersonId(personId);
+    public PersonStatusDTO getStatus(String personIdOrUuid) {
+        LOGGER.debug(String.format("Get status attribute for person %s", personIdOrUuid));
+        Person person = getPersonFromDashboardPersonId(personIdOrUuid);
         if (person != null) {
             PersonStatus status = PersonAttributeUtil.getPersonStatus(person);
             PersonAttribute lastReason = PersonAttributeUtil.getPersonStatusReasonAttribute(person);
             String style = buildMessageStyle(status);
             return new PersonStatusDTO()
-                    .setPersonId(personId)
+                    .setPersonId(person.getPersonId())
+                    .setPersonUuid(person.getUuid())
                     .setTitle(status.getTitleKey())
                     .setValue(status.name())
                     .setStyle(style)
                     .setReason(lastReason != null ? lastReason.getValue() : null);
         }
-        LOGGER.debug(String.format("Couldn't find person for id: %s", personId));
+        LOGGER.debug(String.format("Couldn't find person for id/UUID: %s", personIdOrUuid));
         return null;
     }
 
@@ -74,7 +75,7 @@ public class PersonStatusHelper {
         if (PersonStatus.DEACTIVATED.name().equals(statusDTO.getValue()) && !isValidReason(statusDTO.getReason())) {
             throw new ValidationException(String.format("Not valid value of reason: %s", statusDTO.getReason()));
         }
-        Person person = getPersonFromDashboardPersonId(statusDTO.getPersonId());
+        Person person = getPersonFromDashboardPersonId(statusDTO.getPersonId().toString());
         if (person != null) {
             changeStatusReason(statusDTO, person);
             saveNewValue(statusDTO, person);
@@ -102,7 +103,7 @@ public class PersonStatusHelper {
         return configuration.getStyle();
     }
 
-    private Person getPersonFromDashboardPersonId(String personId) {
+    public Person getPersonFromDashboardPersonId(String personId) {
         Person person;
         if (NumberUtils.isDigits(personId)) {
             person = personService.getPerson(Integer.parseInt(personId));

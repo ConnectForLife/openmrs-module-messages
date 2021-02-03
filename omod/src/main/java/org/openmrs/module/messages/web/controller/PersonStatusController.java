@@ -10,6 +10,7 @@
 package org.openmrs.module.messages.web.controller;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.openmrs.Person;
 import org.openmrs.module.messages.api.dto.PersonStatusDTO;
 import org.openmrs.module.messages.api.exception.EntityNotFoundException;
 import org.openmrs.module.messages.api.util.PersonStatusHelper;
@@ -40,17 +41,17 @@ public class PersonStatusController extends BaseRestController {
     /**
      * Fetches the person status
      *
-     * @param personId id of person
+     * @param personIdOrUuid DB id or UUID of person
      * @return DTO object containing data about person status
      */
-    @RequestMapping(value = "/{personId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{personIdOrUuid}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public PersonStatusDTO getPersonStatus(@PathVariable("personId") String personId) {
-        PersonStatusDTO result = personStatusHelper.getStatus(personId);
+    public PersonStatusDTO getPersonStatus(@PathVariable("personIdOrUuid") String personIdOrUuid) {
+        PersonStatusDTO result = personStatusHelper.getStatus(personIdOrUuid);
         if (result == null) {
             throw new EntityNotFoundException(String.format(
-                    "Could not fetch person status for personId: %s", personId));
+                    "Could not fetch person status for personIdOrUuid: %s", personIdOrUuid));
         }
         return result;
     }
@@ -58,18 +59,19 @@ public class PersonStatusController extends BaseRestController {
     /**
      * Updates the person status
      *
-     * @param personId id of person
+     * @param personIdOrUuid DB id or UUID of person
      * @param personStatusDTO DTO object containing data about person status
      * @return updated DTO object containing data about person status
      */
-    @RequestMapping(value = "/{personId}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/{personIdOrUuid}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public PersonStatusDTO updatePersonStatus(@PathVariable("personId") String personId,
+    public PersonStatusDTO updatePersonStatus(@PathVariable("personIdOrUuid") String personIdOrUuid,
             @RequestBody PersonStatusDTO personStatusDTO) {
-        personStatusDTO.setPersonId(personId);
+        Person person = personStatusHelper.getPersonFromDashboardPersonId(personIdOrUuid);
+        personStatusDTO.setPersonId(person.getPersonId());
         personStatusHelper.saveStatus(personStatusDTO);
-        return personStatusHelper.getStatus(personId);
+        return personStatusHelper.getStatus(personIdOrUuid);
     }
 
     /**

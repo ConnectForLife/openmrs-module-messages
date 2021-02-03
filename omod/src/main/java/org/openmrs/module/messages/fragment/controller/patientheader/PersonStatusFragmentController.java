@@ -22,9 +22,9 @@ public class PersonStatusFragmentController {
 
     public void controller(FragmentModel model,
             @SpringBean(value = "messages.personStatusHelper") PersonStatusHelper personStatusHelper,
-            @RequestParam(value = "patientId", required = false) String personID) {
-        model.addAttribute("personId", personID);
-        PersonStatusDTO personStatus = personStatusHelper.getStatus(personID);
+            @RequestParam(value = "patientId", required = false) String personIdOrUuid) {
+        model.addAttribute("personIdOrUuid", personIdOrUuid);
+        PersonStatusDTO personStatus = personStatusHelper.getStatus(personIdOrUuid);
         if (personStatus != null) {
             model.addAttribute("personStatusValue", personStatus.getTitle());
             model.addAttribute("personStatusMessageStyle", personStatus.getStyle());

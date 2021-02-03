@@ -69,9 +69,11 @@ public class PersonStatusControllerITTest extends BaseModuleWebContextSensitiveW
 
     private static final String PERSON_WITHOUT_ATTRIBUTE = "8c8169be-94f0-42ba-81de-cf3f2c12a7ec";
 
+    private static final Integer PERSON_ID_WITHOUT_ATTRIBUTE = 99923;
+
     private static final String TEST_INVALID_REASON = "The status was changed for test reason";
 
-    private static final String EXPECTED_ERROR = "Could not fetch person status for personId: %s";
+    private static final String EXPECTED_ERROR = "Could not fetch person status for personIdOrUuid: %s";
 
     private static final String NO_VALID_VALUE = "No value";
 
@@ -122,7 +124,7 @@ public class PersonStatusControllerITTest extends BaseModuleWebContextSensitiveW
         mockMvc.perform(get(String.format(BASE_URL_PATTERN, person.getId().toString())))
                 .andExpect(status().is(HttpStatus.OK.value()))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.personId").value(is(person.getId().toString())))
+                .andExpect(jsonPath("$.personId").value(is(person.getId())))
                 .andExpect(jsonPath("$.title").value(is(PersonStatus.ACTIVATED.getTitleKey())))
                 .andExpect(jsonPath("$.value").value(is(PersonStatus.ACTIVATED.name())))
                 .andExpect(jsonPath("$.style").value(is(EXPECTED_ACTIVATED_STYLE)))
@@ -134,7 +136,7 @@ public class PersonStatusControllerITTest extends BaseModuleWebContextSensitiveW
         mockMvc.perform(get(String.format(BASE_URL_PATTERN, person.getUuid())))
                 .andExpect(status().is(HttpStatus.OK.value()))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.personId").value(person.getUuid()))
+                .andExpect(jsonPath("$.personId").value(person.getPersonId()))
                 .andExpect(jsonPath("$.title").value(PersonStatus.ACTIVATED.getTitleKey()))
                 .andExpect(jsonPath("$.value").value(PersonStatus.ACTIVATED.name()))
                 .andExpect(jsonPath("$.style").value(EXPECTED_ACTIVATED_STYLE))
@@ -156,7 +158,7 @@ public class PersonStatusControllerITTest extends BaseModuleWebContextSensitiveW
         mockMvc.perform(get(String.format(BASE_URL_PATTERN, PERSON_WITHOUT_ATTRIBUTE)))
                 .andExpect(status().is(HttpStatus.OK.value()))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.personId").value(PERSON_WITHOUT_ATTRIBUTE))
+                .andExpect(jsonPath("$.personId").value(PERSON_ID_WITHOUT_ATTRIBUTE))
                 .andExpect(jsonPath("$.title").value(PersonStatus.MISSING_VALUE.getTitleKey()))
                 .andExpect(jsonPath("$.value").value(PersonStatus.MISSING_VALUE.name()))
                 .andExpect(jsonPath("$.style").value(EXPECTED_MISSING_STYLE))
@@ -166,7 +168,7 @@ public class PersonStatusControllerITTest extends BaseModuleWebContextSensitiveW
     @Test
     public void shouldUpdateStatusAttribute() throws Exception {
         PersonStatusDTO status = new PersonStatusDTO()
-                .setPersonId(person.getUuid())
+                .setPersonId(person.getPersonId())
                 .setValue(PersonStatus.DEACTIVATED.name())
                 .setReason(Constant.STATUS_REASON_PAUSE);
 
@@ -175,7 +177,7 @@ public class PersonStatusControllerITTest extends BaseModuleWebContextSensitiveW
                 .content(json(status)))
                 .andExpect(status().is(org.apache.http.HttpStatus.SC_OK))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.personId").value(person.getUuid()))
+                .andExpect(jsonPath("$.personId").value(person.getPersonId()))
                 .andExpect(jsonPath("$.title").value(PersonStatus.DEACTIVATED.getTitleKey()))
                 .andExpect(jsonPath("$.value").value(PersonStatus.DEACTIVATED.name()))
                 .andExpect(jsonPath("$.style").value(EXPECTED_DEACTIVATE_STYLE))
@@ -185,7 +187,7 @@ public class PersonStatusControllerITTest extends BaseModuleWebContextSensitiveW
     @Test
     public void shouldThrowExceptionWhenNoValidStatusValue() throws Exception {
         PersonStatusDTO status = new PersonStatusDTO()
-                .setPersonId(person.getUuid())
+                .setPersonId(person.getPersonId())
                 .setValue(NO_VALID_VALUE)
                 .setReason(Constant.STATUS_REASON_PAUSE);
 
@@ -202,7 +204,7 @@ public class PersonStatusControllerITTest extends BaseModuleWebContextSensitiveW
     @Test
     public void shouldThrowExceptionWhenMissingStatusValue() throws Exception {
         PersonStatusDTO status = new PersonStatusDTO()
-                .setPersonId(person.getUuid())
+                .setPersonId(person.getPersonId())
                 .setValue(PersonStatus.MISSING_VALUE.name())
                 .setReason(Constant.STATUS_REASON_PAUSE);
 
@@ -219,7 +221,7 @@ public class PersonStatusControllerITTest extends BaseModuleWebContextSensitiveW
     @Test
     public void shouldThrowExceptionWhenInvalidReasonValue() throws Exception {
         PersonStatusDTO status = new PersonStatusDTO()
-                .setPersonId(person.getUuid())
+                .setPersonId(person.getPersonId())
                 .setValue(PersonStatus.DEACTIVATED.name())
                 .setReason(TEST_INVALID_REASON);
 

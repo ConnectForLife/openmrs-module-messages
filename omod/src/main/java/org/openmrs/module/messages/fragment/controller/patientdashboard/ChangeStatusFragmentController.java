@@ -9,6 +9,7 @@
 
 package org.openmrs.module.messages.fragment.controller.patientdashboard;
 
+import org.openmrs.Person;
 import org.openmrs.module.messages.api.dto.PersonStatusDTO;
 import org.openmrs.module.messages.api.model.PersonStatus;
 import org.openmrs.module.messages.api.util.PersonStatusHelper;
@@ -25,10 +26,10 @@ public class ChangeStatusFragmentController {
 
     public void controller(FragmentModel model,
             @SpringBean(value = "messages.personStatusHelper") PersonStatusHelper personStatusHelper,
-            @RequestParam(value = "patientId", required = false) String personID) {
+            @RequestParam(value = "patientId", required = false) String personIdOrUuid) {
         model.addAttribute("personStatusValues", Arrays.asList(PersonStatus.ACTIVATED, PersonStatus.DEACTIVATED));
         model.addAttribute("possibleReasons", personStatusHelper.getPossibleReasons());
-        PersonStatusDTO personStatus = personStatusHelper.getStatus(personID);
+        PersonStatusDTO personStatus = personStatusHelper.getStatus(personIdOrUuid);
         if (personStatus != null) {
             model.addAttribute("personStatusValue", personStatus.getValue());
             model.addAttribute("personStatusReason", personStatus.getReason());
@@ -38,17 +39,19 @@ public class ChangeStatusFragmentController {
     /**
      * Updates the person status
      *
-     * @param personId person id
+     * @param personIdOrUuid person DB id or UUID
      * @param personStatusValue status value
      * @param personStatusReason status reason value
      * @param personStatusHelper bean for PersonStatusHelper
      */
-    public void update(@RequestParam(value = "personId", required = false) String personId,
+    public void update(@RequestParam(value = "personIdOrUuid", required = false) String personIdOrUuid,
             @RequestParam(value = "personStatusValue", required = false) String personStatusValue,
             @RequestParam(value = "personStatusReason", required = false) String personStatusReason,
             @SpringBean(value = "messages.personStatusHelper") PersonStatusHelper personStatusHelper) {
+        Person person = personStatusHelper.getPersonFromDashboardPersonId(personIdOrUuid);
         PersonStatusDTO status = new PersonStatusDTO()
-                .setPersonId(personId)
+                .setPersonId(person.getPersonId())
+                .setPersonUuid(person.getUuid())
                 .setValue(personStatusValue)
                 .setReason(personStatusReason);
         personStatusHelper.saveStatus(status);

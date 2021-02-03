@@ -24,7 +24,9 @@ public class PersonStatusDTO extends BaseDTO {
 
     private String reason;
 
-    private String personId;
+    private Integer personId;
+
+    private String personUuid;
 
     public String getTitle() {
         return title;
@@ -62,12 +64,21 @@ public class PersonStatusDTO extends BaseDTO {
         return this;
     }
 
-    public String getPersonId() {
+    public Integer getPersonId() {
         return personId;
     }
 
-    public PersonStatusDTO setPersonId(String personId) {
+    public PersonStatusDTO setPersonId(Integer personId) {
         this.personId = personId;
+        return this;
+    }
+
+    public String getPersonUuid() {
+        return personUuid;
+    }
+
+    public PersonStatusDTO setPersonUuid(String personUuid) {
+        this.personUuid = personUuid;
         return this;
     }
 }

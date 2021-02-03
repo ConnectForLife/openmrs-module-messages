@@ -4,10 +4,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.openmrs.Person;
+import org.openmrs.api.PersonService;
 import org.openmrs.module.messages.Constant;
 import org.openmrs.module.messages.api.dto.PersonStatusDTO;
 import org.openmrs.module.messages.api.model.PersonStatus;
 import org.openmrs.module.messages.api.util.PersonStatusHelper;
+import org.openmrs.module.messages.builder.PersonBuilder;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -29,6 +32,9 @@ public class ChangeStatusFragmentControllerTest {
     @Mock
     private PersonStatusHelper personStatusHelper;
 
+    @Mock
+    private PersonService personService;
+
     private ChangeStatusFragmentController controller = new ChangeStatusFragmentController();
 
     private List<String> possibleReasons;
@@ -37,10 +43,15 @@ public class ChangeStatusFragmentControllerTest {
 
     private PersonStatusDTO status;
 
+    private Person person;
+
     @Before
     public void setUp() {
         status = buildPersonStatus();
+        person = buildPerson();
+
         when(personStatusHelper.getStatus(PERSON_ID)).thenReturn(status);
+        when(personStatusHelper.getPersonFromDashboardPersonId(PERSON_ID)).thenReturn(person);
 
         possibleReasons = new ArrayList<>();
         possibleReasons.add(Constant.STATUS_REASON_DECEASED);
@@ -78,7 +89,7 @@ public class ChangeStatusFragmentControllerTest {
     @Test
     public void shouldProperlyUpdatePersonStatus() {
         PersonStatusDTO updatedStatus = new PersonStatusDTO()
-                .setPersonId(PERSON_ID)
+                .setPersonId(Integer.parseInt(PERSON_ID))
                 .setValue(PersonStatus.DEACTIVATED.name())
                 .setReason(Constant.STATUS_REASON_VACATION);
 
@@ -91,9 +102,13 @@ public class ChangeStatusFragmentControllerTest {
 
     private PersonStatusDTO buildPersonStatus() {
          PersonStatusDTO personStatus = new PersonStatusDTO()
-                .setPersonId(PERSON_ID)
+                .setPersonId(Integer.parseInt(PERSON_ID))
                 .setValue(PersonStatus.ACTIVATED.name())
                 .setReason(Constant.STATUS_REASON_DECEASED);
         return personStatus;
+    }
+
+    private Person buildPerson() {
+        return new PersonBuilder().withId(Integer.parseInt(PERSON_ID)).build();
     }
 }

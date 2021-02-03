@@ -35,6 +35,8 @@ public class PersonStatusHelperITTest extends ContextSensitiveWithActivatorTest 
 
     private static final String PERSON_WITH_WRONG_ATTRIBUTE_VALUE_UUID = "69962c4a-ad29-4e9b-951b-2a27079f2b25";
 
+    private static final Integer PERSON_ID_WITH_WRONG_ATTRIBUTE_VALUE_UUID = 235923;
+
     private static final String VOIDED_STATUS = PersonStatus.NO_CONSENT.name();
 
     private static final String ACTUAL_STATUS = PersonStatus.ACTIVATED.name();
@@ -53,6 +55,8 @@ public class PersonStatusHelperITTest extends ContextSensitiveWithActivatorTest 
     private static final String NOT_EXIST_PERSON = "8124263d-d1ec-4be5-bf62-502ab125d076";
 
     private static final String PERSON_WITHOUT_ATTRIBUTE = "8c8169be-94f0-42ba-81de-cf3f2c12a7ec";
+
+    private static final Integer PERSON_ID_WITHOUT_ATTRIBUTE = 99923;
 
     private static final String TEST_INVALID_REASON = "The status was changed for test reason";
 
@@ -105,7 +109,7 @@ public class PersonStatusHelperITTest extends ContextSensitiveWithActivatorTest 
     public void shouldReturnExpectedStatusByPersonId() {
         PersonStatusDTO actual = personStatusHelper.getStatus(person.getId().toString());
         assertThat(actual, is(notNullValue()));
-        assertThat(actual, hasProperty("personId", is(person.getId().toString())));
+        assertThat(actual, hasProperty("personId", is(person.getPersonId())));
         assertThat(actual, hasProperty("title", is(PersonStatus.ACTIVATED.getTitleKey())));
         assertThat(actual, hasProperty("value", is(PersonStatus.ACTIVATED.name())));
         assertThat(actual, hasProperty("style", is(EXPECTED_ACTIVATED_STYLE)));
@@ -116,7 +120,8 @@ public class PersonStatusHelperITTest extends ContextSensitiveWithActivatorTest 
     public void shouldReturnExpectedStatusByPersonUuid() {
         PersonStatusDTO actual = personStatusHelper.getStatus(person.getUuid());
         assertThat(actual, is(notNullValue()));
-        assertThat(actual, hasProperty("personId", is(person.getUuid())));
+        assertThat(actual, hasProperty("personId", is(person.getPersonId())));
+        assertThat(actual, hasProperty("personUuid", is(person.getUuid())));
         assertThat(actual, hasProperty("title", is(PersonStatus.ACTIVATED.getTitleKey())));
         assertThat(actual, hasProperty("value", is(PersonStatus.ACTIVATED.name())));
         assertThat(actual, hasProperty("style", is(EXPECTED_ACTIVATED_STYLE)));
@@ -133,7 +138,8 @@ public class PersonStatusHelperITTest extends ContextSensitiveWithActivatorTest 
     public void shouldReturnMissingStatusIfPersonHasNotStatusAttribute() {
         PersonStatusDTO actual = personStatusHelper.getStatus(PERSON_WITHOUT_ATTRIBUTE);
         assertThat(actual, is(notNullValue()));
-        assertThat(actual, hasProperty("personId", is(PERSON_WITHOUT_ATTRIBUTE)));
+        assertThat(actual, hasProperty("personId", is(PERSON_ID_WITHOUT_ATTRIBUTE)));
+        assertThat(actual, hasProperty("personUuid", is(PERSON_WITHOUT_ATTRIBUTE)));
         assertThat(actual, hasProperty("title", is(PersonStatus.MISSING_VALUE.getTitleKey())));
         assertThat(actual, hasProperty("value", is(PersonStatus.MISSING_VALUE.name())));
         assertThat(actual, hasProperty("style", is(EXPECTED_MISSING_STYLE)));
@@ -144,7 +150,8 @@ public class PersonStatusHelperITTest extends ContextSensitiveWithActivatorTest 
     public void shouldReturnMissingStatusIfPersonHasWrongValueOfAttribute() {
         PersonStatusDTO actual = personStatusHelper.getStatus(PERSON_WITH_WRONG_ATTRIBUTE_VALUE_UUID);
         assertThat(actual, is(notNullValue()));
-        assertThat(actual, hasProperty("personId", is(PERSON_WITH_WRONG_ATTRIBUTE_VALUE_UUID)));
+        assertThat(actual, hasProperty("personId", is(PERSON_ID_WITH_WRONG_ATTRIBUTE_VALUE_UUID)));
+        assertThat(actual, hasProperty("personUuid", is(PERSON_WITH_WRONG_ATTRIBUTE_VALUE_UUID)));
         assertThat(actual, hasProperty("title", is(PersonStatus.MISSING_VALUE.getTitleKey())));
         assertThat(actual, hasProperty("value", is(PersonStatus.MISSING_VALUE.name())));
         assertThat(actual, hasProperty("style", is(EXPECTED_MISSING_STYLE)));
@@ -154,14 +161,15 @@ public class PersonStatusHelperITTest extends ContextSensitiveWithActivatorTest 
     @Test
     public void shouldCreateNewPersonStatusAttribute() {
         PersonStatusDTO status = new PersonStatusDTO()
-                .setPersonId(person.getUuid())
+                .setPersonId(person.getPersonId())
                 .setValue(PersonStatus.DEACTIVATED.name())
                 .setReason(Constant.STATUS_REASON_OTHER);
         personStatusHelper.saveStatus(status);
 
         PersonStatusDTO actual = personStatusHelper.getStatus(person.getUuid());
         assertThat(actual, is(notNullValue()));
-        assertThat(actual, hasProperty("personId", is(person.getUuid())));
+        assertThat(actual, hasProperty("personId", is(person.getPersonId())));
+        assertThat(actual, hasProperty("personUuid", is(person.getUuid())));
         assertThat(actual, hasProperty("title", is(PersonStatus.DEACTIVATED.getTitleKey())));
         assertThat(actual, hasProperty("value", is(PersonStatus.DEACTIVATED.name())));
         assertThat(actual, hasProperty("style", is(EXPECTED_DEACTIVATE_STYLE)));
@@ -171,7 +179,7 @@ public class PersonStatusHelperITTest extends ContextSensitiveWithActivatorTest 
     @Test(expected = ValidationException.class)
     public void shouldThrowExceptionWhenNoValidStatusValue() {
         PersonStatusDTO status = new PersonStatusDTO()
-                .setPersonId(person.getUuid())
+                .setPersonId(person.getPersonId())
                 .setValue(NO_VALID_VALUE)
                 .setReason(Constant.STATUS_REASON_OTHER);
         personStatusHelper.saveStatus(status);
@@ -180,7 +188,7 @@ public class PersonStatusHelperITTest extends ContextSensitiveWithActivatorTest 
     @Test(expected = ValidationException.class)
     public void shouldThrowExceptionWhenMissingStatusValue() {
         PersonStatusDTO status = new PersonStatusDTO()
-                .setPersonId(person.getUuid())
+                .setPersonId(person.getPersonId())
                 .setValue(PersonStatus.MISSING_VALUE.name())
                 .setReason(Constant.STATUS_REASON_OTHER);
         personStatusHelper.saveStatus(status);
@@ -189,7 +197,7 @@ public class PersonStatusHelperITTest extends ContextSensitiveWithActivatorTest 
     @Test(expected = ValidationException.class)
     public void shouldThrowExceptionWhenInvalidStatusReason() {
         PersonStatusDTO status = new PersonStatusDTO()
-                .setPersonId(person.getUuid())
+                .setPersonId(person.getPersonId())
                 .setValue(PersonStatus.DEACTIVATED.name())
                 .setReason(TEST_INVALID_REASON);
         personStatusHelper.saveStatus(status);

@@ -42,7 +42,7 @@ changeStatus.submit = function() {
         jq.ajax({
             url: url,
             type: 'POST',
-            data: { personId: changeStatus.personId, personStatusValue: statusValue, personStatusReason: changeReason},
+            data: { personIdOrUuid: changeStatus.personIdOrUuid, personStatusValue: statusValue, personStatusReason: changeReason},
             success: function() {
                 emr.successMessage('person.status.update.successful');
                 jq('#person-status-update-dialog' + ' .icon-spin').css('display', 'none').parent().removeClass('disabled');
@@ -58,8 +58,8 @@ changeStatus.submit = function() {
     }
 }
 
-changeStatus.showPersonStatusUpdateDialog = function(personId) {
-    changeStatus.personId = personId;
+changeStatus.showPersonStatusUpdateDialog = function(personIdOrUuid) {
+    changeStatus.personIdOrUuid = personIdOrUuid;
     if (changeStatus.updatePersonStatusDialog == null) {
         changeStatus.createPersonStatusUpdateDialog();
     }
