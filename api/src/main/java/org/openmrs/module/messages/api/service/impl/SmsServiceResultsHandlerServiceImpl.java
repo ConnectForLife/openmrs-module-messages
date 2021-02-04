@@ -56,7 +56,7 @@ public class SmsServiceResultsHandlerServiceImpl extends AbstractServiceResultsH
                 this.triggerEvent(service, executionContext);
                 this.messagingService.registerAttempt(service, ServiceStatus.DELIVERED, DateUtil.now(), null);
             } catch (Exception ex) {
-                LOGGER.warn(String.format("During handling the `%s` service the following exception noticed `%s`",
+                LOGGER.error(String.format("During handling the `%s` service the following exception noticed `%s`",
                         service.getTemplateName(), ex.getMessage()));
                 if (LOGGER.isTraceEnabled()) {
                     LOGGER.trace("Error details: ", ex);
