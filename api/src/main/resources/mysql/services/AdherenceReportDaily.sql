@@ -7,7 +7,7 @@ UPDATE messages_template SET service_query =
             1 AS MESSAGE_ID,
             :Service_type AS CHANNEL_ID
         FROM (
-            SELECT * FROM (SELECT * FROM DATES_LIST) v
+            SELECT * FROM (SELECT * FROM DATES_LIST_10_DAYS) v
             WHERE selected_date <= DATE(:endDateTime)
                 AND selected_date >= DATE(:startDateTime)
                 AND :Week_day_of_delivering_message

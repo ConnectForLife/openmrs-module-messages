@@ -11,7 +11,7 @@ UPDATE messages_template SET service_query =
         FROM (
             SELECT *
             FROM
-                (SELECT * FROM DATES_LIST) dates_list
+                (SELECT * FROM DATES_LIST_10_DAYS) dates_list
             WHERE selected_date >= DATE(:startDateTime)
                 AND selected_date <= DATE(:endDateTime)
                 AND (DAYOFMONTH(selected_date) < IF

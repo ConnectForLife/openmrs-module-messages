@@ -20,7 +20,7 @@ UPDATE messages_template SET service_query =
          visitId,
          visitTime AS timeStarted
         FROM
-        DATES_LIST
+        DATES_LIST_10_DAYS
 
             JOIN (
                 SELECT

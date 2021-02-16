@@ -4089,4 +4089,16 @@
         </delete>
     </changeSet>
 
+    <changeSet id="messages-87" author="Dawid Ruchniewicz">
+        <comment>Limited dates views to 10 days</comment>
+
+        <sql>
+            DROP VIEW IF EXISTS DATES_LIST_10_DAYS;
+            CREATE VIEW DATES_LIST_10_DAYS AS SELECT (CURDATE() + INTERVAL (((((t4 * 10000) + (t3 * 1000)) + (t2 * 100)) + (t1 * 10)) + t0) DAY) selected_date
+            FROM ((((DIGITS_0 as t0 JOIN DIGITS_1 as t1) JOIN DIGITS_2 as t2) JOIN DIGITS_3 as t3) JOIN DIGITS_4 as t4)
+            WHERE (CURDATE() + INTERVAL (((((t4 * 10000) + (t3 * 1000)) + (t2 * 100)) + (t1 * 10)) + t0) DAY) &lt; (SELECT DATE_ADD(CURDATE(), INTERVAL 10 DAY));
+        </sql>
+    </changeSet>
+
+
 </databaseChangeLog>
