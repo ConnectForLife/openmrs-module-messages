@@ -6,5 +6,5 @@ package org.openmrs.module.messages.api.execution;
  */
 public interface ExecutionEngine {
 
-    ServiceResultList execute(ExecutionContext executionContext) throws ExecutionException;
+    ServiceResultList execute(ExecutionContext executionContext, boolean isCalendarQuery) throws ExecutionException;
 }

@@ -9,6 +9,7 @@
 
 package org.openmrs.module.messages.api.helper;
 
+import org.openmrs.module.messages.Constant;
 import org.openmrs.module.messages.api.model.Template;
 
 public final class TemplateHelper {
@@ -20,7 +21,8 @@ public final class TemplateHelper {
     
     public static Template createTestInstance() {
         Template template = new Template();
-        template.setServiceQuery("example service query");
+        template.setServiceQuery(Constant.EXAMPLE_TEMPLATE_SERVICE_QUERY);
+        template.setCalendarServiceQuery(Constant.EXAMPLE_TEMPLATE_CALENDAR_SERVICE_QUERY);
         template.setServiceQueryType("example service query type");
         template.setName(DUMMY_SERVICE_NAME);
         

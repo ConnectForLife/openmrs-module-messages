@@ -149,6 +149,7 @@ public class TemplateControllerITTest extends BaseModuleWebContextSensitiveTest 
                 .withName(EMPTY_STRING)
                 .withServiceQuery(EMPTY_STRING)
                 .withServiceQueryType(EMPTY_STRING)
+                .withCalendarServiceQuery(EMPTY_STRING)
                 .withTemplateFields(Collections.singletonList(field))
                 .buildAsNew();
 

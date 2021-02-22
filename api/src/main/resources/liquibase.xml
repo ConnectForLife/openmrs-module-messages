@@ -4100,5 +4100,43 @@
         </sql>
     </changeSet>
 
+    <changeSet id="messages-88" author="Dawid Ruchniewicz">
+        <comment>Limited UI dates view to 2000 days (about 5.5 years) in the future from today</comment>
+
+        <sql>
+            DROP VIEW IF EXISTS DATES_LIST;
+            CREATE VIEW DATES_LIST AS SELECT (CURDATE() + INTERVAL (((((t4 * 10000) + (t3 * 1000)) + (t2 * 100)) + (t1 * 10)) + t0) DAY) selected_date
+            FROM ((((DIGITS_0 as t0 JOIN DIGITS_1 as t1) JOIN DIGITS_2 as t2) JOIN DIGITS_3 as t3) JOIN DIGITS_4 as t4)
+            WHERE (CURDATE() + INTERVAL (((((t4 * 10000) + (t3 * 1000)) + (t2 * 100)) + (t1 * 10)) + t0) DAY) &lt; (SELECT DATE_ADD(CURDATE(), INTERVAL 2000 DAY));
+        </sql>
+    </changeSet>
+
+    <changeSet id="messages-89" author="Dawid Ruchniewicz">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="messages_template"/>
+            <tableExists tableName="messages_patient_template"/>
+        </preConditions>
+        <comment>Added calendarServiceQuery column to template and patient template tables</comment>
+        <addColumn tableName="messages_template">
+            <column name="calendar_service_query" type="TEXT"/>
+        </addColumn>
+        <addColumn tableName="messages_patient_template">
+            <column name="calendar_service_query" type="TEXT"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="messages-90" author="Dawid Ruchniewicz" runOnChange="true">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="messages_template"/>
+            <sqlCheck expectedResult="1">SELECT COUNT(*) FROM messages_template WHERE name = 'Visit reminder'</sqlCheck>
+        </preConditions>
+        <comment>
+            Added visit service query used in the calendar view
+        </comment>
+        <sqlFile encoding="UTF-8"
+                 path="mysql/services/VisitReminderCalendarQuery.sql"
+                 splitStatements="false"
+                 stripComments="false"/>
+    </changeSet>
 
 </databaseChangeLog>

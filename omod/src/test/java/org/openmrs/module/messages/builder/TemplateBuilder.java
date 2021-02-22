@@ -8,12 +8,14 @@ public final class TemplateBuilder extends AbstractBuilder<Template> {
     private String serviceQuery;
     private String serviceQueryType;
     private String name;
+    private String calendarServiceQuery;
 
     public TemplateBuilder() {
         id = getInstanceNumber();
         serviceQuery = "SELECT * FROM template";
         serviceQueryType = "SQL";
         name = "Example name";
+        calendarServiceQuery = "SELECT CALENDAR SERVICE QUERY;";
     }
 
     @Override
@@ -23,6 +25,7 @@ public final class TemplateBuilder extends AbstractBuilder<Template> {
         template.setServiceQuery(serviceQuery);
         template.setServiceQueryType(serviceQueryType);
         template.setName(name);
+        template.setCalendarServiceQuery(calendarServiceQuery);
         return template;
     }
 
@@ -48,6 +51,11 @@ public final class TemplateBuilder extends AbstractBuilder<Template> {
 
     public TemplateBuilder setName(String name) {
         this.name = name;
+        return this;
+    }
+
+    public TemplateBuilder withCalendarServiceQuery(String calendarServiceQuery) {
+        this.calendarServiceQuery = calendarServiceQuery;
         return this;
     }
 }

@@ -161,6 +161,7 @@ public class ExecutionEngineContextTest extends ContextSensitiveTest {
                 "FROM patient p " +
                 "JOIN person per ON per.person_id = p.patient_id  " +
                 "WHERE per.birthdate > :startDateTime AND per.birthdate < :endDateTime");
+        template.setCalendarServiceQuery("SELECT CALENDAR SERVICE QUERY");
         template.setServiceQueryType("SQL");
         template.setName(SERVICE_NAME);
         template = templateService.saveOrUpdate(template);
@@ -190,6 +191,7 @@ public class ExecutionEngineContextTest extends ContextSensitiveTest {
                 "FROM patient p " +
                 "JOIN person per ON per.person_id = p.patient_id  " +
                 "WHERE per.birthdate > :startDateTime AND per.birthdate < :startDateTime");
+        template.setCalendarServiceQuery("SELECT CALENDAR SERVICE QUERY");
         template.setServiceQueryType("SQL");
         template.setName(SERVICE_NAME);
         template = templateService.saveOrUpdate(template);

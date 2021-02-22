@@ -48,7 +48,7 @@ public class ServiceExecutorImpl extends BaseOpenmrsService implements ServiceEx
     @Override
     public ServiceResultList execute(PatientTemplate patientTemplate, Range<Date> dateTimeRange)
             throws ExecutionException {
-        return execute(patientTemplate, dateTimeRange, null);
+        return execute(patientTemplate, dateTimeRange, null, false);
     }
 
     /**
@@ -57,6 +57,7 @@ public class ServiceExecutorImpl extends BaseOpenmrsService implements ServiceEx
      * @param patientTemplate - provided patient template
      * @param dateTimeRange - date time range for executed query
      * @param executionStartDateTime - date time of starting execution
+     * @param isCalendarQuery - determines if calendar or scheduler job service query should be executed
      * @return - list of results. The result list contains the Service results according to provided dateTime range.
      *      Services which weren't executed should have the status set as FUTURE.
      * @throws ExecutionException - exception occurred during service execution
@@ -64,7 +65,7 @@ public class ServiceExecutorImpl extends BaseOpenmrsService implements ServiceEx
     @Transactional(noRollbackFor = {RuntimeException.class, SQLGrammarException.class}, readOnly = true)
     @Override
     public ServiceResultList execute(PatientTemplate patientTemplate, Range<Date> dateTimeRange,
-                                     Date executionStartDateTime) throws ExecutionException {
+                                     Date executionStartDateTime, boolean isCalendarQuery) throws ExecutionException {
         ExecutionEngine executionEngine = getEngine(patientTemplate);
 
         ExecutionContext executionContext = new ExecutionContext(patientTemplate, dateTimeRange,
@@ -72,7 +73,7 @@ public class ServiceExecutorImpl extends BaseOpenmrsService implements ServiceEx
                 executionStartDateTime);
 
         logExecutingInfo(patientTemplate, executionEngine);
-        return executionEngine.execute(executionContext);
+        return executionEngine.execute(executionContext, isCalendarQuery);
     }
 
     private ExecutionEngine getEngine(PatientTemplate patientTemplate) throws ExecutionException {

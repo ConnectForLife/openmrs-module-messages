@@ -35,6 +35,10 @@ public final class Constant {
     public static final String CHANNEL_TYPE_CALL = "Call";
     public static final String CHANNEL_TYPE_SMS = "SMS";
 
+    public static final String EXAMPLE_TEMPLATE_SERVICE_QUERY = "example template service query";
+    public static final String EXAMPLE_TEMPLATE_CALENDAR_SERVICE_QUERY = "example template calendar service query";
+    public static final String EXAMPLE_PATIENT_TEMPLATE_CALENDAR_SERVICE_QUERY = "example patient template calendar service query";
+
     private Constant() {
     }
 }

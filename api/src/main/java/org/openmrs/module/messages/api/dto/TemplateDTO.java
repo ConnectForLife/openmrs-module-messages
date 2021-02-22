@@ -24,6 +24,8 @@ public class TemplateDTO extends BaseDTO implements DTO {
     @NotBlank
     private String serviceQueryType;
 
+    private String calendarServiceQuery;
+
     @Valid
     private List<TemplateFieldDTO> templateFields = new ArrayList<>();
 
@@ -91,6 +93,15 @@ public class TemplateDTO extends BaseDTO implements DTO {
 
     public TemplateDTO setUuid(String uuid) {
         this.uuid = uuid;
+        return this;
+    }
+
+    public String getCalendarServiceQuery() {
+        return calendarServiceQuery;
+    }
+
+    public TemplateDTO setCalendarServiceQuery(String calendarServiceQuery) {
+        this.calendarServiceQuery = calendarServiceQuery;
         return this;
     }
 }

@@ -21,6 +21,8 @@ public final class TemplateDTOBuilder extends AbstractBuilder<TemplateDTO> {
 
     private String uuid;
 
+    private String calendarServiceQuery;
+
     public TemplateDTOBuilder() {
         Template template = new TemplateBuilder().build();
         id = template.getId();
@@ -29,6 +31,7 @@ public final class TemplateDTOBuilder extends AbstractBuilder<TemplateDTO> {
         serviceQueryType = template.getServiceQueryType();
         templateFields = Collections.singletonList(new TemplateFieldDTOBuilder().build());
         uuid = template.getUuid();
+        calendarServiceQuery = template.getCalendarServiceQuery();
     }
 
     @Override
@@ -39,7 +42,8 @@ public final class TemplateDTOBuilder extends AbstractBuilder<TemplateDTO> {
                 .setServiceQuery(serviceQuery)
                 .setServiceQueryType(serviceQueryType)
                 .setTemplateFields(templateFields)
-                .setUuid(uuid);
+                .setUuid(uuid)
+                .setCalendarServiceQuery(calendarServiceQuery);
     }
 
     @Override
@@ -74,6 +78,11 @@ public final class TemplateDTOBuilder extends AbstractBuilder<TemplateDTO> {
 
     public TemplateDTOBuilder withUuid(String uuid) {
         this.uuid = uuid;
+        return this;
+    }
+
+    public TemplateDTOBuilder withCalendarServiceQuery(String calendarServiceQuery) {
+        this.calendarServiceQuery = calendarServiceQuery;
         return this;
     }
 }

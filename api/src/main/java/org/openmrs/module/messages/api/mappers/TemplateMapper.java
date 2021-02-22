@@ -22,6 +22,7 @@ public class TemplateMapper extends AbstractMapper<TemplateDTO, Template>
         return new TemplateDTO()
                 .setId(dao.getId())
                 .setServiceQuery(dao.getServiceQuery())
+                .setCalendarServiceQuery(dao.getCalendarServiceQuery())
                 .setServiceQueryType(dao.getServiceQueryType())
                 .setTemplateFields(templateFields)
                 .setName(dao.getName())
@@ -35,6 +36,7 @@ public class TemplateMapper extends AbstractMapper<TemplateDTO, Template>
         template.setName(dto.getName());
         template.setId(dto.getId());
         template.setServiceQuery(dto.getServiceQuery());
+        template.setCalendarServiceQuery(dto.getCalendarServiceQuery());
         template.setServiceQueryType(dto.getServiceQueryType());
         mapTemplateFieldsFromDto(dto, template);
         if (dto.getUuid() != null) {

@@ -57,6 +57,9 @@ public class PatientTemplate extends AbstractBaseOpenmrsData {
     @Column(name = "service_query", columnDefinition = "text")
     private String serviceQuery;
 
+    @Column(name = "calendar_service_query", columnDefinition = "text")
+    private String calendarServiceQuery;
+
     @Column(name = "service_query_type")
     private String serviceQueryType;
 
@@ -145,6 +148,14 @@ public class PatientTemplate extends AbstractBaseOpenmrsData {
         return StringUtils.isBlank(serviceQueryType) ? getTemplate().getServiceQueryType() : serviceQueryType;
     }
 
+    public String getCalendarServiceQuery() {
+        return StringUtils.isBlank(calendarServiceQuery) ? getTemplate().getCalendarServiceQuery() : calendarServiceQuery;
+    }
+
+    public void setCalendarServiceQuery(String calendarServiceQuery) {
+        this.calendarServiceQuery = calendarServiceQuery;
+    }
+
     @Transient
     public Integer getServiceId() {
         return 0; // TODO
@@ -171,5 +182,9 @@ public class PatientTemplate extends AbstractBaseOpenmrsData {
                 getPatient().getId().equals(actorType.getPersonA().getId()) ?
                         actorType.getRelationshipType().getbIsToA() :
                         actorType.getRelationshipType().getaIsToB();
+    }
+
+    public String getQuery(boolean isCalendarQuery) {
+        return isCalendarQuery ? getCalendarServiceQuery() : getServiceQuery();
     }
 }

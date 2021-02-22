@@ -3,6 +3,7 @@ package org.openmrs.module.messages.api.dao.impl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.module.messages.Constant;
 import org.openmrs.module.messages.ContextSensitiveTest;
 import org.openmrs.module.messages.api.dao.TemplateDao;
 import org.openmrs.module.messages.api.helper.TemplateHelper;
@@ -42,6 +43,7 @@ public class TemplateDaoITTest extends ContextSensitiveTest {
         Assert.assertThat(savedTemplate, hasProperty("serviceQuery", is(template1.getServiceQuery())));
         Assert.assertThat(savedTemplate, hasProperty("serviceQueryType",
                 is(template1.getServiceQueryType())));
+        Assert.assertThat(savedTemplate, hasProperty("calendarServiceQuery", is(template1.getCalendarServiceQuery())));
     }
     
     @Test
@@ -67,4 +69,23 @@ public class TemplateDaoITTest extends ContextSensitiveTest {
         Assert.assertThat(templateDao.getByUuid(template1.getUuid()),
                 hasProperty("serviceQuery", is("updated service query")));
     }
+
+    @Test
+    public void shouldReturnCalendarQueryIfNotBlank() {
+        template1.setCalendarServiceQuery(Constant.EXAMPLE_PATIENT_TEMPLATE_CALENDAR_SERVICE_QUERY);
+        Assert.assertEquals(Constant.EXAMPLE_PATIENT_TEMPLATE_CALENDAR_SERVICE_QUERY, template1.getCalendarServiceQuery());
+    }
+
+    @Test
+    public void shouldReturnServiceQueryIfCalendarQueryIsNull() {
+        template1.setCalendarServiceQuery(null);
+        Assert.assertEquals(Constant.EXAMPLE_TEMPLATE_SERVICE_QUERY, template1.getCalendarServiceQuery());
+    }
+
+    @Test
+    public void shouldReturnServiceQueryIfCalendarQueryIsEmpty() {
+        template1.setCalendarServiceQuery("");
+        Assert.assertEquals(Constant.EXAMPLE_TEMPLATE_SERVICE_QUERY, template1.getCalendarServiceQuery());
+    }
+
 }

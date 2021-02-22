@@ -38,10 +38,11 @@ public interface ServiceExecutor extends OpenmrsService {
      * @param patientTemplate - provided patient template
      * @param dateTimeRange - date time range for executed query
      * @param executionStartDateTime - date time of starting execution
+     * @param isCalendarQuery - determines if calendar or scheduler job service query should be executed
      * @return - list of results. The result list contains the Service results according to provided dateTime range.
      *      Services which weren't executed should have the status set as FUTURE.
      * @throws ExecutionException - exception occurred during service execution
      */
-    ServiceResultList execute(PatientTemplate patientTemplate, Range<Date> dateTimeRange, Date executionStartDateTime)
-            throws ExecutionException;
+    ServiceResultList execute(PatientTemplate patientTemplate, Range<Date> dateTimeRange, Date executionStartDateTime,
+                              boolean isCalendarQuery) throws ExecutionException;
 }

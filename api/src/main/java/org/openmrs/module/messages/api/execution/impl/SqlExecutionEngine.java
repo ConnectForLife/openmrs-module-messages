@@ -30,18 +30,17 @@ public class SqlExecutionEngine implements ExecutionEngine {
     }
     
     @Override
-    public ServiceResultList execute(ExecutionContext executionContext) throws ExecutionException {
+    public ServiceResultList execute(ExecutionContext executionContext, boolean isCalendarQuery) throws ExecutionException {
         try {
-            return executeQuery(executionContext);
+            return executeQuery(executionContext, isCalendarQuery);
         } catch (Exception e) {
             throw new ExecutionException("Error while executing the SQL template", e);
         }
     }
     
-    private ServiceResultList executeQuery(ExecutionContext executionContext) {
+    private ServiceResultList executeQuery(ExecutionContext executionContext, boolean isCalendarQuery) {
         SQLQuery sqlQuery = dbSessionFactory.getCurrentSession()
-                .createSQLQuery(executionContext.getPatientTemplate()
-                        .getServiceQuery());
+                .createSQLQuery(executionContext.getPatientTemplate().getQuery(isCalendarQuery));
         sqlQuery.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
         setParams(sqlQuery, executionContext.getParams());
         

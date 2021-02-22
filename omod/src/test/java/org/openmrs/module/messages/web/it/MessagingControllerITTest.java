@@ -339,6 +339,7 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
                 .withServiceQuery("SELECT now() AS EXECUTION_DATE, 1 AS MESSAGE_ID, 'Call' AS CHANNEL_ID;")
                 .withServiceQueryType("SQL")
                 .setName(templateName)
+                .withCalendarServiceQuery("")
                 .buildAsNew();
         template.setTemplateFields(createTemplateFields(template));
         return templateDao.saveOrUpdate(template);

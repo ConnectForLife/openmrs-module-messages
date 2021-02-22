@@ -1,5 +1,7 @@
 package org.openmrs.module.messages.api.model;
 
+import org.apache.commons.lang.StringUtils;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,6 +25,9 @@ public class Template extends AbstractBaseOpenmrsData {
     
     @Column(name = "service_query", columnDefinition = "text", nullable = false)
     private String serviceQuery;
+
+    @Column(name = "calendar_service_query", columnDefinition = "text")
+    private String calendarServiceQuery;
     
     @Column(name = "service_query_type", nullable = false)
     private String serviceQueryType;
@@ -98,5 +103,20 @@ public class Template extends AbstractBaseOpenmrsData {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * Returns query which is used in a calendar view. If this field is empty it returns service query which is used
+     * in scheduler job. This calendar query is not mandatory and is typically used to improve performance of
+     * calendar displaying
+     *
+     * @return calendar service query
+     */
+    public String getCalendarServiceQuery() {
+        return StringUtils.isBlank(calendarServiceQuery) ? getServiceQuery() : calendarServiceQuery;
+    }
+
+    public void setCalendarServiceQuery(String calendarServiceQuery) {
+        this.calendarServiceQuery = calendarServiceQuery;
     }
 }

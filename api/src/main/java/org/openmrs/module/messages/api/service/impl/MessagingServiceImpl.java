@@ -164,7 +164,7 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
 
         PatientTemplateCriteria patientTemplateCriteria = PatientTemplateCriteria.forPatientId(patientId);
         return retrieveAllServiceExecutions(patientTemplateService.findAllByCriteria(patientTemplateCriteria),
-                startDate, endDate);
+                startDate, endDate, true);
     }
 
     @Override
@@ -172,13 +172,13 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
     public List<ServiceResultList> retrieveAllServiceExecutionsForActor(Integer personId, Date startDate, Date endDate) {
         PatientTemplateCriteria patientTemplateCriteria = PatientTemplateCriteria.forActorId(personId);
         return retrieveAllServiceExecutions(patientTemplateService.findAllByCriteria(patientTemplateCriteria),
-                startDate, endDate);
+                startDate, endDate, true);
     }
 
     @Override
     @Transactional(noRollbackFor = {RuntimeException.class, SQLGrammarException.class}, readOnly = true)
     public List<ServiceResultList> retrieveAllServiceExecutions(Date startDate, Date endDate) {
-        return retrieveAllServiceExecutions(patientTemplateService.getAll(false), startDate, endDate);
+        return retrieveAllServiceExecutions(patientTemplateService.getAll(false), startDate, endDate, false);
     }
 
     @Override
@@ -283,7 +283,7 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
     }
 
     private List<ServiceResultList> retrieveAllServiceExecutions(List<PatientTemplate> patientTemplates, Date startDate,
-                                                                 Date endDate) {
+                                                                 Date endDate, boolean isCalendarQuery) {
         List<ServiceResultList> results = new ArrayList<>();
         Date executionStartDateTime = DateUtil.now();
         for (PatientTemplate patientTemplate : patientTemplates) {
@@ -300,7 +300,7 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
                                 ZoneConverterUtil.formatToUserZone(endDate)));
                     }
                 }
-                results.add(serviceExecutor.execute(patientTemplate, dateRange, executionStartDateTime));
+                results.add(serviceExecutor.execute(patientTemplate, dateRange, executionStartDateTime, isCalendarQuery));
             } catch (Exception e) {
                 logException(patientTemplate, e);
             }
