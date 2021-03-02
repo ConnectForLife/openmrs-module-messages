@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.util.HtmlUtils;
 
 import java.util.List;
 
@@ -50,8 +51,8 @@ public class PersonStatusController extends BaseRestController {
     public PersonStatusDTO getPersonStatus(@PathVariable("personIdOrUuid") String personIdOrUuid) {
         PersonStatusDTO result = personStatusHelper.getStatus(personIdOrUuid);
         if (result == null) {
-            throw new EntityNotFoundException(String.format(
-                    "Could not fetch person status for personIdOrUuid: %s", personIdOrUuid));
+            throw new EntityNotFoundException(String.format("Could not fetch person status for personIdOrUuid: %s",
+                    HtmlUtils.htmlEscape(personIdOrUuid)));
         }
         return result;
     }
@@ -59,7 +60,7 @@ public class PersonStatusController extends BaseRestController {
     /**
      * Updates the person status
      *
-     * @param personIdOrUuid DB id or UUID of person
+     * @param personIdOrUuid  DB id or UUID of person
      * @param personStatusDTO DTO object containing data about person status
      * @return updated DTO object containing data about person status
      */
@@ -67,7 +68,7 @@ public class PersonStatusController extends BaseRestController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public PersonStatusDTO updatePersonStatus(@PathVariable("personIdOrUuid") String personIdOrUuid,
-            @RequestBody PersonStatusDTO personStatusDTO) {
+                                              @RequestBody PersonStatusDTO personStatusDTO) {
         Person person = personStatusHelper.getPersonFromDashboardPersonId(personIdOrUuid);
         personStatusDTO.setPersonId(person.getPersonId());
         personStatusHelper.saveStatus(personStatusDTO);
