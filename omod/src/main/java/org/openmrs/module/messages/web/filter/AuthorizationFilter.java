@@ -75,9 +75,6 @@ public class AuthorizationFilter implements Filter {
             String decoded = new String(Base64.decodeBase64(credentials), Charset.forName("UTF-8"));
             String[] userAndPass = decoded.split(":");
             Context.authenticate(userAndPass[0], userAndPass[1]);
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("authenticated " + userAndPass[0]);
-            }
         } catch (ContextAuthenticationException ex) {
             Context.logout();
         }
