@@ -14,6 +14,7 @@ import validate.annotation.ValidPatientTemplate;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static org.openmrs.module.messages.ValidationMessagesConstants.PATIENT_TEMPLATE_REQUIRED_FIELD_IS_EMPTY;
@@ -62,7 +63,7 @@ public class PatientTemplateValidator implements ConstraintValidator<ValidPatien
     }
 
     private void validateTemplateFieldValue(TemplateFieldValue tfv,
-                                            List<TemplateField> templateFields) {
+                                            Collection<TemplateField> templateFields) {
         for (TemplateField tf : templateFields) {
             if (tf.getId().equals(tfv.getTemplateField().getId()) && SERVICE_TYPE.equals(tf.getTemplateFieldType())) {
                 validateServiceType(tfv);

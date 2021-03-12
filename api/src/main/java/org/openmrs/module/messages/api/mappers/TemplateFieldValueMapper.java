@@ -5,7 +5,7 @@ import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.TemplateField;
 import org.openmrs.module.messages.api.model.TemplateFieldValue;
 
-public class TemplateFieldValueMapper extends AbstractMapper<TemplateFieldValueDTO, TemplateFieldValue> {
+public class TemplateFieldValueMapper extends AbstractOpenMrsDataMapper<TemplateFieldValueDTO, TemplateFieldValue> {
 
     @Override
     public TemplateFieldValueDTO toDto(TemplateFieldValue dao) {

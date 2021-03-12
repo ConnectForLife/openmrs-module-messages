@@ -192,7 +192,7 @@
             name="Service1"
             creator="1"
             date_created="2019-11-20 00:00:00.0"
-            voided="false"
+            retired="false"
             uuid="fdd5191e-772c-4c67-9c39-e1a266f86afb"/>
 
     <!-- Template Fields -->

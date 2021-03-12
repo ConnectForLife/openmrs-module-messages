@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anyOf;
@@ -322,7 +323,7 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
 
     private TemplateFieldValue crateTemplateFieldValue(Template template, PatientTemplate patientTemplate) {
         return new TemplateFieldValueBuilder()
-                    .withTemplateField(template.getTemplateFields().get(0))
+                    .withTemplateField(template.getTemplateFields().iterator().next())
                     .withValue(Constant.CHANNEL_TYPE_CALL)
                     .withPatientTemplate(patientTemplate)
                     .buildAsNew();
@@ -345,13 +346,13 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
         return templateDao.saveOrUpdate(template);
     }
 
-    private List<TemplateField> createTemplateFields(Template template) {
+    private Set<TemplateField> createTemplateFields(Template template) {
         TemplateField templateField = new TemplateFieldBuilder()
                 .withTemplateFieldType(TemplateFieldType.SERVICE_TYPE)
                 .withDefaultValue(Constant.CHANNEL_TYPE_CALL)
                 .withTemplate(template)
                 .buildAsNew();
-        return Collections.singletonList(templateField);
+        return Collections.singleton(templateField);
     }
 
     private void assertIsRelatedToExistingPatientTemplate(MessageDTO messageDTO) {

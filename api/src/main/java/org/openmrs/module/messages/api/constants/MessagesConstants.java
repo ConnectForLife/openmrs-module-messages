@@ -62,6 +62,8 @@ public final class MessagesConstants {
 
     public static final String DEACTIVATED_SERVICE = "Deactivate service";
 
+    public static final int MYSQL_TEXT_DATATYPE_LENGTH = 65535;
+
     private MessagesConstants() {
         // private. So can't be initialized
     }

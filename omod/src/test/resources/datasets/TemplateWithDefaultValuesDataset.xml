@@ -221,7 +221,7 @@
             name="Service1"
             uuid="7f62432a-96d3-4bef-af4c-b4e0304eb830"
             creator="1"
-            voided="0"
+            retired="0"
             date_created="2010-11-16 00:00:00.0"/>
 
     <messages_template_field
@@ -338,7 +338,7 @@
             name="Brand new template"
             uuid="gh62432a-96d3-4bef-af4c-b4e0304eb830"
             creator="1"
-            voided="0"
+            retired="0"
             date_created="2010-11-16 00:00:00.0"/>
 
     <messages_template_field

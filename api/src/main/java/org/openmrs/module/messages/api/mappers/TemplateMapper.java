@@ -5,14 +5,15 @@ import org.openmrs.module.messages.api.dto.TemplateFieldDTO;
 import org.openmrs.module.messages.api.model.Template;
 import org.openmrs.module.messages.api.model.TemplateField;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Convert between {@link org.openmrs.module.messages.api.model.Template}
  * and {@link org.openmrs.module.messages.api.dto.TemplateDTO} resources in both ways.
  */
-public class TemplateMapper extends AbstractMapper<TemplateDTO, Template>
-        implements UpdateMapper<TemplateDTO, Template> {
+public class TemplateMapper extends AbstractMapper<TemplateDTO, Template> implements UpdateMapper<TemplateDTO, Template> {
 
     private TemplateFieldMapper templateFieldMapper;
 
@@ -54,16 +55,21 @@ public class TemplateMapper extends AbstractMapper<TemplateDTO, Template>
         templateFieldMapper.updateFromDtos(newTemplate.getTemplateFields(), existingTemplate.getTemplateFields());
     }
 
+    public TemplateMapper setTemplateFieldMapper(TemplateFieldMapper templateFieldMapper) {
+        this.templateFieldMapper = templateFieldMapper;
+        return this;
+    }
+
+    @Override
+    protected void doSafeDelete(Template target) {
+        target.setRetired(true);
+    }
+
     private void mapTemplateFieldsFromDto(TemplateDTO dto, Template template) {
-        List<TemplateField> templateFields = templateFieldMapper.fromDtos(dto.getTemplateFields());
+        final Set<TemplateField> templateFields = new HashSet<>(templateFieldMapper.fromDtos(dto.getTemplateFields()));
         for (TemplateField templateField : templateFields) {
             templateField.setTemplate(template);
         }
         template.setTemplateFields(templateFields);
-    }
-
-    public TemplateMapper setTemplateFieldMapper(TemplateFieldMapper templateFieldMapper) {
-        this.templateFieldMapper = templateFieldMapper;
-        return this;
     }
 }

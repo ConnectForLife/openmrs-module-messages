@@ -12,7 +12,7 @@ import org.openmrs.module.messages.api.model.TemplateFieldValue;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class PatientTemplateMapper extends AbstractMapper<PatientTemplateDTO, PatientTemplate> {
+public final class PatientTemplateMapper extends AbstractOpenMrsDataMapper<PatientTemplateDTO, PatientTemplate> {
 
     private TemplateFieldValueMapper valueMapper;
 

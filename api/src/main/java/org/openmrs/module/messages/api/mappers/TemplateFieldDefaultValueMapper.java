@@ -5,7 +5,7 @@ import org.openmrs.module.messages.api.dto.TemplateFieldDefaultValueDTO;
 import org.openmrs.module.messages.api.model.TemplateField;
 import org.openmrs.module.messages.api.model.TemplateFieldDefaultValue;
 
-public class TemplateFieldDefaultValueMapper extends AbstractMapper<TemplateFieldDefaultValueDTO,
+public class TemplateFieldDefaultValueMapper extends AbstractOpenMrsDataMapper<TemplateFieldDefaultValueDTO,
         TemplateFieldDefaultValue> implements UpdateMapper<TemplateFieldDefaultValueDTO, TemplateFieldDefaultValue> {
 
     @Override

@@ -208,7 +208,7 @@ public class TemplateControllerITTest extends BaseModuleWebContextSensitiveTest 
 
         assertThat(templatesToUpdate.size(), is(2));
         Template templateToUpdate = templatesToUpdate.get(0);
-        TemplateField fieldToUpdate = templateToUpdate.getTemplateFields().get(0);
+        TemplateField fieldToUpdate = templateToUpdate.getTemplateFields().iterator().next();
         fieldToUpdate.setDefaultValue(UPDATED_DEFAULT_VALUE);
 
         TemplateWrapper request = new TemplateWrapper(templateMapper.toDtos(templatesToUpdate));

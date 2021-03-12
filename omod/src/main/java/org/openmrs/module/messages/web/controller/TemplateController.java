@@ -73,7 +73,7 @@ public class TemplateController extends BaseRestController {
         validationComponent.validate(templateDTO);
         validateIfNewTemplate(templateDTO);
         Template template = templateMapper.fromDto(templateDTO);
-        return templateMapper.toDto(templateService.saveOrUpdateTemplate(template));
+        return templateMapper.toDto(templateService.saveOrUpdate(template));
     }
 
     /**

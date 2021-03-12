@@ -6,7 +6,7 @@ import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.ScheduledService;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
 
-public class ScheduledServiceMapper extends AbstractMapper<ServiceResult, ScheduledService> {
+public class ScheduledServiceMapper extends AbstractOpenMrsDataMapper<ServiceResult, ScheduledService> {
 
     private ScheduledParamsMapper paramsMapper;
 

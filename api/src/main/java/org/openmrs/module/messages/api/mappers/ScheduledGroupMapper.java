@@ -11,7 +11,7 @@ import org.openmrs.module.messages.api.model.types.ServiceStatus;
 
 import java.util.List;
 
-public class ScheduledGroupMapper extends AbstractMapper<GroupedServiceResultList, ScheduledServiceGroup> {
+public class ScheduledGroupMapper extends AbstractOpenMrsDataMapper<GroupedServiceResultList, ScheduledServiceGroup> {
 
     private ScheduledServiceMapper serviceMapper;
 
@@ -41,7 +41,7 @@ public class ScheduledGroupMapper extends AbstractMapper<GroupedServiceResultLis
     }
 
     private List<ScheduledService> getScheduledServices(ServiceResultList dto) {
-        List<ScheduledService> result = serviceMapper.fromDtos(dto.getResults());
+        final List<ScheduledService> result = serviceMapper.fromDtos(dto.getResults());
 
         for (ScheduledService service : result) {
             service.setService(dto.getServiceName());

@@ -4,7 +4,7 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.transform.ResultTransformer;
 
-public abstract class ReportCriteria extends BaseCriteria {
+public abstract class ReportCriteria extends BaseOpenmrsDataCriteria {
 
     private static final long serialVersionUID = -3041867659416133582L;
 

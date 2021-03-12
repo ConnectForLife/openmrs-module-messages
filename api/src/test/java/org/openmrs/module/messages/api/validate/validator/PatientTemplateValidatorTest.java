@@ -20,7 +20,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import validate.validator.PatientTemplateValidator;
 
 import javax.validation.ConstraintValidatorContext;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -107,7 +106,7 @@ public class PatientTemplateValidatorTest extends BaseTest {
         templateField.setTemplateFieldType(TemplateFieldType.CATEGORY_OF_MESSAGE);
         template = new Template();
         template.setId(DEFAULT_TEMPLATE_ID);
-        template.setTemplateFields(Collections.singletonList(templateField));
+        template.setTemplateFields(Collections.singleton(templateField));
         patientTemplate.setTemplate(template);
         templateFieldValue.setTemplateField(templateField);
         when(templateFieldService.getById(any())).thenReturn(templateField);

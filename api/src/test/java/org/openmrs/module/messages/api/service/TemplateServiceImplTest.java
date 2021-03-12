@@ -19,26 +19,20 @@ import static org.junit.Assert.assertThat;
 
 public class TemplateServiceImplTest extends ContextSensitiveTest {
 
+    private static final String SERVICE_QUERY = "SELECT * FROM template";
+    private static final String SERVICE_QUERY_TYPE = "SQL";
+    private static final String NAME = "Example service";
     @Autowired
     @Qualifier("messages.templateService")
     private TemplateService templateService;
-
     private Template template;
-
     private TemplateDTO templateDto;
-
     private List<TemplateDTO> templateDtos;
-
-    private static final String SERVICE_QUERY = "SELECT * FROM template";
-
-    private static final String SERVICE_QUERY_TYPE = "SQL";
-
-    private static final String NAME = "Example service";
 
     @Test
     public void shouldSaveOrUpdateTemplateSuccessfully() {
         template = new TemplateBuilder().build();
-        templateService.saveOrUpdateTemplate(template);
+        templateService.saveOrUpdate(template);
 
         assertThat(template, is(notNullValue()));
         assertEquals(SERVICE_QUERY, template.getServiceQuery());

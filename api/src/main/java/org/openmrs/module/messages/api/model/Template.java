@@ -1,6 +1,8 @@
 package org.openmrs.module.messages.api.model;
 
 import org.apache.commons.lang.StringUtils;
+import org.openmrs.BaseOpenmrsMetadata;
+import org.openmrs.module.messages.api.constants.MessagesConstants;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -9,37 +11,32 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity(name = "messages.Template")
 @Table(name = "messages_template")
-public class Template extends AbstractBaseOpenmrsData {
-    
+public class Template extends BaseOpenmrsMetadata {
+
     private static final long serialVersionUID = -5344732333848745166L;
-    
+
     @Id
     @GeneratedValue
     @Column(name = "messages_template_id")
     private Integer id;
-    
-    @Column(name = "service_query", columnDefinition = "text", nullable = false)
+
+    @Column(name = "service_query", columnDefinition = "text", length = MessagesConstants.MYSQL_TEXT_DATATYPE_LENGTH,
+            nullable = false)
     private String serviceQuery;
 
     @Column(name = "calendar_service_query", columnDefinition = "text")
     private String calendarServiceQuery;
-    
+
     @Column(name = "service_query_type", nullable = false)
     private String serviceQueryType;
-    
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "template", orphanRemoval = true)
-    private List<TemplateField> templateFields = new ArrayList<>();
-
-    @OneToMany(mappedBy = "template")
-    private List<PatientTemplate> patientTemplates = new ArrayList<>();
-
-    @Column(name = "name", nullable = false)
-    private String name;
+    private Set<TemplateField> templateFields = new HashSet<>();
 
     public Template() {
         super();
@@ -81,28 +78,12 @@ public class Template extends AbstractBaseOpenmrsData {
         this.serviceQueryType = serviceQueryType;
     }
 
-    public List<TemplateField> getTemplateFields() {
+    public Set<TemplateField> getTemplateFields() {
         return templateFields;
     }
 
-    public void setTemplateFields(List<TemplateField> templateFields) {
+    public void setTemplateFields(Set<TemplateField> templateFields) {
         this.templateFields = templateFields;
-    }
-
-    public List<PatientTemplate> getPatientTemplates() {
-        return patientTemplates;
-    }
-
-    public void setPatientTemplates(List<PatientTemplate> patientTemplates) {
-        this.patientTemplates = patientTemplates;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     /**

@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * Represents a criteria for searching service/message in DB.
  */
-public class ScheduledServiceCriteria extends BaseCriteria implements Serializable {
+public class ScheduledServiceCriteria extends BaseOpenmrsDataCriteria implements Serializable {
 
     private static final long serialVersionUID = -386120008842837370L;
 

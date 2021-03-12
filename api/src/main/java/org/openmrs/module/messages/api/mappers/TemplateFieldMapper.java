@@ -8,13 +8,14 @@ import org.openmrs.module.messages.api.model.TemplateFieldType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 /**
  * Convert between {@link org.openmrs.module.messages.api.model.TemplateField}
  * and {@link org.openmrs.module.messages.api.dto.TemplateFieldDTO} resources in both ways.
  */
-public class TemplateFieldMapper extends AbstractMapper<TemplateFieldDTO, TemplateField> {
+public class TemplateFieldMapper extends AbstractOpenMrsDataMapper<TemplateFieldDTO, TemplateField> {
 
     public static final String POSSIBLE_VALUES_SEPARATOR = "|";
     private TemplateFieldDefaultValueMapper templateFieldDefaultValueMapper;
@@ -46,7 +47,7 @@ public class TemplateFieldMapper extends AbstractMapper<TemplateFieldDTO, Templa
         if (dto.getUuid() != null) {
             templateField.setUuid(dto.getUuid());
         }
-        templateField.setDefaultValues(templateFieldDefaultValueMapper.fromDtos(dto.getDefaultValues()));
+        templateField.setDefaultValues(new HashSet<>(templateFieldDefaultValueMapper.fromDtos(dto.getDefaultValues())));
         for (TemplateFieldDefaultValue defaultValue : templateField.getDefaultValues()) {
             defaultValue.setTemplateField(templateField);
         }

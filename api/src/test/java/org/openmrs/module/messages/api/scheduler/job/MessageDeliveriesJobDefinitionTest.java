@@ -53,19 +53,17 @@ import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_T
 import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_TEMPLATE_NAME;
 import static org.openmrs.module.messages.api.service.DatasetConstants.XML_DATA_SET_PATH;
 
-@ContextConfiguration(
-        locations = {"classpath:applicationContext-service.xml", "classpath*:moduleApplicationContext.xml",
-                "classpath*:CustomSchedulerServiceApplicationContext.xml"}, inheritLocations = false)
+@ContextConfiguration(locations = {"classpath:applicationContext-service.xml", "classpath*:moduleApplicationContext.xml",
+        "classpath*:CustomSchedulerServiceApplicationContext.xml"}, inheritLocations = false)
 public class MessageDeliveriesJobDefinitionTest extends BaseModuleContextSensitiveTest {
 
     private static final long DAILY = 3600L * 24;
     private static final String EMPTY_RESULT_SQL = "SELECT * WHERE 1=0";
-    private static final String SERVICE_QUERY_WITH_REQUIRED_PARAMS = "select CAST('2019-12-01' as date) as EXECUTION_DATE"
-            + ", '1' as MESSAGE_ID, 'Call' as CHANNEL_ID, 'FUTURE' as STATUS_ID";
-    private static final String SERVICE_QUERY_WITH_ADDITIONAL_PARAMS = SERVICE_QUERY_WITH_REQUIRED_PARAMS
-            + ", 1 as intParam"
-            + ", 1.23 as floatParam"
-            + ", 'testString' as stringParam";
+    private static final String SERVICE_QUERY_WITH_REQUIRED_PARAMS = "select CAST('2019-12-01' as date) as EXECUTION_DATE" +
+            ", '1' as MESSAGE_ID, 'Call' as CHANNEL_ID, 'FUTURE' as STATUS_ID";
+    private static final String SERVICE_QUERY_WITH_ADDITIONAL_PARAMS =
+            SERVICE_QUERY_WITH_REQUIRED_PARAMS + ", 1 as intParam" + ", 1.23 as floatParam" +
+                    ", 'testString' as stringParam";
     private static final int EXPECTED_THREE = 3;
     private static final int CAREGIVER_PATIENT_ACTOR = 674;
     private static final String EXECUTION_CONTEXT = "EXECUTION_CONTEXT";
@@ -126,8 +124,8 @@ public class MessageDeliveriesJobDefinitionTest extends BaseModuleContextSensiti
 
         List<ScheduledService> listBeforeSave = findScheduledServicesByDefaultPatientAndActorId(DEFAULT_PATIENT_ID);
         job.execute();
-        List<ScheduledService> newlySaved = getNewlyAddedObjects(
-                listBeforeSave, findScheduledServicesByDefaultPatientAndActorId(DEFAULT_PATIENT_ID));
+        List<ScheduledService> newlySaved =
+                getNewlyAddedObjects(listBeforeSave, findScheduledServicesByDefaultPatientAndActorId(DEFAULT_PATIENT_ID));
 
         assertEquals(6, newlySaved.size());
         assertServiceIsCorrect(expectedSmsService, newlySaved.get(4));
@@ -141,8 +139,8 @@ public class MessageDeliveriesJobDefinitionTest extends BaseModuleContextSensiti
 
         List<ScheduledService> listBeforeSave = findScheduledServicesByDefaultPatientAndActorId(DEFAULT_CAREGIVER_ID);
         job.execute();
-        List<ScheduledService> newlySaved = getNewlyAddedObjects(
-                listBeforeSave, findScheduledServicesByDefaultPatientAndActorId(DEFAULT_CAREGIVER_ID));
+        List<ScheduledService> newlySaved =
+                getNewlyAddedObjects(listBeforeSave, findScheduledServicesByDefaultPatientAndActorId(DEFAULT_CAREGIVER_ID));
 
         assertEquals(2, newlySaved.size());
         assertServiceIsCorrect(expectedSmsService, newlySaved.get(0));
@@ -153,12 +151,11 @@ public class MessageDeliveriesJobDefinitionTest extends BaseModuleContextSensiti
     public void shouldNotSaveScheduledServicesGroupWithServicesForCaregiverWhenPatientIsNotActive() throws Exception {
         executeDataSet(XML_DATA_SET_PATH + "ConfigDataset.xml"); // loading GP which enables consent control
 
-        List<ScheduledService> listBeforeSave = findScheduledServicesByPatientIdAndActorId(DEFAULT_CAREGIVER_ID,
-                DEFAULT_INACTIVE_PATIENT_ID);
+        List<ScheduledService> listBeforeSave =
+                findScheduledServicesByPatientIdAndActorId(DEFAULT_CAREGIVER_ID, DEFAULT_INACTIVE_PATIENT_ID);
         job.execute();
-        List<ScheduledService> newlySaved = getNewlyAddedObjects(
-                listBeforeSave, findScheduledServicesByPatientIdAndActorId(DEFAULT_CAREGIVER_ID,
-                        DEFAULT_INACTIVE_PATIENT_ID));
+        List<ScheduledService> newlySaved = getNewlyAddedObjects(listBeforeSave,
+                findScheduledServicesByPatientIdAndActorId(DEFAULT_CAREGIVER_ID, DEFAULT_INACTIVE_PATIENT_ID));
 
         assertEquals(0, getServicesForPatient(newlySaved, DEFAULT_INACTIVE_PATIENT_ID).size());
     }
@@ -166,12 +163,11 @@ public class MessageDeliveriesJobDefinitionTest extends BaseModuleContextSensiti
     @Test
     public void shouldSaveScheduledServicesGroupForActorWithNoConsentWhenConsentControlNotEnabled() {
         Context.getAdministrationService().setGlobalProperty(ConfigConstants.CONSENT_CONTROL_KEY, "false");
-        List<ScheduledService> listBeforeSave = findScheduledServicesByDefaultPatientAndActorId(
-                DEFAULT_NO_CONSENT_CAREGIVER_ID);
+        List<ScheduledService> listBeforeSave =
+                findScheduledServicesByDefaultPatientAndActorId(DEFAULT_NO_CONSENT_CAREGIVER_ID);
         job.execute();
-        List<ScheduledService> newlySaved = getNewlyAddedObjects(
-                listBeforeSave, findScheduledServicesByDefaultPatientAndActorId(
-                        DEFAULT_NO_CONSENT_CAREGIVER_ID));
+        List<ScheduledService> newlySaved = getNewlyAddedObjects(listBeforeSave,
+                findScheduledServicesByDefaultPatientAndActorId(DEFAULT_NO_CONSENT_CAREGIVER_ID));
 
         assertThat(newlySaved.size(), greaterThan(0));
     }
@@ -180,12 +176,11 @@ public class MessageDeliveriesJobDefinitionTest extends BaseModuleContextSensiti
     public void shouldNotSaveScheduledServicesGroupForActorWithNoConsentWhenConsentControlIsEnabled() throws Exception {
         executeDataSet(XML_DATA_SET_PATH + "ConfigDataset.xml"); // loading GP which enables consent control
 
-        List<ScheduledService> listBeforeSave = findScheduledServicesByDefaultPatientAndActorId(
-                DEFAULT_NO_CONSENT_CAREGIVER_ID);
+        List<ScheduledService> listBeforeSave =
+                findScheduledServicesByDefaultPatientAndActorId(DEFAULT_NO_CONSENT_CAREGIVER_ID);
         job.execute();
-        List<ScheduledService> newlySaved = getNewlyAddedObjects(
-                listBeforeSave, findScheduledServicesByDefaultPatientAndActorId(
-                        DEFAULT_NO_CONSENT_CAREGIVER_ID));
+        List<ScheduledService> newlySaved = getNewlyAddedObjects(listBeforeSave,
+                findScheduledServicesByDefaultPatientAndActorId(DEFAULT_NO_CONSENT_CAREGIVER_ID));
 
         assertEquals(0, newlySaved.size());
     }
@@ -193,12 +188,12 @@ public class MessageDeliveriesJobDefinitionTest extends BaseModuleContextSensiti
     @Test
     public void shouldNotSaveScheduledServiceGroupIfNoTasksToSchedule() {
         defaultTemplate.setServiceQuery(EMPTY_RESULT_SQL);
-        defaultTemplate = templateService.saveOrUpdateTemplate(defaultTemplate);
+        defaultTemplate = templateService.saveOrUpdate(defaultTemplate);
 
         List<ScheduledServiceGroup> listBeforeSave = messagingGroupService.getAll(false);
         job.execute();
-        List<ScheduledServiceGroup> newlySaved = filterByDefaultPatient(
-                getNewlyAddedObjects(listBeforeSave, messagingGroupService.getAll(false)));
+        List<ScheduledServiceGroup> newlySaved =
+                filterByDefaultPatient(getNewlyAddedObjects(listBeforeSave, messagingGroupService.getAll(false)));
 
         assertEquals(1, newlySaved.size());
     }
@@ -210,7 +205,7 @@ public class MessageDeliveriesJobDefinitionTest extends BaseModuleContextSensiti
         ScheduledServiceParameter expectedParam3 = getParam("STRINGPARAM", "testString");
 
         defaultTemplate.setServiceQuery(SERVICE_QUERY_WITH_ADDITIONAL_PARAMS);
-        templateService.saveOrUpdateTemplate(defaultTemplate);
+        templateService.saveOrUpdate(defaultTemplate);
 
         List<ScheduledServiceParameter> listBeforeSave = messagingParameterService.getAll(false);
         job.execute();
@@ -229,29 +224,27 @@ public class MessageDeliveriesJobDefinitionTest extends BaseModuleContextSensiti
                 findScheduledServicesByDefaultPatientAndActorId(CAREGIVER_PATIENT_ACTOR);
         List<TaskDefinition> listTasksBeforeSave = getScheduledTaskForActor(CAREGIVER_PATIENT_ACTOR);
         job.execute();
-        List<ScheduledService> newlySaved = getNewlyAddedObjects(
-                listServicesBeforeSave, findScheduledServicesByActorId(CAREGIVER_PATIENT_ACTOR));
+        List<ScheduledService> newlySaved =
+                getNewlyAddedObjects(listServicesBeforeSave, findScheduledServicesByActorId(CAREGIVER_PATIENT_ACTOR));
         assertEquals(EXPECTED_THREE, newlySaved.size());
 
         //verify if each scheduled service group has own scheduled task
-        List<TaskDefinition> newlySavedTasks = getNewlyAddedObjects(listTasksBeforeSave,
-                getScheduledTaskForActor(CAREGIVER_PATIENT_ACTOR));
+        List<TaskDefinition> newlySavedTasks =
+                getNewlyAddedObjects(listTasksBeforeSave, getScheduledTaskForActor(CAREGIVER_PATIENT_ACTOR));
         assertEquals(newlySaved.size(), newlySavedTasks.size());
     }
 
     private List<ScheduledService> findScheduledServicesByDefaultPatientAndActorId(int actorId) {
-        return messagingService.findAllByCriteria(
-                ScheduledServiceCriteria.forActorAndPatientIds(actorId, DEFAULT_PATIENT_ID));
+        return messagingService
+                .findAllByCriteria(ScheduledServiceCriteria.forActorAndPatientIds(actorId, DEFAULT_PATIENT_ID));
     }
 
     private List<ScheduledService> findScheduledServicesByPatientIdAndActorId(int actorId, int patientId) {
-        return messagingService.findAllByCriteria(
-                ScheduledServiceCriteria.forActorAndPatientIds(actorId, patientId));
+        return messagingService.findAllByCriteria(ScheduledServiceCriteria.forActorAndPatientIds(actorId, patientId));
     }
 
     private List<ScheduledService> findScheduledServicesByActorId(int actorId) {
-        return messagingService.findAllByCriteria(
-                ScheduledServiceCriteria.forActorAndPatientIds(actorId, null));
+        return messagingService.findAllByCriteria(ScheduledServiceCriteria.forActorAndPatientIds(actorId, null));
     }
 
     private List<TaskDefinition> getScheduledTaskForActor(int actorId) {
@@ -265,10 +258,7 @@ public class MessageDeliveriesJobDefinitionTest extends BaseModuleContextSensiti
     }
 
     private ScheduledServiceParameter getParam(String key, String value) {
-        return new ScheduledServiceParameterBuilder()
-                .withType(key)
-                .withValue(value)
-                .build();
+        return new ScheduledServiceParameterBuilder().withType(key).withValue(value).build();
     }
 
     private <T> List<T> getNewlyAddedObjects(List<T> listBeforeSave, List<T> listAfterSave) {
@@ -299,8 +289,8 @@ public class MessageDeliveriesJobDefinitionTest extends BaseModuleContextSensiti
         List<ScheduledServiceGroup> result = new ArrayList<>();
 
         for (ScheduledServiceGroup group : groups) {
-            if (group.getActor().getId().equals(DEFAULT_PATIENT_ID)
-                    && group.getPatient().getId().equals(DEFAULT_PATIENT_ID)) {
+            if (group.getActor().getId().equals(DEFAULT_PATIENT_ID) &&
+                    group.getPatient().getId().equals(DEFAULT_PATIENT_ID)) {
                 result.add(group);
             }
         }
@@ -309,11 +299,7 @@ public class MessageDeliveriesJobDefinitionTest extends BaseModuleContextSensiti
     }
 
     private List<ScheduledService> getServicesForPatient(List<ScheduledService> services, int patientId) {
-        return services.stream()
-                .filter(s -> s.getGroup()
-                        .getPatient()
-                        .getId()
-                        .equals(patientId))
+        return services.stream().filter(s -> s.getGroup().getPatient().getId().equals(patientId))
                 .collect(Collectors.toList());
     }
 
@@ -326,12 +312,9 @@ public class MessageDeliveriesJobDefinitionTest extends BaseModuleContextSensiti
     }
 
     private ScheduledService getService(String channelType, int patientTemplateId) {
-        return new ScheduledServiceBuilder()
-                .withService(DEFAULT_TEMPLATE_NAME)
-                .withTemplate(new PatientTemplateBuilder().withId(patientTemplateId).build())
-                .withChannelType(channelType)
-                .withStatus(ServiceStatus.PENDING)
-                .build();
+        return new ScheduledServiceBuilder().withService(DEFAULT_TEMPLATE_NAME)
+                .withTemplate(new PatientTemplateBuilder().withId(patientTemplateId).build()).withChannelType(channelType)
+                .withStatus(ServiceStatus.PENDING).build();
     }
 
     private void assertParameterIsCorrect(ScheduledServiceParameter expected, ScheduledServiceParameter actual) {

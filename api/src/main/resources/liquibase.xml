@@ -4139,4 +4139,15 @@
                  stripComments="false"/>
     </changeSet>
 
+    <changeSet id="messages-2021-02-09-12:00" author="Piotr Wargulak">
+        <comment>Template entity now derives from BaseOpenmrsMetadata</comment>
+        <addColumn tableName="messages_template">
+            <column name="description" type="varchar(255)" />
+        </addColumn>
+        <renameColumn tableName="messages_template" columnDataType="tinyint(1)" oldColumnName="voided" newColumnName="retired" />
+        <renameColumn tableName="messages_template" columnDataType="datetime" oldColumnName="date_voided" newColumnName="date_retired" />
+        <renameColumn tableName="messages_template" columnDataType="int(11)" oldColumnName="voided_by" newColumnName="retired_by" />
+        <renameColumn tableName="messages_template" columnDataType="varchar(255)" oldColumnName="void_reason" newColumnName="retire_reason" />
+    </changeSet>
+
 </databaseChangeLog>

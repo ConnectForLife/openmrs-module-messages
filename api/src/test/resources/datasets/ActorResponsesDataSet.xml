@@ -21,7 +21,7 @@
             name="Adherence report daily"
             creator="1"
             date_created="2019-11-20 00:00:00.0"
-            voided="false"
+            retired="false"
             uuid="dc28e6db-db92-440a-a2db-3d9060d529b1"/>
 
     <messages_template
@@ -33,7 +33,7 @@
             name="Visit reminder"
             creator="1"
             date_created="2019-11-20 00:00:00.0"
-            voided="false"
+            retired="false"
             uuid="dc28e6db-db92-440a-a2db-3d9060d529b2"/>
 
     <messages_template
@@ -45,7 +45,7 @@
             name="Health tip"
             creator="1"
             date_created="2019-11-20 00:00:00.0"
-            voided="false"
+            retired="false"
             uuid="dc28e6db-db92-440a-a2db-3d9060d529b3"/>
 
     <messages_patient_template

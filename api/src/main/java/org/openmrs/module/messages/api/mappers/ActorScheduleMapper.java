@@ -5,7 +5,7 @@ import org.openmrs.module.messages.api.dto.ActorScheduleDTO;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.util.ActorScheduleBuildingUtil;
 
-public class ActorScheduleMapper extends AbstractMapper<ActorScheduleDTO, PatientTemplate> {
+public class ActorScheduleMapper extends AbstractOpenMrsDataMapper<ActorScheduleDTO, PatientTemplate> {
 
     @Override
     public ActorScheduleDTO toDto(PatientTemplate dao) {

@@ -12,32 +12,32 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity(name = "messages.TemplateField")
 @Table(name = "messages_template_field")
 public class TemplateField extends AbstractBaseOpenmrsData {
-    
+
     private static final long serialVersionUID = -5617673897191245574L;
-    
+
     @Id
     @GeneratedValue
     @Column(name = "messages_template_field_id")
     private Integer id;
-    
+
     @Column(name = "name", nullable = false)
     private String name;
-    
+
     @Column(name = "mandatory", nullable = false)
     private Boolean mandatory;
-    
+
     @Column(name = "default_value", columnDefinition = "text")
     private String defaultValue;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "templateField")
-    private List<TemplateFieldDefaultValue> defaultValues = new ArrayList<>();
-    
+    private Set<TemplateFieldDefaultValue> defaultValues = new HashSet<>();
+
     @ManyToOne
     @JoinColumn(name = "template_id", nullable = false)
     private Template template;
@@ -120,11 +120,11 @@ public class TemplateField extends AbstractBaseOpenmrsData {
         this.templateFieldType = templateFieldType;
     }
 
-    public List<TemplateFieldDefaultValue> getDefaultValues() {
+    public Set<TemplateFieldDefaultValue> getDefaultValues() {
         return defaultValues;
     }
 
-    public void setDefaultValues(List<TemplateFieldDefaultValue> defaultValues) {
+    public void setDefaultValues(Set<TemplateFieldDefaultValue> defaultValues) {
         this.defaultValues = defaultValues;
     }
 

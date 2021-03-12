@@ -17,7 +17,7 @@ import java.util.List;
 
 import static org.openmrs.api.context.Context.getRegisteredComponent;
 
-public class PatientTemplateCriteria extends BaseCriteria implements Serializable {
+public class PatientTemplateCriteria extends BaseOpenmrsDataCriteria implements Serializable {
 
     private static final long serialVersionUID = -486120008842837370L;
 
@@ -102,7 +102,7 @@ public class PatientTemplateCriteria extends BaseCriteria implements Serializabl
         } else if (actor != null) {
             hibernateCriteria
                     .add(Restrictions.eq("actor", actor));
-                    //consider filtering by relationship type
+            //consider filtering by relationship type
         } else if (actorType != null) {
             hibernateCriteria
                     .add(Restrictions.eq("actorType", actorType));

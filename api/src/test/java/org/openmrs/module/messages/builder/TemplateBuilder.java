@@ -7,12 +7,12 @@ import org.openmrs.module.messages.api.model.Template;
 import org.openmrs.module.messages.api.model.TemplateField;
 import org.openmrs.module.messages.api.model.TemplateFieldType;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public final class TemplateBuilder extends AbstractBuilder<Template> {
 
@@ -24,7 +24,7 @@ public final class TemplateBuilder extends AbstractBuilder<Template> {
     private String name;
     private User creator;
     private Date dateCreated;
-    private List<TemplateField> templateFields;
+    private Set<TemplateField> templateFields;
 
     public TemplateBuilder() {
         id = getInstanceNumber();
@@ -33,7 +33,7 @@ public final class TemplateBuilder extends AbstractBuilder<Template> {
         name = "Example service";
         creator = new User();
         dateCreated = new Date(YEAR_2010, Calendar.NOVEMBER, DAY);
-        templateFields = new ArrayList<>();
+        templateFields = new HashSet<>();
     }
 
     @Override
@@ -77,13 +77,8 @@ public final class TemplateBuilder extends AbstractBuilder<Template> {
         return this;
     }
 
-    public TemplateBuilder withTemplateFields(List<TemplateField> templateFields) {
-        this.templateFields = templateFields;
-        return this;
-    }
-
     public TemplateBuilder withTemplateField(TemplateField templateField) {
-        this.templateFields = Collections.singletonList(templateField);
+        this.templateFields = Collections.singleton(templateField);
         return this;
     }
 
@@ -93,10 +88,10 @@ public final class TemplateBuilder extends AbstractBuilder<Template> {
     }
 
     private void buildTemplateFields(Template template) {
-        templateFields = Arrays.asList(buildServiceTypeFieldDef(template),
+        templateFields = new HashSet<>(Arrays.asList(buildServiceTypeFieldDef(template),
                 buildDayOfWeekFieldDef(template),
                 buildStartOfMessagesFieldDef(template),
-                buildEndOfMessagesFieldDef(template));
+                buildEndOfMessagesFieldDef(template)));
     }
 
     private TemplateField buildServiceTypeFieldDef(Template template) {
@@ -107,7 +102,7 @@ public final class TemplateBuilder extends AbstractBuilder<Template> {
                 .withTemplate(template)
                 .withTemplateFieldType(TemplateFieldType.SERVICE_TYPE)
                 .build();
-        serviceType.setDefaultValues(Collections.singletonList(new TemplateFieldDefaultValueBuilder()
+        serviceType.setDefaultValues(Collections.singleton(new TemplateFieldDefaultValueBuilder()
                 .withTemplateField(serviceType)
                 .withDefaultValue(MessagesConstants.DEACTIVATED_SERVICE)
                 .build()));
@@ -122,7 +117,7 @@ public final class TemplateBuilder extends AbstractBuilder<Template> {
                 .withTemplate(template)
                 .withTemplateFieldType(TemplateFieldType.DAY_OF_WEEK)
                 .build();
-        serviceType.setDefaultValues(Collections.singletonList(new TemplateFieldDefaultValueBuilder()
+        serviceType.setDefaultValues(Collections.singleton(new TemplateFieldDefaultValueBuilder()
                 .withTemplateField(serviceType)
                 .withDefaultValue("Monday,Friday,Saturday")
                 .build()));
@@ -137,7 +132,7 @@ public final class TemplateBuilder extends AbstractBuilder<Template> {
                 .withTemplate(template)
                 .withTemplateFieldType(TemplateFieldType.START_OF_MESSAGES)
                 .build();
-        serviceType.setDefaultValues(Collections.singletonList(new TemplateFieldDefaultValueBuilder()
+        serviceType.setDefaultValues(Collections.singleton(new TemplateFieldDefaultValueBuilder()
                 .withTemplateField(serviceType)
                 .withDefaultValue("")
                 .build()));
@@ -152,7 +147,7 @@ public final class TemplateBuilder extends AbstractBuilder<Template> {
                 .withTemplate(template)
                 .withTemplateFieldType(TemplateFieldType.END_OF_MESSAGES)
                 .build();
-        serviceType.setDefaultValues(Collections.singletonList(new TemplateFieldDefaultValueBuilder()
+        serviceType.setDefaultValues(Collections.singleton(new TemplateFieldDefaultValueBuilder()
                 .withTemplateField(serviceType)
                 .withDefaultValue("AFTER_TIMES|1")
                 .build()));

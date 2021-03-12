@@ -5,8 +5,9 @@ import org.openmrs.module.messages.api.model.TemplateField;
 import org.openmrs.module.messages.api.model.TemplateFieldDefaultValue;
 import org.openmrs.module.messages.api.model.TemplateFieldType;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public final class TemplateFieldBuilder extends AbstractBuilder<TemplateField> {
 
@@ -16,7 +17,7 @@ public final class TemplateFieldBuilder extends AbstractBuilder<TemplateField> {
     private String defaultValue;
     private Template template;
     private TemplateFieldType templateFieldType;
-    private List<TemplateFieldDefaultValue> defaultValues;
+    private Set<TemplateFieldDefaultValue> defaultValues;
     private final String possibleValues;
 
     public TemplateFieldBuilder() {
@@ -26,7 +27,7 @@ public final class TemplateFieldBuilder extends AbstractBuilder<TemplateField> {
         mandatory = false;
         defaultValue = "default value";
         templateFieldType = TemplateFieldType.SERVICE_TYPE;
-        defaultValues = new ArrayList<>();
+        defaultValues = new HashSet<>();
         possibleValues = "Deactivate service|SMS|Call";
     }
 
@@ -82,8 +83,8 @@ public final class TemplateFieldBuilder extends AbstractBuilder<TemplateField> {
         return this;
     }
 
-    public TemplateFieldBuilder withDefaultValues(List<TemplateFieldDefaultValue> defaultValues) {
-        this.defaultValues = defaultValues;
+    public TemplateFieldBuilder withDefaultValues(Collection<TemplateFieldDefaultValue> defaultValues) {
+        this.defaultValues = new HashSet<>(defaultValues);
         return this;
     }
 }
