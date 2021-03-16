@@ -29,7 +29,8 @@ public class Template extends BaseOpenmrsMetadata {
             nullable = false)
     private String serviceQuery;
 
-    @Column(name = "calendar_service_query", columnDefinition = "text")
+    @Column(name = "calendar_service_query", columnDefinition = "text",
+            length = MessagesConstants.MYSQL_TEXT_DATATYPE_LENGTH)
     private String calendarServiceQuery;
 
     @Column(name = "service_query_type", nullable = false)
