@@ -11,6 +11,7 @@ package org.openmrs.module.messages.api.execution;
 
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.Range;
+import org.openmrs.module.messages.api.model.Template;
 import org.openmrs.module.messages.api.model.TemplateFieldValue;
 import org.openmrs.module.messages.api.util.DateUtil;
 import org.openmrs.module.messages.api.util.ZoneConverterUtil;
@@ -37,6 +38,7 @@ public class ExecutionContext {
     private Range<Date> dateRange;
     private String bestContactTime;
     private Date executionStartDateTime;
+    private Template template;
 
     public ExecutionContext(PatientTemplate patientTemplate, Range<Date> dateTimeRange, String bestContactTime,
                             Date executionStartDateTime) {
@@ -52,6 +54,14 @@ public class ExecutionContext {
         for (TemplateFieldValue param : patientTemplate.getTemplateFieldValues()) {
             putParam(param.getTemplateField().getName().replace(' ', '_'), param.getValue());
         }
+    }
+
+    public ExecutionContext(Template template, Range<Date> dateRange) {
+        this.template = template;
+        this.dateRange = dateRange;
+
+        putParam(START_DATE_TIME_PARAM, ZoneConverterUtil.formatToUserZone(this.dateRange.getStart()));
+        putParam(END_DATE_TIME_PARAM, ZoneConverterUtil.formatToUserZone(this.dateRange.getEnd()));
     }
 
     public Map<String, Object> getParams() {
@@ -76,6 +86,10 @@ public class ExecutionContext {
 
     public String getQuery() {
         return patientTemplate.getServiceQuery();
+    }
+
+    public Template getTemplate() {
+        return template;
     }
 
     private void setRange(Range<Date> dateTimeRange) {

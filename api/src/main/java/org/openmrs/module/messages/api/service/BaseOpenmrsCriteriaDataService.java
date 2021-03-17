@@ -29,4 +29,6 @@ public interface BaseOpenmrsCriteriaDataService<T extends BaseOpenmrsData> exten
      * @return  list of found object, implicitly paginated
      */
     List<T> findAllByCriteria(BaseCriteria criteria, PagingInfo paging);
+
+    T findOneByCriteria(BaseCriteria criteria);
 }

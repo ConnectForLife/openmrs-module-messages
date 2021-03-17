@@ -30,9 +30,11 @@ import org.openmrs.module.messages.api.model.DeliveryAttempt;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.Range;
 import org.openmrs.module.messages.api.model.ScheduledService;
+import org.openmrs.module.messages.api.model.Template;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
 import org.openmrs.module.messages.api.service.MessagingService;
 import org.openmrs.module.messages.api.service.PatientTemplateService;
+import org.openmrs.module.messages.api.service.TemplateService;
 import org.openmrs.module.messages.api.util.DateUtil;
 import org.openmrs.module.messages.api.util.HibernateUtil;
 import org.openmrs.module.messages.api.util.ZoneConverterUtil;
@@ -58,6 +60,7 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
     private ActorResponseDao actorResponseDao;
     private ServiceExecutor serviceExecutor;
     private PatientTemplateService patientTemplateService;
+    private TemplateService templateService;
     private PersonService personService;
     private PatientService patientService;
     
@@ -161,7 +164,6 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
     @Override
     @Transactional(noRollbackFor = {RuntimeException.class, SQLGrammarException.class}, readOnly = true)
     public List<ServiceResultList> retrieveAllServiceExecutions(Integer patientId, Date startDate, Date endDate) {
-
         PatientTemplateCriteria patientTemplateCriteria = PatientTemplateCriteria.forPatientId(patientId);
         return retrieveAllServiceExecutions(patientTemplateService.findAllByCriteria(patientTemplateCriteria),
                 startDate, endDate, true);
@@ -178,7 +180,7 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
     @Override
     @Transactional(noRollbackFor = {RuntimeException.class, SQLGrammarException.class}, readOnly = true)
     public List<ServiceResultList> retrieveAllServiceExecutions(Date startDate, Date endDate) {
-        return retrieveAllServiceExecutions(patientTemplateService.getAll(false), startDate, endDate, false);
+        return retrieveAllServiceExecutions(templateService.getAll(false), startDate, endDate);
     }
 
     @Override
@@ -267,6 +269,10 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
         this.patientTemplateService = patientTemplateService;
     }
 
+    public void setTemplateService(TemplateService templateService) {
+        this.templateService = templateService;
+    }
+
     private void throwExceptionIfMissing(Object entity, Integer id, String entityName) throws EntityNotFoundException {
         if (entity == null) {
             throw new EntityNotFoundException(String.format(
@@ -280,6 +286,34 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
 
     public void setPatientService(PatientService patientService) {
         this.patientService = patientService;
+    }
+
+    private List<ServiceResultList> retrieveAllServiceExecutions(List<Template> templates, Date startDate,
+                                                                 Date endDate) {
+        List<ServiceResultList> results = new ArrayList<>();
+        for (Template template : templates) {
+            if (isTemplateSupportsOptimizedQuery(template)) {
+                results.addAll(retrieveAllServiceExecutionsFromTemplate(template, startDate, endDate));
+            } else {
+                List<PatientTemplate> patientTemplates = patientTemplateService.findAllByCriteria(
+                        PatientTemplateCriteria.forTemplate(template.getId()));
+                results.addAll(retrieveAllServiceExecutions(patientTemplates, startDate, endDate, false));
+            }
+        }
+        return results;
+    }
+
+    private List<ServiceResultList> retrieveAllServiceExecutionsFromTemplate(Template template, Date startDate,
+                                                                             Date endDate) {
+        List<ServiceResultList> results = new ArrayList<>();
+        try {
+            Range<Date> dateRange = new Range<>(startDate, endDate);
+            results.addAll(serviceExecutor.executeTemplate(template, dateRange));
+        } catch (Exception e) {
+            LOGGER.error(String.format("Cannot execute service query for %s template. " +
+                    "The execution of this particular template will be skipped.", template.getName()));
+        }
+        return results;
     }
 
     private List<ServiceResultList> retrieveAllServiceExecutions(List<PatientTemplate> patientTemplates, Date startDate,
@@ -365,5 +399,9 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
                             "The execution of this particular patient template will be skipped.",
                     patientTemplate.getId()), e);
         }
+    }
+
+    private boolean isTemplateSupportsOptimizedQuery(Template template) {
+        return template.isShouldUseOptimizedQuery();
     }
 }

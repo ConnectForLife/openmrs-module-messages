@@ -39,9 +39,9 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
     @Override
     public void execute() {
         LOGGER.info(getTaskName() + " started");
-        List<ServiceResultList> results =
-            getMessagingService().retrieveAllServiceExecutions(DateUtil.now(),
-            DateUtil.getDatePlusSeconds(getTaskDefinition().getRepeatInterval()));
+
+        List<ServiceResultList> results = getMessagingService().retrieveAllServiceExecutions(DateUtil.now(),
+                        DateUtil.getDatePlusSeconds(getTaskDefinition().getRepeatInterval()));
         logNumberOfResults(results);
 
         List<GroupedServiceResultList> groupedResults = ServiceResultGroupHelper

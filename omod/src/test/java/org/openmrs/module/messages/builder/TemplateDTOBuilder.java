@@ -23,6 +23,8 @@ public final class TemplateDTOBuilder extends AbstractBuilder<TemplateDTO> {
 
     private String calendarServiceQuery;
 
+    private boolean shouldUseOptimizedQuery;
+
     public TemplateDTOBuilder() {
         Template template = new TemplateBuilder().build();
         id = template.getId();
@@ -32,6 +34,7 @@ public final class TemplateDTOBuilder extends AbstractBuilder<TemplateDTO> {
         templateFields = Collections.singletonList(new TemplateFieldDTOBuilder().build());
         uuid = template.getUuid();
         calendarServiceQuery = template.getCalendarServiceQuery();
+        shouldUseOptimizedQuery = template.isShouldUseOptimizedQuery();
     }
 
     @Override
@@ -43,7 +46,8 @@ public final class TemplateDTOBuilder extends AbstractBuilder<TemplateDTO> {
                 .setServiceQueryType(serviceQueryType)
                 .setTemplateFields(templateFields)
                 .setUuid(uuid)
-                .setCalendarServiceQuery(calendarServiceQuery);
+                .setCalendarServiceQuery(calendarServiceQuery)
+                .setShouldUseOptimizedQuery(shouldUseOptimizedQuery);
     }
 
     @Override
@@ -83,6 +87,11 @@ public final class TemplateDTOBuilder extends AbstractBuilder<TemplateDTO> {
 
     public TemplateDTOBuilder withCalendarServiceQuery(String calendarServiceQuery) {
         this.calendarServiceQuery = calendarServiceQuery;
+        return this;
+    }
+
+    public TemplateDTOBuilder withShouldUseOptimizedQuery(boolean shouldUseOptimizedQuery) {
+        this.shouldUseOptimizedQuery = shouldUseOptimizedQuery;
         return this;
     }
 }

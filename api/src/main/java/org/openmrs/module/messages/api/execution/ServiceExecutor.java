@@ -12,8 +12,10 @@ package org.openmrs.module.messages.api.execution;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.messages.api.model.Range;
 import org.openmrs.module.messages.api.model.PatientTemplate;
+import org.openmrs.module.messages.api.model.Template;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * The service executor is responsible for executing a patient template, which means selecting the proper engine
@@ -45,4 +47,16 @@ public interface ServiceExecutor extends OpenmrsService {
      */
     ServiceResultList execute(PatientTemplate patientTemplate, Range<Date> dateTimeRange, Date executionStartDateTime,
                               boolean isCalendarQuery) throws ExecutionException;
+
+    /**
+     * Executes a template {@link Template} if contains and enables optimized query.
+     * Collects results into list of {@link ServiceResultList}
+     *
+     * @param template - provided template
+     * @param dateTimeRange - date time range for executed template service query
+     * @return results retrieved from query parsed into list of {@link ServiceResultList}
+     * @throws ExecutionException - exception occurred during service execution
+     */
+    List<ServiceResultList> executeTemplate(Template template, Range<Date> dateTimeRange)
+            throws ExecutionException;
 }

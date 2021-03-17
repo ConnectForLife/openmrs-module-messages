@@ -164,6 +164,9 @@
                 <property name="serviceExecutor">
                     <ref local="messages.ServiceExecutor"/>
                 </property>
+                <property name="templateService">
+                    <ref local="messages.templateService"/>
+                </property>
                 <property name="personService" ref="personService"/>
                 <property name="patientService" ref="patientService"/>
             </bean>

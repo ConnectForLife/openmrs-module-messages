@@ -37,6 +37,16 @@ public abstract class BaseOpenmrsDataDao<T extends BaseOpenmrsData> extends Hibe
         return hibernateCriteria.list();
     }
 
+    @Override
+    public T findOneByCriteria(BaseCriteria criteria) {
+        Criteria hibernateCriteria = createCriteria();
+        if (criteria != null) {
+            criteria.initHibernateCriteria(hibernateCriteria);
+            criteria.loadHibernateCriteria(hibernateCriteria);
+        }
+        return (T) hibernateCriteria.uniqueResult();
+    }
+
     protected Criteria createCriteria() {
         return getSession().createCriteria(this.mappedClass);
     }

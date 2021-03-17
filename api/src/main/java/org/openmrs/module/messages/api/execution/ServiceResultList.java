@@ -9,12 +9,26 @@
 
 package org.openmrs.module.messages.api.execution;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openmrs.Patient;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.messages.api.builder.ServiceResultListBuilder;
+import org.openmrs.module.messages.api.constants.MessagesConstants;
 import org.openmrs.module.messages.api.model.Range;
 import org.openmrs.module.messages.api.model.PatientTemplate;
+import org.openmrs.module.messages.api.model.Template;
+import org.openmrs.module.messages.api.model.TemplateFieldValue;
+import org.openmrs.module.messages.api.service.PatientTemplateService;
+import org.openmrs.module.messages.api.util.BestContactTimeHelper;
+import org.openmrs.module.messages.domain.criteria.PatientTemplateCriteria;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +39,7 @@ import java.util.Map;
 public class ServiceResultList implements Serializable {
 
     private static final long serialVersionUID = 6075952817494895177L;
+    private static final Log LOGGER = LogFactory.getLog(ServiceResultList.class);
 
     private Integer patientId;
     private Integer actorId;
@@ -48,6 +63,39 @@ public class ServiceResultList implements Serializable {
         result.results = new ArrayList<>();
 
         return result;
+    }
+
+    public static List<ServiceResultList> createList(@NotNull List<Map<String, Object>> rowList, Template template,
+                                                     Range<Date> dateTimeRange) {
+        List<ServiceResultList> serviceResultsLists = new ArrayList<>();
+        for (Map<String, Object> row : rowList) {
+            ServiceResult serviceResult = ServiceResult.parse(row);
+            PatientTemplate patientTemplate = getRelatedPatientTemplate(serviceResult, template);
+            if (patientTemplate != null) {
+                serviceResult.setPatientTemplateId(patientTemplate.getId());
+                serviceResult.setChannelType(getTemplateFieldValue(patientTemplate,
+                        MessagesConstants.CHANNEL_TYPE_PARAM_NAME));
+                serviceResult.setExecutionDate(adjustExecutionDateToBestContactTime(serviceResult, patientTemplate));
+
+                ServiceResultList serviceResultList = new ServiceResultListBuilder()
+                        .withPatientId(serviceResult.getPatientId())
+                        .withActorId(serviceResult.getActorId())
+                        .withActorType(patientTemplate.getActorTypeAsString())
+                        .withServiceId(patientTemplate.getServiceId())
+                        .withServiceName(template.getName())
+                        .withStartDate(dateTimeRange.getStart())
+                        .withEndDate(dateTimeRange.getEnd())
+                        .withResults(Arrays.asList(serviceResult))
+                        .build();
+
+                serviceResultsLists.add(serviceResultList);
+            } else if (LOGGER.isTraceEnabled()) {
+                LOGGER.trace(String.format("Patient template for patient id: %d and service type: %s " +
+                            "does not exist or is deactivated", serviceResult.getPatientId(), template.getName()));
+            }
+        }
+
+        return serviceResultsLists;
     }
 
     public static ServiceResultList createList(@NotNull List<Map<String, Object>> rowList, PatientTemplate patientTemplate,
@@ -76,7 +124,7 @@ public class ServiceResultList implements Serializable {
         return patientId;
     }
 
-    private void setPatientId(Integer patientId) {
+    public void setPatientId(Integer patientId) {
         this.patientId = patientId;
     }
 
@@ -84,7 +132,7 @@ public class ServiceResultList implements Serializable {
         return actorId;
     }
 
-    private void setActorId(Integer actorId) {
+    public void setActorId(Integer actorId) {
         this.actorId = actorId;
     }
 
@@ -100,7 +148,7 @@ public class ServiceResultList implements Serializable {
         return serviceId;
     }
 
-    private void setServiceId(Integer serviceId) {
+    public void setServiceId(Integer serviceId) {
         this.serviceId = serviceId;
     }
 
@@ -108,7 +156,7 @@ public class ServiceResultList implements Serializable {
         return startDate;
     }
 
-    private void setStartDate(Date startDate) {
+    public void setStartDate(Date startDate) {
         this.startDate = startDate;
     }
 
@@ -116,7 +164,7 @@ public class ServiceResultList implements Serializable {
         return endDate;
     }
 
-    private void setEndDate(Date endDate) {
+    public void setEndDate(Date endDate) {
         this.endDate = endDate;
     }
 
@@ -139,5 +187,45 @@ public class ServiceResultList implements Serializable {
 
     public void setServiceName(String serviceName) {
         this.serviceName = serviceName;
+    }
+
+    private static Date adjustExecutionDateToBestContactTime(ServiceResult serviceResult, PatientTemplate patientTemplate) {
+        Patient patient = Context.getPatientService().getPatient(serviceResult.getPatientId());
+        String patientBestContactTime = BestContactTimeHelper.getBestContactTime(patient, patientTemplate.getActorType());
+        Date executionDateWithProperBestContactTime = getDateWithUpdatedTime(serviceResult.getExecutionDate(),
+                patientBestContactTime, MessagesConstants.HOURS_MINUTES_SEPARATOR);
+
+        return ServiceResult.adjustTimezoneIfFuturePlannedEvent(executionDateWithProperBestContactTime,
+                serviceResult.getServiceStatus());
+    }
+
+    private static PatientTemplate getRelatedPatientTemplate(ServiceResult serviceResult, Template template) {
+        PatientTemplateService patientTemplateService = Context.getService(PatientTemplateService.class);
+        PatientTemplateCriteria patientTemplateCriteria = PatientTemplateCriteria.forPatientAndActorAndTemplate(
+                serviceResult.getPatientId(), serviceResult.getActorId(), template.getId());
+        PatientTemplate patientTemplate = patientTemplateService.findOneByCriteria(patientTemplateCriteria);
+
+        return patientTemplate != null && !patientTemplate.isDeactivated() ? patientTemplate : null;
+    }
+
+    private static Date getDateWithUpdatedTime(Date date, String time, String timeSeparator) {
+        String[] splitTimeBySeparator = time.split(timeSeparator);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(splitTimeBySeparator[0]));
+        calendar.set(Calendar.MINUTE, Integer.parseInt(splitTimeBySeparator[1]));
+
+        return calendar.getTime();
+    }
+
+    private static String getTemplateFieldValue(PatientTemplate patientTemplate, String templateFieldName) {
+        String fieldValue = null;
+        for (TemplateFieldValue templateFieldValue : patientTemplate.getTemplateFieldValues()) {
+            if (StringUtils.equals(templateFieldValue.getTemplateField().getName(), templateFieldName)) {
+                fieldValue = templateFieldValue.getValue();
+                break;
+            }
+        }
+        return fieldValue;
     }
 }

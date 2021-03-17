@@ -9,6 +9,7 @@ import org.openmrs.Relationship;
 import org.openmrs.RelationshipType;
 import org.openmrs.module.messages.api.constants.MessagesConstants;
 import org.openmrs.module.messages.api.model.Actor;
+import org.openmrs.module.messages.api.model.Template;
 import org.openmrs.module.messages.api.service.ActorService;
 
 import java.io.Serializable;
@@ -27,6 +28,8 @@ public class PatientTemplateCriteria extends BaseOpenmrsDataCriteria implements 
 
     private Relationship actorType;
 
+    private Template template;
+
     public PatientTemplateCriteria(Patient patient) {
         this.patient = patient;
     }
@@ -37,6 +40,16 @@ public class PatientTemplateCriteria extends BaseOpenmrsDataCriteria implements 
 
     public PatientTemplateCriteria(Relationship actorType) {
         this.actorType = actorType;
+    }
+
+    public PatientTemplateCriteria(Template template) {
+        this.template = template;
+    }
+
+    public PatientTemplateCriteria(Patient patient, Person actor, Template template) {
+        this.patient = patient;
+        this.actor = actor;
+        this.template = template;
     }
 
     /**
@@ -67,6 +80,32 @@ public class PatientTemplateCriteria extends BaseOpenmrsDataCriteria implements 
     public static PatientTemplateCriteria forActorType(Integer relationshipId) {
         Relationship actorType = new Relationship(relationshipId);
         return new PatientTemplateCriteria(actorType);
+    }
+
+    /**
+     * Factory method used to create criteria for specific template
+     *
+     * @param templateId id of related template
+     */
+    public static PatientTemplateCriteria forTemplate(Integer templateId) {
+        Template template = new Template(templateId);
+        return new PatientTemplateCriteria(template);
+    }
+
+    /**
+     * Factory method used to create criteria for specific patient, actor nad template
+     *
+     * @param patientId id of related patient
+     * @param actorId id of related actor
+     * @param templateId id of related template
+     * @return
+     */
+    public static PatientTemplateCriteria forPatientAndActorAndTemplate(Integer patientId, Integer actorId,
+                                                                        Integer templateId) {
+        Patient patient = new Patient(patientId);
+        Person actor = new Person(actorId);
+        Template template = new Template(templateId);
+        return new PatientTemplateCriteria(patient, actor, template);
     }
 
     /**
@@ -106,6 +145,9 @@ public class PatientTemplateCriteria extends BaseOpenmrsDataCriteria implements 
         } else if (actorType != null) {
             hibernateCriteria
                     .add(Restrictions.eq("actorType", actorType));
+        } else if (template != null) {
+            hibernateCriteria
+                    .add(Restrictions.eq("template", template));
         }
     }
 

@@ -64,6 +64,10 @@ public final class MessagesConstants {
 
     public static final int MYSQL_TEXT_DATATYPE_LENGTH = 65535;
 
+    public static final String CHANNEL_TYPE_PARAM_NAME = "Service type";
+
+    public static final String HOURS_MINUTES_SEPARATOR = ":";
+
     private MessagesConstants() {
         // private. So can't be initialized
     }

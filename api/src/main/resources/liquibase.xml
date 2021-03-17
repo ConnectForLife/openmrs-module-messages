@@ -4150,4 +4150,24 @@
         <renameColumn tableName="messages_template" columnDataType="varchar(255)" oldColumnName="void_reason" newColumnName="retire_reason" />
     </changeSet>
 
+    <changeSet id="messages-92" author="Dawid Ruchniewicz">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="messages_template"/>
+        </preConditions>
+        <comment>Added shouldUseOptimizedQuery column to template</comment>
+        <addColumn tableName="messages_template">
+            <column name="should_use_optimized_query" type="BOOLEAN" defaultValueBoolean="false"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="messages-93" author="Dawid Ruchniewicz">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="messages_template"/>
+        </preConditions>
+        <comment>Enabled shouldUseOptimizedQuery option</comment>
+        <update tableName="messages_template">
+            <column name="should_use_optimized_query" valueBoolean="true"/>
+            <where>name = 'Visit reminder'</where>
+        </update>
+    </changeSet>
 </databaseChangeLog>

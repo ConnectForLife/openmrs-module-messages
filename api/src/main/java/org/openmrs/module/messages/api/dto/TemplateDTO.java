@@ -26,6 +26,8 @@ public class TemplateDTO extends BaseDTO implements DTO {
 
     private String calendarServiceQuery;
 
+    private boolean shouldUseOptimizedQuery;
+
     @Valid
     private List<TemplateFieldDTO> templateFields = new ArrayList<>();
 
@@ -102,6 +104,15 @@ public class TemplateDTO extends BaseDTO implements DTO {
 
     public TemplateDTO setCalendarServiceQuery(String calendarServiceQuery) {
         this.calendarServiceQuery = calendarServiceQuery;
+        return this;
+    }
+
+    public boolean isShouldUseOptimizedQuery() {
+        return shouldUseOptimizedQuery;
+    }
+
+    public TemplateDTO setShouldUseOptimizedQuery(boolean shouldUseOptimizedQuery) {
+        this.shouldUseOptimizedQuery = shouldUseOptimizedQuery;
         return this;
     }
 }

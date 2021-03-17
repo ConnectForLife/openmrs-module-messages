@@ -164,6 +164,7 @@ public class ExecutionEngineContextTest extends ContextSensitiveTest {
         template.setCalendarServiceQuery("SELECT CALENDAR SERVICE QUERY");
         template.setServiceQueryType("SQL");
         template.setName(SERVICE_NAME);
+        template.setShouldUseOptimizedQuery(false);
         template = templateService.saveOrUpdate(template);
 
         PatientTemplate patientTemplate = new PatientTemplate();
@@ -194,6 +195,7 @@ public class ExecutionEngineContextTest extends ContextSensitiveTest {
         template.setCalendarServiceQuery("SELECT CALENDAR SERVICE QUERY");
         template.setServiceQueryType("SQL");
         template.setName(SERVICE_NAME);
+        template.setShouldUseOptimizedQuery(false);
         template = templateService.saveOrUpdate(template);
 
         PatientTemplate patientTemplate = prepareBase();

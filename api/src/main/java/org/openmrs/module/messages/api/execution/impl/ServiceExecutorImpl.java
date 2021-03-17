@@ -20,10 +20,12 @@ import org.openmrs.module.messages.api.execution.ServiceExecutor;
 import org.openmrs.module.messages.api.execution.ServiceResultList;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.Range;
+import org.openmrs.module.messages.api.model.Template;
 import org.openmrs.module.messages.api.util.BestContactTimeHelper;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 public class ServiceExecutorImpl extends BaseOpenmrsService implements ServiceExecutor {
 
@@ -66,7 +68,7 @@ public class ServiceExecutorImpl extends BaseOpenmrsService implements ServiceEx
     @Override
     public ServiceResultList execute(PatientTemplate patientTemplate, Range<Date> dateTimeRange,
                                      Date executionStartDateTime, boolean isCalendarQuery) throws ExecutionException {
-        ExecutionEngine executionEngine = getEngine(patientTemplate);
+        ExecutionEngine executionEngine = getEngine(patientTemplate, null);
 
         ExecutionContext executionContext = new ExecutionContext(patientTemplate, dateTimeRange,
                 BestContactTimeHelper.getBestContactTime(patientTemplate.getActor(), patientTemplate.getActorType()),
@@ -76,8 +78,27 @@ public class ServiceExecutorImpl extends BaseOpenmrsService implements ServiceEx
         return executionEngine.execute(executionContext, isCalendarQuery);
     }
 
-    private ExecutionEngine getEngine(PatientTemplate patientTemplate) throws ExecutionException {
-        String engineKey = patientTemplate.getServiceQueryType();
+    @Transactional(noRollbackFor = {RuntimeException.class, SQLGrammarException.class}, readOnly = true)
+    @Override
+    public List<ServiceResultList> executeTemplate(Template template, Range<Date> dateTimeRange)
+            throws ExecutionException {
+        ExecutionEngine executionEngine = getEngine(null, template);
+
+        ExecutionContext executionContext = new ExecutionContext(template, dateTimeRange);
+
+        return executionEngine.executeTemplate(executionContext);
+
+    }
+
+    private ExecutionEngine getEngine(PatientTemplate patientTemplate, Template template) throws ExecutionException {
+        String engineKey = null;
+        if (patientTemplate == null) {
+            engineKey = template.getServiceQueryType();
+        }
+        if (template == null) {
+            engineKey = patientTemplate.getServiceQueryType();
+        }
+
         ExecutionEngine engine = executionEngineManager.getEngine(engineKey);
         if (engine == null) {
             throw new ExecutionException("Unknown query type: " + engineKey);

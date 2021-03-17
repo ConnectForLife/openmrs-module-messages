@@ -37,11 +37,16 @@ public class ServiceResult implements Serializable, DTO {
     public static final String MSG_ID_ALIAS = "MESSAGE_ID";
     public static final String CHANNEL_NAME_ALIAS = "CHANNEL_ID";
     public static final String STATUS_COL_ALIAS = "STATUS_ID";
+    public static final String PATIENT_ID_ALIAS = "PATIENT_ID";
     public static final int MIN_COL_NUM = 3;
 
     private Date executionDate;
     private Object messageId;
     private String channelType;
+
+    private Integer patientId;
+    private Integer actorId;
+
     private ServiceStatus serviceStatus = ServiceStatus.FUTURE;
     private Map<String, Object> additionalParams = new HashMap<>();
     private Integer patientTemplateId;
@@ -54,6 +59,8 @@ public class ServiceResult implements Serializable, DTO {
         Date date = null;
         Object msgId = null;
         String channelType = null;
+        Integer patientId = null;
+        Integer actorId = null;
         ServiceStatus status = ServiceStatus.FUTURE;
         Map<String, Object> params = new HashMap<>();
 
@@ -71,14 +78,15 @@ public class ServiceResult implements Serializable, DTO {
                 case STATUS_COL_ALIAS:
                     status = parseStatus((String) entry.getValue());
                     break;
+                case PATIENT_ID_ALIAS:
+                    patientId = Integer.parseInt(entry.getValue().toString());
+                    break;
                 default:
                     params.put(entry.getKey(), entry.getValue());
                     break;
             }
         }
-
-        date = adjustTimezoneIfFuturePlannedEvent(date, status);
-        return new ServiceResult(date, msgId, channelType, status, params);
+        return new ServiceResult(date, msgId, channelType, patientId, actorId, status, params);
     }
 
     public static List<ServiceResult> parseList(List<Map<String, Object>> list, PatientTemplate patientTemplate) {
@@ -86,6 +94,8 @@ public class ServiceResult implements Serializable, DTO {
         for (Map<String, Object> row : list) {
             ServiceResult result = ServiceResult.parse(row);
             result.patientTemplateId = patientTemplate.getId();
+            result.setExecutionDate(adjustTimezoneIfFuturePlannedEvent(result.getExecutionDate(),
+                    result.getServiceStatus()));
             String key = ZoneConverterUtil.formatToUserZone(result.getExecutionDate())
                     + result.getChannelType();
             if (resultServices.containsKey(key)) {
@@ -107,6 +117,8 @@ public class ServiceResult implements Serializable, DTO {
             Date executionDate,
             Object messageId,
             String channelType,
+            Integer patientId,
+            Integer actorId,
             ServiceStatus serviceStatus,
             Map<String, Object> additionalParams
     ) {
@@ -116,13 +128,12 @@ public class ServiceResult implements Serializable, DTO {
         if (messageId == null) {
             throw new IllegalArgumentException("Message ID (external execution id) is required");
         }
-        if (channelType == null) {
-            throw new IllegalArgumentException("Channel type (name) is required");
-        }
 
         this.executionDate = executionDate;
         this.messageId = messageId;
         this.channelType = channelType;
+        this.patientId = patientId;
+        this.actorId = actorId;
         this.serviceStatus = serviceStatus;
         this.additionalParams = additionalParams == null ? new HashMap<>() : additionalParams;
     }
@@ -181,15 +192,31 @@ public class ServiceResult implements Serializable, DTO {
         this.patientTemplateId = patientTemplateId;
     }
 
+    public static Date adjustTimezoneIfFuturePlannedEvent(Date date, ServiceStatus status) {
+        return status == null || status == ServiceStatus.FUTURE ? ZoneConverterUtil.convertToUserZone(date) : date;
+    }
+
+    public Integer getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(Integer patientId) {
+        this.patientId = patientId;
+    }
+
+    public Integer getActorId() {
+        return actorId == null ? getPatientId() : actorId;
+    }
+
+    public void setActorId(Integer actorId) {
+        this.actorId = actorId;
+    }
+
     private static ServiceStatus parseStatus(String statusString) {
         if (StringUtils.isNotBlank(statusString)) {
             return ServiceStatus.valueOf(statusString);
         } else {
             return ServiceStatus.FUTURE;
         }
-    }
-
-    private static Date adjustTimezoneIfFuturePlannedEvent(Date date, ServiceStatus status) {
-        return status == null || status == ServiceStatus.FUTURE ? ZoneConverterUtil.convertToUserZone(date) : date;
     }
 }

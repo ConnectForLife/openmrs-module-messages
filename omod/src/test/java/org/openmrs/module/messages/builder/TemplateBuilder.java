@@ -9,6 +9,7 @@ public final class TemplateBuilder extends AbstractBuilder<Template> {
     private String serviceQueryType;
     private String name;
     private String calendarServiceQuery;
+    private boolean shouldUseOptimizedQuery;
 
     public TemplateBuilder() {
         id = getInstanceNumber();
@@ -16,6 +17,7 @@ public final class TemplateBuilder extends AbstractBuilder<Template> {
         serviceQueryType = "SQL";
         name = "Example name";
         calendarServiceQuery = "SELECT CALENDAR SERVICE QUERY;";
+        shouldUseOptimizedQuery = false;
     }
 
     @Override
@@ -26,6 +28,7 @@ public final class TemplateBuilder extends AbstractBuilder<Template> {
         template.setServiceQueryType(serviceQueryType);
         template.setName(name);
         template.setCalendarServiceQuery(calendarServiceQuery);
+        template.setShouldUseOptimizedQuery(shouldUseOptimizedQuery);
         return template;
     }
 
@@ -56,6 +59,11 @@ public final class TemplateBuilder extends AbstractBuilder<Template> {
 
     public TemplateBuilder withCalendarServiceQuery(String calendarServiceQuery) {
         this.calendarServiceQuery = calendarServiceQuery;
+        return this;
+    }
+
+    public TemplateBuilder withShouldUseOptimizedQuery(boolean shouldUseOptimizedQuery) {
+        this.shouldUseOptimizedQuery = shouldUseOptimizedQuery;
         return this;
     }
 }

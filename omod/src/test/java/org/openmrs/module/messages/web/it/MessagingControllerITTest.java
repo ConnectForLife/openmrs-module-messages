@@ -341,6 +341,7 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
                 .withServiceQueryType("SQL")
                 .setName(templateName)
                 .withCalendarServiceQuery("")
+                .withShouldUseOptimizedQuery(false)
                 .buildAsNew();
         template.setTemplateFields(createTemplateFields(template));
         return templateDao.saveOrUpdate(template);

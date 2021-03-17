@@ -20,4 +20,6 @@ public interface BaseOpenmrsPageableDao<T extends BaseOpenmrsData> extends Openm
      * @return list of the objects of the specified type, implicitly paginated
      */
     List<T> findAllByCriteria(BaseCriteria criteria, PagingInfo pagingInfo);
+
+    T findOneByCriteria(BaseCriteria criteria);
 }

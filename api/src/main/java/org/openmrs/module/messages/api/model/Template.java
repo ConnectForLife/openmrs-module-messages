@@ -39,6 +39,9 @@ public class Template extends BaseOpenmrsMetadata {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "template", orphanRemoval = true)
     private Set<TemplateField> templateFields = new HashSet<>();
 
+    @Column(name = "should_use_optimized_query", nullable = false)
+    private boolean shouldUseOptimizedQuery;
+
     public Template() {
         super();
     }
@@ -85,6 +88,14 @@ public class Template extends BaseOpenmrsMetadata {
 
     public void setTemplateFields(Set<TemplateField> templateFields) {
         this.templateFields = templateFields;
+    }
+
+    public boolean isShouldUseOptimizedQuery() {
+        return shouldUseOptimizedQuery;
+    }
+
+    public void setShouldUseOptimizedQuery(boolean shouldUseOptimizedQuery) {
+        this.shouldUseOptimizedQuery = shouldUseOptimizedQuery;
     }
 
     /**

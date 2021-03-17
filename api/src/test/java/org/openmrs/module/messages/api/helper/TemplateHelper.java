@@ -25,6 +25,7 @@ public final class TemplateHelper {
         template.setCalendarServiceQuery(Constant.EXAMPLE_TEMPLATE_CALENDAR_SERVICE_QUERY);
         template.setServiceQueryType("example service query type");
         template.setName(DUMMY_SERVICE_NAME);
+        template.setShouldUseOptimizedQuery(false);
         
         return template;
     }

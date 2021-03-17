@@ -173,6 +173,7 @@ public interface MessagingService extends BaseOpenmrsCriteriaDataService<Schedul
      * @param endDate the end of the date range
      * @return list of all service executions in the given period
      */
+
     List<ServiceResultList> retrieveAllServiceExecutions(Date startDate, Date endDate);
 
     /**
