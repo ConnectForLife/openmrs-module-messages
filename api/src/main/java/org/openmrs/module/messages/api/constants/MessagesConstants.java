@@ -68,6 +68,11 @@ public final class MessagesConstants {
 
     public static final String HOURS_MINUTES_SEPARATOR = ":";
 
+    /**
+     * The name of Concept Class for Health Tip Category Concepts.
+     */
+    public static final String HEALTH_TIP_CATEGORY_CLASS_NAME = "Health Tips Category";
+
     private MessagesConstants() {
         // private. So can't be initialized
     }

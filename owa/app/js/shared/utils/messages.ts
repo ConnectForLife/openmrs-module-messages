@@ -72,12 +72,6 @@ export const SUNDAY = 'Sunday';
 export const DAILY = 'Daily';
 export const WEEKLY = 'Weekly';
 export const MONTHLY = 'Monthly';
-export const HT_CONTACT_TRACING_LABEL = 'Contact Tracing';
-export const HT_CAREGIVER_LABEL = 'Caregiver';
-export const HT_SIDE_EFFECTS_LABEL = 'Side Effects';
-export const HT_TREATMENT_LABEL = 'Treatment';
-export const HT_PREVENTION_LABEL = 'Prevention';
-export const HT_SPREAD_LABEL = 'Spread';
 
 export const DEFAULT_GENERATION_SUCCESS = 'The default values of the templates have been successfully saved to patient.';
 export const DEFAULT_GENERATION_FAILURE = 'Cannot save the default values of the templates';

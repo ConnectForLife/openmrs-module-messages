@@ -1,32 +1,25 @@
-import React, { ReactFragment } from 'react';
-import { connect } from 'react-redux';
-import { RouteComponentProps } from 'react-router-dom';
-import {
-  getTemplates,
-  getPatientTemplates,
-  putPatientTemplates
-} from '../../reducers/patient-template.reducer'
-import { getActorList } from '../../reducers/actor.reducer';
-import { IRootState } from '../../reducers';
-import { Button, SelectCallback } from 'react-bootstrap';
+import React, {ReactFragment} from 'react';
+import {connect} from 'react-redux';
+import {RouteComponentProps} from 'react-router-dom';
+import {getPatientTemplates, getTemplates, putPatientTemplates} from '../../reducers/patient-template.reducer'
+import {getActorList} from '../../reducers/actor.reducer';
+import {IRootState} from '../../reducers';
+import {Button, SelectCallback} from 'react-bootstrap';
 import * as Default from '../../shared/utils/messages';
-import { getIntl } from '@openmrs/react-components/lib/components/localization/withLocalization';
+import {getIntl} from '@openmrs/react-components/lib/components/localization/withLocalization';
 import FormSection from '@bit/soldevelo-omrs.cfl-components.form-entry/model/form-section';
 import FormSubSection from '@bit/soldevelo-omrs.cfl-components.form-entry/model/form-subsection';
 import FormEntry from '@bit/soldevelo-omrs.cfl-components.form-entry';
 import './patient-template.scss';
 import PatientTemplateForm from './patient-template-form';
-import { TemplateUI } from '../../shared/model/template-ui';
-import {
-  getPatientTemplateWithTemplateId,
-  getPatientTemplateWithActorId
-} from '../../selectors/patient-template-selector';
-import { PatientTemplateUI } from '../../shared/model/patient-template-ui';
+import {TemplateUI} from '../../shared/model/template-ui';
+import {getPatientTemplateWithActorId, getPatientTemplateWithTemplateId} from '../../selectors/patient-template-selector';
+import {PatientTemplateUI} from '../../shared/model/patient-template-ui';
 import _ from 'lodash';
-import { IActor } from '../../shared/model/actor.model';
-import { getActorTypes } from '../../reducers/admin-settings.reducer';
+import {IActor} from '../../shared/model/actor.model';
+import {getActorTypes, getHealthTipCategories} from '../../reducers/admin-settings.reducer';
 import Timezone from '../timezone/timezone';
-import { DashboardType } from '../../shared/model/dashboard-type';
+import {DashboardType} from '../../shared/model/dashboard-type';
 
 interface IPatientTemplateEditProps extends DispatchProps, StateProps, RouteComponentProps<{
   patientId: string,
@@ -48,6 +41,7 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
   }
 
   componentDidMount() {
+    this.props.getHealthTipCategories();
     this.props.getTemplates();
     this.props.getActorList(parseInt(this.props.match.params.patientId));
     this.props.getActorTypes();
@@ -197,7 +191,8 @@ const mapDispatchToProps = ({
   getPatientTemplates,
   putPatientTemplates,
   getActorList,
-  getActorTypes
+  getActorTypes,
+  getHealthTipCategories
 });
 
 type StateProps = ReturnType<typeof mapStateToProps>;

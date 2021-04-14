@@ -1,16 +1,21 @@
-import { REQUEST, SUCCESS, FAILURE } from './action-type.util';
-import { handleRequest, handleRequestFailure, initRequestHandling, continueRequestHandling } from '@bit/soldevelo-omrs.cfl-components.request-toast-handler';
+import {FAILURE, REQUEST, SUCCESS} from './action-type.util';
+import {
+  continueRequestHandling,
+  handleRequestFailure,
+  initRequestHandling
+} from '@bit/soldevelo-omrs.cfl-components.request-toast-handler';
 import _ from 'lodash';
 
 import 'react-toastify/dist/ReactToastify.css';
-import { TemplateUI } from '../shared/model/template-ui';
+import {TemplateUI} from '../shared/model/template-ui';
 import axiosInstance from '../config/axios';
-import { toModel, mergeWithObjectUIs } from '../shared/model/object-ui';
+import {mergeWithObjectUIs, toModel} from '../shared/model/object-ui';
 import * as Default from '../shared/utils/messages';
-import { getIntl } from '@openmrs/react-components/lib/components/localization/withLocalization';
-import { IDefaultBestContactTime } from '../shared/model/default-best-contact-time.model';
-import { IActorType } from '../shared/model/actor-type.model';
-import { mapFromRequest, mapToRequest } from '../shared/model/contact-time.model';
+import {getIntl} from '@openmrs/react-components/lib/components/localization/withLocalization';
+import {IDefaultBestContactTime} from '../shared/model/default-best-contact-time.model';
+import {IActorType} from '../shared/model/actor-type.model';
+import {mapFromRequest, mapToRequest} from '../shared/model/contact-time.model';
+import {IHealthTipCategory} from '../shared/model/health-tip-category.model';
 
 export const ACTION_TYPES = {
   GET_TEMPLATES: 'adminSettingsReducer/GET_TEMPLATES',
@@ -20,6 +25,7 @@ export const ACTION_TYPES = {
   UPDATE_DEFAULT_CONTACT_TIMES: 'adminSettingsReducer/UPDATE_DEFAULT_CONTACT_TIMES',
   PUT_TEMPLATES: 'adminSettingsReducer/PUT_TEMPLATE',
   PUT_DEFAULT_CONTACT_TIMES: 'adminSettingsReducer/PUT_DEFAULT_CONTACT_TIMES',
+  GET_HEALTH_TIP_CATEGORIES: 'adminSettingsReducer/GET_HEALTH_TIP_CATEGORIES',
   RESET: 'adminSettingsReducer/RESET'
 };
 
@@ -27,7 +33,8 @@ const initialState = {
   defaultTemplates: [] as Array<TemplateUI>,
   defaultBestContactTimes: [] as Array<IDefaultBestContactTime>,
   actorTypes: [] as Array<IActorType>,
-  loading: false
+  loading: false,
+  healthTipCategories: [] as Array<IHealthTipCategory>
 };
 
 export type AdminSettingsState = Readonly<typeof initialState>;
@@ -39,6 +46,7 @@ export default (state = initialState, action): AdminSettingsState => {
     case REQUEST(ACTION_TYPES.PUT_TEMPLATES):
     case REQUEST(ACTION_TYPES.GET_DEFAULT_CONTACT_TIMES):
     case REQUEST(ACTION_TYPES.PUT_DEFAULT_CONTACT_TIMES):
+    case REQUEST(ACTION_TYPES.GET_HEALTH_TIP_CATEGORIES):
       return {
         ...state,
         loading: true
@@ -48,6 +56,7 @@ export default (state = initialState, action): AdminSettingsState => {
     case FAILURE(ACTION_TYPES.PUT_TEMPLATES):
     case FAILURE(ACTION_TYPES.GET_DEFAULT_CONTACT_TIMES):
     case FAILURE(ACTION_TYPES.PUT_DEFAULT_CONTACT_TIMES):
+    case FAILURE(ACTION_TYPES.GET_HEALTH_TIP_CATEGORIES):
       return {
         ...state,
         loading: false
@@ -77,6 +86,12 @@ export default (state = initialState, action): AdminSettingsState => {
         ...state,
         loading: false
       }
+    case SUCCESS(ACTION_TYPES.GET_HEALTH_TIP_CATEGORIES):
+      return {
+        ...state,
+        loading: false,
+        healthTipCategories: action.payload.data as IHealthTipCategory[]
+      }
     case ACTION_TYPES.UPDATE_TEMPLATES:
       return {
         ...state,
@@ -101,9 +116,11 @@ const templatesUrl = `${baseUrl}/templates`;
 const actorUrl = `${baseUrl}/actor`;
 const defaultContactTimesUrl = `${actorUrl}/contact-times/default`;
 const actorTypesUrl = `${actorUrl}/types`;
+const healthTipCategoriesUri = "ws/messages/defaults/healthTipCategories";
 
 export const getConfig = () => async (dispatch) => {
-  // Actor types must be first because the result is required in templates mapping
+  await dispatch(getHealthTipCategories());
+  // Actor types must be before templates
   await dispatch(getActorTypes());
   await dispatch(getTemplates());
   await dispatch(getBestContactTimes());
@@ -119,6 +136,12 @@ export const getBestContactTimes = () => async (dispatch) =>
     type: ACTION_TYPES.GET_DEFAULT_CONTACT_TIMES,
     payload: axiosInstance.get(defaultContactTimesUrl)
   });
+
+export const getHealthTipCategories = () => async (dispatch) =>
+    dispatch({
+      type: ACTION_TYPES.GET_HEALTH_TIP_CATEGORIES,
+      payload: axiosInstance.get(healthTipCategoriesUri)
+    });
 
 export const getActorTypes = () => ({
   type: ACTION_TYPES.GET_ACTOR_TYPES,

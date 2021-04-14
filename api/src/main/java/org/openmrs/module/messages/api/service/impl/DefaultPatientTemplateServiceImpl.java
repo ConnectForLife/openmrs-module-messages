@@ -1,8 +1,13 @@
 package org.openmrs.module.messages.api.service.impl;
 
+import org.openmrs.Concept;
+import org.openmrs.ConceptClass;
 import org.openmrs.Patient;
+import org.openmrs.api.ConceptService;
+import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.messages.api.builder.PatientTemplateBuilder;
+import org.openmrs.module.messages.api.constants.MessagesConstants;
 import org.openmrs.module.messages.api.dto.MessageDetailsDTO;
 import org.openmrs.module.messages.api.exception.ValidationException;
 import org.openmrs.module.messages.api.mappers.MessageDetailsMapper;
@@ -38,8 +43,7 @@ public class DefaultPatientTemplateServiceImpl extends BaseOpenmrsService implem
     public List<PatientTemplate> generateDefaultPatientTemplates(Patient patient) {
         List<PatientTemplate> lacking = findLackingPatientTemplates(patient);
         if (lacking.size() == 0) {
-            throw new ValidationException("The given patient has already saved all the patient " +
-                "templates");
+            throw new ValidationException("The given patient has already saved all the patient templates");
         }
         return patientTemplateService.saveOrUpdate(lacking);
     }
@@ -47,19 +51,17 @@ public class DefaultPatientTemplateServiceImpl extends BaseOpenmrsService implem
     @Override
     public List<PatientTemplate> findLackingPatientTemplates(Patient patient) {
         List<PatientTemplate> existing =
-            patientTemplateService.findAllByCriteria(PatientTemplateCriteria.forPatientId(patient.getId()));
+                patientTemplateService.findAllByCriteria(PatientTemplateCriteria.forPatientId(patient.getId()));
 
         return findLackingPatientTemplates(patient, existing);
     }
 
     @Override
-    public List<PatientTemplate> findLackingPatientTemplates(Patient patient,
-                                                             List<PatientTemplate> existing) {
-        List<DefaultPatientTemplateWrapper> actual =
-            DefaultPatientTemplateWrapper.wrapToList(existing);
+    public List<PatientTemplate> findLackingPatientTemplates(Patient patient, List<PatientTemplate> existing) {
+        List<DefaultPatientTemplateWrapper> actual = DefaultPatientTemplateWrapper.wrapToList(existing);
 
         List<DefaultPatientTemplateWrapper> expected =
-            DefaultPatientTemplateWrapper.wrapToList(getPatientTemplatesWithDefaultValues(patient));
+                DefaultPatientTemplateWrapper.wrapToList(getPatientTemplatesWithDefaultValues(patient));
 
         Set<DefaultPatientTemplateWrapper> diff = new HashSet<>();
         diff.addAll(expected);
@@ -73,12 +75,28 @@ public class DefaultPatientTemplateServiceImpl extends BaseOpenmrsService implem
     }
 
     @Override
-    public MessageDetailsDTO getDetailsForRealAndDefault(Patient patient,
-                                                         List<PatientTemplate> lacking) {
-        List<PatientTemplate> patientTemplates = patientTemplateService
-            .findAllByCriteria(PatientTemplateCriteria.forPatientId(patient.getId()));
+    public MessageDetailsDTO getDetailsForRealAndDefault(Patient patient, List<PatientTemplate> lacking) {
+        List<PatientTemplate> patientTemplates =
+                patientTemplateService.findAllByCriteria(PatientTemplateCriteria.forPatientId(patient.getId()));
         patientTemplates.addAll(lacking);
         return messageDetailsMapper.toDto(patientTemplates).withPersonId(patient.getId());
+    }
+
+    @Override
+    public List<Concept> getHealthTipCategoryConcepts() {
+        final ConceptService conceptService = Context.getConceptService();
+
+        final ConceptClass conceptClass =
+                conceptService.getConceptClassByName(MessagesConstants.HEALTH_TIP_CATEGORY_CLASS_NAME);
+
+        if (conceptClass == null) {
+            throw new IllegalStateException(new StringBuilder("Could not get Health Tip Categories. The Concept Class '")
+                    .append(MessagesConstants.HEALTH_TIP_CATEGORY_CLASS_NAME)
+                    .append("' was not found!")
+                    .toString());
+        }
+
+        return conceptService.getConceptsByClass(conceptClass);
     }
 
     public DefaultPatientTemplateServiceImpl setPatientTemplateService(PatientTemplateService patientTemplateService) {
@@ -103,20 +121,13 @@ public class DefaultPatientTemplateServiceImpl extends BaseOpenmrsService implem
 
     private List<PatientTemplate> getPatientTemplatesWithDefaultValues(Patient patient) {
         List<PatientTemplate> patientTemplates = new ArrayList<>();
-        List<Template> templates =
-            templateService.getAll(false);
+        List<Template> templates = templateService.getAll(false);
         List<Actor> actors = actorService.getAllActorsForPatientId(patient.getId());
 
         for (Template template : templates) {
-            patientTemplates.add(
-                new PatientTemplateBuilder(template, patient)
-                    .build()
-            );
+            patientTemplates.add(new PatientTemplateBuilder(template, patient).build());
             for (Actor actor : actors) {
-                patientTemplates.add(
-                        new PatientTemplateBuilder(template, actor, patient)
-                                .build()
-                );
+                patientTemplates.add(new PatientTemplateBuilder(template, actor, patient).build());
             }
         }
         return patientTemplates;

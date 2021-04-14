@@ -1,8 +1,10 @@
 package org.openmrs.module.messages.web.controller;
 
-import java.util.List;
+import org.openmrs.Concept;
+import org.openmrs.ConceptName;
 import org.openmrs.Patient;
 import org.openmrs.api.PatientService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.api.dto.DefaultPatientTemplateStateDTO;
 import org.openmrs.module.messages.api.dto.MessageDetailsDTO;
 import org.openmrs.module.messages.api.dto.PatientTemplateDTO;
@@ -12,6 +14,7 @@ import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.service.DefaultPatientTemplateService;
 import org.openmrs.module.messages.api.service.PatientTemplateService;
 import org.openmrs.module.messages.domain.criteria.PatientTemplateCriteria;
+import org.openmrs.module.messages.web.model.HealthTipCategory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -21,6 +24,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Exposes the endpoint related to managing data for default patient templates
@@ -81,6 +88,31 @@ public class DefaultPatientTemplateController extends BaseRestController {
         return mapper.toDtos(
             defaultPatientTemplateService.generateDefaultPatientTemplates(getPatientById(id))
         );
+    }
+
+    /**
+     * Gets the list of health Tip Categories in the current user language.
+     *
+     * @return the List of Health Tip categories, never null
+     */
+    @RequestMapping(value = "healthTipCategories", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public List<HealthTipCategory> getHealthTipCategoriesForUser() {
+        final List<Concept> healthTipCategoryConcepts = defaultPatientTemplateService.getHealthTipCategoryConcepts();
+        final Locale currentUserLocale = Context.getLocale();
+
+        final List<HealthTipCategory> categories = new LinkedList<>();
+
+        for (final Concept healthTipCategoryConcept : healthTipCategoryConcepts) {
+            final ConceptName shortName = healthTipCategoryConcept.getShortNameInLocale(currentUserLocale);
+            final String healthTipCategoryLabel =
+                    shortName != null ? shortName.getName() : healthTipCategoryConcept.getDisplayString();
+
+            categories.add(new HealthTipCategory(healthTipCategoryLabel, healthTipCategoryConcept.getDisplayString()));
+        }
+
+        return categories;
     }
 
     private Patient getPatientById(Integer id) {

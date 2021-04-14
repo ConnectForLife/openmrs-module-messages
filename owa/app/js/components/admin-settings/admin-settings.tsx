@@ -1,24 +1,26 @@
-import React, { ReactFragment } from 'react';
-import { connect } from 'react-redux';
-import { IRootState } from '../../reducers';
-import { Button, SelectCallback } from 'react-bootstrap';
+import React, {ReactFragment} from 'react';
+import {connect} from 'react-redux';
+import {IRootState} from '../../reducers';
+import {Button, SelectCallback} from 'react-bootstrap';
 import * as Default from '../../shared/utils/messages';
-import { getIntl } from '@openmrs/react-components/lib/components/localization/withLocalization';
+import {getIntl} from '@openmrs/react-components/lib/components/localization/withLocalization';
 import FormSection from '@bit/soldevelo-omrs.cfl-components.form-entry/model/form-section';
 import FormSubSection from '@bit/soldevelo-omrs.cfl-components.form-entry/model/form-subsection';
 import FormEntry from '@bit/soldevelo-omrs.cfl-components.form-entry';
 import './admin-settings.scss';
-import { TemplateForm } from '../default-settings/template-form';
-import { TemplateUI } from '../../shared/model/template-ui';
-import { getActorTypes, updateTemplate } from '../../reducers/admin-settings.reducer';
-import { IActorType } from '../../shared/model/actor-type.model';
-import { history } from '../../config/redux-store';
+import {TemplateForm} from '../default-settings/template-form';
+import {TemplateUI} from '../../shared/model/template-ui';
+import {getActorTypes, getHealthTipCategories, updateTemplate} from '../../reducers/admin-settings.reducer';
+import {IActorType} from '../../shared/model/actor-type.model';
+import {history} from '../../config/redux-store';
+import {IHealthTipCategory} from "../../shared/model/health-tip-category.model";
 
 interface IAdminSettingsProps extends DispatchProps, StateProps {
   templates: Array<TemplateUI>,
   actorTypes: Array<IActorType>,
   activeSection: string,
-  onSaveCallback?: Function
+  onSaveCallback?: Function,
+  healthTipCategories: IHealthTipCategory[]
 }
 
 interface IAdminSettingsState {
@@ -32,6 +34,7 @@ class AdminSettings extends React.PureComponent<IAdminSettingsProps, IAdminSetti
 
   componentDidMount() {
     this.props.getActorTypes();
+    this.props.getHealthTipCategories();
   }
 
   componentDidUpdate(prevProps: Readonly<IAdminSettingsProps>, prevState: Readonly<IAdminSettingsState>, snapshot?: any): void {
@@ -80,6 +83,7 @@ class AdminSettings extends React.PureComponent<IAdminSettingsProps, IAdminSetti
       key={`template-form-${template.localId}-${actorType.display}`}
       template={template}
       updateTemplate={this.props.updateTemplate}
+      healthTipCategories={this.props.healthTipCategories}
       actorType={actorType}
     />
   );
@@ -144,12 +148,14 @@ class AdminSettings extends React.PureComponent<IAdminSettingsProps, IAdminSetti
 
 const mapStateToProps = ({ adminSettings }: IRootState) => ({
   loading: adminSettings.loading,
-  actorTypes: adminSettings.actorTypes
+  actorTypes: adminSettings.actorTypes,
+  healthTipCategories: adminSettings.healthTipCategories
 });
 
 const mapDispatchToProps = ({
   updateTemplate,
-  getActorTypes
+  getActorTypes,
+  getHealthTipCategories
 });
 
 type StateProps = ReturnType<typeof mapStateToProps>;

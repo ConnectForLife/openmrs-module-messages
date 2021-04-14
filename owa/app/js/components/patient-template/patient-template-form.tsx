@@ -8,39 +8,36 @@
  */
 
 import React from 'react';
-import { connect } from 'react-redux';
-import { Form, FormGroup, ControlLabel } from 'react-bootstrap';
+import {connect} from 'react-redux';
+import {ControlLabel, Form, FormGroup} from 'react-bootstrap';
 import _ from 'lodash';
 import OpenMrsDatePicker from '@bit/soldevelo-omrs.cfl-components.openmrs-date-picker';
 import FormLabel from '@bit/soldevelo-omrs.cfl-components.form-label';
 import ErrorDesc from '@bit/soldevelo-omrs.cfl-components.error-description';
 
-import { updatePatientTemplate } from '../../reducers/patient-template.reducer';
-import { PatientTemplateUI } from '../../shared/model/patient-template-ui';
-import { TemplateUI } from '../../shared/model/template-ui';
-import { TemplateFieldValueUI } from '../../shared/model/template-field-value-ui';
-import { TemplateFieldType } from '../../shared/model/template-field-type';
+import {updatePatientTemplate} from '../../reducers/patient-template.reducer';
+import {PatientTemplateUI} from '../../shared/model/patient-template-ui';
+import {TemplateUI} from '../../shared/model/template-ui';
+import {TemplateFieldValueUI} from '../../shared/model/template-field-value-ui';
+import {TemplateFieldType} from '../../shared/model/template-field-type';
 import DynamicRadioButton from './form/dynamic-radio-button';
 import DynamicMultiselect from './form/dynamic-multiselect';
 import DynamicCheckboxButton from './form/dynamic-checbox-button';
 import InputField from './form/input-field';
-import RadioWrappedContainer, { InitInput } from './form/radio-wrapper';
+import RadioWrappedContainer, {InitInput} from './form/radio-wrapper';
+import {PATIENT_ROLE, PATIENT_TEMPLATE_END_DATE, PATIENT_TEMPLATE_START_DATE} from '../../shared/utils/messages';
 import {
-  PATIENT_TEMPLATE_START_DATE,
-  PATIENT_TEMPLATE_END_DATE,
-  PATIENT_ROLE
-} from '../../shared/utils/messages';
-import { 
-  getServiceTypeValues,
   getDayOfWeekValues,
   getMessagingFrequencyDailyOrWeeklyOrMonthlyValues,
-  getMessagingFrequencyWeeklyOrMonthlyValues } from '../../shared/utils/field-values';
-import { factory } from './form/type-factory';
-import { InputTypeEnum } from './form/radio-wrapper/parsable-input';
-import { IActor } from '../../shared/model/actor.model';
-import { IRootState } from '../../reducers';
-import { IActorType } from '../../shared/model/actor-type.model';
-import { getHealthTipConfig } from '../../shared/utils/health-tips';
+  getMessagingFrequencyWeeklyOrMonthlyValues,
+  getServiceTypeValues
+} from '../../shared/utils/field-values';
+import {factory} from './form/type-factory';
+import {InputTypeEnum} from './form/radio-wrapper/parsable-input';
+import {IActor} from '../../shared/model/actor.model';
+import {IRootState} from '../../reducers';
+import {IActorType} from '../../shared/model/actor-type.model';
+import MultiselectOption from '../../shared/model/multiselect-option';
 
 interface IReactProps {
   patientTemplate: PatientTemplateUI | undefined;
@@ -78,8 +75,9 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
     }
   }
 
-  componentDidMount = () => this.props.updatePatientTemplate(this.getPatientTemplate(), [this.props.template],
-    this.isDefaultPatientTemplateLoaded());
+  componentDidMount = () => {
+    this.props.updatePatientTemplate(this.getPatientTemplate(), [this.props.template], this.isDefaultPatientTemplateLoaded());
+  };
 
   getActorType = (relationshipTypeId: number) =>
     this.props.actorTypes.find((actorType) => actorType.relationshipTypeId === relationshipTypeId);
@@ -115,7 +113,11 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
         return this.renderDynamicRadioButton(tfv, getMessagingFrequencyWeeklyOrMonthlyValues(),
           fieldName, isMandatory);
       case TemplateFieldType.CATEGORY_OF_MESSAGE:
-        return this.renderDynamicMultiselect(tfv, Object.keys(getHealthTipConfig()), fieldName, isMandatory);
+        return this.renderHealthTipCategoryMultiselect(
+            tfv,
+            fieldName,
+            isMandatory
+        );
       case TemplateFieldType.START_OF_MESSAGES:
         return this.renderDatePicker(tfv, PATIENT_TEMPLATE_START_DATE, isMandatory,
           ['Start of daily messages', 'Start of messages'].includes(fieldName));
@@ -143,19 +145,22 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
     </>
   }
 
-  renderDynamicMultiselect = (tfv: TemplateFieldValueUI,
-    options: ReadonlyArray<string>,
-    fieldName: string,
-    isMandatory: boolean) => (
-      <DynamicMultiselect
-        options={options}
+  renderHealthTipCategoryMultiselect = (tfv: TemplateFieldValueUI,
+                                        fieldName: string,
+                                        isMandatory: boolean) => {
+      const multiselectOptions =
+          this.props.healthTipCategories ?
+              this.props.healthTipCategories.map(category => new MultiselectOption(category.label, category.name)) : [];
+
+      return <DynamicMultiselect
+        options={multiselectOptions}
         selectedOptions={tfv.value}
         label={fieldName}
         key={(this.props.actor ? this.props.actor.actorId : this.props.patientId) + ' ' + tfv.localId}
         mandatory={isMandatory}
         onSelectChange={(value: string) => this.onTemplateFieldValueChange(tfv.localId, value)}
       />
-    )
+    };
 
   renderDynamicDayOfWeekButton = (tfv: TemplateFieldValueUI,
     options: ReadonlyArray<string>,
@@ -276,7 +281,8 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
 }
 
 const mapStateToProps = ({ adminSettings }: IRootState) => ({
-  actorTypes: adminSettings.actorTypes
+  actorTypes: adminSettings.actorTypes,
+  healthTipCategories: adminSettings.healthTipCategories
 });
 
 const mapDispatchToProps = ({
