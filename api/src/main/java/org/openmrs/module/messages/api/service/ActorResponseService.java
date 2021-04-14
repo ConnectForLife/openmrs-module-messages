@@ -18,6 +18,6 @@ public interface ActorResponseService extends BaseOpenmrsCriteriaDataService<Act
      * @param criteria object representing the searching criteria
      * @return a list of found actor responses
      */
-    @Authorized(value = { PrivilegeConstants.VIEW_PATIENTS_PRIVILEGE })
+    @Authorized(value = { PrivilegeConstants.GET_PATIENTS_PRIVILEGE})
     List<ActorResponse> findAllByCriteria(BaseCriteria criteria);
 }

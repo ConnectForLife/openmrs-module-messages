@@ -6,7 +6,10 @@ public final class PrivilegeConstants {
 
     public static final String MANAGE_PRIVILEGE = "Messages manage privilege";
 
-    public static final String VIEW_PATIENTS_PRIVILEGE = "View Patients";
+    /**
+     * The OpenMRS framework's 'Get Patients' privilege.
+     */
+    public static final String GET_PATIENTS_PRIVILEGE = "Get Patients";
 
     private PrivilegeConstants() {
     }
