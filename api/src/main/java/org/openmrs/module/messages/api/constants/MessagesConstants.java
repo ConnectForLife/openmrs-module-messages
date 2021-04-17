@@ -68,6 +68,12 @@ public final class MessagesConstants {
 
     public static final String HOURS_MINUTES_SEPARATOR = ":";
 
+    public static final String PATIENT_ID_PARAM = "patientId";
+
+    public static final String ACTOR_ID_PARAM = "actorId";
+
+    public static final String PERSON_ID_PARAM = "personId";
+
     /**
      * The name of Concept Class for Health Tip Category Concepts.
      */

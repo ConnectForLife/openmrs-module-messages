@@ -70,6 +70,7 @@ function drawgroupBarChartChart(config) {
       var label = config.label;
       var requireLegend = config.requireLegend;
       d3.select(mainDiv).append("svg").attr("width", jq(mainDiv).width()).attr("height", jq(mainDiv).height()*0.9);
+
       var svg = d3.select(mainDiv + " svg"),
         margin = { top: 20, right: 20, bottom: 45, left: 40 },
         width = +svg.attr("width") - margin.left - margin.right,

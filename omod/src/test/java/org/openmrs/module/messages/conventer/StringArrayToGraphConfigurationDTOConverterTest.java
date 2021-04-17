@@ -14,27 +14,13 @@ import static org.junit.Assert.assertThat;
 public class StringArrayToGraphConfigurationDTOConverterTest {
 
     private static final String VALID_REPRESENTATION = "{\n" +
-            "  \"dataDateRange\": 4,\n" +
-            "  \"textQuestion\": \"Text Question\",\n" +
-            "  \"possibleResponses\": [1,4,7,122],\n" +
-            "  \"responseMode\": \"TEXT\",\n" +
-            "  \"actorId\": 43,\n" +
-            "  \"aggregateMode\": \"MONTH\",\n" +
-            "  \"patientId\": 2,\n" +
-            "  \"possibleTextResponses\": [\"response 1\",\"response 2\", \"response 3\"],\n" +
-            "  \"questionId\": 1\n" +
+            "  \"graphDataSetName\": \"test\",\n" +
+            "  \"actorId\": 43\n" +
             "}";
 
     private static final String INVALID_REPRESENTATION = "{\n" +
             "  \"id\": 4,\n" +
-            "  \"textQuestion\": \"Text Question\",\n" +
-            "  \"possibleResponses\": [1,4,7,122],\n" +
-            "  \"responseMode\": \"TEXT\",\n" +
-            "  \"actorId\": 43,\n" +
-            "  \"aggregateMode\": \"MONTH\",\n" +
-            "  \"patientId\": 2,\n" +
-            "  \"possibleTextResponses\": [\"response 1\",\"response 2\", \"response 3\"],\n" +
-            "  \"questionId\": 1\n" +
+            "  \"actorId\": 43\n" +
             "}";
 
     private static final String[] VALID_ARRAY = {VALID_REPRESENTATION};

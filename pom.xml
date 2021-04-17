@@ -48,6 +48,9 @@
         <jtsCoreVersion>1.14.0</jtsCoreVersion>
         <pmdPluginSkip>false</pmdPluginSkip>
         <checkStylePluginSkip>false</checkStylePluginSkip>
+        <reportingVersion>1.20.0</reportingVersion>
+        <calculationVersion>1.1</calculationVersion>
+        <serializationXstream>0.2.12</serializationXstream>
     </properties>
 
     <dependencyManagement>
@@ -83,6 +86,12 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
+                <groupId>org.openmrs.module</groupId>
+                <artifactId>reporting-api</artifactId>
+                <version>${reportingVersion}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
                 <!-- fixes the issue: https://github.com/h2database/h2database/issues/388-->
                 <groupId>com.vividsolutions</groupId>
                 <artifactId>jts-core</artifactId>
@@ -100,6 +109,22 @@
                         <artifactId>commons-codec</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.openmrs.module</groupId>
+                <artifactId>reporting-api</artifactId>
+                <version>${reportingVersion}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.openmrs.module</groupId>
+                <artifactId>calculation-api</artifactId>
+                <version>${calculationVersion}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.openmrs.module</groupId>
+                <artifactId>serialization.xstream-api</artifactId>
+                <version>${serializationXstream}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -79,6 +79,20 @@
 			<artifactId>event-api</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>reporting-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>calculation-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>serialization.xstream-api-2.0</artifactId>
+			<version>${serializationXstream}</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>

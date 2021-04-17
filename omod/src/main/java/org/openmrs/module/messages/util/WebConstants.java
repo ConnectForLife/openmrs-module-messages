@@ -4,19 +4,13 @@ public final class WebConstants {
 
     public static final String PATIENT_ID = "patientId";
 
-    public static final String QUESTION_ID = "questionId";
+    public static final String GRAPH_DATA_SET_NAME = "graphDataSetName";
 
-    public static final String TEXT_QUESTION = "textQuestion";
+    public static final String RESPONSE_ALIAS_NAME = "responseAlias";
 
-    public static final String POSSIBLE_RESPONSES = "possibleResponses";
+    public static final String COUNT_RESULT_ALIAS_NAME = "countResultAlias";
 
-    public static final String POSSIBLE_TEXT_RESPONSES = "possibleTextResponses";
-
-    public static final String RESPONSE_MODE = "responseMode";
-
-    public static final String AGGREGATE_MODE = "aggregateMode";
-
-    public static final String DATA_DATE_RANGE = "dataDateRange";
+    public static final String GROUP_BY_ALIAS_NAME = "groupByAlias";
 
     private WebConstants() { }
 }

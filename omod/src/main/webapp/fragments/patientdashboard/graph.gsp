@@ -4,8 +4,8 @@
     config.require("columnsInfo")
     ui.includeJavascript("messages", "barChart.js")
     ui.includeJavascript("messages", "d3.v4.min.js")
-    ui.includeJavascript("messages", "adherenceResponseGraph.js")
-    ui.includeCss("messages", "actorResponseGraph.css")
+    ui.includeJavascript("messages", "graph.js")
+    ui.includeCss("messages", "graph.css")
 %>
 <div class="info-section">
     <div class="info-header">
@@ -15,20 +15,19 @@
 
     <div class="info-body">
         <% if (config.additionalTitle) { %>
-            <span class="actor-response-graph-title"> ${ ui.message(config.additionalTitle) }</span>
+            <span class="graph-additional-title"> ${ ui.message(config.additionalTitle) }</span>
             <br />
         <% } %>
-        <span id="adherence-chart-loading-${config.id}" style="display: none;">
+        <span id="chart-loading-${config.id}" style="display: none;">
             ${ ui.message("messages.loading") }
             <i class="icon-spinner icon-spin icon-2x" style="margin-left: 10px;"></i>
         </span>
-        <span id="adherence-chart-no-content-${config.id}" style="display: none;">
+        <span id="chart-no-content-${config.id}" style="display: none;">
             ${ ui.message("messages.noContent") }
         </span>
         <div id="chart-${config.id}">
         </div>
         <script>
-            
             var chartConfig = {
                 fragmentId: "${config.id}",
                 columnsInfo: <%= groovy.json.JsonOutput.toJson(config.columnsInfo) %>,
@@ -39,8 +38,11 @@
                 <% if (config.yAxisLabel) { %>
                     yAxisLabel: "${ ui.message(config.yAxisLabel) }",
                 <% } %>
-                loadingMessage: "#adherence-chart-loading-${config.id}",
-                noContentMessage: "#adherence-chart-no-content-${config.id}",
+                loadingMessage: "#chart-loading-${config.id}",
+                noContentMessage: "#chart-no-content-${config.id}",
+                responseAlias: "${config.responseAlias}",
+                countResultAlias: "${config.countResultAlias}",
+                groupByAlias: "${config.groupByAlias}",
                 requestConfig: <%= groovy.json.JsonOutput.toJson(requestConfiguration) %>
             };
 
