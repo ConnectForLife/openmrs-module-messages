@@ -11,10 +11,12 @@ import org.openmrs.api.AdministrationService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.api.constants.ConfigConstants;
+import org.openmrs.module.messages.api.constants.MessagesConstants;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.Range;
 import org.openmrs.module.messages.api.model.Template;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
+import org.openmrs.module.messages.api.service.MessagingGroupService;
 import org.openmrs.module.messages.api.service.PatientTemplateService;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -90,12 +92,17 @@ public class ServiceResultListTest {
     @Mock
     private AdministrationService administrationService;
 
+    @Mock
+    private MessagingGroupService messagingGroupService;
+
     @Before
     public void setUp() {
         mockStatic(Context.class);
         when(Context.getService(PatientTemplateService.class)).thenReturn(patientTemplateService);
         when(Context.getPatientService()).thenReturn(patientService);
         when(Context.getAdministrationService()).thenReturn(administrationService);
+        when(Context.getRegisteredComponent(MessagesConstants.MESSAGING_GROUP_SERVICE, MessagingGroupService.class))
+                .thenReturn(messagingGroupService);
 
         dateRange = new Range<>(START_DATE, END_DATE);
     }

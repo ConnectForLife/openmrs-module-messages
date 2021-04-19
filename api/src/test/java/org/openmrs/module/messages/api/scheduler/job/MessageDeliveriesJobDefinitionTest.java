@@ -222,16 +222,10 @@ public class MessageDeliveriesJobDefinitionTest extends BaseModuleContextSensiti
     public void shouldSaveTwoScheduledServicesForCaregiver() {
         List<ScheduledService> listServicesBeforeSave =
                 findScheduledServicesByDefaultPatientAndActorId(CAREGIVER_PATIENT_ACTOR);
-        List<TaskDefinition> listTasksBeforeSave = getScheduledTaskForActor(CAREGIVER_PATIENT_ACTOR);
         job.execute();
         List<ScheduledService> newlySaved =
                 getNewlyAddedObjects(listServicesBeforeSave, findScheduledServicesByActorId(CAREGIVER_PATIENT_ACTOR));
         assertEquals(EXPECTED_THREE, newlySaved.size());
-
-        //verify if each scheduled service group has own scheduled task
-        List<TaskDefinition> newlySavedTasks =
-                getNewlyAddedObjects(listTasksBeforeSave, getScheduledTaskForActor(CAREGIVER_PATIENT_ACTOR));
-        assertEquals(newlySaved.size(), newlySavedTasks.size());
     }
 
     private List<ScheduledService> findScheduledServicesByDefaultPatientAndActorId(int actorId) {

@@ -24,4 +24,10 @@ public class MessagingGroupServiceImpl extends BaseOpenmrsDataService<ScheduledS
     public ScheduledServiceGroup saveGroup(ScheduledServiceGroup group) {
        return ((MessagingGroupDao) getDao()).saveGroup(group);
     }
+
+    @Override
+    @Transactional
+    public void flushAndClearSessionCache() {
+        ((MessagingGroupDao) getDao()).flushAndClearSessionCache();
+    }
 }
