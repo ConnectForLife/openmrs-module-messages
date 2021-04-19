@@ -57,6 +57,5 @@ public interface ServiceExecutor extends OpenmrsService {
      * @return results retrieved from query parsed into list of {@link ServiceResultList}
      * @throws ExecutionException - exception occurred during service execution
      */
-    List<ServiceResultList> executeTemplate(Template template, Range<Date> dateTimeRange)
-            throws ExecutionException;
+    List<ServiceResultList> executeTemplate(Template template, Range<Date> dateTimeRange) throws ExecutionException;
 }

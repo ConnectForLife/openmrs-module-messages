@@ -31,6 +31,11 @@ public class MessagingGroupDaoImpl extends BaseOpenmrsDataDao<ScheduledServiceGr
          return (ScheduledServiceGroup) saveOrUpdateWithClearingSessionCache(group);
     }
 
+    @Override
+    public void flushAndClearSessionCache() {
+        flushAndClearCache();
+    }
+
     public MessagingGroupDaoImpl() {
         super(ScheduledServiceGroup.class);
     }

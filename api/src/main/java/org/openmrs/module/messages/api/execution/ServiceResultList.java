@@ -20,6 +20,7 @@ import org.openmrs.module.messages.api.model.Range;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.Template;
 import org.openmrs.module.messages.api.model.TemplateFieldValue;
+import org.openmrs.module.messages.api.service.MessagingGroupService;
 import org.openmrs.module.messages.api.service.PatientTemplateService;
 import org.openmrs.module.messages.api.util.BestContactTimeHelper;
 import org.openmrs.module.messages.domain.criteria.PatientTemplateCriteria;
@@ -40,6 +41,7 @@ public class ServiceResultList implements Serializable {
 
     private static final long serialVersionUID = 6075952817494895177L;
     private static final Log LOGGER = LogFactory.getLog(ServiceResultList.class);
+    private static final int CLEARING_CACHE_STEP = 1000;
 
     private Integer patientId;
     private Integer actorId;
@@ -67,34 +69,39 @@ public class ServiceResultList implements Serializable {
 
     public static List<ServiceResultList> createList(@NotNull List<Map<String, Object>> rowList, Template template,
                                                      Range<Date> dateTimeRange) {
-        List<ServiceResultList> serviceResultsLists = new ArrayList<>();
-        for (Map<String, Object> row : rowList) {
-            ServiceResult serviceResult = ServiceResult.parse(row);
-            PatientTemplate patientTemplate = getRelatedPatientTemplate(serviceResult, template);
-            if (patientTemplate != null) {
-                serviceResult.setPatientTemplateId(patientTemplate.getId());
-                serviceResult.setChannelType(getTemplateFieldValue(patientTemplate,
-                        MessagesConstants.CHANNEL_TYPE_PARAM_NAME));
-                serviceResult.setExecutionDate(adjustExecutionDateToBestContactTime(serviceResult, patientTemplate));
+            List<ServiceResultList> serviceResultsLists = new ArrayList<>();
+            for (int i = 0; i < rowList.size(); i++) {
+                ServiceResult serviceResult = ServiceResult.parse(rowList.get(i));
+                PatientTemplate patientTemplate = getRelatedPatientTemplate(serviceResult, template);
+                if (patientTemplate != null) {
+                    serviceResult.setPatientTemplateId(patientTemplate.getId());
+                    serviceResult.setChannelType(getTemplateFieldValue(patientTemplate,
+                            MessagesConstants.CHANNEL_TYPE_PARAM_NAME));
+                    serviceResult.setExecutionDate(adjustExecutionDateToBestContactTime(serviceResult, patientTemplate));
+                    ServiceResultList serviceResultList = new ServiceResultListBuilder()
+                            .withPatientId(serviceResult.getPatientId())
+                            .withActorId(serviceResult.getActorId())
+                            .withActorType(patientTemplate.getActorTypeAsString())
+                            .withServiceId(patientTemplate.getServiceId())
+                            .withServiceName(template.getName())
+                            .withStartDate(dateTimeRange.getStart())
+                            .withEndDate(dateTimeRange.getEnd())
+                            .withResults(Arrays.asList(serviceResult))
+                            .build();
 
-                ServiceResultList serviceResultList = new ServiceResultListBuilder()
-                        .withPatientId(serviceResult.getPatientId())
-                        .withActorId(serviceResult.getActorId())
-                        .withActorType(patientTemplate.getActorTypeAsString())
-                        .withServiceId(patientTemplate.getServiceId())
-                        .withServiceName(template.getName())
-                        .withStartDate(dateTimeRange.getStart())
-                        .withEndDate(dateTimeRange.getEnd())
-                        .withResults(Arrays.asList(serviceResult))
-                        .build();
+                    serviceResultsLists.add(serviceResultList);
 
-                serviceResultsLists.add(serviceResultList);
-            } else if (LOGGER.isTraceEnabled()) {
-                LOGGER.trace(String.format("Patient template for patient id: %d and service type: %s " +
+                    //We clear session cache memory periodically because of performance issues
+                    //Each ServiceResultList object created is stored in memory and in case of large number
+                    //of elements in the rowList at some point there is no memory for storing new objects
+                    if (i % CLEARING_CACHE_STEP == 0) {
+                        getGroupService().flushAndClearSessionCache();
+                    }
+                } else if (LOGGER.isTraceEnabled()) {
+                    LOGGER.trace(String.format("Patient template for patient id: %d and service type: %s " +
                             "does not exist or is deactivated", serviceResult.getPatientId(), template.getName()));
+                }
             }
-        }
-
         return serviceResultsLists;
     }
 
@@ -227,5 +234,10 @@ public class ServiceResultList implements Serializable {
             }
         }
         return fieldValue;
+    }
+
+    private static MessagingGroupService getGroupService() {
+        return Context.getRegisteredComponent(
+                MessagesConstants.MESSAGING_GROUP_SERVICE, MessagingGroupService.class);
     }
 }

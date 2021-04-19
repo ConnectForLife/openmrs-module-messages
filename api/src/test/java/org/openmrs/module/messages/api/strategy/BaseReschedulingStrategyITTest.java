@@ -35,6 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasItem;
@@ -171,7 +172,7 @@ public abstract class BaseReschedulingStrategyITTest extends ContextSensitiveTes
     protected abstract ReschedulingStrategy getStrategy();
 
     protected TaskDefinition getCreatedTask() throws SchedulerException {
-        verify(schedulerService, times(1)).scheduleTask(taskCaptor.capture());
+        verify(schedulerService, times(2)).saveTaskDefinition(taskCaptor.capture());
         return taskCaptor.getValue();
     }
 
