@@ -52,6 +52,11 @@ public class PatientTemplateCriteria extends BaseOpenmrsDataCriteria implements 
         this.template = template;
     }
 
+    public PatientTemplateCriteria(Patient patient, Person actor) {
+        this.patient = patient;
+        this.actor = actor;
+    }
+
     /**
      * Factory method used to create criteria for specific patient
      *
@@ -93,12 +98,11 @@ public class PatientTemplateCriteria extends BaseOpenmrsDataCriteria implements 
     }
 
     /**
-     * Factory method used to create criteria for specific patient, actor nad template
+     * Factory method used to create criteria for specific patient, actor and template
      *
      * @param patientId id of related patient
      * @param actorId id of related actor
      * @param templateId id of related template
-     * @return
      */
     public static PatientTemplateCriteria forPatientAndActorAndTemplate(Integer patientId, Integer actorId,
                                                                         Integer templateId) {
@@ -106,6 +110,18 @@ public class PatientTemplateCriteria extends BaseOpenmrsDataCriteria implements 
         Person actor = new Person(actorId);
         Template template = new Template(templateId);
         return new PatientTemplateCriteria(patient, actor, template);
+    }
+
+    /**
+     * Factory method used to create criteria for specific patient and actor
+     *
+     * @param patientId id of related patient
+     * @param actorId id of related actor
+     */
+    public static PatientTemplateCriteria forPatientAndActor(Integer patientId, Integer actorId) {
+        Patient patient = new Patient(patientId);
+        Person actor = new Person(actorId);
+        return new PatientTemplateCriteria(patient, actor);
     }
 
     /**
