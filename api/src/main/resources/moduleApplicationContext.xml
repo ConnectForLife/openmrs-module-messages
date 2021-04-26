@@ -555,4 +555,18 @@
         </property>
     </bean>
 
+    <bean id="messages.templateFieldValueDao"
+          class="org.openmrs.module.messages.api.dao.impl.TemplateFieldValueDaoImpl">
+    </bean>
+
+    <bean id="messages.templateFieldValueServiceImpl"
+          class="org.openmrs.module.messages.api.service.impl.TemplateFieldValueServiceImpl">
+        <property name="patientTemplateService">
+            <ref local="messages.patientTemplateService"/>
+        </property>
+        <property name="templateFieldValueDao">
+            <ref local="messages.templateFieldValueDao"/>
+        </property>
+    </bean>
+
 </beans>
