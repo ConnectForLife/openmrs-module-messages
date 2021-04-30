@@ -10,6 +10,7 @@
 package org.openmrs.module.messages.api.service;
 
 import com.google.gson.Gson;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -30,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.everyItem;
@@ -188,15 +190,14 @@ public class MessagesExecutionServiceITTest extends ContextSensitiveTest {
     }
 
     @Test
-    public void executionCompletedShouldInvokeReschedulingAlsoWhenAllServicesHavePendingStatus()
-            throws Exception {
-        ArrayList<Integer> servicesWithPendingStatusIds = new ArrayList<>();
-        for (ScheduledService ss : scheduledServiceGroup.getScheduledServicesByChannel(CHANNEL_TYPE_1_NAME)) {
+    public void executionCompletedShouldInvokeReschedulingAlsoWhenAllServicesHavePendingStatus() throws Exception {
+        ArrayList<Integer> servicesWithPendingStatusIds = new ArrayList<Integer>();
+        for (ScheduledService ss : scheduledServiceGroup.getScheduledServices()) {
             ss.setStatus(ServiceStatus.PENDING);
             servicesWithPendingStatusIds.add(ss.getId());
         }
         scheduledServiceGroup = messagingGroupService.saveOrUpdate(scheduledServiceGroup);
-        assumeThat(scheduledServiceGroup.getScheduledServicesByChannel(CHANNEL_TYPE_1_NAME),
+        assumeThat(scheduledServiceGroup.getScheduledServices(),
                 everyItem(hasProperty("status", is(ServiceStatus.PENDING))));
 
         executionService.executionCompleted(SCHEDULED_SERVICE_GROUP, EXECUTION_ID, CHANNEL_TYPE_1_NAME);
@@ -205,7 +206,7 @@ public class MessagesExecutionServiceITTest extends ContextSensitiveTest {
 
         ScheduledExecutionContext executionContext = getExecutionContext(task);
         assertThat(executionContext.getGroupId(), is(SCHEDULED_SERVICE_GROUP));
-        assertThat(executionContext.getServiceIdsToExecute(), is(servicesWithPendingStatusIds));
+        assertThat(executionContext.getServiceIdsToExecute(), Matchers.<List<Integer>>is(servicesWithPendingStatusIds));
     }
 
     private TaskDefinition getCreatedTask() throws SchedulerException {

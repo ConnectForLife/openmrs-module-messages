@@ -23,7 +23,6 @@ import org.openmrs.module.messages.api.util.DateUtil;
 import org.openmrs.module.messages.api.util.JsonUtil;
 import org.openmrs.module.messages.domain.criteria.ScheduledServiceCriteria;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,18 +49,17 @@ public class ServiceGroupDeliveryJobDefinition extends JobDefinition {
     @Override
     public void execute() {
         // Firstly, we need to initialize object fields basing on the saved properties
-        executionContext = gson.fromJson(taskDefinition.getProperties().get(EXECUTION_CONTEXT),
-                ScheduledExecutionContext.class);
+        executionContext =
+                gson.fromJson(taskDefinition.getProperties().get(EXECUTION_CONTEXT), ScheduledExecutionContext.class);
         LOGGER.info(String.format("Started task with id %s", taskDefinition.getId()));
-        handleGroupedResults();
+        executeInternal();
     }
 
     @Override
     public String getTaskName() {
-        return String.format("a:%dp:%dd:%s",
-            this.executionContext.getActorId(),
-            this.executionContext.getPatientId(),
-            DateUtil.convertDate(this.executionContext.getExecutionDate(), SHORT_DATE_FORMAT));
+        return String.format("a:%s:%dp:%dd:%s", this.executionContext.getChannelType(), this.executionContext.getActorId(),
+                this.executionContext.getPatientId(),
+                DateUtil.convertDate(this.executionContext.getExecutionDate(), SHORT_DATE_FORMAT));
     }
 
     @Override
@@ -79,63 +77,34 @@ public class ServiceGroupDeliveryJobDefinition extends JobDefinition {
         return wrapByMap(EXECUTION_CONTEXT, gson.toJson(executionContext));
     }
 
-    private void handleGroupedResults() {
-        Map<String, List<ScheduledService>> groupedServicesByChannel = groupByChannelType();
-
-        for (String channelType : groupedServicesByChannel.keySet()) {
-            ServiceResultsHandlerService handler = getConfigService().getResultsHandlerOrDefault(channelType);
-            handler.handle(groupedServicesByChannel.get(channelType), executionContext);
+    private void executeInternal() {
+        if (MessagesConstants.DEACTIVATED_SERVICE.equalsIgnoreCase(executionContext.getChannelType())) {
+            LOGGER.info(
+                    String.format("Skipped task handling with id %s due to channel deactivation", taskDefinition.getId()));
+            return;
         }
-    }
 
-    private Map<String, List<ScheduledService>> groupByChannelType() {
-        Map<String, List<ScheduledService>> groupedServicesByChannel = new HashMap<>();
-        for (ScheduledService service : getScheduledServices()) {
-            if (MessagesConstants.DEACTIVATED_SERVICE.equalsIgnoreCase(service.getChannelType())) {
-                LOGGER.info(String.format("Skipped task handling with id %s due to channel deactivation",
-                        taskDefinition.getId()));
-            } else {
-                String channelType = service.getChannelType();
-                String[] splittedChannelTypes;
-                if (channelType.contains(",")) {
-                    splittedChannelTypes = channelType.split(",");
-                    for (String channel : splittedChannelTypes) {
-                        if (!groupedServicesByChannel.containsKey(channel)) {
-                            groupedServicesByChannel.put(channel, new ArrayList<>());
-                        }
-                        groupedServicesByChannel.get(channel).add(service);
-                    }
-                } else {
-                    if (!groupedServicesByChannel.containsKey(channelType)) {
-                        groupedServicesByChannel.put(channelType, new ArrayList<>());
-                    }
-                    groupedServicesByChannel.get(channelType).add(service);
-                }
-            }
-        }
-        return groupedServicesByChannel;
+        final ServiceResultsHandlerService handler =
+                getConfigService().getResultsHandlerOrDefault(executionContext.getChannelType());
+        handler.handle(getScheduledServices(), executionContext);
     }
 
     private List<ScheduledService> getScheduledServices() {
         return getMessagingService().findAllByCriteria(
-                ScheduledServiceCriteria.forIds(executionContext.getServiceIdsToExecute())
-        );
+                ScheduledServiceCriteria.forIds(executionContext.getServiceIdsToExecute()));
     }
 
     private MessagingService getMessagingService() {
-        return Context.getRegisteredComponent(
-                MessagesConstants.MESSAGING_SERVICE,
-                MessagingService.class);
+        return Context.getRegisteredComponent(MessagesConstants.MESSAGING_SERVICE, MessagingService.class);
     }
 
     private Map<String, String> wrapByMap(String key, String value) {
-        HashMap<String, String> map = new HashMap<>();
+        HashMap<String, String> map = new HashMap<String, String>();
         map.put(key, value);
         return map;
     }
 
     private ConfigService getConfigService() {
-        return Context.getRegisteredComponent(
-                MessagesConstants.CONFIG_SERVICE, ConfigService.class);
+        return Context.getRegisteredComponent(MessagesConstants.CONFIG_SERVICE, ConfigService.class);
     }
 }

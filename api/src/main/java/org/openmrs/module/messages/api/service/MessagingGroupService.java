@@ -15,9 +15,10 @@ public interface MessagingGroupService extends OpenmrsDataService<ScheduledServi
      * @param patientId id of patient
      * @param actorId id of actor
      * @param msgSendTime message send time
+     * @param channelType the channel type (service type)
      * @return true if a group exists.
      */
-    boolean isGroupExists(int patientId, int actorId, Date msgSendTime);
+    boolean isGroupExists(int patientId, int actorId, Date msgSendTime, String channelType);
 
     ScheduledServiceGroup saveGroup(ScheduledServiceGroup group);
 

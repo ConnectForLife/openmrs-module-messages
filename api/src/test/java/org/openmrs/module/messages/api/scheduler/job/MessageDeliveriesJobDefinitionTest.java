@@ -37,7 +37,6 @@ import org.springframework.test.context.ContextConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertEquals;
@@ -195,7 +194,7 @@ public class MessageDeliveriesJobDefinitionTest extends BaseModuleContextSensiti
         List<ScheduledServiceGroup> newlySaved =
                 filterByDefaultPatient(getNewlyAddedObjects(listBeforeSave, messagingGroupService.getAll(false)));
 
-        assertEquals(1, newlySaved.size());
+        assertEquals(listBeforeSave.size(), newlySaved.size());
     }
 
     @Test
@@ -242,7 +241,7 @@ public class MessageDeliveriesJobDefinitionTest extends BaseModuleContextSensiti
     }
 
     private List<TaskDefinition> getScheduledTaskForActor(int actorId) {
-        List<TaskDefinition> tasks = new ArrayList<>();
+        List<TaskDefinition> tasks = new ArrayList<TaskDefinition>();
         for (TaskDefinition t : schedulerService.getRegisteredTasks()) {
             if (t.getProperty(EXECUTION_CONTEXT).contains(String.format("\"actorId\":%d", actorId))) {
                 tasks.add(t);
@@ -256,7 +255,7 @@ public class MessageDeliveriesJobDefinitionTest extends BaseModuleContextSensiti
     }
 
     private <T> List<T> getNewlyAddedObjects(List<T> listBeforeSave, List<T> listAfterSave) {
-        List<T> result = new ArrayList<>();
+        List<T> result = new ArrayList<T>();
 
         for (T object : listAfterSave) {
             if (!listBeforeSave.contains(object)) {
@@ -268,7 +267,7 @@ public class MessageDeliveriesJobDefinitionTest extends BaseModuleContextSensiti
     }
 
     private List<ScheduledServiceParameter> filterByDefaultPatientTemplate(List<ScheduledServiceParameter> params) {
-        List<ScheduledServiceParameter> result = new ArrayList<>();
+        List<ScheduledServiceParameter> result = new ArrayList<ScheduledServiceParameter>();
 
         for (ScheduledServiceParameter param : params) {
             if (param.getScheduledMessage().getPatientTemplate().getId().equals(DEFAULT_PATIENT_TEMPLATE_ID)) {
@@ -280,7 +279,7 @@ public class MessageDeliveriesJobDefinitionTest extends BaseModuleContextSensiti
     }
 
     private List<ScheduledServiceGroup> filterByDefaultPatient(List<ScheduledServiceGroup> groups) {
-        List<ScheduledServiceGroup> result = new ArrayList<>();
+        List<ScheduledServiceGroup> result = new ArrayList<ScheduledServiceGroup>();
 
         for (ScheduledServiceGroup group : groups) {
             if (group.getActor().getId().equals(DEFAULT_PATIENT_ID) &&
@@ -293,22 +292,31 @@ public class MessageDeliveriesJobDefinitionTest extends BaseModuleContextSensiti
     }
 
     private List<ScheduledService> getServicesForPatient(List<ScheduledService> services, int patientId) {
-        return services.stream().filter(s -> s.getGroup().getPatient().getId().equals(patientId))
-                .collect(Collectors.toList());
+        final List<ScheduledService> result = new ArrayList<ScheduledService>();
+
+        for(ScheduledService scheduledService : services) {
+            if(scheduledService.getGroup().getPatient().getId().equals(patientId)) {
+                result.add(scheduledService);
+            }
+        }
+
+        return result;
     }
 
     private ScheduledService getCallService(int patientTemplateId) {
-        return getService("Call", patientTemplateId);
+        return getService(patientTemplateId);
     }
 
     private ScheduledService getSmsService(int patientTemplateId) {
-        return getService("SMS", patientTemplateId);
+        return getService(patientTemplateId);
     }
 
-    private ScheduledService getService(String channelType, int patientTemplateId) {
-        return new ScheduledServiceBuilder().withService(DEFAULT_TEMPLATE_NAME)
-                .withTemplate(new PatientTemplateBuilder().withId(patientTemplateId).build()).withChannelType(channelType)
-                .withStatus(ServiceStatus.PENDING).build();
+    private ScheduledService getService(int patientTemplateId) {
+        return new ScheduledServiceBuilder()
+                .withService(DEFAULT_TEMPLATE_NAME)
+                .withTemplate(new PatientTemplateBuilder().withId(patientTemplateId).build())
+                .withStatus(ServiceStatus.PENDING)
+                .build();
     }
 
     private void assertParameterIsCorrect(ScheduledServiceParameter expected, ScheduledServiceParameter actual) {
@@ -320,7 +328,6 @@ public class MessageDeliveriesJobDefinitionTest extends BaseModuleContextSensiti
     private void assertServiceIsCorrect(ScheduledService expected, ScheduledService actual) {
         assertEquals(expected.getService(), actual.getService());
         assertEquals(expected.getPatientTemplate().getId(), actual.getPatientTemplate().getId());
-        assertEquals(expected.getChannelType(), actual.getChannelType());
         assertEquals(expected.getStatus(), actual.getStatus());
         assertNotNull(actual.getGroup());
     }

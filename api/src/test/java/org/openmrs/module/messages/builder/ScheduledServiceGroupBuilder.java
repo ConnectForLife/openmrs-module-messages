@@ -9,11 +9,11 @@
 
 package org.openmrs.module.messages.builder;
 
-import java.util.ArrayList;
 import org.openmrs.module.messages.api.model.ScheduledService;
 import org.openmrs.module.messages.api.model.ScheduledServiceGroup;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -24,6 +24,7 @@ public class ScheduledServiceGroupBuilder extends AbstractBuilder<ScheduledServi
     private Integer patientId;
     private Integer actorId;
     private ServiceStatus status;
+    private String channelType;
     private List<ScheduledService> scheduledServices = new ArrayList<>();
 
     public ScheduledServiceGroupBuilder() {
@@ -38,6 +39,7 @@ public class ScheduledServiceGroupBuilder extends AbstractBuilder<ScheduledServi
         result.setActor(new PersonBuilder().withId(actorId).build());
         result.setStatus(status);
         result.setScheduledServices(scheduledServices);
+        result.setChannelType(channelType);
         return result;
     }
 
@@ -68,6 +70,11 @@ public class ScheduledServiceGroupBuilder extends AbstractBuilder<ScheduledServi
 
     public ScheduledServiceGroupBuilder withStatus(ServiceStatus status) {
         this.status = status;
+        return this;
+    }
+
+    public ScheduledServiceGroupBuilder withChannelType(String channelType) {
+        this.channelType = channelType;
         return this;
     }
 

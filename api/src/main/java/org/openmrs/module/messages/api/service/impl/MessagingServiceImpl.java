@@ -290,7 +290,7 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
 
     private List<ServiceResultList> retrieveAllServiceExecutions(List<Template> templates, Date startDate,
                                                                  Date endDate) {
-        List<ServiceResultList> results = new ArrayList<>();
+        List<ServiceResultList> results = new ArrayList<ServiceResultList>();
         for (Template template : templates) {
             if (isTemplateSupportsOptimizedQuery(template)) {
                 results.addAll(retrieveAllServiceExecutionsFromTemplate(template, startDate, endDate));
@@ -305,26 +305,26 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
 
     private List<ServiceResultList> retrieveAllServiceExecutionsFromTemplate(Template template, Date startDate,
                                                                              Date endDate) {
-        List<ServiceResultList> results = new ArrayList<>();
+        List<ServiceResultList> results = new ArrayList<ServiceResultList>();
         try {
-            Range<Date> dateRange = new Range<>(startDate, endDate);
+            Range<Date> dateRange = new Range<Date>(startDate, endDate);
             results.addAll(serviceExecutor.executeTemplate(template, dateRange));
         } catch (Exception e) {
             LOGGER.error(String.format("Cannot execute service query for %s template. " +
-                    "The execution of this particular template will be skipped.", template.getName()));
+                    "The execution of this particular template will be skipped.", template.getName()), e);
         }
         return results;
     }
 
     private List<ServiceResultList> retrieveAllServiceExecutions(List<PatientTemplate> patientTemplates, Date startDate,
                                                                  Date endDate, boolean isCalendarQuery) {
-        List<ServiceResultList> results = new ArrayList<>();
+        List<ServiceResultList> results = new ArrayList<ServiceResultList>();
         Date executionStartDateTime = DateUtil.now();
         for (PatientTemplate patientTemplate : patientTemplates) {
             try {
-                Range<Date> dateRange = new Range<>(startDate, endDate);
+                Range<Date> dateRange = new Range<Date>(startDate, endDate);
                 if (patientTemplate.isDeactivated()) {
-                    dateRange = new Range<>(startDate, getMaxExecutionDate(patientTemplate));
+                    dateRange = new Range<Date>(startDate, getMaxExecutionDate(patientTemplate));
                     if (LOGGER.isTraceEnabled()) {
                         LOGGER.trace(String.format(
                                 "PatientTemplate %d is disabled, so applying the max execution date or now as " +

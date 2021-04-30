@@ -45,7 +45,7 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
         logNumberOfResults(results);
 
         List<GroupedServiceResultList> groupedResults = ServiceResultGroupHelper
-            .groupByActorAndExecutionDate(results, true);
+            .groupByChannelTypePatientActorExecutionDate(results, true);
         LOGGER.debug(String.format("Converted to %d groups to execute", groupedResults.size()));
 
         for (GroupedServiceResultList groupedResult : groupedResults) {
@@ -53,7 +53,7 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
                 scheduleTaskForActivePerson(groupedResult);
             } catch (Exception e) {
                 LOGGER.error(String.format("The error occurred during scheduling group for: %s. %s",
-                        groupedResult.getActorWithExecutionDate().toString(), e.getMessage()));
+                        groupedResult.getKey().toString(), e.getMessage()));
                 LOGGER.debug(e.getMessage(), e);
             }
         }
@@ -75,23 +75,27 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
     }
 
     private void scheduleTaskForActivePerson(GroupedServiceResultList groupedResult) {
-        Person person = getPersonService().getPerson(groupedResult.getActorWithExecutionDate().getActorId());
-        Person patient = getPersonService().getPerson(groupedResult.getGroup().getPatientId());
+        final Person person = getPersonService().getPerson(groupedResult.getKey().getActorId());
+        final Person patient = getPersonService().getPerson(groupedResult.getKey().getPatientId());
+
         if (shouldGroupBeCreated(patient, person, groupedResult)) {
-            ScheduledServiceGroup group = convertAndSave(groupedResult);
+            final ScheduledServiceGroup group = convertAndSave(groupedResult);
+
             getDeliveryService().scheduleDelivery(new ScheduledExecutionContext(
                     group.getScheduledServices(),
-                    groupedResult.getActorWithExecutionDate().getDate(),
+                    group.getChannelType(),
+                    groupedResult.getKey().getDate(),
                     group.getActor(),
                     group.getPatient().getPatientId(),
-                    groupedResult.getActorWithExecutionDate().getActorType(),
+                    groupedResult.getKey().getActorType(),
                     group.getId()
             ));
         }
     }
 
     private boolean shouldGroupBeCreated(Person patient, Person person, GroupedServiceResultList groupedResult) {
-        return isGroupNotExist(patient.getId(), person.getId(), groupedResult.getActorWithExecutionDate().getDate()) &&
+        return isGroupNotExist(patient.getId(), person.getId(), groupedResult.getKey().getDate(),
+                groupedResult.getKey().getChannelType()) &&
                 (isConsentControlDisabled() || (isActive(person) && isActive(patient)));
     }
 
@@ -117,8 +121,8 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
         return !isControl;
     }
 
-    private boolean isGroupNotExist(int patientId, int actorId, Date executionDate) {
-        boolean exist = getGroupService().isGroupExists(patientId, actorId, executionDate);
+    private boolean isGroupNotExist(int patientId, int actorId, Date executionDate, String channelType) {
+        boolean exist = getGroupService().isGroupExists(patientId, actorId, executionDate, channelType);
         if (exist) {
             LOGGER.warn(String.format("Messaging group for patient=%d, actor=%d and executionDate=%s "
                             + "has been already created", patientId, actorId, executionDate));

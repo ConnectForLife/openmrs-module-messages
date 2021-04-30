@@ -15,14 +15,15 @@ public class MessagingGroupServiceImpl extends BaseOpenmrsDataService<ScheduledS
 
     @Override
     @Transactional(readOnly = true)
-    public boolean isGroupExists(int patientId, int actorId, Date msgSendTime) {
-        return ((MessagingGroupDao) getDao()).countRowsByPatientIdActorIdAndMsgSendTime(patientId, actorId, msgSendTime) > 0;
+    public boolean isGroupExists(int patientId, int actorId, Date msgSendTime, String channelType) {
+        return ((MessagingGroupDao) getDao()).countRowsByPatientIdActorIdAndMsgSendTime(patientId, actorId, msgSendTime,
+                channelType) > 0;
     }
 
     @Override
     @Transactional
     public ScheduledServiceGroup saveGroup(ScheduledServiceGroup group) {
-       return ((MessagingGroupDao) getDao()).saveGroup(group);
+        return ((MessagingGroupDao) getDao()).saveGroup(group);
     }
 
     @Override

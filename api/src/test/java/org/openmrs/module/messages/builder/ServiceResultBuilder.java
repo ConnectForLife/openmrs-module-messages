@@ -16,6 +16,8 @@ import java.util.Map;
 
 public final class ServiceResultBuilder extends AbstractBuilder<ServiceResult> {
 
+    private Integer patientId;
+    private Integer actorId;
     private Date executionDate;
     private String channelType;
     private Integer patientTemplateId;
@@ -28,6 +30,8 @@ public final class ServiceResultBuilder extends AbstractBuilder<ServiceResult> {
     @Override
     public ServiceResult build() {
         ServiceResult result = new ServiceResult();
+        result.setPatientId(patientId);
+        result.setActorId(actorId);
         result.setExecutionDate(executionDate);
         result.setChannelType(channelType);
         result.setPatientTemplateId(patientTemplateId);
@@ -38,6 +42,16 @@ public final class ServiceResultBuilder extends AbstractBuilder<ServiceResult> {
     @Override
     public ServiceResult buildAsNew() {
         return build();
+    }
+
+    public ServiceResultBuilder withPatientId(Integer patientId) {
+        this.patientId = patientId;
+        return this;
+    }
+
+    public ServiceResultBuilder withActorId(Integer actorId) {
+        this.actorId = actorId;
+        return this;
     }
 
     public ServiceResultBuilder withExecutionDate(Date executionDate) {

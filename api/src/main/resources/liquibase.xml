@@ -501,12 +501,12 @@
             <column name="last_service_execution_id" type="varchar(255)"/>
         </addColumn>
     </changeSet>
-    
+
     <changeSet id="messages-14" author="Daniel Serkowski">
         <preConditions>
             <tableExists tableName="messages_delivery_attempt"/>
         </preConditions>
-        <dropForeignKeyConstraint constraintName="messages_delivery_attempt_service_fk" 
+        <dropForeignKeyConstraint constraintName="messages_delivery_attempt_service_fk"
                                   baseTableName="messages_delivery_attempt" />
         <addForeignKeyConstraint constraintName="messages_delivery_attempt_scheduled_service_fk"
                                  baseTableName="messages_delivery_attempt" baseColumnNames="scheduled_service_id"
@@ -3883,7 +3883,7 @@
             <where>property='messages.maxNumberOfRescheduling'</where>
         </delete>
     </changeSet>
-    
+
     <changeSet id="messages-75" author="Dawid Ruchniewicz">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="global_property"/>
@@ -4169,5 +4169,94 @@
             <column name="should_use_optimized_query" valueBoolean="true"/>
             <where>name = 'Visit reminder'</where>
         </update>
+    </changeSet>
+
+    <changeSet id="messages-94-AGRE-1420-move-channelType-1" author="Piotr Wargulak">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="messages_scheduled_service_group" columnName="channel_type"/>
+            </not>
+        </preConditions>
+        <comment>
+            Adds nullable ScheduledServiceGroup.channelType if needed. Sets 'Deactivate service' in all
+            existing rows
+        </comment>
+        <addColumn tableName="messages_scheduled_service_group">
+            <column name="channel_type" type="varchar(255)" value="Deactivate service">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="messages-94-AGRE-1420-move-channelType-2" author="Piotr Wargulak">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="messages_scheduled_service" columnName="channel_type"/>
+        </preConditions>
+        <comment>Drops ScheduledService.channelType if needed. Makes ScheduledServiceGroup.channelType not-null.</comment>
+        <dropColumn tableName="messages_scheduled_service" columnName="channel_type"/>
+        <addNotNullConstraint tableName="messages_scheduled_service_group" columnName="channel_type"
+                              columnDataType="varchar(255)"/>
+    </changeSet>
+    <changeSet id="messages-94-AGRE-1420-move-channelType-3" author="Piotr Wargulak">
+        <comment>Update services, DROP functions: AdherenceFeedbackStartDateFunction,
+            AdherenceReportDailyStartDateFunction, AdherenceReportWeeklyStartDateFunction, HealthTipStartDateFunction,
+            VisitReminderStartDateFunction
+        </comment>
+        <sql>DROP FUNCTION IF EXISTS GET_PREDICTION_START_DATE_FOR_ADHERENCE_FEEDBACK;</sql>
+        <sql>DROP FUNCTION IF EXISTS GET_PREDICTION_START_DATE_FOR_ADHERENCE_DAILY;</sql>
+        <sql>DROP FUNCTION IF EXISTS GET_PREDICTION_START_DATE_FOR_ADHERENCE_WEEKLY;</sql>
+        <sql>DROP FUNCTION IF EXISTS GET_PREDICTION_START_DATE_FOR_HEALTH_TIP;</sql>
+        <sql>DROP FUNCTION IF EXISTS GET_PREDICTION_START_DATE_FOR_VISIT;</sql>
+    </changeSet>
+
+    <changeSet id="messages-94-AGRE-1420-move-channelType-4" author="Piotr Wargulak">
+        <comment>Update services, CREATE functions: AdherenceFeedbackStartDateFunction,
+            AdherenceReportDailyStartDateFunction, AdherenceReportWeeklyStartDateFunction, HealthTipStartDateFunction,
+            VisitReminderStartDateFunction
+        </comment>
+        <sqlFile encoding="UTF-8"
+                 path="mysql/services/AdherenceFeedbackStartDateFunction.sql"
+                 splitStatements="false"
+                 stripComments="false"/>
+        <sqlFile encoding="UTF-8"
+                 path="mysql/services/AdherenceReportDailyStartDateFunction.sql"
+                 splitStatements="false"
+                 stripComments="false"/>
+        <sqlFile encoding="UTF-8"
+                 path="mysql/services/AdherenceReportWeeklyStartDateFunction.sql"
+                 splitStatements="false"
+                 stripComments="false"/>
+        <sqlFile encoding="UTF-8"
+                 path="mysql/services/HealthTipStartDateFunction.sql"
+                 splitStatements="false"
+                 stripComments="false"/>
+        <sqlFile encoding="UTF-8"
+                 path="mysql/services/VisitReminderStartDateFunction.sql"
+                 splitStatements="false"
+                 stripComments="false"/>
+    </changeSet>
+
+    <changeSet id="messages-94-AGRE-1420-move-channelType-5" author="Piotr Wargulak">
+        <comment>Update services, update templates.</comment>
+        <sqlFile encoding="UTF-8"
+                 path="mysql/services/AdherenceFeedback.sql"
+                 splitStatements="false"
+                 stripComments="false"/>
+        <sqlFile encoding="UTF-8"
+                 path="mysql/services/AdherenceReportDaily.sql"
+                 splitStatements="false"
+                 stripComments="false"/>
+        <sqlFile encoding="UTF-8"
+                 path="mysql/services/AdherenceReportWeekly.sql"
+                 splitStatements="false"
+                 stripComments="false"/>
+        <sqlFile encoding="UTF-8"
+                 path="mysql/services/HealthTip.sql"
+                 splitStatements="false"
+                 stripComments="false"/>
+        <sqlFile encoding="UTF-8"
+                 path="mysql/services/VisitReminderCalendarQuery.sql"
+                 splitStatements="false"
+                 stripComments="false"/>
     </changeSet>
 </databaseChangeLog>

@@ -15,7 +15,7 @@ public abstract class AbstractMapper<T extends DTO, R extends BaseOpenmrsObject>
 
     @Override
     public List<T> toDtos(Iterable<R> daos) {
-        final List<T> dtos = new ArrayList<>();
+        final List<T> dtos = new ArrayList<T>();
         for (R dao : daos) {
             dtos.add(toDto(dao));
         }
@@ -24,7 +24,7 @@ public abstract class AbstractMapper<T extends DTO, R extends BaseOpenmrsObject>
 
     @Override
     public List<R> fromDtos(List<T> dtos) {
-        final List<R> daos = new ArrayList<>(dtos.size());
+        final List<R> daos = new ArrayList<R>(dtos.size());
         for (T dto : dtos) {
             daos.add(fromDto(dto));
         }
@@ -69,7 +69,7 @@ public abstract class AbstractMapper<T extends DTO, R extends BaseOpenmrsObject>
     }
 
     private Map<Integer, T> mapDtoById(List<T> dtos) {
-        HashMap<Integer, T> map = new HashMap<>();
+        HashMap<Integer, T> map = new HashMap<Integer, T>();
         for (T dto : dtos) {
             map.put(dto.getId(), dto);
         }

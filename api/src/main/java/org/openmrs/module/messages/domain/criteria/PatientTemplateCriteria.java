@@ -154,14 +154,20 @@ public class PatientTemplateCriteria extends BaseOpenmrsDataCriteria implements 
                                     Restrictions.in("a.relationshipType", getActorTypeRelationshipTypes(patient))
                             )
                     );
-        } else if (actor != null) {
+        }
+
+        if (actor != null) {
             hibernateCriteria
                     .add(Restrictions.eq("actor", actor));
             //consider filtering by relationship type
-        } else if (actorType != null) {
+        }
+
+        if (actorType != null) {
             hibernateCriteria
                     .add(Restrictions.eq("actorType", actorType));
-        } else if (template != null) {
+        }
+
+        if (template != null) {
             hibernateCriteria
                     .add(Restrictions.eq("template", template));
         }
