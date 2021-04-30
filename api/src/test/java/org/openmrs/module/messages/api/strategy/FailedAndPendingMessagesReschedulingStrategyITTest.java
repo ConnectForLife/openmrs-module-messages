@@ -9,17 +9,17 @@
 
 package org.openmrs.module.messages.api.strategy;
 
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-
 import org.junit.Test;
 import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
 import org.openmrs.scheduler.TaskDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 public class FailedAndPendingMessagesReschedulingStrategyITTest extends BaseReschedulingStrategyITTest {
 
@@ -32,7 +32,7 @@ public class FailedAndPendingMessagesReschedulingStrategyITTest extends BaseResc
         addDeliveryAttempts(failedScheduledService, MAX_ATTEMPTS - 1);
         addDeliveryAttempts(pendingScheduledService, MAX_ATTEMPTS - 1);
 
-        reschedulingStrategy.execute(failedScheduledService.getGroup(), failedScheduledService.getChannelType());
+        reschedulingStrategy.execute(failedScheduledService.getGroup());
 
         TaskDefinition task = getCreatedTask();
         assertNotNull(task);

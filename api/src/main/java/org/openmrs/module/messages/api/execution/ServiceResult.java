@@ -31,15 +31,14 @@ import java.util.Map;
  */
 public class ServiceResult implements Serializable, DTO {
 
-    private static final long serialVersionUID = 2598236499107927781L;
-
     public static final String EXEC_DATE_ALIAS = "EXECUTION_DATE";
     public static final String MSG_ID_ALIAS = "MESSAGE_ID";
     public static final String CHANNEL_NAME_ALIAS = "CHANNEL_ID";
     public static final String STATUS_COL_ALIAS = "STATUS_ID";
     public static final String PATIENT_ID_ALIAS = "PATIENT_ID";
+    public static final String ACTOR_ID_ALIAS = "ACTOR_ID";
     public static final int MIN_COL_NUM = 3;
-
+    private static final long serialVersionUID = 2598236499107927781L;
     private Date executionDate;
     private Object messageId;
     private String channelType;
@@ -48,80 +47,14 @@ public class ServiceResult implements Serializable, DTO {
     private Integer actorId;
 
     private ServiceStatus serviceStatus = ServiceStatus.FUTURE;
-    private Map<String, Object> additionalParams = new HashMap<>();
+    private Map<String, Object> additionalParams = new HashMap<String, Object>();
     private Integer patientTemplateId;
-
-    public static ServiceResult parse(Map<String, Object> row) {
-        if (row.size() < MIN_COL_NUM) {
-            throw new IllegalStateException("Invalid number of columns in result row: " + row.size());
-        }
-
-        Date date = null;
-        Object msgId = null;
-        String channelType = null;
-        Integer patientId = null;
-        Integer actorId = null;
-        ServiceStatus status = ServiceStatus.FUTURE;
-        Map<String, Object> params = new HashMap<>();
-
-        for (Map.Entry<String, Object> entry : row.entrySet()) {
-            switch (entry.getKey()) {
-                case EXEC_DATE_ALIAS:
-                    date = DateUtil.toSimpleDate((Date) entry.getValue());
-                    break;
-                case MSG_ID_ALIAS:
-                    msgId = entry.getValue();
-                    break;
-                case CHANNEL_NAME_ALIAS:
-                    channelType = String.valueOf(entry.getValue());
-                    break;
-                case STATUS_COL_ALIAS:
-                    status = parseStatus((String) entry.getValue());
-                    break;
-                case PATIENT_ID_ALIAS:
-                    patientId = Integer.parseInt(entry.getValue().toString());
-                    break;
-                default:
-                    params.put(entry.getKey(), entry.getValue());
-                    break;
-            }
-        }
-        return new ServiceResult(date, msgId, channelType, patientId, actorId, status, params);
-    }
-
-    public static List<ServiceResult> parseList(List<Map<String, Object>> list, PatientTemplate patientTemplate) {
-        Map<String, ServiceResult> resultServices = new LinkedHashMap<>();
-        for (Map<String, Object> row : list) {
-            ServiceResult result = ServiceResult.parse(row);
-            result.patientTemplateId = patientTemplate.getId();
-            result.setExecutionDate(adjustTimezoneIfFuturePlannedEvent(result.getExecutionDate(),
-                    result.getServiceStatus()));
-            String key = ZoneConverterUtil.formatToUserZone(result.getExecutionDate())
-                    + result.getChannelType();
-            if (resultServices.containsKey(key)) {
-                if (result.getServiceStatus() != null
-                        && !ServiceStatus.FUTURE.equals(result.getServiceStatus())) {
-                    resultServices.put(key, result);
-                }
-            } else {
-                resultServices.put(key, result);
-            }
-        }
-        return new ArrayList(resultServices.values());
-    }
 
     public ServiceResult() {
     }
 
-    public ServiceResult(
-            Date executionDate,
-            Object messageId,
-            String channelType,
-            Integer patientId,
-            Integer actorId,
-            ServiceStatus serviceStatus,
-            Map<String, Object> additionalParams
-    ) {
+    public ServiceResult(Date executionDate, Object messageId, String channelType, Integer patientId, Integer actorId,
+                         ServiceStatus serviceStatus, Map<String, Object> additionalParams) {
         if (executionDate == null) {
             throw new IllegalArgumentException("Execution date is mandatory");
         }
@@ -135,7 +68,97 @@ public class ServiceResult implements Serializable, DTO {
         this.patientId = patientId;
         this.actorId = actorId;
         this.serviceStatus = serviceStatus;
-        this.additionalParams = additionalParams == null ? new HashMap<>() : additionalParams;
+        this.additionalParams = additionalParams == null ? new HashMap<String, Object>() : additionalParams;
+    }
+
+    @SuppressWarnings("PMD.CyclomaticComplexity")
+    public static ServiceResult parse(Map<String, Object> row) {
+        if (row.size() < MIN_COL_NUM) {
+            throw new IllegalStateException("Invalid number of columns in result row: " + row.size());
+        }
+
+        Date date = null;
+        Object msgId = null;
+        String channelType = null;
+        Integer patientId = null;
+        Integer actorId = null;
+        ServiceStatus status = ServiceStatus.FUTURE;
+        Map<String, Object> params = new HashMap<String, Object>();
+
+        for (Map.Entry<String, Object> entry : row.entrySet()) {
+            // Skip null values
+            if ( entry.getValue() == null ) {
+                continue;
+            }
+
+            if (EXEC_DATE_ALIAS.equals(entry.getKey())) {
+                date = DateUtil.toSimpleDate((Date) entry.getValue());
+            } else if (MSG_ID_ALIAS.equals(entry.getKey())) {
+                msgId = entry.getValue();
+            } else if (CHANNEL_NAME_ALIAS.equals(entry.getKey())) {
+                channelType = String.valueOf(entry.getValue());
+            } else if (STATUS_COL_ALIAS.equals(entry.getKey())) {
+                status = parseStatus((String) entry.getValue());
+            } else if (PATIENT_ID_ALIAS.equals(entry.getKey())) {
+                patientId = Integer.parseInt(entry.getValue().toString());
+            } else if (ACTOR_ID_ALIAS.equals(entry.getKey())) {
+                actorId = Integer.parseInt(entry.getValue().toString());
+            } else {
+                params.put(entry.getKey(), entry.getValue());
+            }
+        }
+        return new ServiceResult(date, msgId, channelType, patientId, actorId, status, params);
+    }
+
+    public static List<ServiceResult> parseList(List<Map<String, Object>> list, PatientTemplate patientTemplate) {
+        Map<String, ServiceResult> resultServices = new LinkedHashMap<String, ServiceResult>();
+
+        for (Map<String, Object> row : list) {
+            final ServiceResult result = ServiceResult.parse(row);
+
+            setFieldsFromPatientTemplate(result, patientTemplate);
+
+            result.setExecutionDate(
+                    adjustTimezoneIfFuturePlannedEvent(result.getExecutionDate(), result.getServiceStatus()));
+
+            String key = ZoneConverterUtil.formatToUserZone(result.getExecutionDate()) + result.getChannelType();
+
+            if (resultServices.containsKey(key)) {
+                if (result.getServiceStatus() != null && !ServiceStatus.FUTURE.equals(result.getServiceStatus())) {
+                    resultServices.put(key, result);
+                }
+            } else {
+                resultServices.put(key, result);
+            }
+        }
+
+        return new ArrayList<ServiceResult>(resultServices.values());
+    }
+
+    /**
+     * Sets fields from {@code patientTemplate} in case they were not provided by the result of service query.
+     *
+     * @param serviceResult   the service result to update, not null
+     * @param patientTemplate the template to read values from, not null
+     */
+    private static void setFieldsFromPatientTemplate(final ServiceResult serviceResult,
+                                                     final PatientTemplate patientTemplate) {
+        serviceResult.patientTemplateId = patientTemplate.getId();
+        serviceResult.actorId = serviceResult.actorId == null ? patientTemplate.getActor().getId() : serviceResult.actorId;
+        serviceResult.patientId =
+                serviceResult.patientId == null ? patientTemplate.getPatient().getId() : serviceResult.patientId;
+    }
+
+    public static Date adjustTimezoneIfFuturePlannedEvent(Date date, ServiceStatus status) {
+        return status == null || status == ServiceStatus.FUTURE ? ZoneConverterUtil.convertToUserZone(date) : date;
+    }
+
+    private static ServiceStatus parseStatus(String statusString) {
+        if (StringUtils.isNotBlank(statusString)) {
+            return ServiceStatus.valueOf(statusString);
+        } else {
+            return ServiceStatus.FUTURE;
+        }
     }
 
     @Override
@@ -192,10 +215,6 @@ public class ServiceResult implements Serializable, DTO {
         this.patientTemplateId = patientTemplateId;
     }
 
-    public static Date adjustTimezoneIfFuturePlannedEvent(Date date, ServiceStatus status) {
-        return status == null || status == ServiceStatus.FUTURE ? ZoneConverterUtil.convertToUserZone(date) : date;
-    }
-
     public Integer getPatientId() {
         return patientId;
     }
@@ -210,13 +229,5 @@ public class ServiceResult implements Serializable, DTO {
 
     public void setActorId(Integer actorId) {
         this.actorId = actorId;
-    }
-
-    private static ServiceStatus parseStatus(String statusString) {
-        if (StringUtils.isNotBlank(statusString)) {
-            return ServiceStatus.valueOf(statusString);
-        } else {
-            return ServiceStatus.FUTURE;
-        }
     }
 }

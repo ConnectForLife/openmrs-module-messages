@@ -31,6 +31,7 @@ public class ScheduledServiceGroupITTest extends ContextSensitiveTest {
     private static final String SCHEDULE_1_UUID = "b3de6d76-3e31-41cf-955d-ad14b9db07ff";
     private static final String SCHEDULE_2_UUID = "532f0b56-3ff9-427b-b4f3-b92796c7eea2";
     private static final String GROUP_UUID = "3d3a36a6-ff59-4c7e-bf3e-fe3d7a6b47a6";
+    private static final String TEST_CHANNEL_TYPE = "Call";
 
     private static final int ACTOR_ID = 997;
     private static final int WRONG_ACTOR_ID = 998;
@@ -160,7 +161,8 @@ public class ScheduledServiceGroupITTest extends ContextSensitiveTest {
         scheduledServiceGroup.setMsgSendTime(MSG_SEND_TIME);
         messagingGroupDao.saveOrUpdate(scheduledServiceGroup);
 
-        long count = messagingGroupDao.countRowsByPatientIdActorIdAndMsgSendTime(PATIENT_ID, ACTOR_ID, MSG_SEND_TIME);
+        long count = messagingGroupDao.countRowsByPatientIdActorIdAndMsgSendTime(PATIENT_ID, ACTOR_ID, MSG_SEND_TIME,
+                TEST_CHANNEL_TYPE);
 
         Assert.assertThat(count, equalTo(1L));
     }
@@ -169,7 +171,8 @@ public class ScheduledServiceGroupITTest extends ContextSensitiveTest {
     public void shouldReturn0CountForPatientActorAndMsgSendTime() throws Exception {
         executeMessageDataSet();
 
-        long count = messagingGroupDao.countRowsByPatientIdActorIdAndMsgSendTime(WRONG_ACTOR_ID, ACTOR_ID, MSG_SEND_TIME);
+        long count = messagingGroupDao.countRowsByPatientIdActorIdAndMsgSendTime(WRONG_ACTOR_ID, ACTOR_ID, MSG_SEND_TIME,
+                TEST_CHANNEL_TYPE);
 
         Assert.assertThat(count, equalTo(0L));
     }

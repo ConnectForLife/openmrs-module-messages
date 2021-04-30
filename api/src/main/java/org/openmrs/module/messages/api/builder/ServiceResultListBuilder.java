@@ -8,6 +8,7 @@ import java.util.List;
 
 public class ServiceResultListBuilder implements Builder<ServiceResultList> {
 
+    private String channelType;
     private Integer patientId;
     private Integer actorId;
     private String actorType;
@@ -20,6 +21,7 @@ public class ServiceResultListBuilder implements Builder<ServiceResultList> {
     @Override
     public ServiceResultList build() {
         ServiceResultList serviceResultList = new ServiceResultList();
+        serviceResultList.setChannelType(channelType);
         serviceResultList.setPatientId(patientId);
         serviceResultList.setActorId(actorId);
         serviceResultList.setActorType(actorType);
@@ -29,6 +31,11 @@ public class ServiceResultListBuilder implements Builder<ServiceResultList> {
         serviceResultList.setEndDate(endDate);
         serviceResultList.setResults(results);
         return serviceResultList;
+    }
+
+    public ServiceResultListBuilder withChannelType(String channelType) {
+        this.channelType = channelType;
+        return this;
     }
 
     public ServiceResultListBuilder withPatientId(Integer patientId) {

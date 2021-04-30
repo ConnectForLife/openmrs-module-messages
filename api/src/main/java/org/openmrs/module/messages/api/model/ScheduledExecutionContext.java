@@ -24,6 +24,8 @@ public class ScheduledExecutionContext implements Serializable {
 
     private List<Integer> serviceIdsToExecute;
 
+    private String channelType;
+
     private Date executionDate;
 
     private int actorId;
@@ -37,9 +39,10 @@ public class ScheduledExecutionContext implements Serializable {
     public ScheduledExecutionContext() {
     }
 
-    public ScheduledExecutionContext(List<ScheduledService> scheduledServices, Date executionDate,
+    public ScheduledExecutionContext(List<ScheduledService> scheduledServices, String channelType, Date executionDate,
                                      Person actor, Integer patientId, String actorType, int groupId) {
         this.serviceIdsToExecute = OpenmrsObjectUtil.getIds(scheduledServices);
+        this.channelType = channelType;
         this.executionDate = executionDate;
         this.actorId = actor.getId();
         this.patientId = patientId;
@@ -53,6 +56,14 @@ public class ScheduledExecutionContext implements Serializable {
 
     public void setServiceIdsToExecute(List<Integer> serviceIdsToExecute) {
         this.serviceIdsToExecute = serviceIdsToExecute;
+    }
+
+    public String getChannelType() {
+        return channelType;
+    }
+
+    public void setChannelType(String channelType) {
+        this.channelType = channelType;
     }
 
     public Date getExecutionDate() {

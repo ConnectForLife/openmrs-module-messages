@@ -13,5 +13,5 @@ import org.openmrs.module.messages.api.model.ScheduledServiceGroup;
 
 public interface ReschedulingStrategy {
 
-    void execute(ScheduledServiceGroup group, String channelType);
+    void execute(ScheduledServiceGroup group);
 }
