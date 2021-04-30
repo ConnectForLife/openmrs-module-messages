@@ -20,11 +20,12 @@ import java.util.Map;
  * interpreted.
  */
 public class SqlExecutionEngine implements ExecutionEngine {
-    
+    public static final String NAME = "SQL";
+
     private static final Log LOG = LogFactory.getLog(SqlExecutionEngine.class);
-    
+
     private DbSessionFactory dbSessionFactory;
-    
+
     public SqlExecutionEngine(DbSessionFactory dbSessionFactory) {
         this.dbSessionFactory = dbSessionFactory;
     }
@@ -39,14 +40,19 @@ public class SqlExecutionEngine implements ExecutionEngine {
     }
 
     private List<ServiceResultList> executeTemplateQuery(ExecutionContext executionContext) {
-        SQLQuery sqlQuery = dbSessionFactory.getCurrentSession()
-                .createSQLQuery(executionContext.getTemplate().getServiceQuery());
+        SQLQuery sqlQuery =
+                dbSessionFactory.getCurrentSession().createSQLQuery(executionContext.getTemplate().getServiceQuery());
         sqlQuery.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
         setParams(sqlQuery, executionContext.getParams());
 
         List<Map<String, Object>> result = sqlQuery.list();
 
         return ServiceResultList.createList(result, executionContext.getTemplate(), executionContext.getDateRange());
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
     }
 
     @Override
@@ -57,25 +63,26 @@ public class SqlExecutionEngine implements ExecutionEngine {
             throw new ExecutionException("Error while executing the SQL template", e);
         }
     }
-    
+
     private ServiceResultList executeQuery(ExecutionContext executionContext, boolean isCalendarQuery) {
-        SQLQuery sqlQuery = dbSessionFactory.getCurrentSession()
+        SQLQuery sqlQuery = dbSessionFactory
+                .getCurrentSession()
                 .createSQLQuery(executionContext.getPatientTemplate().getQuery(isCalendarQuery));
         sqlQuery.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
         setParams(sqlQuery, executionContext.getParams());
-        
+
         List<Map<String, Object>> result = sqlQuery.list();
-        
+
         return ServiceResultList.createList(result, executionContext.getPatientTemplate(), executionContext.getDateRange());
     }
-    
+
     private void setParams(SQLQuery sqlQuery, Map<String, Object> params) {
         String[] namedParameters = sqlQuery.getNamedParameters();
-        
+
         for (Map.Entry<String, Object> paramEntry : params.entrySet()) {
             String paramName = paramEntry.getKey();
             Object paramValue = paramEntry.getValue();
-            
+
             if (ArrayUtils.contains(namedParameters, paramName)) {
                 logConsumedParameterInfo(paramName, paramValue);
                 sqlQuery.setParameter(paramName, paramValue);

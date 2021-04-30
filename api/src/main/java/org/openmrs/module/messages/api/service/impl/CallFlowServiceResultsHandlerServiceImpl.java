@@ -37,6 +37,10 @@ import static org.openmrs.module.messages.api.event.CallFlowParamConstants.REF_K
  * Implements methods related to the handling of call service results
  */
 public class CallFlowServiceResultsHandlerServiceImpl extends AbstractServiceResultsHandlerService {
+    /**
+     * The name of Call-channel configuration property with Call Flow name.
+     */
+    public static final String CALL_CHANNEL_CONF_FLOW_NAME = "callFlow";
 
     private static final Log LOG = LogFactory.getLog(CallFlowServiceResultsHandlerServiceImpl.class);
 
@@ -47,19 +51,18 @@ public class CallFlowServiceResultsHandlerServiceImpl extends AbstractServiceRes
 
     private void triggerEvent(List<ScheduledService> callServices, ScheduledExecutionContext executionContext) {
         if (callServices.isEmpty()) {
-            LOG.info(String.format("Handling of callflow for actor: %s, executionDate: %s has been skipped because "
-                    + "of empty services list", executionContext.getActorId(), executionContext.getExecutionDate()));
+            LOG.info(String.format("Handling of callflow for actor: %s, executionDate: %s has been skipped because " +
+                    "of empty services list", executionContext.getActorId(), executionContext.getExecutionDate()));
         } else {
             MessagesEvent messagesEvent = buildMessage(callServices, executionContext);
             sendEventMessage(messagesEvent);
         }
     }
 
-    private MessagesEvent buildMessage(List<ScheduledService> callServices,
-                                       ScheduledExecutionContext executionContext) {
+    private MessagesEvent buildMessage(List<ScheduledService> callServices, ScheduledExecutionContext executionContext) {
         Map<String, Object> params = new HashMap<>();
         params.put(CONFIG, getCallConfig());
-        params.put(FLOW_NAME, getCallFlow());
+        params.put(FLOW_NAME, getCallFlow(executionContext));
 
         String personPhone = getPersonPhone(executionContext.getActorId());
 
@@ -80,10 +83,7 @@ public class CallFlowServiceResultsHandlerServiceImpl extends AbstractServiceRes
         List<Message> messages = new ArrayList<>();
         for (ScheduledService service : callServices) {
             String serviceName = service.getPatientTemplate().getTemplate().getName();
-            messages.add(new Message(
-                    serviceName,
-                    service.getId(),
-                    service.getParameters()));
+            messages.add(new Message(serviceName, service.getId(), service.getParameters()));
         }
         return messages;
     }
@@ -97,12 +97,16 @@ public class CallFlowServiceResultsHandlerServiceImpl extends AbstractServiceRes
     }
 
     private Object getCallConfig() {
-        return Context.getAdministrationService().getGlobalProperty(ConfigConstants.CALL_CONFIG,
-                ConfigConstants.CALL_CONFIG_DEFAULT_VALUE);
+        return Context
+                .getAdministrationService()
+                .getGlobalProperty(ConfigConstants.CALL_CONFIG, ConfigConstants.CALL_CONFIG_DEFAULT_VALUE);
     }
 
-    private Object getCallFlow() {
-        return Context.getAdministrationService().getGlobalProperty(ConfigConstants.CALL_DEFAULT_FLOW,
-                ConfigConstants.CALL_DEFAULT_FLOW_DEFAULT_VALUE);
+    private String getCallFlow(ScheduledExecutionContext executionContext) {
+        final String defaultCallFlow = Context
+                .getAdministrationService()
+                .getGlobalProperty(ConfigConstants.CALL_DEFAULT_FLOW, ConfigConstants.CALL_DEFAULT_FLOW_DEFAULT_VALUE);
+
+        return executionContext.getChannelConfiguration().getOrDefault(CALL_CHANNEL_CONF_FLOW_NAME, defaultCallFlow);
     }
 }

@@ -55,8 +55,7 @@ public class TemplateController extends BaseRestController {
     @ResponseBody
     public PageDTO<TemplateDTO> getAll(PageableParams pageableParams) {
         PagingInfo pagingInfo = pageableParams.getPagingInfo();
-        TemplateCriteria templateCriteria = new TemplateCriteria();
-        List<Template> templates = templateService.findAllByCriteria(templateCriteria, pagingInfo);
+        List<Template> templates = templateService.findAllByCriteria(TemplateCriteria.nonRetired(), pagingInfo);
         return new PageDTO<>(templateMapper.toDtos(templates), pagingInfo);
     }
 

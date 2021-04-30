@@ -16,31 +16,30 @@ import org.openmrs.module.messages.api.util.OpenmrsObjectUtil;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ScheduledExecutionContext implements Serializable {
 
     private static final long serialVersionUID = 7043667008864304408L;
 
     private List<Integer> serviceIdsToExecute;
-
     private String channelType;
-
     private Date executionDate;
-
     private int actorId;
-
     private int patientId;
-
     private String actorType;
-
     private int groupId;
+    private Map<String, String> channelConfiguration;
 
     public ScheduledExecutionContext() {
+        this.channelConfiguration = new HashMap<String, String>();
     }
 
     public ScheduledExecutionContext(List<ScheduledService> scheduledServices, String channelType, Date executionDate,
                                      Person actor, Integer patientId, String actorType, int groupId) {
+        this();
         this.serviceIdsToExecute = OpenmrsObjectUtil.getIds(scheduledServices);
         this.channelType = channelType;
         this.executionDate = executionDate;
@@ -104,6 +103,14 @@ public class ScheduledExecutionContext implements Serializable {
 
     public void setGroupId(int groupId) {
         this.groupId = groupId;
+    }
+
+    public Map<String, String> getChannelConfiguration() {
+        return channelConfiguration;
+    }
+
+    public void setChannelConfiguration(Map<String, String> channelConfiguration) {
+        this.channelConfiguration = channelConfiguration;
     }
 
     @Override

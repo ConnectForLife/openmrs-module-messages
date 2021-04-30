@@ -7,6 +7,7 @@ import java.util.List;
  * This list of executions needs to contain the dates on which the service/messages will fire.
  */
 public interface ExecutionEngine {
+    String getName();
 
     ServiceResultList execute(ExecutionContext executionContext, boolean isCalendarQuery) throws ExecutionException;
 

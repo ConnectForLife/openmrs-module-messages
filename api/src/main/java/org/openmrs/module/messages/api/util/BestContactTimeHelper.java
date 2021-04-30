@@ -5,7 +5,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Person;
 import org.openmrs.PersonAttribute;
-import org.openmrs.Relationship;
+import org.openmrs.RelationshipType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.api.constants.ConfigConstants;
 import org.openmrs.module.messages.api.dto.DefaultContactTimeDTO;
@@ -40,15 +40,15 @@ public final class BestContactTimeHelper {
         return result;
     }
 
-    public static String getBestContactTime(Person person, Relationship relationship) {
+    public static String getBestContactTime(Person person, RelationshipType relationshipType) {
         PersonAttribute contactTime = PersonAttributeUtil.getBestContactTimeAttribute(person);
-        return contactTime != null ? contactTime.getValue() : getDefaultBestContactTime(relationship);
+        return contactTime != null ? contactTime.getValue() : getDefaultBestContactTime(relationshipType);
     }
 
-    private static String getDefaultBestContactTime(Relationship relationship) {
+    private static String getDefaultBestContactTime(RelationshipType relationshipType) {
         Map<String, String> config = getBestContactTimeConfig();
-        if (relationship != null && config.containsKey(relationship.getRelationshipType().getUuid())) {
-            return config.get(relationship.getRelationshipType().getUuid());
+        if (relationshipType != null && config.containsKey(relationshipType.getUuid())) {
+            return config.get(relationshipType.getUuid());
         }
         return getGlobalDefaultBestContactTime(config);
     }

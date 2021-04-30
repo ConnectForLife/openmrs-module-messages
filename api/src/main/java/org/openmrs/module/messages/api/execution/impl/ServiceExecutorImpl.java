@@ -66,13 +66,14 @@ public class ServiceExecutorImpl extends BaseOpenmrsService implements ServiceEx
      */
     @Transactional(noRollbackFor = {RuntimeException.class, SQLGrammarException.class}, readOnly = true)
     @Override
-    public ServiceResultList execute(PatientTemplate patientTemplate, Range<Date> dateTimeRange,
-                                     Date executionStartDateTime, boolean isCalendarQuery) throws ExecutionException {
+    public ServiceResultList execute(PatientTemplate patientTemplate, Range<Date> dateTimeRange, Date executionStartDateTime,
+                                     boolean isCalendarQuery) throws ExecutionException {
         ExecutionEngine executionEngine = getEngine(patientTemplate, null);
 
         ExecutionContext executionContext = new ExecutionContext(patientTemplate, dateTimeRange,
-                BestContactTimeHelper.getBestContactTime(patientTemplate.getActor(), patientTemplate.getActorType()),
-                executionStartDateTime);
+                BestContactTimeHelper.getBestContactTime(patientTemplate.getActor(),
+                        patientTemplate.getActorType() != null ? patientTemplate.getActorType().getRelationshipType() :
+                                null), executionStartDateTime);
 
         logExecutingInfo(patientTemplate, executionEngine);
         return executionEngine.execute(executionContext, isCalendarQuery);

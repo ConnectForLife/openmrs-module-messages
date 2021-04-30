@@ -41,11 +41,11 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
         LOGGER.info(getTaskName() + " started");
 
         List<ServiceResultList> results = getMessagingService().retrieveAllServiceExecutions(DateUtil.now(),
-                        DateUtil.getDatePlusSeconds(getTaskDefinition().getRepeatInterval()));
+                DateUtil.getDatePlusSeconds(getTaskDefinition().getRepeatInterval()));
         logNumberOfResults(results);
 
-        List<GroupedServiceResultList> groupedResults = ServiceResultGroupHelper
-            .groupByChannelTypePatientActorExecutionDate(results, true);
+        List<GroupedServiceResultList> groupedResults =
+                ServiceResultGroupHelper.groupByChannelTypePatientActorExecutionDate(results, true);
         LOGGER.debug(String.format("Converted to %d groups to execute", groupedResults.size()));
 
         for (GroupedServiceResultList groupedResult : groupedResults) {
@@ -81,15 +81,10 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
         if (shouldGroupBeCreated(patient, person, groupedResult)) {
             final ScheduledServiceGroup group = convertAndSave(groupedResult);
 
-            getDeliveryService().scheduleDelivery(new ScheduledExecutionContext(
-                    group.getScheduledServices(),
-                    group.getChannelType(),
-                    groupedResult.getKey().getDate(),
-                    group.getActor(),
-                    group.getPatient().getPatientId(),
-                    groupedResult.getKey().getActorType(),
-                    group.getId()
-            ));
+            getDeliveryService().scheduleDelivery(
+                    new ScheduledExecutionContext(group.getScheduledServices(), group.getChannelType(),
+                            groupedResult.getKey().getDate(), group.getActor(), group.getPatient().getPatientId(),
+                            groupedResult.getKey().getActorType(), group.getId()));
         }
     }
 
@@ -105,10 +100,11 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
     }
 
     private boolean isActive(Person person) {
-        boolean isActive =  PersonStatus.isActive(person);
+        boolean isActive = PersonStatus.isActive(person);
         if (!isActive && LOGGER.isDebugEnabled()) {
-            LOGGER.debug(String.format("Status of a person with id=%d is not active, "
-                    + "so no service execution events will be scheduled", person.getId()));
+            LOGGER.debug(String.format(
+                    "Status of a person with id=%d is not active, so no service execution events will be scheduled",
+                    person.getId()));
         }
         return isActive;
     }
@@ -124,40 +120,35 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
     private boolean isGroupNotExist(int patientId, int actorId, Date executionDate, String channelType) {
         boolean exist = getGroupService().isGroupExists(patientId, actorId, executionDate, channelType);
         if (exist) {
-            LOGGER.warn(String.format("Messaging group for patient=%d, actor=%d and executionDate=%s "
-                            + "has been already created", patientId, actorId, executionDate));
+            LOGGER.warn(
+                    String.format("Messaging group for patient=%d, actor=%d and executionDate=%s has been already created",
+                            patientId, actorId, executionDate));
         }
         return !exist;
     }
 
     private MessagingService getMessagingService() {
-        return Context.getRegisteredComponent(
-                MessagesConstants.MESSAGING_SERVICE, MessagingService.class);
+        return Context.getRegisteredComponent(MessagesConstants.MESSAGING_SERVICE, MessagingService.class);
     }
 
     private MessagesDeliveryService getDeliveryService() {
-        return Context.getRegisteredComponent(
-                MessagesConstants.DELIVERY_SERVICE, MessagesDeliveryService.class);
+        return Context.getRegisteredComponent(MessagesConstants.DELIVERY_SERVICE, MessagesDeliveryService.class);
     }
 
     private ScheduledGroupMapper getGroupMapper() {
-        return Context.getRegisteredComponent(
-                MessagesConstants.SCHEDULED_GROUP_MAPPER, ScheduledGroupMapper.class);
+        return Context.getRegisteredComponent(MessagesConstants.SCHEDULED_GROUP_MAPPER, ScheduledGroupMapper.class);
     }
 
     private MessagingGroupService getGroupService() {
-        return Context.getRegisteredComponent(
-                MessagesConstants.MESSAGING_GROUP_SERVICE, MessagingGroupService.class);
+        return Context.getRegisteredComponent(MessagesConstants.MESSAGING_GROUP_SERVICE, MessagingGroupService.class);
     }
 
     private PersonService getPersonService() {
-        return Context.getRegisteredComponent(
-                MessagesConstants.PERSON_SERVICE, PersonService.class);
+        return Context.getRegisteredComponent(MessagesConstants.PERSON_SERVICE, PersonService.class);
     }
 
     private ConfigService getConfigService() {
-        return Context.getRegisteredComponent(
-                MessagesConstants.CONFIG_SERVICE, ConfigService.class);
+        return Context.getRegisteredComponent(MessagesConstants.CONFIG_SERVICE, ConfigService.class);
     }
 
     private void logNumberOfResults(List<ServiceResultList> results) {

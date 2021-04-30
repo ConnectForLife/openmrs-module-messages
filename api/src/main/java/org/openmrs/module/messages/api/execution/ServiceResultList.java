@@ -139,7 +139,8 @@ public class ServiceResultList implements Serializable {
 
     private static Date adjustExecutionDateToBestContactTime(ServiceResult serviceResult, PatientTemplate patientTemplate) {
         Patient patient = Context.getPatientService().getPatient(serviceResult.getPatientId());
-        String patientBestContactTime = BestContactTimeHelper.getBestContactTime(patient, patientTemplate.getActorType());
+        String patientBestContactTime = BestContactTimeHelper.getBestContactTime(patient,
+                patientTemplate.getActorType() != null ? patientTemplate.getActorType().getRelationshipType() : null);
         Date executionDateWithProperBestContactTime =
                 getDateWithUpdatedTime(serviceResult.getExecutionDate(), patientBestContactTime,
                         MessagesConstants.HOURS_MINUTES_SEPARATOR);
