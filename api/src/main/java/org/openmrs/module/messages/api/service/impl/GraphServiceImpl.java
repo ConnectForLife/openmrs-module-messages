@@ -63,8 +63,8 @@ public class GraphServiceImpl implements GraphService {
     }
 
     private void logNotProperParamSetting(String paramName, Object paramValue) {
-        if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace(String.format("Parameter %s has not been set correctly with the value %s because no such " +
+        if (LOGGER.isWarnEnabled()) {
+            LOGGER.warn(String.format("Parameter %s has not been set correctly with the value %s because no such " +
                     "parameter was found", paramName, paramValue));
         }
     }

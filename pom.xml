@@ -120,11 +120,13 @@
                 <groupId>org.openmrs.module</groupId>
                 <artifactId>calculation-api</artifactId>
                 <version>${calculationVersion}</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.openmrs.module</groupId>
                 <artifactId>serialization.xstream-api</artifactId>
                 <version>${serializationXstream}</version>
+                <scope>provided</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

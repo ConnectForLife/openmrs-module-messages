@@ -58,8 +58,8 @@ public class GraphFragmentController {
             SqlDataSetDefinition sqlDataSetDefinition = (SqlDataSetDefinition) dataSet;
             resultList = graphService.processQuery(sqlDataSetDefinition.getSqlQuery(),
                     getMandatoryQueryParams(graphConfig));
-        } else if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(String.format("Definition data set with name %s not found", graphConfig.getGraphDataSetName()));
+        } else {
+            LOGGER.error(String.format("Definition data set with name %s not found", graphConfig.getGraphDataSetName()));
         }
 
         return buildResultsDTOList(resultList, graphConfig);
@@ -75,15 +75,27 @@ public class GraphFragmentController {
         for (Object object : resultList) {
             Map<String, Object> map = (Map<String, Object>) object;
             if (StringUtils.isNotBlank(config.getGroupByAlias())) {
-                graphResultDTOList.add(new GraphResultDTO()
-                    .setConfigMap(map));
+                graphResultDTOList.addAll(handleWhenGroupByAliasIsNotBlank(map));
             } else {
-                for (Map.Entry<String, Object> entry : map.entrySet()) {
-                    graphResultDTOList.add(new GraphResultDTO()
-                        .setAlias(entry.getKey())
-                        .setResult(((Number) entry.getValue()).intValue()));
-                }
+                graphResultDTOList.addAll(handleWhenGroupByAliasIsBlank(map));
             }
+        }
+        return graphResultDTOList;
+    }
+
+    private List<GraphResultDTO> handleWhenGroupByAliasIsNotBlank(Map<String, Object> map) {
+        List<GraphResultDTO> graphResultDTOList = new ArrayList<>();
+        graphResultDTOList.add(new GraphResultDTO()
+                .setConfigMap(map));
+        return graphResultDTOList;
+    }
+
+    private List<GraphResultDTO> handleWhenGroupByAliasIsBlank(Map<String, Object> map) {
+        List<GraphResultDTO> graphResultDTOList = new ArrayList<>();
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            graphResultDTOList.add(new GraphResultDTO()
+                    .setAlias(entry.getKey())
+                    .setResult(((Number) entry.getValue()).intValue()));
         }
         return graphResultDTOList;
     }
