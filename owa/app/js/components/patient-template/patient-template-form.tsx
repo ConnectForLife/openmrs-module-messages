@@ -169,7 +169,7 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
     if (this.isDayOfWeekMultiple()) {
       return this.renderDynamicCheckboxButton(tfv, options, fieldName, isMandatory);
     } else {
-      const isMultipleValueProvided = tfv.value.indexOf(',') !== -1;
+      const isMultipleValueProvided = tfv.value != null && tfv.value.indexOf(',') !== -1;
       if (isMultipleValueProvided) {
         tfv.value = '';
       }
