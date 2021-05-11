@@ -78,4 +78,12 @@ public interface TemplateService extends OpenmrsService {
      * @return list of found object, implicitly paginated
      */
     List<Template> findAllByCriteria(BaseCriteria criteria, PagingInfo paging);
+
+    /**
+     * Finds one instance of Template based on the {@code criteria}.
+     *
+     * @param criteria the criteria used to search for one instance of Template, never null
+     * @return the Template or null if there was not Template fit the criteria
+     */
+    Template findOneByCriteria(BaseCriteria criteria);
 }

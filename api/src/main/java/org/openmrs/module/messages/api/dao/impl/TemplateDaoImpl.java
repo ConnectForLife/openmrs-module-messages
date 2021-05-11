@@ -48,6 +48,18 @@ public class TemplateDaoImpl extends HibernateOpenmrsMetadataDAO<Template> imple
     }
 
     @Override
+    public Template findOneByCriteria(BaseCriteria criteria) {
+        final Criteria hibernateCriteria = sessionFactory.getCurrentSession().createCriteria(Template.class);
+
+        if (criteria != null) {
+            criteria.initHibernateCriteria(hibernateCriteria);
+            criteria.loadHibernateCriteria(hibernateCriteria);
+        }
+
+        return (Template) hibernateCriteria.uniqueResult();
+    }
+
+    @Override
     public long getCountByCriteria(BaseCriteria criteria) {
         final Criteria hibernateCriteria = sessionFactory.getCurrentSession().createCriteria(Template.class);
 

@@ -74,6 +74,12 @@ public class TemplateServiceImpl extends BaseOpenmrsService implements TemplateS
         return getTemplateDao().findAllByCriteria(criteria, paging);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Template findOneByCriteria(BaseCriteria criteria) {
+        return getTemplateDao().findOneByCriteria(criteria);
+    }
+
     public void setTemplateMapper(TemplateMapper templateMapper) {
         this.templateMapper = templateMapper;
     }

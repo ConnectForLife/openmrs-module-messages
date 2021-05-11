@@ -22,6 +22,15 @@ public interface TemplateDao extends OpenmrsMetadataDAO<Template> {
     List<Template> findAllByCriteria(BaseCriteria criteria, PagingInfo pagingInfo);
 
     /**
+     * Finds single instance of Template which fits the {@code criteria}.
+     *
+     * @param criteria the criteria used to find the Template, not null
+     * @return the Template fitting {@code criteria} or null if not found
+     * @throws org.hibernate.HibernateException if there are more then one Template which fits the {@code criteria}
+     */
+    Template findOneByCriteria(BaseCriteria criteria);
+
+    /**
      * Gets count of all Template which fit {@code criteria}.
      *
      * @param criteria object representing searching criteria
