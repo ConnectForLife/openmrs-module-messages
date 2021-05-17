@@ -74,6 +74,12 @@
         </property>
     </bean>
 
+    <bean id="messages.PatientAdvancedDao" class="org.openmrs.module.messages.api.dao.impl.PatientAdvancedDaoImpl">
+        <property name="dbSessionFactory">
+            <ref bean="dbSessionFactory"/>
+        </property>
+    </bean>
+
     <bean id="messages.patientTemplateService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="transactionManager">
             <ref bean="transactionManager" />
@@ -81,9 +87,8 @@
         <property name="target">
             <bean class="org.openmrs.module.messages.api.service.impl.PatientTemplateServiceImpl">
                 <property name="daoBeanName" value="messages.PatientTemplateDao"/>
-                <property name="patientTemplateMapper">
-                    <ref local="messages.patientTemplateMapper"/>
-                </property>
+                <property name="patientTemplateMapper" ref="messages.patientTemplateMapper"/>
+                <property name="templateService" ref="messages.templateService"/>
             </bean>
         </property>
         <property name="preInterceptors">
@@ -573,4 +578,8 @@
         <constructor-arg ref="dbSessionFactory"/>
     </bean>
 
+    <bean id="messages.scheduledServiceGroupService"
+          class="org.openmrs.module.messages.api.service.impl.ScheduledServiceGroupServiceImpl">
+        <property name="messagingGroupService" ref="messages.messagingGroupService"/>
+    </bean>
 </beans>

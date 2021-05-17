@@ -9,7 +9,6 @@
 
 package org.openmrs.module.messages.api.service.impl;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.GlobalProperty;
@@ -28,6 +27,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Service used to build the notifications based on the {@link org.openmrs.module.messages.api.model.NotificationTemplate}.
@@ -48,7 +48,7 @@ public abstract class NotificationTemplateServiceImpl extends BaseOpenmrsService
     /**
      * Loads and eval the template and returns the outcome message as String.
      *
-     * @param template - the notification template
+     * @param template     - the notification template
      * @param templateData - input template's data
      * @return - the outcome message
      */
@@ -57,21 +57,37 @@ public abstract class NotificationTemplateServiceImpl extends BaseOpenmrsService
     @Override
     public String parseTemplate(PatientTemplate patientTemplate, Map<String, String> serviceParam) {
         LOGGER.trace("handling the buildMessageForService(...)");
-        String serviceTemplateName = getServiceTemplateName(patientTemplate);
-        NotificationTemplate template = notificationTemplateDao.getTemplate(serviceTemplateName);
-        String injectedServices = notificationTemplateDao.getInjectedServicesMap();
-        Map<String, Object> templateData = buildTemplateInputData(patientTemplate, serviceParam, injectedServices);
-        return loadTemplate(template, templateData);
+        final String serviceTemplateName = getServiceTemplateName(patientTemplate);
+        final NotificationTemplate template = notificationTemplateDao.getTemplate(serviceTemplateName);
+
+        return internalParseTemplate(patientTemplate, template, serviceParam);
     }
 
     @Override
     public String buildMessageByGlobalProperty(Map<String, Object> param, String globalPropertyName) {
-        GlobalProperty globalProperty = Context.getAdministrationService()
-                .getGlobalPropertyObject(globalPropertyName);
-        NotificationTemplate template = notificationTemplateDao.convertToNotificationTemplate(globalProperty);
-        String injectedServices = notificationTemplateDao.getInjectedServicesMap();
-        Map<String, Object> templateData = buildTemplateInputDataByPatient(param, injectedServices);
-        return loadTemplate(template, templateData);
+        final GlobalProperty globalProperty = Context.getAdministrationService().getGlobalPropertyObject(globalPropertyName);
+        final NotificationTemplate template = notificationTemplateDao.convertToNotificationTemplate(globalProperty);
+
+        final Map<String, String> safeServiceParameters = new HashMap<>();
+        for (Map.Entry<String, Object> paramEntry : param.entrySet()) {
+            safeServiceParameters.put(paramEntry.getKey(), Objects.toString(paramEntry.getValue()));
+        }
+
+        return internalParseTemplate(null, template, safeServiceParameters);
+    }
+
+    @Override
+    public String parseTemplate(PatientTemplate patientTemplate, NotificationTemplate notificationTemplate,
+                                Map<String, String> serviceParam) {
+        return internalParseTemplate(patientTemplate, notificationTemplate, serviceParam);
+    }
+
+    private String internalParseTemplate(PatientTemplate patientTemplate, NotificationTemplate notificationTemplate,
+                                         Map<String, String> serviceParameters) {
+        final String injectedServices = notificationTemplateDao.getInjectedServicesMap();
+        final Map<String, Object> templateData = buildTemplateInputData(patientTemplate, serviceParameters,
+                injectedServices);
+        return loadTemplate(notificationTemplate, templateData);
     }
 
     /**
@@ -102,45 +118,44 @@ public abstract class NotificationTemplateServiceImpl extends BaseOpenmrsService
     /**
      * Builds the notification template's input properties which can be use inside the template.
      *
-     * @param patientTemplate - the message service definition
-     * @param serviceParam - additional service params
+     * @param patientTemplate  - the message service definition
+     * @param serviceParam     - additional service params
      * @param injectedServices - services which can be used inside the template
      * @return - input notification template's properties map
      */
     private Map<String, Object> buildTemplateInputData(PatientTemplate patientTemplate, Map<String, String> serviceParam,
-            String injectedServices) {
+                                                       String injectedServices) {
         if (LOGGER.isDebugEnabled()) {
-            String serviceParamAsString = StringUtils.join(serviceParam);
-            LOGGER.debug(String.format("Building notification template's input data with injected services = %s"
-                            + "\n\t service parameters = %s \n\t patientTemplate = %s ",
-                    injectedServices, serviceParamAsString, patientTemplate));
+            final String serviceParamAsString = Objects.toString(serviceParam);
+            LOGGER.debug(String.format("Building notification template's input data with injected services = %s" +
+                            "\n\t service parameters = %s \n\t patientTemplate = %s ", injectedServices,
+                    serviceParamAsString,
+                    patientTemplate));
         }
-        Map<String, Object> templateInputProperties = serviceParam == null ? new HashMap<String, Object>()
-                : new HashMap<String, Object>(serviceParam);
-        this.loadBaseClasses(templateInputProperties);
-        this.addDataBasedOnPatientTemplate(patientTemplate, templateInputProperties);
-        Map<String, String> servicesMap = MessagesUtils.parseStringToMap(injectedServices);
-        this.loadServices(templateInputProperties, servicesMap);
-        return templateInputProperties;
-    }
 
-    private Map<String, Object> buildTemplateInputDataByPatient(Map<String, Object> param,
-                                                                String injectedServices) {
-        Map<String, Object> templateProps = param == null ? new HashMap<>() : new HashMap<>(param);
-        this.loadBaseClasses(templateProps);
-        Map<String, String> servicesMap = MessagesUtils.parseStringToMap(injectedServices);
-        this.loadServices(templateProps, servicesMap);
-        return templateProps;
+        final Map<String, Object> templateInputProperties =
+                serviceParam == null ? new HashMap<String, Object>() : new HashMap<String, Object>(serviceParam);
+
+        this.loadBaseClasses(templateInputProperties);
+
+        if (patientTemplate != null) {
+            this.addDataBasedOnPatientTemplate(patientTemplate, templateInputProperties);
+        }
+
+        final Map<String, String> servicesMap = MessagesUtils.parseStringToMap(injectedServices);
+        this.loadServices(templateInputProperties, servicesMap);
+
+        return templateInputProperties;
     }
 
     /**
      * Creates useful set of template's data based on {@link PatientTemplate} resource.
      *
-     * @param patientTemplate - related patient template
+     * @param patientTemplate         - related patient template
      * @param templateInputProperties - map of template properties
      */
     private void addDataBasedOnPatientTemplate(PatientTemplate patientTemplate,
-            Map<String, Object> templateInputProperties) {
+                                               Map<String, Object> templateInputProperties) {
         if (null == patientTemplate) {
             return;
         }
@@ -152,8 +167,8 @@ public abstract class NotificationTemplateServiceImpl extends BaseOpenmrsService
     /**
      * Adds adds value into map if value is not null
      *
-     * @param map - target map
-     * @param key - provided key
+     * @param map   - target map
+     * @param key   - provided key
      * @param value - provided value
      */
     private void addToMapIfNotNull(Map<String, Object> map, String key, Object value) {
@@ -164,6 +179,7 @@ public abstract class NotificationTemplateServiceImpl extends BaseOpenmrsService
 
     /**
      * Loads some classes have very useful static methods that are useful for templates
+     *
      * @param templateInputProperties - the map of template properties
      */
     private void loadBaseClasses(Map<String, Object> templateInputProperties) {
@@ -183,7 +199,7 @@ public abstract class NotificationTemplateServiceImpl extends BaseOpenmrsService
      * Loads the injected service into the notification template properties.
      *
      * @param templateInputProperties - the map of template properties
-     * @param servicesMap - map of services which should be loaded (serviceProp:beanId)
+     * @param servicesMap             - map of services which should be loaded (serviceProp:beanId)
      */
     private void loadServices(Map<String, Object> templateInputProperties, Map<String, String> servicesMap) {
         StringBuilder notFoundServices = new StringBuilder();

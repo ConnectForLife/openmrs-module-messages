@@ -3,6 +3,7 @@ package org.openmrs.module.messages.api.service.impl;
 import org.openmrs.Patient;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.messages.api.builder.PatientTemplateBuilder;
 import org.openmrs.module.messages.api.dao.TemplateDao;
 import org.openmrs.module.messages.api.dao.TemplateFieldDao;
 import org.openmrs.module.messages.api.dto.PatientTemplateDTO;
@@ -12,8 +13,10 @@ import org.openmrs.module.messages.api.model.Template;
 import org.openmrs.module.messages.api.model.TemplateField;
 import org.openmrs.module.messages.api.model.TemplateFieldValue;
 import org.openmrs.module.messages.api.service.PatientTemplateService;
+import org.openmrs.module.messages.api.service.TemplateService;
 import org.openmrs.module.messages.api.util.DateUtil;
 import org.openmrs.module.messages.domain.criteria.PatientTemplateCriteria;
+import org.openmrs.module.messages.domain.criteria.TemplateCriteria;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
@@ -22,24 +25,21 @@ import java.util.List;
 /**
  * Implements methods related to creating, reading, updating and deleting patient templates entities
  */
-public class PatientTemplateServiceImpl extends BaseOpenmrsDataService<PatientTemplate>
-        implements PatientTemplateService {
-
-    private PatientTemplateMapper patientTemplateMapper;
+public class PatientTemplateServiceImpl extends BaseOpenmrsDataService<PatientTemplate> implements PatientTemplateService {
 
     private static final String TEMPLATE_DAO_BEAN_NAME = "messages.TemplateDao";
     private static final String TEMPLATE_FIELD_DAO_BEAN_NAME = "messages.TemplateFieldDao";
-
     private static final String VISIT_REMINDER_TEMPLATE_UUID = "95573fe3-20b2-11ea-ac12-0242c0a82002";
     private static final String VISIT_REMINDER_CHANNEL_UUID = "95574976-20b2-11ea-ac12-0242c0a82002";
     private static final String VISIT_REMINDER_DATE_STARTED_UUID = "95575327-20b2-11ea-ac12-0242c0a82002";
     private static final String VISIT_REMINDER_DATE_END_UUID = "95575cbd-20b2-11ea-ac12-0242c0a82002";
 
+    private PatientTemplateMapper patientTemplateMapper;
+    private TemplateService templateService;
+
     @Override
     @Transactional
-    public List<PatientTemplate> batchSave(List<PatientTemplateDTO> newDtos, int patientId)
-            throws APIException {
-
+    public List<PatientTemplate> batchSave(List<PatientTemplateDTO> newDtos, int patientId) throws APIException {
         List<PatientTemplate> existingPt = findAllByCriteria(PatientTemplateCriteria.forPatientId(patientId));
         patientTemplateMapper.updateFromDtos(newDtos, existingPt);
         return saveOrUpdate(existingPt);
@@ -82,11 +82,12 @@ public class PatientTemplateServiceImpl extends BaseOpenmrsDataService<PatientTe
     @Transactional
     public PatientTemplate createVisitReminder(String channel, String patientUuid) {
         PatientTemplate visitReminder = new PatientTemplate();
-        Template savedTemplate = Context.getRegisteredComponent(TEMPLATE_DAO_BEAN_NAME, TemplateDao.class)
+        Template savedTemplate = Context
+                .getRegisteredComponent(TEMPLATE_DAO_BEAN_NAME, TemplateDao.class)
                 .getByUuid(VISIT_REMINDER_TEMPLATE_UUID);
 
-        TemplateFieldDao templateFieldDao = Context.getRegisteredComponent(TEMPLATE_FIELD_DAO_BEAN_NAME,
-                TemplateFieldDao.class);
+        TemplateFieldDao templateFieldDao =
+                Context.getRegisteredComponent(TEMPLATE_FIELD_DAO_BEAN_NAME, TemplateFieldDao.class);
         TemplateField channelType = templateFieldDao.getByUuid(VISIT_REMINDER_CHANNEL_UUID);
         TemplateField dateStart = templateFieldDao.getByUuid(VISIT_REMINDER_DATE_STARTED_UUID);
         TemplateField dateEnd = templateFieldDao.getByUuid(VISIT_REMINDER_DATE_END_UUID);
@@ -115,7 +116,40 @@ public class PatientTemplateServiceImpl extends BaseOpenmrsDataService<PatientTe
         return getDao().saveOrUpdate(visitReminder);
     }
 
+    @Override
+    public PatientTemplate getOrCreatePatientTemplate(Patient patient, String templateName) throws APIException {
+        final Template template = getTemplateByName(templateName);
+
+        final PatientTemplate existingTemplate = findOneByCriteria(
+                PatientTemplateCriteria.forPatientAndActorAndTemplate(patient.getId(), patient.getId(), template.getId()));
+
+        final PatientTemplate patientTemplate;
+
+        if (existingTemplate == null) {
+            final PatientTemplate newPatientTemplate = new PatientTemplateBuilder(template, patient).build();
+            patientTemplate = saveOrUpdate(newPatientTemplate);
+        } else {
+            patientTemplate = existingTemplate;
+        }
+
+        return patientTemplate;
+    }
+
     public void setPatientTemplateMapper(PatientTemplateMapper patientTemplateMapper) {
         this.patientTemplateMapper = patientTemplateMapper;
+    }
+
+    public void setTemplateService(TemplateService templateService) {
+        this.templateService = templateService;
+    }
+
+    private Template getTemplateByName(final String templateName) {
+        final Template template = templateService.findOneByCriteria(TemplateCriteria.forName(templateName));
+
+        if (template == null) {
+            throw new APIException("Could not find Template with name: " + templateName);
+        }
+
+        return template;
     }
 }
