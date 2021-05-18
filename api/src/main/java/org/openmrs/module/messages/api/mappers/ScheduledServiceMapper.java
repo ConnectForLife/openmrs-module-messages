@@ -23,6 +23,7 @@ public class ScheduledServiceMapper extends AbstractOpenMrsDataMapper<ServiceRes
         PatientTemplate template = new PatientTemplate();
         template.setId(dto.getPatientTemplateId());
         result.setPatientTemplate(template);
+        result.setChannelType(dto.getChannelType());
         result.setScheduledServiceParameters(paramsMapper.fromDto(dto));
         return result;
     }

@@ -12,6 +12,7 @@ public final class ScheduledServiceHelper {
     public static ScheduledService createTestInstance() {
         ScheduledService scheduledService = new ScheduledService();
         scheduledService.setService(TestConstants.TEST_SERVICE);
+        scheduledService.setChannelType(TestConstants.TEST_CHANNEL_TYPE);
         scheduledService.setStatus(ServiceStatus.DELIVERED);
         scheduledService.setLastServiceExecution(TestConstants.TEST_SERVICE_EXECUTION_ID);
         

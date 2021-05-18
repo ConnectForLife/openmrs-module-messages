@@ -76,6 +76,8 @@ public class ScheduledServiceITTest extends ContextSensitiveTest {
         Assert.assertThat(savedScheduledService, hasProperty("service", is(scheduledService.getService())));
         Assert.assertThat(savedScheduledService, hasProperty("patientTemplate",
                 is(scheduledService.getPatientTemplate())));
+        Assert.assertThat(savedScheduledService, hasProperty("channelType",
+                is(scheduledService.getChannelType())));
         Assert.assertThat(savedScheduledService, hasProperty("status", is(scheduledService.getStatus())));
         Assert.assertThat(savedScheduledService, hasProperty("lastServiceExecution",
                 is(scheduledService.getLastServiceExecution())));

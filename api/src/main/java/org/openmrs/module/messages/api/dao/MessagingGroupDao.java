@@ -15,10 +15,9 @@ public interface MessagingGroupDao extends BaseOpenmrsPageableDao<ScheduledServi
      * @param patientId id of patient
      * @param actorId id of actor
      * @param msgSendTime messages send time
-     * @param channelType the channel type
      * @return number of rows
      */
-    long countRowsByPatientIdActorIdAndMsgSendTime(int patientId, int actorId, Date msgSendTime, String channelType);
+    long countRowsByPatientIdActorIdAndMsgSendTime(int patientId, int actorId, Date msgSendTime);
 
     ScheduledServiceGroup saveGroup(ScheduledServiceGroup group);
 

@@ -98,7 +98,7 @@ UPDATE messages_template SET service_query =
 UNION
     SELECT mssg.msg_send_time AS EXECUTION_DATE,
         1 AS MESSAGE_ID,
-        mssg.channel_type AS CHANNEL_ID,
+        mss.channel_type AS CHANNEL_ID,
         mss.status AS STATUS_ID,
         null AS HEALTH_TIP_ID
     FROM messages_scheduled_service mss

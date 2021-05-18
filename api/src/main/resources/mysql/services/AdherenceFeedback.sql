@@ -299,7 +299,7 @@ AND    CHANNEL_ID != \'Deactivate service\'
 UNION
 SELECT   mssg.msg_send_time AS EXECUTION_DATE,
          1                  AS MESSAGE_ID,
-         mssg.channel_type  AS CHANNEL_ID,
+         mss.channel_type   AS CHANNEL_ID,
          mss.status         AS STATUS_ID,
          NULL               AS ADHERENCE_LEVEL,
          NULL               AS ADHERENCE_TREND,

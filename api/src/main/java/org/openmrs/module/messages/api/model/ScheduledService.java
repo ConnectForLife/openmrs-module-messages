@@ -51,6 +51,9 @@ public class ScheduledService extends AbstractBaseOpenmrsData {
     @JoinColumn(name = "patient_template_id", nullable = false)
     private PatientTemplate patientTemplate;
 
+    @Column(name = "channel_type", nullable = false)
+    private String channelType;
+
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private ServiceStatus status;
@@ -104,6 +107,14 @@ public class ScheduledService extends AbstractBaseOpenmrsData {
 
     public void setPatientTemplate(PatientTemplate patientTemplate) {
         this.patientTemplate = patientTemplate;
+    }
+
+    public String getChannelType() {
+        return channelType;
+    }
+
+    public void setChannelType(String channelType) {
+        this.channelType = channelType;
     }
 
     public ServiceStatus getStatus() {

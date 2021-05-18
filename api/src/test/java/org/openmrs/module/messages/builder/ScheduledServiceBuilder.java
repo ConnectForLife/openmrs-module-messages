@@ -31,6 +31,7 @@ public class ScheduledServiceBuilder extends AbstractBuilder<ScheduledService> {
     private ScheduledServiceGroup group;
     private String service;
     private PatientTemplate template;
+    private String channelType;
     private ServiceStatus status;
     private String serviceExec;
     private List<DeliveryAttempt> deliveryAttempts;
@@ -42,6 +43,7 @@ public class ScheduledServiceBuilder extends AbstractBuilder<ScheduledService> {
         this.group.setId(DUMMY_GROUP_ID);
         this.service = DUMMY_SERVICE;
         this.template = new PatientTemplate();
+        this.channelType = DEFAULT_CHANNEL_TYPE;
         this.status = ServiceStatus.PENDING;
         this.serviceExec = DUMMY_SERVICE_EXEC;
         this.deliveryAttempts = new ArrayList<>();
@@ -53,6 +55,7 @@ public class ScheduledServiceBuilder extends AbstractBuilder<ScheduledService> {
         ScheduledService scheduled = new ScheduledService();
         scheduled.setId(id);
         scheduled.setService(service);
+        scheduled.setChannelType(channelType);
         scheduled.setGroup(group);
         scheduled.setStatus(status);
         scheduled.setPatientTemplate(template);
@@ -85,6 +88,11 @@ public class ScheduledServiceBuilder extends AbstractBuilder<ScheduledService> {
 
     public ScheduledServiceBuilder withTemplate(PatientTemplate template) {
         this.template = template;
+        return this;
+    }
+
+    public ScheduledServiceBuilder withChannelType(String channelType) {
+        this.channelType = channelType;
         return this;
     }
 

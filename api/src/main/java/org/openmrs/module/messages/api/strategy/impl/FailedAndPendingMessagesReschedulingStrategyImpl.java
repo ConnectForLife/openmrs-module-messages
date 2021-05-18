@@ -9,19 +9,23 @@
 
 package org.openmrs.module.messages.api.strategy.impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.openmrs.module.messages.api.model.ScheduledService;
 import org.openmrs.module.messages.api.model.ScheduledServiceGroup;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class FailedAndPendingMessagesReschedulingStrategyImpl extends AbstractReschedulingStrategy {
 
     @Override
-    protected List<ScheduledService> extractServiceListToExecute(ScheduledServiceGroup group) {
+    protected List<ScheduledService> extractServiceListToExecute(ScheduledServiceGroup group, String channelType) {
+        return extractFailedAndPendingServicesForChannelType(group, channelType);
+    }
+
+    private List<ScheduledService> extractFailedAndPendingServicesForChannelType(ScheduledServiceGroup group,
+                                                                                 String channelType) {
         ArrayList<ScheduledService> services = new ArrayList<>();
-        for (ScheduledService service : group.getScheduledServices()) {
+        for (ScheduledService service : group.getScheduledServicesByChannel(channelType)) {
             if (hasFailedOrPendingStatus(service)) {
                 services.add(service);
             }

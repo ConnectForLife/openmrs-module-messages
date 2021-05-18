@@ -15,7 +15,6 @@ public final class ScheduledServiceGroupHelper {
         scheduledServiceGroup.setPatient(PatientHelper.createTestInstance());
         scheduledServiceGroup.setActor(PatientHelper.createTestInstance().getPerson());
         scheduledServiceGroup.setStatus(ServiceStatus.DELIVERED);
-        scheduledServiceGroup.setChannelType("Call");
         
         return scheduledServiceGroup;
     }

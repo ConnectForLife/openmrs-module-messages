@@ -5,25 +5,18 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.Date;
 
-public class GroupedServiceResultListKey {
+public class ActorWithDate {
 
-    private final String channelType;
-    private final Integer actorId;
-    private final Integer patientId;
-    private final String actorType;
-    private final Date date;
+    private Integer actorId;
+    private Integer patientId;
+    private String actorType;
+    private Date date;
 
-    public GroupedServiceResultListKey(final String singleChannelType, final ServiceResult serviceResult,
-                                       final String actorType) {
-        this.channelType = singleChannelType;
-        this.actorId = serviceResult.getActorId();
-        this.patientId = serviceResult.getPatientId();
+    public ActorWithDate(Integer actorId, Integer patientId, String actorType, Date date) {
+        this.actorId = actorId;
+        this.patientId = patientId;
         this.actorType = actorType;
-        this.date = serviceResult.getExecutionDate();
-    }
-
-    public String getChannelType() {
-        return channelType;
+        this.date = date;
     }
 
     public Integer getActorId() {
@@ -62,7 +55,10 @@ public class GroupedServiceResultListKey {
 
     @Override
     public String toString() {
-        return "GroupedServiceResultListKey {channelType='" + channelType + "', actorId=" + actorId + ", actorType='" +
-                actorType + "', date=" + date + '}';
+        return "ActorWithDate {" +
+                "actorId=" + actorId +
+                ", actorType='" + actorType + '\'' +
+                ", date=" + date +
+                '}';
     }
 }

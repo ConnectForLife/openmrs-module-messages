@@ -14,7 +14,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.Matchers;
 import org.openmrs.module.messages.Constant;
 import org.openmrs.module.messages.ContextSensitiveTest;
 import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
@@ -43,6 +42,7 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -102,7 +102,7 @@ public abstract class BaseReschedulingStrategyITTest extends ContextSensitiveTes
         addDeliveryAttempts(pendingScheduledService, MAX_ATTEMPTS - 2);
         addDeliveryAttempts(deliveredScheduledService, MAX_ATTEMPTS - 1);
 
-        getStrategy().execute(failedScheduledService.getGroup());
+        getStrategy().execute(failedScheduledService.getGroup(), failedScheduledService.getChannelType());
     }
 
     @Test
@@ -110,7 +110,7 @@ public abstract class BaseReschedulingStrategyITTest extends ContextSensitiveTes
         addDeliveryAttempts(failedScheduledService, MAX_ATTEMPTS - 1);
         addDeliveryAttempts(pendingScheduledService, MAX_ATTEMPTS - 1);
 
-        getStrategy().execute(failedScheduledService.getGroup());
+        getStrategy().execute(failedScheduledService.getGroup(), failedScheduledService.getChannelType());
 
         TaskDefinition task = getCreatedTask();
         assertNotNull(task);
@@ -128,7 +128,7 @@ public abstract class BaseReschedulingStrategyITTest extends ContextSensitiveTes
         pendingScheduledService.setStatus(ServiceStatus.DELIVERED);
         pendingScheduledService = messagingService.saveOrUpdate(pendingScheduledService);
 
-        verify(schedulerService, times(0)).scheduleTask(Matchers.<TaskDefinition> any());
+        verify(schedulerService, times(0)).scheduleTask(any());
     }
 
     @Test
@@ -136,9 +136,9 @@ public abstract class BaseReschedulingStrategyITTest extends ContextSensitiveTes
         addDeliveryAttempts(failedScheduledService, MAX_ATTEMPTS);
         addDeliveryAttempts(pendingScheduledService, MAX_ATTEMPTS);
 
-        getStrategy().execute(failedScheduledService.getGroup());
+        getStrategy().execute(failedScheduledService.getGroup(), failedScheduledService.getChannelType());
 
-        verify(schedulerService, times(0)).scheduleTask(Matchers.<TaskDefinition> any());
+        verify(schedulerService, times(0)).scheduleTask(any());
     }
 
     @Test
@@ -147,13 +147,13 @@ public abstract class BaseReschedulingStrategyITTest extends ContextSensitiveTes
                 new ScheduledServiceGroupBuilder()
                         .withPatientId(DEFAULT_PATIENT_ID)
                         .withActorId(DEFAULT_PATIENT_ID)
-                        .withChannelType(CHANNEL_TYPE_1_NAME)
                         .withScheduledServices(wrap(new ScheduledServiceBuilder()
+                                .withChannelType(CHANNEL_TYPE_1_NAME)
                                 .withStatus(ServiceStatus.DELIVERED)
                                 .build()))
                         .build());
 
-        getStrategy().execute(scheduledServiceGroup);
+        getStrategy().execute(scheduledServiceGroup, CHANNEL_TYPE_1_NAME);
         verifyIfTaskIsNotCreated();
     }
 
@@ -163,10 +163,9 @@ public abstract class BaseReschedulingStrategyITTest extends ContextSensitiveTes
                 new ScheduledServiceGroupBuilder()
                         .withPatientId(DEFAULT_PATIENT_ID)
                         .withActorId(DEFAULT_PATIENT_ID)
-                        .withChannelType(CHANNEL_TYPE_1_NAME)
                         .build());
 
-        getStrategy().execute(scheduledServiceGroup);
+        getStrategy().execute(scheduledServiceGroup, CHANNEL_TYPE_1_NAME);
         verifyIfTaskIsNotCreated();
     }
 
@@ -178,7 +177,7 @@ public abstract class BaseReschedulingStrategyITTest extends ContextSensitiveTes
     }
 
     protected void verifyIfTaskIsNotCreated() throws SchedulerException {
-        verify(schedulerService, times(0)).scheduleTask(Matchers.<TaskDefinition> any());
+        verify(schedulerService, times(0)).scheduleTask(any());
     }
 
     protected ScheduledExecutionContext getExecutionContext(TaskDefinition task) {
@@ -198,7 +197,7 @@ public abstract class BaseReschedulingStrategyITTest extends ContextSensitiveTes
     }
 
     private <T> List<T> wrap(T toWrap) {
-        ArrayList<T> list = new ArrayList<T>();
+        ArrayList<T> list = new ArrayList<>();
         list.add(toWrap);
         return list;
     }

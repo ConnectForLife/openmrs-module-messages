@@ -4,15 +4,19 @@ import org.apache.commons.lang.NotImplementedException;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.openmrs.module.messages.api.dto.DTO;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 public class GroupedServiceResultList implements DTO {
 
-    private final GroupedServiceResultListKey key;
-    private final List<GroupedServiceResult> group;
+    private ActorWithDate actorWithExecutionDate;
 
-    public GroupedServiceResultList(GroupedServiceResultListKey key, List<GroupedServiceResult> group) {
-        this.key = key;
+    private ServiceResultList group;
+
+    public GroupedServiceResultList(ActorWithDate actorWithExecutionDate, ServiceResultList group) {
+        this.actorWithExecutionDate = actorWithExecutionDate;
         this.group = group;
     }
 
@@ -22,11 +26,28 @@ public class GroupedServiceResultList implements DTO {
         throw new NotImplementedException("not implemented yet");
     }
 
-    public GroupedServiceResultListKey getKey() {
-        return key;
+    public static List<GroupedServiceResultList> fromServiceResultLists(Collection<ServiceResultList> input) {
+        List<GroupedServiceResultList> result = new ArrayList<>();
+
+        for (ServiceResultList list : input) {
+            if (!list.getResults().isEmpty()) {
+                Date date = list.getResults().get(0).getExecutionDate();
+                result.add(new GroupedServiceResultList(new ActorWithDate(
+                        list.getActorId(),
+                        list.getPatientId(),
+                        list.getActorType(),
+                        date), list));
+            }
+        }
+
+        return result;
     }
 
-    public List<GroupedServiceResult> getGroup() {
+    public ServiceResultList getGroup() {
         return group;
+    }
+
+    public ActorWithDate getActorWithExecutionDate() {
+        return actorWithExecutionDate;
     }
 }

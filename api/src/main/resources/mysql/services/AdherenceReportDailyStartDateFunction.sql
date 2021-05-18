@@ -5,7 +5,7 @@ BEGIN
     SET mssg_date =
             (SELECT EXECUTION_DATE FROM
                 (SELECT mssg.msg_send_time AS EXECUTION_DATE, 1 AS MESSAGE_ID,
-                        mssg.channel_type AS CHANNEL_ID, mss.status AS STATUS_ID
+                        mss.channel_type AS CHANNEL_ID, mss.status AS STATUS_ID
                  FROM messages_scheduled_service mss
                           JOIN messages_patient_template mpt on mpt.messages_patient_template_id = mss.patient_template_id
                           JOIN messages_template mt on mt.messages_template_id = mpt.template_id

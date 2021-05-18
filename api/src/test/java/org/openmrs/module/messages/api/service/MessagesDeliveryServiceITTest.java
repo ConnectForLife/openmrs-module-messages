@@ -16,9 +16,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.openmrs.module.messages.Constant;
 import org.openmrs.module.messages.ContextSensitiveTest;
-import org.openmrs.module.messages.api.execution.GroupedServiceResult;
+import org.openmrs.module.messages.api.execution.ActorWithDate;
 import org.openmrs.module.messages.api.execution.GroupedServiceResultList;
-import org.openmrs.module.messages.api.execution.GroupedServiceResultListKey;
 import org.openmrs.module.messages.api.execution.ServiceResult;
 import org.openmrs.module.messages.api.execution.ServiceResultList;
 import org.openmrs.module.messages.api.mappers.ScheduledGroupMapper;
@@ -46,7 +45,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.openmrs.module.messages.api.constants.MessagesConstants.PATIENT_DEFAULT_ACTOR_TYPE;
 import static org.openmrs.module.messages.api.scheduler.job.ServiceGroupDeliveryJobDefinition.EXECUTION_CONTEXT;
+import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_PATIENT_ID;
 import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_PATIENT_TEMPLATE_ID;
 import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_PERSON_ID;
 import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_TEMPLATE_NAME;
@@ -90,7 +91,7 @@ public class MessagesDeliveryServiceITTest extends ContextSensitiveTest {
         Date date = new DateBuilder().build();
 
         ServiceResultList resultList = createServiceResults(date);
-        ScheduledExecutionContext executionContext = getExecutionContext(resultList);
+        ScheduledExecutionContext executionContext = getExecutionContext(date, resultList);
 
         deliveryService.scheduleDelivery(executionContext);
 
@@ -103,26 +104,17 @@ public class MessagesDeliveryServiceITTest extends ContextSensitiveTest {
         assertEquals(executionContext, savedExecutionContext);
     }
 
-    private ScheduledExecutionContext getExecutionContext(ServiceResultList resultList) {
-        List<GroupedServiceResult> groupedServiceResults = new ArrayList<GroupedServiceResult>();
-        for (ServiceResult serviceResult : resultList.getResults()) {
-            groupedServiceResults.add(new GroupedServiceResult(resultList.getChannelType(), serviceResult));
-        }
-
-        GroupedServiceResultListKey groupedServiceResultListKey =
-                new GroupedServiceResultListKey(resultList.getChannelType(), resultList.getResults().get(0),
-                        resultList.getActorType());
-        GroupedServiceResultList groupResults =
-                new GroupedServiceResultList(groupedServiceResultListKey, groupedServiceResults);
-
+    private ScheduledExecutionContext getExecutionContext(Date date, ServiceResultList resultList) {
+        GroupedServiceResultList groupResults = new GroupedServiceResultList(
+                new ActorWithDate(DEFAULT_PATIENT_ID, DEFAULT_PATIENT_ID,
+                        PATIENT_DEFAULT_ACTOR_TYPE, date), resultList);
         ScheduledServiceGroup group = groupMapper.fromDto(groupResults);
         group = messagingGroupService.saveOrUpdate(group);
         return new ScheduledExecutionContextBuilder()
                 .withScheduledServices(group.getScheduledServices())
-                .withChannelType(group.getChannelType())
-                .withExecutionDate(groupResults.getKey().getDate())
+                .withExecutionDate(groupResults.getActorWithExecutionDate().getDate())
                 .withActorId(group.getActor().getId())
-                .withActorType(groupResults.getKey().getActorType())
+                .withActorType(groupResults.getActorWithExecutionDate().getActorType())
                 .withGroupId(group.getId())
                 .build();
     }
@@ -133,38 +125,36 @@ public class MessagesDeliveryServiceITTest extends ContextSensitiveTest {
     }
 
     private ScheduledExecutionContext getExecutionContext(TaskDefinition task) {
-        return gson.fromJson(task.getProperty(EXECUTION_CONTEXT), ScheduledExecutionContext.class);
+        return gson.fromJson(
+                task.getProperty(EXECUTION_CONTEXT),
+                ScheduledExecutionContext.class);
     }
 
     private ServiceResultList createServiceResults(Date date) {
-        List<ServiceResult> results = new ArrayList<ServiceResult>();
+        List<ServiceResult> results = new ArrayList<>();
         results.add(getServiceResult(date, Constant.CHANNEL_TYPE_SMS));
-        results.add(getServiceResult(date, Constant.CHANNEL_TYPE_SMS));
-        return getDefaultPersonResultList(results, Constant.CHANNEL_TYPE_SMS);
+        results.add(getServiceResult(date, Constant.CHANNEL_TYPE_CALL));
+        return getDefaultPersonResultList(results);
     }
 
     private ServiceResult getServiceResult(Date date, String channelType) {
-        return getServiceResult(date, channelType, new HashMap<String, Object>());
+        return getServiceResult(date, channelType, new HashMap<>());
     }
 
     private ServiceResult getServiceResult(Date date, String channelType, Map<String, Object> additionalParams) {
-        return new ServiceResultBuilder()
-                .withExecutionDate(date)
+        return new ServiceResultBuilder().withExecutionDate(date)
                 .withPatientTemplate(DEFAULT_PATIENT_TEMPLATE_ID)
                 .withParams(additionalParams)
-                .withChannelType(channelType)
-                .build();
+                .withChannelType(channelType).build();
     }
 
-    private ServiceResultList getDefaultPersonResultList(List<ServiceResult> results, String channelType) {
-        return getResultList(results, DEFAULT_PERSON_ID, DEFAULT_PERSON_ID, channelType);
+    private ServiceResultList getDefaultPersonResultList(List<ServiceResult> results) {
+        return getResultList(results, DEFAULT_PERSON_ID, DEFAULT_PERSON_ID);
     }
 
-    private ServiceResultList getResultList(List<ServiceResult> results, Integer actorId, Integer patientId, String channelType) {
+    private ServiceResultList getResultList(List<ServiceResult> results, Integer actorId, Integer patientId) {
         return new ServiceResultListBuilder()
-                .withActorId(actorId)
-                .withPatientId(patientId)
-                .withChannelType(channelType)
+                .withActorId(actorId).withPatientId(patientId)
                 .withServiceName(DEFAULT_TEMPLATE_NAME)
                 .withServiceResults(results)
                 .build();

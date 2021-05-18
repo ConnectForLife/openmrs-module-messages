@@ -9,6 +9,7 @@
 
 package org.openmrs.module.messages.api.service.impl;
 
+import java.util.Date;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.messages.api.model.ScheduledService;
@@ -20,8 +21,6 @@ import org.openmrs.module.messages.api.service.MessagingGroupService;
 import org.openmrs.module.messages.api.service.MessagingService;
 import org.openmrs.module.messages.api.util.DateUtil;
 import org.openmrs.module.messages.api.util.HibernateUtil;
-
-import java.util.Date;
 
 /**
  * Implements methods related to handling of completed messages executions
@@ -35,17 +34,22 @@ public class MessagesExecutionServiceImpl implements MessagesExecutionService {
 
     @Override
     public void executionCompleted(Integer groupId, String executionId, String channelType) {
-        LOGGER.trace(String.format("Handling messages executing completion for groupId=%d, executionId=%s, channelType=%s",
+        LOGGER.trace(String.format(
+                "Handling messages executing completion for groupId=%d, executionId=%s, channelType=%s",
                 groupId, executionId, channelType));
 
         Date completionDate = DateUtil.now();
         ScheduledServiceGroup group = HibernateUtil.getNotNull(groupId, messagingGroupService);
 
-        registerFailedAttemptIfNotDelivered(executionId, completionDate, group);
+        registerFailedAttemptIfNotDelivered(executionId, channelType, completionDate, group);
+        // TODO: currently groups can represent different channels and it is difficult to manage its statuses,
+        //  however in the future group will represent exactly one channel,
+        //  so statuses for the whole group will be set as it should be
         group.setStatus(isGroupDelivered(group) ? ServiceStatus.DELIVERED : ServiceStatus.FAILED);
         group = messagingGroupService.saveOrUpdate(group);
 
-        configService.getReschedulingStrategy(channelType).execute(group);
+        configService.getReschedulingStrategy(channelType)
+            .execute(group, channelType);
     }
 
     public void setConfigService(ConfigService configService) {
@@ -60,12 +64,15 @@ public class MessagesExecutionServiceImpl implements MessagesExecutionService {
         this.messagingGroupService = messagingGroupService;
     }
 
-    private void registerFailedAttemptIfNotDelivered(String executionId, Date date, ScheduledServiceGroup group) {
-        for (ScheduledService ss : group.getScheduledServices()) {
+    private void registerFailedAttemptIfNotDelivered(String executionId, String channelType, Date date,
+                                                     ScheduledServiceGroup group) {
+        for (ScheduledService ss : group.getScheduledServicesByChannel(channelType)) {
             if (!ss.getStatus().equals(ServiceStatus.DELIVERED)) {
                 if (LOGGER.isTraceEnabled()) {
-                    LOGGER.trace(String.format("Registering failed attempt for not delivered ScheduledService %d (%s)",
-                            ss.getId(), ss.getPatientTemplate().getTemplate().getName()));
+                    LOGGER.trace(String.format(
+                            "Registering failed attempt for not delivered ScheduledService %d (%s)",
+                            ss.getId(),
+                            ss.getPatientTemplate().getTemplate().getName()));
                 }
                 messagingService.registerAttempt(ss, ServiceStatus.FAILED, date, executionId);
             }

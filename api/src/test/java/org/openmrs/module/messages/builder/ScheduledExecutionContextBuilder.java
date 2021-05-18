@@ -17,7 +17,6 @@ public class ScheduledExecutionContextBuilder extends AbstractBuilder<ScheduledE
     private static final int SERVICE_ID = 1;
 
     private List<Integer> serviceIdsToExecute;
-    private String channelType;
     private Date executionDate;
     private int actorId;
     private String actorType;
@@ -35,7 +34,6 @@ public class ScheduledExecutionContextBuilder extends AbstractBuilder<ScheduledE
     public ScheduledExecutionContext build() {
         ScheduledExecutionContext scheduledExecutionContext = new ScheduledExecutionContext();
         scheduledExecutionContext.setServiceIdsToExecute(serviceIdsToExecute);
-        scheduledExecutionContext.setChannelType(channelType);
         scheduledExecutionContext.setExecutionDate(executionDate);
         scheduledExecutionContext.setActorId(actorId);
         scheduledExecutionContext.setActorType(actorType);
@@ -50,11 +48,6 @@ public class ScheduledExecutionContextBuilder extends AbstractBuilder<ScheduledE
 
     public ScheduledExecutionContextBuilder withScheduledServices(List<ScheduledService> scheduledServices) {
         this.serviceIdsToExecute = OpenmrsObjectUtil.getIds(scheduledServices);
-        return this;
-    }
-
-    public ScheduledExecutionContextBuilder withChannelType(String channelType) {
-        this.channelType = channelType;
         return this;
     }
 

@@ -82,7 +82,7 @@
             date_created="2019-11-16 15:57:09.0"
             voided="false"
             uuid="e902c21d-c57d-4b96-8929-b8b7f07f3d19"/>
-
+            
     <!-- Inactive Patient-->
     <person
             person_id="1111"
@@ -260,18 +260,6 @@
             voided="false"
             uuid="5e776c48-3a0d-4585-b234-1673a71b91d6"/>
 
-    <messages_template_field
-            messages_template_field_id="62"
-            name="Service type"
-            mandatory="true"
-            default_value="Call,SMS"
-            template_field_type="SERVICE_TYPE"
-            template_id="51"
-            creator="1"
-            date_created="2019-11-20 00:00:00.0"
-            voided="false"
-            uuid="5e776c48-3a0d-4585-b234-1673a71b91d7"/>
-
     <!--  Patient  -->
     <messages_patient_template
             messages_patient_template_id="71"
@@ -285,16 +273,6 @@
             date_created="2019-11-20 00:00:00.1"
             voided="false"
             uuid="e8e2ea41-13ca-403a-b05d-9128d2b085cd"/>
-
-    <messages_template_field_value
-            messages_template_field_value_id="81"
-            value="Call,SMS"
-            patient_template_id="71"
-            template_field_id="62"
-            creator="1"
-            date_created="2019-11-20 00:00:00.2"
-            voided="false"
-            uuid="0309e34d-f863-4f7b-9116-7d4e41b45671"/>
 
     <!--  Caregiver  -->
     <messages_patient_template
@@ -311,16 +289,6 @@
             voided="false"
             uuid="a8e2ea41-13ca-403a-b05d-9128d2b085cd"/>
 
-    <messages_template_field_value
-            messages_template_field_value_id="82"
-            value="Call,SMS"
-            patient_template_id="72"
-            template_field_id="62"
-            creator="1"
-            date_created="2019-11-20 00:00:00.2"
-            voided="false"
-            uuid="0309e34d-f863-4f7b-9116-7d4e41b45672"/>
-
     <!--  No PatientStatus Caregiver  -->
     <messages_patient_template
             messages_patient_template_id="73"
@@ -335,16 +303,6 @@
             date_created="2019-11-20 00:00:00.1"
             voided="false"
             uuid="1232ea41-13ca-403a-b05d-9128d2b085cd"/>
-
-    <messages_template_field_value
-            messages_template_field_value_id="83"
-            value="Call,SMS"
-            patient_template_id="73"
-            template_field_id="62"
-            creator="1"
-            date_created="2019-11-20 00:00:00.2"
-            voided="false"
-            uuid="0309e34d-f863-4f7b-9116-7d4e41b45673"/>
 
     <!--  Caregiver with inactive patient -->
     <messages_patient_template
@@ -362,31 +320,19 @@
             uuid="68e2ea41-13ca-403a-b05d-9128d2b085cd"/>
 
     <messages_template_field_value
-            messages_template_field_value_id="84"
+            messages_template_field_value_id="81"
             value="test value"
             patient_template_id="71"
             template_field_id="61"
             creator="1"
             date_created="2019-11-20 00:00:00.2"
             voided="false"
-            uuid="0309e34d-f863-4f7b-9116-7d4e41b45674"/>
+            uuid="0309e34d-f863-4f7b-9116-7d4e41b45671"/>
 
-    <messages_template_field_value
-            messages_template_field_value_id="85"
-            value="Call"
-            patient_template_id="74"
-            template_field_id="62"
-            creator="1"
-            date_created="2019-11-20 00:00:00.2"
-            voided="false"
-            uuid="0309e34d-f863-4f7b-9116-7d4e41b45675"/>
-
-    <!-- Group for rescheduling tests, Call channel -->
     <messages_scheduled_service_group
             messages_scheduled_service_group_id="91"
             patient_id="997"
             actor_id="997"
-            channel_type="Call"
             creator="1"
             date_created="2019-11-20 00:00:00.0"
             msg_send_time="2019-11-20 00:00:00.0"
@@ -398,6 +344,7 @@
             group_id="91"
             service="1"
             patient_template_id="71"
+            channel_type="Call"
             status="DELIVERED"
             last_service_execution_id="111111111111"
             creator="1"
@@ -410,48 +357,37 @@
             group_id="91"
             service="1"
             patient_template_id="71"
+            channel_type="Call"
             status="FAILED"
             last_service_execution_id="222222222222"
             creator="1"
             date_created="2019-11-25 00:00:00.0"
             voided="false"
             uuid="532f0b56-3ff9-427b-b4f3-b92796c7eea2"/>
-
     <messages_scheduled_service
             messages_scheduled_service_id="103"
             group_id="91"
             service="1"
             patient_template_id="71"
+            channel_type="Call"
             status="PENDING"
             last_service_execution_id="222222222222"
             creator="1"
             date_created="2019-11-25 00:00:00.0"
             voided="false"
-            uuid="5b2f0b56-3ff9-427b-b4f3-b92796c7eea3"/>
-
-    <!-- Group for rescheduling tests, SMS channel -->
-    <messages_scheduled_service_group
-            messages_scheduled_service_group_id="191"
-            patient_id="997"
-            actor_id="997"
-            channel_type="SMS"
-            creator="1"
-            date_created="2019-11-20 00:00:00.0"
-            msg_send_time="2019-11-20 00:00:00.0"
-            voided="false"
-            uuid="3d3a36a6-ff59-4c7e-bf3e-fe3d7a6b47a7"/>
-
+            uuid="5b2f0b56-3ff9-427b-b4f3-b92796c7eea2"/>
     <messages_scheduled_service
             messages_scheduled_service_id="104"
-            group_id="191"
+            group_id="91"
             service="1"
             patient_template_id="71"
+            channel_type="SMS"
             status="PENDING"
             last_service_execution_id="222222222222"
             creator="1"
             date_created="2019-11-25 00:00:00.0"
             voided="false"
-            uuid="5a2f0b56-3ff9-427b-b4f3-b92796c7eea4"/>
+            uuid="5a2f0b56-3ff9-427b-b4f3-b92796c7eea2"/>
 
     <person
             person_id="677"
@@ -604,18 +540,6 @@
             voided="false"
             uuid="d9c80308-7c51-4690-b77e-7535a630fb45"/>
 
-    <messages_template_field
-            messages_template_field_id="73"
-            name="Service type"
-            mandatory="true"
-            default_value="Call"
-            template_field_type="SERVICE_TYPE"
-            template_id="23"
-            creator="1"
-            date_created="2010-11-16 00:00:00.0"
-            voided="false"
-            uuid="d9c80308-7c51-4690-b77e-7535a630fb46"/>
-
     <messages_patient_template
             messages_patient_template_id="91"
             actor_id="677"
@@ -649,16 +573,6 @@
             voided="false"
             uuid="4b64ab9b-889e-4ec6-8bee-24341e88b3d1"/>
 
-    <messages_template_field_value
-            messages_template_field_value_id="93"
-            value="Call"
-            patient_template_id="91"
-            template_field_id="73"
-            creator="1"
-            date_created="2010-11-16 00:00:00.2"
-            voided="false"
-            uuid="4b64ab9b-889e-4ec6-8bee-24341e88b3d2"/>
-
     <messages_patient_template
             messages_patient_template_id="92"
             actor_id="674"
@@ -673,7 +587,7 @@
             uuid="a347e0c5-db67-4451-bfba-772a298136bc"/>
 
     <messages_template_field_value
-            messages_template_field_value_id="94"
+            messages_template_field_value_id="93"
             value=""
             patient_template_id="92"
             template_field_id="71"
@@ -683,7 +597,7 @@
             uuid="4ebdd797-a258-4bba-977d-f4628bc687ac"/>
 
     <messages_template_field_value
-            messages_template_field_value_id="95"
+            messages_template_field_value_id="94"
             value="AFTER_TIMES|1"
             patient_template_id="92"
             template_field_id="72"
@@ -691,16 +605,6 @@
             date_created="2010-11-16 00:00:00.2"
             voided="false"
             uuid="2b89850c-da01-470e-8606-566136165f90"/>
-
-    <messages_template_field_value
-            messages_template_field_value_id="96"
-            value="Call"
-            patient_template_id="92"
-            template_field_id="73"
-            creator="1"
-            date_created="2010-11-16 00:00:00.2"
-            voided="false"
-            uuid="4b64ab9b-889e-4ec6-8bee-24341e88b3d3"/>
 
     <messages_patient_template
             messages_patient_template_id="93"
@@ -717,7 +621,7 @@
             uuid="5f632769-7b4d-452d-bc07-e9603e96e362"/>
 
     <messages_template_field_value
-            messages_template_field_value_id="97"
+            messages_template_field_value_id="95"
             value=""
             patient_template_id="93"
             template_field_id="71"
@@ -727,7 +631,7 @@
             uuid="c8d6aac2-d8c3-47ad-af0f-66a3ecc38d4d"/>
 
     <messages_template_field_value
-            messages_template_field_value_id="98"
+            messages_template_field_value_id="96"
             value="AFTER_TIMES|1"
             patient_template_id="93"
             template_field_id="72"
@@ -735,16 +639,6 @@
             date_created="2010-11-16 00:00:00.2"
             voided="false"
             uuid="1938b7c0-8c37-4454-b1e9-ca6a3eceadb0"/>
-
-    <messages_template_field_value
-            messages_template_field_value_id="99"
-            value="Call"
-            patient_template_id="93"
-            template_field_id="73"
-            creator="1"
-            date_created="2010-11-16 00:00:00.2"
-            voided="false"
-            uuid="4b64ab9b-889e-4ec6-8bee-24341e88b3d4"/>
 
     <person
             person_id="675"
@@ -821,7 +715,7 @@
             uuid="da85a419-41fb-41fd-b8a6-d4635ebc0bd9"/>
 
     <messages_template_field_value
-            messages_template_field_value_id="101"
+            messages_template_field_value_id="97"
             value=""
             patient_template_id="94"
             template_field_id="71"
@@ -831,7 +725,7 @@
             uuid="1b72d9c6-f0df-4639-b0aa-8e54eaa74c63"/>
 
     <messages_template_field_value
-            messages_template_field_value_id="102"
+            messages_template_field_value_id="98"
             value="AFTER_TIMES|1"
             patient_template_id="94"
             template_field_id="72"
@@ -839,14 +733,4 @@
             date_created="2010-11-16 00:00:00.2"
             voided="false"
             uuid="7c444892-f0ea-48f9-bbe6-901ab90f4b2d"/>
-
-    <messages_template_field_value
-            messages_template_field_value_id="103"
-            value="Call"
-            patient_template_id="94"
-            template_field_id="73"
-            creator="1"
-            date_created="2010-11-16 00:00:00.2"
-            voided="false"
-            uuid="7c444892-f0ea-48f9-bbe6-901ab90f4b30"/>
 </dataset>

@@ -32,8 +32,8 @@ public abstract class AbstractReschedulingStrategy implements ReschedulingStrate
     private MessagesDeliveryService deliveryService;
 
     @Override
-    public void execute(ScheduledServiceGroup group) {
-        List<ScheduledService> servicesToExecute = extractServiceListToExecute(group);
+    public void execute(ScheduledServiceGroup group, String channelType) {
+        List<ScheduledService> servicesToExecute = extractServiceListToExecute(group, channelType);
         if (servicesToExecute.isEmpty()) {
             logger.debug(String.format(
                     "The group %s have been fully delivered, so the rescheduling logic will not be run",
@@ -48,7 +48,6 @@ public abstract class AbstractReschedulingStrategy implements ReschedulingStrate
 
         deliveryService.scheduleDelivery(new ScheduledExecutionContext(
                 servicesToExecute,
-                group.getChannelType(),
                 getRescheduleDate(),
                 service.getPatientTemplate().getActor(),
                 service.getPatientTemplate().getPatient().getPatientId(),
@@ -108,7 +107,8 @@ public abstract class AbstractReschedulingStrategy implements ReschedulingStrate
         return logger;
     }
 
-    protected abstract List<ScheduledService> extractServiceListToExecute(ScheduledServiceGroup group);
+    protected abstract List<ScheduledService> extractServiceListToExecute(ScheduledServiceGroup group,
+                                                                          String channelType);
 
     private Date getRescheduleDate() {
         return DateUtil.getDatePlusSeconds(

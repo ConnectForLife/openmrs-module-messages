@@ -28,8 +28,8 @@ public class DefaultServiceResultsHandlerServiceImpl extends AbstractServiceResu
         if (LOGGER.isTraceEnabled()) {
             for (ScheduledService service : services) {
                 LOGGER.trace(String.format("The %s service was skipped and won't be processed " +
-                                "because missing concrete handler for %s channel type.", service.getTemplateName(),
-                        service.getGroup().getChannelType()));
+                        "because missing concrete handler for %s channel type.", service.getTemplateName(),
+                        service.getChannelType()));
             }
         }
     }

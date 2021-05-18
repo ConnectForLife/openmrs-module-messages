@@ -9,6 +9,7 @@
 
 package org.openmrs.module.messages.api.model;
 
+import org.apache.commons.lang.StringUtils;
 import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
@@ -24,6 +25,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -33,15 +35,15 @@ import java.util.List;
 public class ScheduledServiceGroup extends AbstractBaseOpenmrsData {
 
     private static final long serialVersionUID = -2938591098039855643L;
-
+    
     @Id
     @GeneratedValue
     @Column(name = "messages_scheduled_service_group_id")
     private Integer id;
-
+    
     @Column(name = "msg_send_time")
     private Date msgSendTime;
-
+    
     @OneToOne
     @JoinColumn(name = "patient_id", nullable = false)
     private Patient patient;
@@ -53,9 +55,6 @@ public class ScheduledServiceGroup extends AbstractBaseOpenmrsData {
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private ServiceStatus status;
-
-    @Column(name = "channel_type", nullable = false)
-    private String channelType;
 
     @OneToMany(mappedBy = "group", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<ScheduledService> scheduledServices = new ArrayList<>();
@@ -99,14 +98,6 @@ public class ScheduledServiceGroup extends AbstractBaseOpenmrsData {
         this.status = status;
     }
 
-    public String getChannelType() {
-        return channelType;
-    }
-
-    public void setChannelType(String channelType) {
-        this.channelType = channelType;
-    }
-
     public List<ScheduledService> getScheduledServices() {
         return scheduledServices;
     }
@@ -124,5 +115,16 @@ public class ScheduledServiceGroup extends AbstractBaseOpenmrsData {
 
     public void setActor(Person actor) {
         this.actor = actor;
+    }
+
+    @Transient
+    public List<ScheduledService> getScheduledServicesByChannel(String channelType) {
+        ArrayList<ScheduledService> result = new ArrayList<>();
+        for (ScheduledService ss : this.scheduledServices) {
+            if (StringUtils.equalsIgnoreCase(channelType, ss.getChannelType())) {
+                result.add(ss);
+            }
+        }
+        return result;
     }
 }
