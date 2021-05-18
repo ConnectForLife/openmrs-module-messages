@@ -209,7 +209,7 @@ public class MessagesExecutionServiceITTest extends ContextSensitiveTest {
     }
 
     private TaskDefinition getCreatedTask() throws SchedulerException {
-        verify(schedulerService, times(2)).saveTaskDefinition(taskCaptor.capture());
+        verify(schedulerService, times(1)).scheduleTask(taskCaptor.capture());
         return taskCaptor.getValue();
     }
 

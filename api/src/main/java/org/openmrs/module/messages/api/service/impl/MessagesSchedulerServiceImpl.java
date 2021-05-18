@@ -19,17 +19,11 @@ import org.openmrs.module.messages.api.scheduler.job.JobDefinition;
 import org.openmrs.module.messages.api.scheduler.job.JobRepeatInterval;
 import org.openmrs.module.messages.api.service.MessagesSchedulerService;
 import org.openmrs.module.messages.api.util.DateUtil;
-import org.openmrs.scheduler.SchedulerConstants;
 import org.openmrs.scheduler.SchedulerException;
 import org.openmrs.scheduler.SchedulerService;
-import org.openmrs.scheduler.SchedulerUtil;
-import org.openmrs.scheduler.Task;
 import org.openmrs.scheduler.TaskDefinition;
-import org.openmrs.scheduler.TaskFactory;
-import org.openmrs.scheduler.timer.TimerSchedulerTask;
 
 import java.util.Date;
-import java.util.Timer;
 
 /**
  * Implements methods related to job scheduling
@@ -38,10 +32,6 @@ public class MessagesSchedulerServiceImpl extends BaseOpenmrsDataService<Schedul
         implements MessagesSchedulerService {
 
     private static final Log LOGGER = LogFactory.getLog(MessagesSchedulerServiceImpl.class);
-
-    private static final boolean IS_DAEMON_THREAD_USED = true;
-
-    private final Timer timer = new Timer(IS_DAEMON_THREAD_USED);
 
     private SchedulerService schedulerService;
 
@@ -83,7 +73,7 @@ public class MessagesSchedulerServiceImpl extends BaseOpenmrsDataService<Schedul
     private void scheduleTask(TaskDefinition task) {
         try {
             schedulerService.saveTaskDefinition(task);
-            customScheduleTask(task);
+            schedulerService.scheduleTask(task);
         } catch (SchedulerException ex) {
             throw new MessagesRuntimeException(ex);
         }
@@ -141,63 +131,5 @@ public class MessagesSchedulerServiceImpl extends BaseOpenmrsDataService<Schedul
         } catch (SchedulerException ex) {
             LOGGER.error(ex);
         }
-    }
-
-    /* Method copied and adjusted from OpenMRS SchedulerService
-    This method uses one Timer instance for storing all tasks (instead of default OpenMRS implementation -
-    one Timer per one task)
-    Changed due to performance issues */
-    public Task customScheduleTask(TaskDefinition taskDefinition) throws SchedulerException {
-        Task clientTask = null;
-        if (taskDefinition != null) {
-            TimerSchedulerTask schedulerTask;
-            try {
-                // Create new task from task definition
-                clientTask = TaskFactory.getInstance().createInstance(taskDefinition);
-                // if we were unable to get a class, just quit
-                if (clientTask != null) {
-                    schedulerTask = new TimerSchedulerTask(clientTask);
-                    taskDefinition.setTaskInstance(clientTask);
-                    // Once this method is called, the timer is set to start at the given start time.
-                    // NOTE:  We need to adjust the repeat interval as the JDK Timer expects time in milliseconds and
-                    // we record by seconds.
-                    long repeatInterval = 0;
-                    if (taskDefinition.getRepeatInterval() != null) {
-                        repeatInterval = taskDefinition.getRepeatInterval() * SchedulerConstants.SCHEDULER_MILLIS_PER_SECOND;
-                    }
-                    if (taskDefinition.getStartTime() != null) {
-                        // Need to calculate the "next execution time" because the scheduled time is most likely in the past
-                        // and the JDK timer will run the task X number of times from the start time until now to catch up.
-                        Date nextTime = SchedulerUtil.getNextExecution(taskDefinition);
-                        // Start task at fixed rate at given future date and repeat as directed
-                        if (repeatInterval > 0) {
-                            // Schedule the task to run at a fixed rate
-                            getTimer().scheduleAtFixedRate(schedulerTask, nextTime, repeatInterval);
-                        } else {
-                            // Schedule the task to be non-repeating
-                            getTimer().schedule(schedulerTask, nextTime);
-                        }
-                    } else if (repeatInterval > 0) {
-                        // Start task on repeating schedule, delay for SCHEDULER_DEFAULT_DELAY seconds
-                        getTimer().scheduleAtFixedRate(schedulerTask,
-                                SchedulerConstants.SCHEDULER_DEFAULT_DELAY, repeatInterval);
-                    } else {
-                        // schedule for single execution, starting now
-                        getTimer().schedule(schedulerTask, new Date());
-                    }
-                    // Update task that has been started
-                    // Update the timer status in the database
-                    taskDefinition.setStarted(true);
-                    schedulerService.saveTaskDefinition(taskDefinition);
-                }
-            } catch (Exception e) {
-                throw new SchedulerException("Failed to schedule task", e);
-            }
-        }
-        return clientTask;
-    }
-
-    private Timer getTimer() {
-        return timer;
     }
 }

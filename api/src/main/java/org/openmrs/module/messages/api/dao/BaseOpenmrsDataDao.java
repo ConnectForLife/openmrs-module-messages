@@ -101,11 +101,6 @@ public abstract class BaseOpenmrsDataDao<T extends BaseOpenmrsData> extends Hibe
         return object;
     }
 
-    protected void flushAndClearCache() {
-        getSession().flush();
-        getSession().clear();
-    }
-
     /**
      * Loads the record count for the specified criteria into the specified paging object.
      * @param pagingInfo The {@link PagingInfo} object to load with the record count.
