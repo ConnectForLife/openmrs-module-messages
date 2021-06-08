@@ -10,6 +10,7 @@
 package org.openmrs.module.messages.api.service;
 
 import org.openmrs.api.OpenmrsService;
+import org.openmrs.module.messages.api.model.NotificationTemplate;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 
 import java.util.Map;
@@ -23,11 +24,14 @@ public interface NotificationTemplateService extends OpenmrsService {
      * Builds a String for specific messaging service based on the stored notification template.
      *
      * @param patientTemplate - the {@link PatientTemplate} which represent specific service
-     * @param serviceParam - the additional context parameters
+     * @param serviceParam    - the additional context parameters
      * @return - a parsed template
      * @should return null when template doesn't exists
      */
     String parseTemplate(PatientTemplate patientTemplate, Map<String, String> serviceParam);
 
     String buildMessageByGlobalProperty(Map<String, Object> param, String globalPropertyName);
+
+    String parseTemplate(PatientTemplate patientTemplate, NotificationTemplate notificationTemplate,
+                                     Map<String, String> serviceParam);
 }
