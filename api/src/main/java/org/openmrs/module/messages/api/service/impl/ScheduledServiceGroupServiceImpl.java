@@ -6,6 +6,7 @@ import org.openmrs.module.messages.api.model.ScheduledServiceGroup;
 import org.openmrs.module.messages.api.model.ScheduledServiceParameter;
 import org.openmrs.module.messages.api.service.MessagingGroupService;
 import org.openmrs.module.messages.api.service.ScheduledServiceGroupService;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.Date;
@@ -21,6 +22,7 @@ public class ScheduledServiceGroupServiceImpl implements ScheduledServiceGroupSe
     private MessagingGroupService messagingGroupService;
 
     @Override
+    @Transactional
     public ScheduledServiceGroup createSingletonGroup(final Date deliveryTime, final String channelType,
                                                       final PatientTemplate patientTemplate) {
         final ScheduledService scheduledService = new ScheduledService();

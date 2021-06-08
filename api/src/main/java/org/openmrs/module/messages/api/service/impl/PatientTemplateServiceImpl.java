@@ -117,6 +117,7 @@ public class PatientTemplateServiceImpl extends BaseOpenmrsDataService<PatientTe
     }
 
     @Override
+    @Transactional
     public PatientTemplate getOrCreatePatientTemplate(Patient patient, String templateName) throws APIException {
         final Template template = getTemplateByName(templateName);
 
