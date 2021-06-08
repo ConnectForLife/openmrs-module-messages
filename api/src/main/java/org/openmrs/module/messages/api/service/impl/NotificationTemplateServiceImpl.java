@@ -82,14 +82,6 @@ public abstract class NotificationTemplateServiceImpl extends BaseOpenmrsService
         return internalParseTemplate(patientTemplate, notificationTemplate, serviceParam);
     }
 
-    private String internalParseTemplate(PatientTemplate patientTemplate, NotificationTemplate notificationTemplate,
-                                         Map<String, String> serviceParameters) {
-        final String injectedServices = notificationTemplateDao.getInjectedServicesMap();
-        final Map<String, Object> templateData = buildTemplateInputData(patientTemplate, serviceParameters,
-                injectedServices);
-        return loadTemplate(notificationTemplate, templateData);
-    }
-
     /**
      * Sets the notification template dao bean value
      *
@@ -97,6 +89,14 @@ public abstract class NotificationTemplateServiceImpl extends BaseOpenmrsService
      */
     public void setNotificationTemplateDao(NotificationTemplateDao notificationTemplateDao) {
         this.notificationTemplateDao = notificationTemplateDao;
+    }
+
+    private String internalParseTemplate(PatientTemplate patientTemplate, NotificationTemplate notificationTemplate,
+                                         Map<String, String> serviceParameters) {
+        final String injectedServices = notificationTemplateDao.getInjectedServicesMap();
+        final Map<String, Object> templateData =
+                buildTemplateInputData(patientTemplate, serviceParameters, injectedServices);
+        return loadTemplate(notificationTemplate, templateData);
     }
 
     /**

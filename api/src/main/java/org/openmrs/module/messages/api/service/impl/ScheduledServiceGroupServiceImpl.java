@@ -4,7 +4,6 @@ import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.ScheduledService;
 import org.openmrs.module.messages.api.model.ScheduledServiceGroup;
 import org.openmrs.module.messages.api.model.ScheduledServiceParameter;
-import org.openmrs.module.messages.api.model.types.ServiceStatus;
 import org.openmrs.module.messages.api.service.MessagingGroupService;
 import org.openmrs.module.messages.api.service.ScheduledServiceGroupService;
 
@@ -25,7 +24,7 @@ public class ScheduledServiceGroupServiceImpl implements ScheduledServiceGroupSe
     public ScheduledServiceGroup createSingletonGroup(final Date deliveryTime, final String channelType,
                                                       final PatientTemplate patientTemplate) {
         final ScheduledService scheduledService = new ScheduledService();
-        scheduledService.setStatus(ServiceStatus.PENDING);
+        scheduledService.setStatus(INITIAL_SCHEDULED_SERVICE_STATUS);
         scheduledService.setPatientTemplate(patientTemplate);
         scheduledService.setScheduledServiceParameters(Collections.<ScheduledServiceParameter>emptyList());
         scheduledService.setService(patientTemplate.getTemplate().getName());
@@ -33,7 +32,7 @@ public class ScheduledServiceGroupServiceImpl implements ScheduledServiceGroupSe
         final ScheduledServiceGroup scheduledServiceGroup = new ScheduledServiceGroup();
         scheduledServiceGroup.setPatient(patientTemplate.getPatient());
         scheduledServiceGroup.setActor(patientTemplate.getPatient());
-        scheduledServiceGroup.setStatus(ServiceStatus.PENDING);
+        scheduledServiceGroup.setStatus(INITIAL_SCHEDULED_SERVICE_STATUS);
 
         scheduledServiceGroup.setChannelType(channelType);
         scheduledServiceGroup.setMsgSendTime(deliveryTime);

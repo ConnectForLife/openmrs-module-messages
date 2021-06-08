@@ -3,6 +3,8 @@ package org.openmrs.module.messages.api.service;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.ScheduledService;
 import org.openmrs.module.messages.api.model.ScheduledServiceGroup;
+import org.openmrs.module.messages.api.model.types.ServiceStatus;
+import org.openmrs.scheduler.SchedulerService;
 
 import java.util.Date;
 
@@ -13,11 +15,15 @@ import java.util.Date;
  * </p>
  */
 public interface ScheduledServiceGroupService {
+    ServiceStatus INITIAL_SCHEDULED_SERVICE_STATUS = ServiceStatus.PENDING;
+
     /**
-     * Create new instance of {@link ScheduledServiceGroup} with single {@link ScheduledService} for the given {@code
-     * deliveryTime}, {@code
-     * channelType} and {@code
-     * patientTemplate}.
+     * Create new instance of {@link ScheduledServiceGroup} with single {@link ScheduledService} for the given
+     * {@code deliveryTime}, {@code channelType} and {@code patientTemplate}.
+     * <p>
+     * The {@link SchedulerService} and {@link ScheduledServiceGroup} are created with the
+     * {@link #INITIAL_SCHEDULED_SERVICE_STATUS} set.
+     * </p>
      *
      * @param deliveryTime    the deliver time to schedule the group for, not null
      * @param channelType     the channel type to sue when delivering the service, not null
