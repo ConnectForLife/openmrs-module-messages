@@ -59,8 +59,13 @@ public class MessagesSchedulerServiceImpl extends BaseOpenmrsDataService<Schedul
         if (previousTask == null) {
             scheduleTask(newTask);
         } else {
-            shutdownTask(newTask.getName());
-            scheduleTask(newTask);
+            try {
+                schedulerService.shutdownTask(previousTask);
+                schedulerService.deleteTask(previousTask.getId());
+                scheduleTask(newTask);
+            } catch (SchedulerException ex) {
+                LOGGER.error(ex);
+            }
         }
     }
 
@@ -129,18 +134,6 @@ public class MessagesSchedulerServiceImpl extends BaseOpenmrsDataService<Schedul
 
     public void setDaemonToken(DaemonToken daemonToken) {
         this.daemonToken = daemonToken;
-    }
-
-    private void shutdownTask(String taskName) {
-        try {
-            TaskDefinition taskDefinition = schedulerService.getTaskByName(taskName);
-            if (taskDefinition != null) {
-                schedulerService.shutdownTask(taskDefinition);
-                schedulerService.deleteTask(taskDefinition.getId());
-            }
-        } catch (SchedulerException ex) {
-            LOGGER.error(ex);
-        }
     }
 
     /* Method copied and adjusted from OpenMRS SchedulerService
