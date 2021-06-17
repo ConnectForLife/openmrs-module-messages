@@ -4259,4 +4259,149 @@
                  splitStatements="false"
                  stripComments="false"/>
     </changeSet>
+
+    <changeSet id="messages-AGRE-1626-Virtual-Follow-Up-service" author="Piotr Wargulak">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(*) FROM messages_template WHERE name = 'Virtual Follow Up'</sqlCheck>
+        </preConditions>
+        <comment>Adds Virtual Follow Up message template with empty queries.</comment>
+        <sql>
+            INSERT INTO messages_template (
+                service_query,
+                service_query_type,
+                uuid,
+                creator,
+                changed_by,
+                date_changed,
+                date_created,
+                date_retired,
+                retire_reason,
+                retired,
+                retired_by,
+                name,
+                calendar_service_query,
+                description,
+                should_use_optimized_query)
+            VALUES(
+                'SELECT "empty" FROM dual WHERE false;',
+                'SQL',
+                'e67649ee-a625-4a52-91dd-107665c2fcaa',
+                1,
+                NULL,
+                NULL,
+                '2021-06-17 00:00:00',
+                NULL,
+                NULL,
+                0,
+                NULL,
+                'Virtual Follow Up',
+                'SELECT "empty" FROM dual WHERE false;',
+                'The Template for Virtual Follow Up messages.',
+                1);
+            INSERT INTO messages_template_field (
+                name,
+                mandatory,
+                default_value,
+                template_id,
+                uuid,
+                creator,
+                changed_by,
+                date_changed,
+                date_created,
+                date_voided,
+                void_reason,
+                voided,
+                voided_by,
+                template_field_type,
+                possible_values)
+            VALUES(
+                'Service type',
+                1,
+                'Deactivate service',
+                (SELECT mt.messages_template_id FROM messages_template mt WHERE mt.name = 'Virtual Follow Up'),
+                '4324d726-d82b-4915-8dcd-12386aad3a30',
+                1,
+                NULL,
+                NULL,
+                '2021-06-17 00:00:00',
+                NULL,
+                NULL,
+                0,
+                NULL,
+                'SERVICE_TYPE',
+                'Deactivate service|SMS|Call');
+            INSERT INTO messages_template_field (
+                name,
+                mandatory,
+                default_value,
+                template_id,
+                uuid,
+                creator,
+                changed_by,
+                date_changed,
+                date_created,
+                date_voided,
+                void_reason,
+                voided,
+                voided_by,
+                template_field_type,
+                possible_values)
+            VALUES(
+                'After number of days',
+                1,
+                NULL,
+                (SELECT mt.messages_template_id FROM messages_template mt WHERE mt.name = 'Virtual Follow Up'),
+                '1f2a9027-e871-4eaf-92c4-8c99f8dbc380',
+                1,
+                NULL,
+                NULL,
+                '2021-06-17 00:00:00',
+                NULL,
+                NULL,
+                0,
+                NULL,
+                'COMMON_MULTI_SELECT',
+                '7,14,21,28,35,42,49,56,63,70');
+        </sql>
+    </changeSet>
+
+    <changeSet id="messages-AGRE-1626-Virtual-Follow-Up-service-view" author="Piotr Wargulak">
+        <comment>Adds DB View with 100 unsigned numbers (from 1) used by Virtual Follow Up message template.</comment>
+        <sql><![CDATA[
+            CREATE OR REPLACE
+            ALGORITHM = UNDEFINED VIEW `openmrs`.`NUMBERS_100` AS
+            SELECT
+            (`t1`.`t1` * 10) + `t0`.`t0` + 1 AS `number`
+            FROM
+            `openmrs`.`DIGITS_0` `t0`
+            JOIN
+            `openmrs`.`DIGITS_1` `t1`
+            WHERE
+            (`t1`.`t1` * 10) + `t0`.`t0` + 1 < 100
+        ]]></sql>
+    </changeSet>
+
+    <changeSet id="messages-AGRE-1626-Virtual-Follow-Up-service-functions" author="Piotr Wargulak">
+        <comment>Adds DB functions used by Virtual Follow Up message template.</comment>
+        <sqlFile encoding="UTF-8"
+                 path="mysql/services/CommonStartDateFunction.sql"
+                 splitStatements="false"
+                 stripComments="false"/>
+        <sqlFile encoding="UTF-8"
+                 path="mysql/services/VirtualFollowUpGetLastDosageVisitFunction.sql"
+                 splitStatements="false"
+                 stripComments="false"/>
+    </changeSet>
+
+    <changeSet id="messages-AGRE-1626-Virtual-Follow-Up-service-queries" author="Piotr Wargulak">
+        <comment>Sets correct SQL queries for Virtual Follow Up message template.</comment>
+        <sqlFile encoding="UTF-8"
+                 path="mysql/services/VirtualFollowUp.sql"
+                 splitStatements="false"
+                 stripComments="false"/>
+        <sqlFile encoding="UTF-8"
+                 path="mysql/services/VirtualFollowUpCalendarQuery.sql"
+                 splitStatements="false"
+                 stripComments="false"/>
+    </changeSet>
 </databaseChangeLog>
