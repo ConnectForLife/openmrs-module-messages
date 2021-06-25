@@ -4388,7 +4388,7 @@
                  splitStatements="false"
                  stripComments="false"/>
         <sqlFile encoding="UTF-8"
-                 path="mysql/services/VirtualFollowUpGetLastDosageVisitFunction.sql"
+                 path="mysql/services/VirtualFollowUp/VirtualFollowUpGetLastDosageVisitFunction.sql"
                  splitStatements="false"
                  stripComments="false"/>
     </changeSet>
@@ -4396,11 +4396,11 @@
     <changeSet id="messages-AGRE-1626-Virtual-Follow-Up-service-queries" author="Piotr Wargulak">
         <comment>Sets correct SQL queries for Virtual Follow Up message template.</comment>
         <sqlFile encoding="UTF-8"
-                 path="mysql/services/VirtualFollowUp.sql"
+                 path="mysql/services/VirtualFollowUp/VirtualFollowUp.sql"
                  splitStatements="false"
                  stripComments="false"/>
         <sqlFile encoding="UTF-8"
-                 path="mysql/services/VirtualFollowUpCalendarQuery.sql"
+                 path="mysql/services/VirtualFollowUp/VirtualFollowUpCalendarQuery.sql"
                  splitStatements="false"
                  stripComments="false"/>
     </changeSet>
