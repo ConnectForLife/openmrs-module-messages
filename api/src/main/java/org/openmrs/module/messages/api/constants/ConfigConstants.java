@@ -259,6 +259,21 @@ public final class ConfigConstants {
     public static final String NOTIFICATION_TEMPLATE_ADHERENCE_WEEKLY_DESCRIPTION =
             "The notification template for adherence report weekly message type.";
 
+    public static final String NOTIFICATION_TEMPLATE_VIRTUAL_FOLLOW_UP =
+            "messages.notificationTemplate.virtual-follow-up";
+    public static final String NOTIFICATION_TEMPLATE_VIRTUAL_FOLLOW_UP_DEFAULT_VALUE =
+            "#set($textToRead = \"\")\n"
+                    + "#if($patient.getId().equals($actor.getId()))\n"
+                    + " #set($textToRead = \"Hello $patient.getPersonName().toString(), "
+                    + "It has been $DAYS_AFTER_VISIT days after your last dosing visit.\")\n"
+                    + "#else\n"
+                    + " #set($textToRead = \"Hello $actor.getPersonName().toString(), "
+                    + "Your patient's last dosing visit has been $DAYS_AFTER_VISIT days ago.\")\n"
+                    + "#end\n"
+                    + "{ message:\"$textToRead\" }";
+    public static final String NOTIFICATION_TEMPLATE_VIRTUAL_FOLLOW_UP_DESCRIPTION =
+            "The notification template for Virtual Follow Up message type.";
+
     public static final String DEFAULT_USER_TIMEZONE = "messages.defaultUserTimezone";
     public static final String DEFAULT_USER_TIMEZONE_DEFAULT_VALUE = "Europe/Brussels";
     public static final String DEFAULT_USER_TIMEZONE_DESCRIPTION = "The timezone which represents end user timezone." +
