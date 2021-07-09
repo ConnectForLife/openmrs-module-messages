@@ -3,7 +3,7 @@ package org.openmrs.module.messages.api.builder;
 import org.openmrs.module.messages.api.execution.ServiceResult;
 import org.openmrs.module.messages.api.execution.ServiceResultList;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 public class ServiceResultListBuilder implements Builder<ServiceResultList> {
@@ -14,8 +14,8 @@ public class ServiceResultListBuilder implements Builder<ServiceResultList> {
     private String actorType;
     private Integer serviceId;
     private String serviceName;
-    private Date startDate;
-    private Date endDate;
+    private ZonedDateTime startDate;
+    private ZonedDateTime endDate;
     private List<ServiceResult> results;
 
     @Override
@@ -63,12 +63,12 @@ public class ServiceResultListBuilder implements Builder<ServiceResultList> {
         return this;
     }
 
-    public ServiceResultListBuilder withStartDate(Date startDate) {
+    public ServiceResultListBuilder withStartDate(ZonedDateTime startDate) {
         this.startDate = startDate;
         return this;
     }
 
-    public ServiceResultListBuilder withEndDate(Date endDate) {
+    public ServiceResultListBuilder withEndDate(ZonedDateTime endDate) {
         this.endDate = endDate;
         return this;
     }

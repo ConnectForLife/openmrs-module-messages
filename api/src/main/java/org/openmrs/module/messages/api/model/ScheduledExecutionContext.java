@@ -15,6 +15,7 @@ import org.openmrs.Person;
 import org.openmrs.module.messages.api.util.OpenmrsObjectUtil;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +27,7 @@ public class ScheduledExecutionContext implements Serializable {
 
     private List<Integer> serviceIdsToExecute;
     private String channelType;
-    private Date executionDate;
+    private Instant executionDate;
     private int actorId;
     private int patientId;
     private String actorType;
@@ -34,10 +35,26 @@ public class ScheduledExecutionContext implements Serializable {
     private Map<String, String> channelConfiguration;
 
     public ScheduledExecutionContext() {
-        this.channelConfiguration = new HashMap<String, String>();
+        this.channelConfiguration = new HashMap<>();
     }
 
+    /**
+     * @param scheduledServices the scheduledServices
+     * @param channelType       the channelType
+     * @param executionDate     the executionDate
+     * @param actor             the actor
+     * @param patientId         the patientId
+     * @param actorType         the actorType
+     * @param groupId           the groupId
+     * @deprecated Use constructor with new Java Time API instead Date.
+     */
+    @Deprecated
     public ScheduledExecutionContext(List<ScheduledService> scheduledServices, String channelType, Date executionDate,
+                                     Person actor, Integer patientId, String actorType, int groupId) {
+        this(scheduledServices, channelType, executionDate.toInstant(), actor, patientId, actorType, groupId);
+    }
+
+    public ScheduledExecutionContext(List<ScheduledService> scheduledServices, String channelType, Instant executionDate,
                                      Person actor, Integer patientId, String actorType, int groupId) {
         this();
         this.serviceIdsToExecute = OpenmrsObjectUtil.getIds(scheduledServices);
@@ -65,11 +82,11 @@ public class ScheduledExecutionContext implements Serializable {
         this.channelType = channelType;
     }
 
-    public Date getExecutionDate() {
+    public Instant getExecutionDate() {
         return executionDate;
     }
 
-    public void setExecutionDate(Date executionDate) {
+    public void setExecutionDate(Instant executionDate) {
         this.executionDate = executionDate;
     }
 

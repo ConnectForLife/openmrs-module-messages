@@ -28,8 +28,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static org.openmrs.module.messages.api.constants.MessagesConstants.PATIENT_DEFAULT_ACTOR_TYPE;
@@ -162,12 +162,12 @@ public class PatientTemplate extends AbstractBaseOpenmrsData {
     }
 
     @Transient
-    public Date getStartOfMessages() {
+    public ZonedDateTime getStartOfMessages() {
         return FieldDateUtil.getStartDate(getTemplateFieldValues());
     }
 
     @Transient
-    public Date getEndOfMessages() {
+    public ZonedDateTime getEndOfMessages() {
         return FieldDateUtil.getEndDate(getTemplateFieldValues(), getTemplate().getName());
     }
 

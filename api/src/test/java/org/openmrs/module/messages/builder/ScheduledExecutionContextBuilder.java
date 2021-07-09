@@ -2,14 +2,14 @@ package org.openmrs.module.messages.builder;
 
 import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
 import org.openmrs.module.messages.api.model.ScheduledService;
+import org.openmrs.module.messages.api.util.DateUtil;
 import org.openmrs.module.messages.api.util.OpenmrsObjectUtil;
 
+import java.time.ZonedDateTime;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 public class ScheduledExecutionContextBuilder extends AbstractBuilder<ScheduledExecutionContext> {
-    public static final Date EXECUTION_DATE = new Date();
     public static final int ACTOR_ID = 2;
     public static final String ACTOR_TYPE = "Caregiver";
     public static final int GROUP_ID = 3;
@@ -18,14 +18,14 @@ public class ScheduledExecutionContextBuilder extends AbstractBuilder<ScheduledE
 
     private List<Integer> serviceIdsToExecute;
     private String channelType;
-    private Date executionDate;
+    private ZonedDateTime executionDate;
     private int actorId;
     private String actorType;
     private int groupId;
 
     public ScheduledExecutionContextBuilder() {
         this.serviceIdsToExecute = Collections.singletonList(SERVICE_ID);
-        this.executionDate = EXECUTION_DATE;
+        this.executionDate = DateUtil.now();
         this.actorId = ACTOR_ID;
         this.actorType = ACTOR_TYPE;
         this.groupId = GROUP_ID;
@@ -36,7 +36,7 @@ public class ScheduledExecutionContextBuilder extends AbstractBuilder<ScheduledE
         ScheduledExecutionContext scheduledExecutionContext = new ScheduledExecutionContext();
         scheduledExecutionContext.setServiceIdsToExecute(serviceIdsToExecute);
         scheduledExecutionContext.setChannelType(channelType);
-        scheduledExecutionContext.setExecutionDate(executionDate);
+        scheduledExecutionContext.setExecutionDate(executionDate.toInstant());
         scheduledExecutionContext.setActorId(actorId);
         scheduledExecutionContext.setActorType(actorType);
         scheduledExecutionContext.setGroupId(groupId);
@@ -58,7 +58,7 @@ public class ScheduledExecutionContextBuilder extends AbstractBuilder<ScheduledE
         return this;
     }
 
-    public ScheduledExecutionContextBuilder withExecutionDate(Date executionDate) {
+    public ScheduledExecutionContextBuilder withExecutionDate(ZonedDateTime executionDate) {
         this.executionDate = executionDate;
         return this;
     }

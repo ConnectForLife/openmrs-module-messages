@@ -21,7 +21,7 @@ import org.openmrs.module.messages.api.service.MessagingService;
 import org.openmrs.module.messages.api.util.DateUtil;
 import org.openmrs.module.messages.api.util.HibernateUtil;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 
 /**
  * Implements methods related to handling of completed messages executions
@@ -38,7 +38,7 @@ public class MessagesExecutionServiceImpl implements MessagesExecutionService {
         LOGGER.trace(String.format("Handling messages executing completion for groupId=%d, executionId=%s, channelType=%s",
                 groupId, executionId, channelType));
 
-        Date completionDate = DateUtil.now();
+        final ZonedDateTime completionDate = DateUtil.now();
         ScheduledServiceGroup group = HibernateUtil.getNotNull(groupId, messagingGroupService);
 
         registerFailedAttemptIfNotDelivered(executionId, completionDate, group);
@@ -60,14 +60,14 @@ public class MessagesExecutionServiceImpl implements MessagesExecutionService {
         this.messagingGroupService = messagingGroupService;
     }
 
-    private void registerFailedAttemptIfNotDelivered(String executionId, Date date, ScheduledServiceGroup group) {
+    private void registerFailedAttemptIfNotDelivered(String executionId, ZonedDateTime date, ScheduledServiceGroup group) {
         for (ScheduledService ss : group.getScheduledServices()) {
             if (!ss.getStatus().equals(ServiceStatus.DELIVERED)) {
                 if (LOGGER.isTraceEnabled()) {
                     LOGGER.trace(String.format("Registering failed attempt for not delivered ScheduledService %d (%s)",
                             ss.getId(), ss.getPatientTemplate().getTemplate().getName()));
                 }
-                messagingService.registerAttempt(ss, ServiceStatus.FAILED, date, executionId);
+                messagingService.registerAttempt(ss, ServiceStatus.FAILED, DateUtil.toDate(date), executionId);
             }
         }
     }

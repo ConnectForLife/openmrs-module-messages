@@ -14,9 +14,8 @@ import org.openmrs.module.messages.api.model.Range;
 import org.openmrs.module.messages.api.model.Template;
 import org.openmrs.module.messages.api.model.TemplateFieldValue;
 import org.openmrs.module.messages.api.util.DateUtil;
-import org.openmrs.module.messages.api.util.ZoneConverterUtil;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,13 +34,13 @@ public class ExecutionContext {
 
     private Map<String, Object> params;
     private PatientTemplate patientTemplate;
-    private Range<Date> dateRange;
+    private Range<ZonedDateTime> dateRange;
     private String bestContactTime;
-    private Date executionStartDateTime;
+    private ZonedDateTime executionStartDateTime;
     private Template template;
 
-    public ExecutionContext(PatientTemplate patientTemplate, Range<Date> dateTimeRange, String bestContactTime,
-                            Date executionStartDateTime) {
+    public ExecutionContext(PatientTemplate patientTemplate, Range<ZonedDateTime> dateTimeRange, String bestContactTime,
+                            ZonedDateTime executionStartDateTime) {
         this.patientTemplate = patientTemplate;
         this.bestContactTime = bestContactTime;
         setExecutionStartDateTime(executionStartDateTime);
@@ -56,12 +55,12 @@ public class ExecutionContext {
         }
     }
 
-    public ExecutionContext(Template template, Range<Date> dateRange) {
+    public ExecutionContext(Template template, Range<ZonedDateTime> dateRange) {
         this.template = template;
         this.dateRange = dateRange;
 
-        putParam(START_DATE_TIME_PARAM, ZoneConverterUtil.formatToUserZone(this.dateRange.getStart()));
-        putParam(END_DATE_TIME_PARAM, ZoneConverterUtil.formatToUserZone(this.dateRange.getEnd()));
+        putParam(START_DATE_TIME_PARAM, DateUtil.formatToServerSideDateTime(this.dateRange.getStart()));
+        putParam(END_DATE_TIME_PARAM, DateUtil.formatToServerSideDateTime(this.dateRange.getEnd()));
     }
 
     public Map<String, Object> getParams() {
@@ -72,7 +71,7 @@ public class ExecutionContext {
         return patientTemplate;
     }
 
-    public Range<Date> getDateRange() {
+    public Range<ZonedDateTime> getDateRange() {
         return dateRange;
     }
 
@@ -80,8 +79,17 @@ public class ExecutionContext {
         return bestContactTime;
     }
 
-    public Date getExecutionStartDateTime() {
+    public ZonedDateTime getExecutionStartDateTime() {
         return executionStartDateTime;
+    }
+
+    private void setExecutionStartDateTime(ZonedDateTime executionStartDateTime) {
+        if (executionStartDateTime == null) {
+            this.executionStartDateTime = DateUtil.now();
+        } else {
+            this.executionStartDateTime = executionStartDateTime;
+        }
+        putParam(EXECUTION_START_DATE_TIME, DateUtil.formatToServerSideDateTime(this.executionStartDateTime));
     }
 
     public String getQuery() {
@@ -92,19 +100,10 @@ public class ExecutionContext {
         return template;
     }
 
-    private void setRange(Range<Date> dateTimeRange) {
+    private void setRange(Range<ZonedDateTime> dateTimeRange) {
         this.dateRange = new Range<>(getStartDateTime(dateTimeRange), getEndDateTime(dateTimeRange));
-        putParam(START_DATE_TIME_PARAM, ZoneConverterUtil.formatToUserZone(this.dateRange.getStart()));
-        putParam(END_DATE_TIME_PARAM, ZoneConverterUtil.formatToUserZone(this.dateRange.getEnd()));
-    }
-
-    private void setExecutionStartDateTime(Date executionStartDateTime) {
-        if (executionStartDateTime == null) {
-            this.executionStartDateTime = DateUtil.now();
-        } else {
-            this.executionStartDateTime = executionStartDateTime;
-        }
-        putParam(EXECUTION_START_DATE_TIME,  ZoneConverterUtil.formatToUserZone(this.executionStartDateTime));
+        putParam(START_DATE_TIME_PARAM, DateUtil.formatToServerSideDateTime(this.dateRange.getStart()));
+        putParam(END_DATE_TIME_PARAM, DateUtil.formatToServerSideDateTime(this.dateRange.getEnd()));
     }
 
     private void putParam(String key, Object value) {
@@ -114,18 +113,20 @@ public class ExecutionContext {
         params.put(key, value);
     }
 
-    private Date getStartDateTime(Range<Date> dateTimeRange) {
-        Date startDate = patientTemplate.getStartOfMessages();
-        if (startDate == null || startDate.before(dateTimeRange.getStart())) {
+    private ZonedDateTime getStartDateTime(Range<ZonedDateTime> dateTimeRange) {
+        final ZonedDateTime startDate = patientTemplate.getStartOfMessages();
+
+        if (startDate == null || startDate.isBefore(dateTimeRange.getStart())) {
             return dateTimeRange.getStart();
         } else {
             return startDate;
         }
     }
 
-    private Date getEndDateTime(Range<Date> dateTimeRange) {
-        Date endDate = patientTemplate.getEndOfMessages();
-        if (endDate == null || endDate.after(dateTimeRange.getEnd())) {
+    private ZonedDateTime getEndDateTime(Range<ZonedDateTime> dateTimeRange) {
+        final ZonedDateTime endDate = patientTemplate.getEndOfMessages();
+
+        if (endDate == null || endDate.isAfter(dateTimeRange.getEnd())) {
             return dateTimeRange.getEnd();
         } else {
             return endDate;

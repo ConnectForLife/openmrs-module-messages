@@ -23,14 +23,15 @@ import org.openmrs.module.messages.api.model.TemplateFieldValue;
 import org.openmrs.module.messages.api.service.MessagingGroupService;
 import org.openmrs.module.messages.api.service.PatientTemplateService;
 import org.openmrs.module.messages.api.util.BestContactTimeHelper;
+import org.openmrs.module.messages.api.util.DateUtil;
 import org.openmrs.module.messages.domain.criteria.PatientTemplateCriteria;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -49,8 +50,8 @@ public class ServiceResultList implements Serializable {
     private String actorType;
     private Integer serviceId;
     private String serviceName;
-    private Date startDate;
-    private Date endDate;
+    private ZonedDateTime startDate;
+    private ZonedDateTime endDate;
     private List<ServiceResult> results;
 
     public static ServiceResultList withEmptyResults(ServiceResultList other) {
@@ -64,19 +65,19 @@ public class ServiceResultList implements Serializable {
         result.serviceName = other.getServiceName();
         result.startDate = other.getStartDate();
         result.endDate = other.getEndDate();
-        result.results = new ArrayList<ServiceResult>();
+        result.results = new ArrayList<>();
 
         return result;
     }
 
     public static List<ServiceResultList> createList(@NotNull List<Map<String, Object>> rowList, Template template,
-                                                     Range<Date> dateTimeRange) {
-        List<ServiceResultList> serviceResultsLists = new ArrayList<ServiceResultList>();
+                                                     Range<ZonedDateTime> dateTimeRange) {
+        List<ServiceResultList> serviceResultsLists = new ArrayList<>();
         for (int i = 0; i < rowList.size(); i++) {
             ServiceResult serviceResult = ServiceResult.parse(rowList.get(i));
             PatientTemplate patientTemplate = getRelatedPatientTemplate(serviceResult, template);
             if (patientTemplate != null) {
-                final String channelType = getTemplateFieldValue(patientTemplate, MessagesConstants.CHANNEL_TYPE_PARAM_NAME);
+                final String channelType = getChannelType(patientTemplate);
 
                 serviceResult.setPatientTemplateId(patientTemplate.getId());
                 serviceResult.setChannelType(channelType);
@@ -92,7 +93,7 @@ public class ServiceResultList implements Serializable {
                         .withServiceName(template.getName())
                         .withStartDate(dateTimeRange.getStart())
                         .withEndDate(dateTimeRange.getEnd())
-                        .withResults(Arrays.asList(serviceResult))
+                        .withResults(Collections.singletonList(serviceResult))
                         .build();
 
                 serviceResultsLists.add(serviceResultList);
@@ -104,8 +105,9 @@ public class ServiceResultList implements Serializable {
                     getGroupService().flushAndClearSessionCache();
                 }
             } else if (LOGGER.isTraceEnabled()) {
-                LOGGER.trace(String.format("Patient template for patient id: %d and service type: %s " +
-                            "does not exist or is deactivated", serviceResult.getPatientId(), template.getName()));
+                LOGGER.trace(String.format(
+                        "Patient template for patient id: %d and service type: %s " + "does not exist or is deactivated",
+                        serviceResult.getPatientId(), template.getName()));
             }
         }
 
@@ -113,8 +115,8 @@ public class ServiceResultList implements Serializable {
     }
 
     public static ServiceResultList createList(@NotNull List<Map<String, Object>> rowList, PatientTemplate patientTemplate,
-                                               @NotNull Range<Date> dateRange) {
-        final String channelType = getTemplateFieldValue(patientTemplate, MessagesConstants.CHANNEL_TYPE_PARAM_NAME);
+                                               @NotNull Range<ZonedDateTime> dateRange) {
+        final String channelType = getChannelType(patientTemplate);
 
         final List<ServiceResult> results = ServiceResult.parseList(rowList, patientTemplate);
 
@@ -137,16 +139,21 @@ public class ServiceResultList implements Serializable {
         return resultList;
     }
 
-    private static Date adjustExecutionDateToBestContactTime(ServiceResult serviceResult, PatientTemplate patientTemplate) {
-        Patient patient = Context.getPatientService().getPatient(serviceResult.getPatientId());
-        String patientBestContactTime = BestContactTimeHelper.getBestContactTime(patient,
+    /**
+     * Adjusts execution date of {@code serviceResult} in following way: the Local Date part is retained, the Local Time
+     * part is taken from {@code patientTemplate} configuration and the default user time zone is used.
+     *
+     * @param serviceResult   the service result to adjust its execution date, not null
+     * @param patientTemplate the source of local time configuration, not null
+     * @return the adjusted date, never null
+     */
+    private static ZonedDateTime adjustExecutionDateToBestContactTime(ServiceResult serviceResult,
+                                                                      PatientTemplate patientTemplate) {
+        final Patient patient = Context.getPatientService().getPatient(serviceResult.getPatientId());
+        final String patientBestContactTime = BestContactTimeHelper.getBestContactTime(patient,
                 patientTemplate.getActorType() != null ? patientTemplate.getActorType().getRelationshipType() : null);
-        Date executionDateWithProperBestContactTime =
-                getDateWithUpdatedTime(serviceResult.getExecutionDate(), patientBestContactTime,
-                        MessagesConstants.HOURS_MINUTES_SEPARATOR);
 
-        return ServiceResult.adjustTimezoneIfFuturePlannedEvent(executionDateWithProperBestContactTime,
-                serviceResult.getServiceStatus());
+        return getDateWithLocalTimeAndDefaultUserTimeZone(serviceResult.getExecutionDate(), patientBestContactTime);
     }
 
     private static PatientTemplate getRelatedPatientTemplate(ServiceResult serviceResult, Template template) {
@@ -159,25 +166,28 @@ public class ServiceResultList implements Serializable {
         return patientTemplate != null && !patientTemplate.isDeactivated() ? patientTemplate : null;
     }
 
-    private static Date getDateWithUpdatedTime(Date date, String time, String timeSeparator) {
-        String[] splitTimeBySeparator = time.split(timeSeparator);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(splitTimeBySeparator[0]));
-        calendar.set(Calendar.MINUTE, Integer.parseInt(splitTimeBySeparator[1]));
+    private static ZonedDateTime getDateWithLocalTimeAndDefaultUserTimeZone(ZonedDateTime date, String localTime) {
+        final String[] splitTimeBySeparator = localTime.split(MessagesConstants.HOURS_MINUTES_SEPARATOR);
+        final int hourOfDay = Integer.parseInt(splitTimeBySeparator[0]);
+        final int minute = Integer.parseInt(splitTimeBySeparator[1]);
 
-        return calendar.getTime();
+        return ZonedDateTime.of(date.toLocalDate(), LocalTime.of(hourOfDay, minute), DateUtil.getDefaultUserTimeZone());
     }
 
-    private static String getTemplateFieldValue(PatientTemplate patientTemplate, String templateFieldName) {
+    private static String getChannelType(PatientTemplate patientTemplate) {
         String fieldValue = null;
         for (TemplateFieldValue templateFieldValue : patientTemplate.getTemplateFieldValues()) {
-            if (StringUtils.equals(templateFieldValue.getTemplateField().getName(), templateFieldName)) {
+            if (StringUtils.equals(templateFieldValue.getTemplateField().getName(),
+                    MessagesConstants.CHANNEL_TYPE_PARAM_NAME)) {
                 fieldValue = templateFieldValue.getValue();
                 break;
             }
         }
         return fieldValue;
+    }
+
+    private static MessagingGroupService getGroupService() {
+        return Context.getRegisteredComponent(MessagesConstants.MESSAGING_GROUP_SERVICE, MessagingGroupService.class);
     }
 
     public String getChannelType() {
@@ -220,19 +230,19 @@ public class ServiceResultList implements Serializable {
         this.serviceId = serviceId;
     }
 
-    public Date getStartDate() {
+    public ZonedDateTime getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(ZonedDateTime startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public ZonedDateTime getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(ZonedDateTime endDate) {
         this.endDate = endDate;
     }
 
@@ -255,10 +265,5 @@ public class ServiceResultList implements Serializable {
 
     public void setServiceName(String serviceName) {
         this.serviceName = serviceName;
-    }
-
-    private static MessagingGroupService getGroupService() {
-        return Context.getRegisteredComponent(
-                MessagesConstants.MESSAGING_GROUP_SERVICE, MessagingGroupService.class);
     }
 }

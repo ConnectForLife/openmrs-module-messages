@@ -11,7 +11,7 @@ public final class ScheduledServiceGroupHelper {
     
     public static ScheduledServiceGroup createTestInstance() {
         ScheduledServiceGroup scheduledServiceGroup = new ScheduledServiceGroup();
-        scheduledServiceGroup.setMsgSendTime(DateUtil.now());
+        scheduledServiceGroup.setMsgSendTime(DateUtil.toDate(DateUtil.now()));
         scheduledServiceGroup.setPatient(PatientHelper.createTestInstance());
         scheduledServiceGroup.setActor(PatientHelper.createTestInstance().getPerson());
         scheduledServiceGroup.setStatus(ServiceStatus.DELIVERED);

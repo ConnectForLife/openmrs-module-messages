@@ -28,7 +28,7 @@ import org.openmrs.module.messages.api.service.MessagingGroupService;
 import org.openmrs.module.messages.api.service.MessagingService;
 import org.openmrs.module.messages.api.util.DateUtil;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 public class MessageDeliveriesJobDefinition extends JobDefinition {
@@ -41,7 +41,7 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
         LOGGER.info(getTaskName() + " started");
 
         List<ServiceResultList> results = getMessagingService().retrieveAllServiceExecutions(DateUtil.now(),
-                DateUtil.getDatePlusSeconds(getTaskDefinition().getRepeatInterval()));
+                DateUtil.now().plusSeconds(getTaskDefinition().getRepeatInterval()));
         logNumberOfResults(results);
 
         List<GroupedServiceResultList> groupedResults =
@@ -83,8 +83,8 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
 
             getDeliveryService().scheduleDelivery(
                     new ScheduledExecutionContext(group.getScheduledServices(), group.getChannelType(),
-                            groupedResult.getKey().getDate(), group.getActor(), group.getPatient().getPatientId(),
-                            groupedResult.getKey().getActorType(), group.getId()));
+                            groupedResult.getKey().getDate().toInstant(), group.getActor(),
+                            group.getPatient().getPatientId(), groupedResult.getKey().getActorType(), group.getId()));
         }
     }
 
@@ -117,8 +117,8 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
         return !isControl;
     }
 
-    private boolean isGroupNotExist(int patientId, int actorId, Date executionDate, String channelType) {
-        boolean exist = getGroupService().isGroupExists(patientId, actorId, executionDate, channelType);
+    private boolean isGroupNotExist(int patientId, int actorId, ZonedDateTime executionDate, String channelType) {
+        boolean exist = getGroupService().isGroupExists(patientId, actorId, executionDate.toInstant(), channelType);
         if (exist) {
             LOGGER.warn(
                     String.format("Messaging group for patient=%d, actor=%d and executionDate=%s has been already created",

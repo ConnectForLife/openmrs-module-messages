@@ -1,7 +1,10 @@
 package org.openmrs.module.messages.api.util.end.date;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 
 public interface EndDate {
-    Date getDate();
+    /**
+     * @return end date time or null if not present or could not parse an end date
+     */
+    ZonedDateTime getDate();
 }

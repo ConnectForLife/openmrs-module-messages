@@ -58,14 +58,15 @@ public class SmsServiceResultsHandlerServiceImpl extends AbstractServiceResultsH
         for (ScheduledService service : smsServices) {
             try {
                 this.triggerEvent(service, executionContext);
-                this.messagingService.registerAttempt(service, ServiceStatus.DELIVERED, DateUtil.now(), null);
+                this.messagingService.registerAttempt(service, ServiceStatus.DELIVERED, DateUtil.toDate(DateUtil.now()),
+                        null);
             } catch (Exception ex) {
                 LOGGER.error(String.format("During handling the `%s` service the following exception noticed `%s`",
                         service.getTemplateName(), ex.getMessage()));
                 if (LOGGER.isTraceEnabled()) {
                     LOGGER.trace("Error details: ", ex);
                 }
-                this.messagingService.registerAttempt(service, ServiceStatus.FAILED, DateUtil.now(), null);
+                this.messagingService.registerAttempt(service, ServiceStatus.FAILED, DateUtil.toDate(DateUtil.now()), null);
             }
         }
         if (CollectionUtils.isNotEmpty(smsServices)) {

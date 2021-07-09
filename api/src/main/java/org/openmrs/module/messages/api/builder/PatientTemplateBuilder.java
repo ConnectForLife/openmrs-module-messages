@@ -10,10 +10,11 @@ import org.openmrs.module.messages.api.model.TemplateFieldType;
 import org.openmrs.module.messages.api.model.TemplateFieldValue;
 import org.openmrs.module.messages.api.util.ActorUtil;
 import org.openmrs.module.messages.api.util.DateUtil;
-import org.openmrs.module.messages.api.util.ZoneConverterUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.Optional.ofNullable;
 
 public class PatientTemplateBuilder implements Builder<PatientTemplate> {
 
@@ -41,63 +42,42 @@ public class PatientTemplateBuilder implements Builder<PatientTemplate> {
 
     private PatientTemplate buildForPatient() {
         List<TemplateFieldValue> tfvList = new ArrayList<>();
-        PatientTemplate patientTemplate = new PatientTemplate(
-            patient.getPerson(),
-            null,
-            patient,
-            tfvList,
-            template
-        );
+        PatientTemplate patientTemplate = new PatientTemplate(patient.getPerson(), null, patient, tfvList, template);
         for (TemplateField tf : template.getTemplateFields()) {
-            tfvList.add(
-                new TemplateFieldValue(getDefaultValue(tf), tf, patientTemplate)
-            );
+            tfvList.add(new TemplateFieldValue(getDefaultValue(tf), tf, patientTemplate));
         }
         return patientTemplate;
     }
 
     private String getDefaultValue(TemplateField tf) {
         String defaultValue = tf.getDefaultValue();
-        if (TemplateFieldType.START_OF_MESSAGES.equals(tf.getTemplateFieldType())
-                && StringUtils.isBlank(defaultValue)) {
-            defaultValue = ZoneConverterUtil.formatToUserZone(DateUtil.now());
+        if (TemplateFieldType.START_OF_MESSAGES.equals(tf.getTemplateFieldType()) && StringUtils.isBlank(defaultValue)) {
+            defaultValue = DateUtil.formatToServerSideDateTime(DateUtil.now());
         }
         return defaultValue;
     }
 
     private PatientTemplate buildForActor() {
         List<TemplateFieldValue> tfvList = new ArrayList<>();
-        PatientTemplate patientTemplate = new PatientTemplate(
-            ActorUtil.getActorPerson(actor),
-            actor.getRelationship(),
-            patient,
-            tfvList,
-            template
-        );
+        PatientTemplate patientTemplate =
+                new PatientTemplate(ActorUtil.getActorPerson(actor), actor.getRelationship(), patient, tfvList, template);
         for (TemplateField tf : template.getTemplateFields()) {
             if (!ActorUtil.isActorPatient(actor, patient.getId())) {
-                tfvList.add(
-                    new TemplateFieldValue(
-                        getDefaultValueForActor(tf, actor),
-                        tf,
-                        patientTemplate
-                    )
-                );
+                tfvList.add(new TemplateFieldValue(getDefaultValueForActor(tf, actor), tf, patientTemplate));
             }
         }
         return patientTemplate;
     }
 
     private String getDefaultValueForActor(TemplateField tf, Actor actor) {
-        String defaultValue = null;
+        final String defaultValue;
+
         if (TemplateFieldType.START_OF_MESSAGES.equals(tf.getTemplateFieldType())) {
-            defaultValue = ZoneConverterUtil.formatToUserZone(DateUtil.now());
+            defaultValue = DateUtil.formatToServerSideDateTime(DateUtil.now());
         } else {
-            defaultValue = tf.getDefaultValue(actor);
-            if (defaultValue == null) {
-                defaultValue = tf.getDefaultValue();
-            }
+            defaultValue = ofNullable(tf.getDefaultValue(actor)).orElse(tf.getDefaultValue());
         }
+
         return defaultValue;
     }
 

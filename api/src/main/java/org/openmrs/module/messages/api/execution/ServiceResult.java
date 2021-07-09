@@ -16,9 +16,9 @@ import org.openmrs.module.messages.api.dto.DTO;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
 import org.openmrs.module.messages.api.util.DateUtil;
-import org.openmrs.module.messages.api.util.ZoneConverterUtil;
 
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -26,11 +26,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Represents a single execution for a service/message.
  */
 public class ServiceResult implements Serializable, DTO {
-
     public static final String EXEC_DATE_ALIAS = "EXECUTION_DATE";
     public static final String MSG_ID_ALIAS = "MESSAGE_ID";
     public static final String CHANNEL_NAME_ALIAS = "CHANNEL_ID";
@@ -39,7 +40,7 @@ public class ServiceResult implements Serializable, DTO {
     public static final String ACTOR_ID_ALIAS = "ACTOR_ID";
     public static final int MIN_COL_NUM = 3;
     private static final long serialVersionUID = 2598236499107927781L;
-    private Date executionDate;
+    private ZonedDateTime executionDate;
     private Object messageId;
     private String channelType;
 
@@ -47,14 +48,14 @@ public class ServiceResult implements Serializable, DTO {
     private Integer actorId;
 
     private ServiceStatus serviceStatus = ServiceStatus.FUTURE;
-    private Map<String, Object> additionalParams = new HashMap<String, Object>();
+    private Map<String, Object> additionalParams = new HashMap<>();
     private Integer patientTemplateId;
 
     public ServiceResult() {
     }
 
-    public ServiceResult(Date executionDate, Object messageId, String channelType, Integer patientId, Integer actorId,
-                         ServiceStatus serviceStatus, Map<String, Object> additionalParams) {
+    public ServiceResult(ZonedDateTime executionDate, Object messageId, String channelType, Integer patientId,
+                         Integer actorId, ServiceStatus serviceStatus, Map<String, Object> additionalParams) {
         if (executionDate == null) {
             throw new IllegalArgumentException("Execution date is mandatory");
         }
@@ -77,7 +78,7 @@ public class ServiceResult implements Serializable, DTO {
             throw new IllegalStateException("Invalid number of columns in result row: " + row.size());
         }
 
-        Date date = null;
+        ZonedDateTime date = null;
         Object msgId = null;
         String channelType = null;
         Integer patientId = null;
@@ -87,12 +88,12 @@ public class ServiceResult implements Serializable, DTO {
 
         for (Map.Entry<String, Object> entry : row.entrySet()) {
             // Skip null values
-            if ( entry.getValue() == null ) {
+            if (entry.getValue() == null) {
                 continue;
             }
 
             if (EXEC_DATE_ALIAS.equals(entry.getKey())) {
-                date = DateUtil.toSimpleDate((Date) entry.getValue());
+                date = DateUtil.convertOpenMRSDatabaseDate((Date) entry.getValue());
             } else if (MSG_ID_ALIAS.equals(entry.getKey())) {
                 msgId = entry.getValue();
             } else if (CHANNEL_NAME_ALIAS.equals(entry.getKey())) {
@@ -119,9 +120,10 @@ public class ServiceResult implements Serializable, DTO {
             setFieldsFromPatientTemplate(result, patientTemplate);
 
             result.setExecutionDate(
-                    adjustTimezoneIfFuturePlannedEvent(result.getExecutionDate(), result.getServiceStatus()));
+                    adjustLocalTimeIfFuturePlannedEvent(result.getExecutionDate(), result.getServiceStatus()));
 
-            String key = ZoneConverterUtil.formatToUserZone(result.getExecutionDate()) + result.getChannelType();
+            final String key =
+                    DateUtil.formatToServerSideDateTime(result.getExecutionDate()) + result.getChannelType();
 
             if (resultServices.containsKey(key)) {
                 if (result.getServiceStatus() != null && !ServiceStatus.FUTURE.equals(result.getServiceStatus())) {
@@ -132,7 +134,23 @@ public class ServiceResult implements Serializable, DTO {
             }
         }
 
-        return new ArrayList<ServiceResult>(resultServices.values());
+        return new ArrayList<>(resultServices.values());
+    }
+
+    /**
+     * If the {@code status} represents planned service execution, then a {@code date} is adjusted in following way: the
+     * Local Time is retained and the Time Zone is changed to the default user time zone. Otherwise, the {@code date} is
+     * returned as-is.
+     *
+     * @param date   the date to adjust, not null
+     * @param status the status
+     * @return the adjusted date, never null
+     * @see DateUtil#getDefaultUserTimeZone()
+     */
+    private static ZonedDateTime adjustLocalTimeIfFuturePlannedEvent(ZonedDateTime date, ServiceStatus status) {
+        requireNonNull(date);
+        return status == null || status == ServiceStatus.FUTURE ? date.withZoneSameLocal(DateUtil.getDefaultUserTimeZone()) :
+                date;
     }
 
     /**
@@ -149,10 +167,6 @@ public class ServiceResult implements Serializable, DTO {
                 serviceResult.patientId == null ? patientTemplate.getPatient().getId() : serviceResult.patientId;
     }
 
-    public static Date adjustTimezoneIfFuturePlannedEvent(Date date, ServiceStatus status) {
-        return status == null || status == ServiceStatus.FUTURE ? ZoneConverterUtil.convertToUserZone(date) : date;
-    }
-
     private static ServiceStatus parseStatus(String statusString) {
         if (StringUtils.isNotBlank(statusString)) {
             return ServiceStatus.valueOf(statusString);
@@ -167,11 +181,11 @@ public class ServiceResult implements Serializable, DTO {
         throw new NotImplementedException("not implemented yet");
     }
 
-    public Date getExecutionDate() {
+    public ZonedDateTime getExecutionDate() {
         return executionDate;
     }
 
-    public void setExecutionDate(Date executionDate) {
+    public void setExecutionDate(ZonedDateTime executionDate) {
         this.executionDate = executionDate;
     }
 

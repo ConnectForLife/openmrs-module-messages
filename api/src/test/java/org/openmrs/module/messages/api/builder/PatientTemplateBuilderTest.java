@@ -11,7 +11,6 @@ import org.openmrs.module.messages.api.model.TemplateField;
 import org.openmrs.module.messages.api.model.TemplateFieldType;
 import org.openmrs.module.messages.api.model.TemplateFieldValue;
 import org.openmrs.module.messages.api.util.DateUtil;
-import org.openmrs.module.messages.api.util.ZoneConverterUtil;
 import org.openmrs.module.messages.builder.ActorBuilder;
 import org.openmrs.module.messages.builder.PatientBuilder;
 import org.openmrs.module.messages.builder.TemplateBuilder;
@@ -19,7 +18,10 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.util.Date;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.core.IsNull.notNullValue;
@@ -29,12 +31,16 @@ import static org.junit.Assert.assertThat;
 @PrepareForTest({DateUtil.class})
 public class PatientTemplateBuilderTest {
 
-    private static final Date EXPECTED_START_OF_MESSAGES = new Date();
+    private static final ZonedDateTime EXPECTED_START_OF_MESSAGES =
+            ZonedDateTime.ofInstant(Instant.ofEpochSecond(1625756392L), ZoneId.of("UTC"));
 
     @Before
     public void setUp() throws Exception {
         PowerMockito.spy(DateUtil.class);
-        PowerMockito.when(DateUtil.class, "now").thenReturn(EXPECTED_START_OF_MESSAGES);
+        // Sets DateUtil's clock to predefined and fixed point in time
+        PowerMockito
+                .field(DateUtil.class, "clock")
+                .set(null, Clock.fixed(EXPECTED_START_OF_MESSAGES.toInstant(), EXPECTED_START_OF_MESSAGES.getZone()));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -82,7 +88,7 @@ public class PatientTemplateBuilderTest {
     private String getExpectedPatientDefaultValue(TemplateFieldValue tfv, Template template) {
         TemplateFieldType type = tfv.getTemplateField().getTemplateFieldType();
         if (TemplateFieldType.START_OF_MESSAGES.equals(type)) {
-            return ZoneConverterUtil.formatToUserZone(EXPECTED_START_OF_MESSAGES);
+            return DateUtil.formatToServerSideDateTime(EXPECTED_START_OF_MESSAGES);
         }
         TemplateField templateField = getTemplateFieldByType(type, template);
         return templateField != null ? templateField.getDefaultValue() : null;
@@ -91,7 +97,7 @@ public class PatientTemplateBuilderTest {
     private String getExpectedActorDefaultValue(TemplateFieldValue tfv, Template template, Actor actor) {
         TemplateFieldType type = tfv.getTemplateField().getTemplateFieldType();
         if (TemplateFieldType.START_OF_MESSAGES.equals(type)) {
-            return ZoneConverterUtil.formatToUserZone(EXPECTED_START_OF_MESSAGES);
+            return DateUtil.formatToServerSideDateTime(EXPECTED_START_OF_MESSAGES);
         }
         TemplateField templateField = getTemplateFieldByType(type, template);
         return templateField != null ? templateField.getDefaultValueForSpecificActorOrGeneral(actor) : null;

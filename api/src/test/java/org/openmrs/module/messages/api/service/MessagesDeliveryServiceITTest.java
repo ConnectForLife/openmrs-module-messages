@@ -25,18 +25,18 @@ import org.openmrs.module.messages.api.mappers.ScheduledGroupMapper;
 import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
 import org.openmrs.module.messages.api.model.ScheduledServiceGroup;
 import org.openmrs.module.messages.api.util.JsonUtil;
+import org.openmrs.module.messages.api.util.ScheduledExecutionContextUtil;
 import org.openmrs.module.messages.builder.DateBuilder;
 import org.openmrs.module.messages.builder.ScheduledExecutionContextBuilder;
 import org.openmrs.module.messages.builder.ServiceResultBuilder;
 import org.openmrs.module.messages.builder.ServiceResultListBuilder;
-import org.openmrs.scheduler.SchedulerException;
 import org.openmrs.scheduler.SchedulerService;
 import org.openmrs.scheduler.TaskDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +54,7 @@ import static org.openmrs.module.messages.api.service.DatasetConstants.XML_DATA_
 
 public class MessagesDeliveryServiceITTest extends ContextSensitiveTest {
 
-    public static final Long NEVER_REPEAT = 0L;
+    private static final Long NEVER_REPEAT = 0L;
 
     @Autowired
     @Qualifier("messages.deliveryService")
@@ -86,8 +86,8 @@ public class MessagesDeliveryServiceITTest extends ContextSensitiveTest {
     }
 
     @Test
-    public void shouldSaveScheduledServices() throws Exception {
-        Date date = new DateBuilder().build();
+    public void shouldSaveScheduledServices() {
+        ZonedDateTime date = new DateBuilder().build();
 
         ServiceResultList resultList = createServiceResults(date);
         ScheduledExecutionContext executionContext = getExecutionContext(resultList);
@@ -97,14 +97,14 @@ public class MessagesDeliveryServiceITTest extends ContextSensitiveTest {
         TaskDefinition task = getCreatedTask();
         assertNotNull(task);
         assertEquals(NEVER_REPEAT, task.getRepeatInterval());
-        assertEquals(date, task.getNextExecutionTime());
+        assertEquals(date.toInstant(), task.getNextExecutionTime().toInstant());
 
         ScheduledExecutionContext savedExecutionContext = getExecutionContext(task);
         assertEquals(executionContext, savedExecutionContext);
     }
 
     private ScheduledExecutionContext getExecutionContext(ServiceResultList resultList) {
-        List<GroupedServiceResult> groupedServiceResults = new ArrayList<GroupedServiceResult>();
+        List<GroupedServiceResult> groupedServiceResults = new ArrayList<>();
         for (ServiceResult serviceResult : resultList.getResults()) {
             groupedServiceResults.add(new GroupedServiceResult(resultList.getChannelType(), serviceResult));
         }
@@ -127,27 +127,27 @@ public class MessagesDeliveryServiceITTest extends ContextSensitiveTest {
                 .build();
     }
 
-    private TaskDefinition getCreatedTask() throws SchedulerException {
+    private TaskDefinition getCreatedTask() {
         verify(schedulerService, times(2)).saveTaskDefinition(taskCaptor.capture());
         return taskCaptor.getValue();
     }
 
     private ScheduledExecutionContext getExecutionContext(TaskDefinition task) {
-        return gson.fromJson(task.getProperty(EXECUTION_CONTEXT), ScheduledExecutionContext.class);
+        return ScheduledExecutionContextUtil.fromJson(task.getProperty(EXECUTION_CONTEXT));
     }
 
-    private ServiceResultList createServiceResults(Date date) {
-        List<ServiceResult> results = new ArrayList<ServiceResult>();
+    private ServiceResultList createServiceResults(ZonedDateTime date) {
+        List<ServiceResult> results = new ArrayList<>();
         results.add(getServiceResult(date, Constant.CHANNEL_TYPE_SMS));
         results.add(getServiceResult(date, Constant.CHANNEL_TYPE_SMS));
         return getDefaultPersonResultList(results, Constant.CHANNEL_TYPE_SMS);
     }
 
-    private ServiceResult getServiceResult(Date date, String channelType) {
-        return getServiceResult(date, channelType, new HashMap<String, Object>());
+    private ServiceResult getServiceResult(ZonedDateTime date, String channelType) {
+        return getServiceResult(date, channelType, new HashMap<>());
     }
 
-    private ServiceResult getServiceResult(Date date, String channelType, Map<String, Object> additionalParams) {
+    private ServiceResult getServiceResult(ZonedDateTime date, String channelType, Map<String, Object> additionalParams) {
         return new ServiceResultBuilder()
                 .withExecutionDate(date)
                 .withPatientTemplate(DEFAULT_PATIENT_TEMPLATE_ID)

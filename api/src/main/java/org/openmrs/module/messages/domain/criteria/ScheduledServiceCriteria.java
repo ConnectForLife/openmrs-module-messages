@@ -23,63 +23,20 @@ import java.util.List;
 public class ScheduledServiceCriteria extends BaseOpenmrsDataCriteria implements Serializable {
 
     private static final long serialVersionUID = -386120008842837370L;
-
-    private List<Integer> ids;
-
-    private Integer patientTemplateId;
-
-    private Integer patientTemplatePatientId;
-
-    private Integer patientTemplateActorId;
-
-    private Integer groupId;
-
-    private boolean returnLastExecutionDateOnly;
-
     private static final String ID_FIELD = "id";
-
     private static final String PERSON_ID_FIELD = "personId";
-
     private static final String ACTOR_FIELD = "actor";
-
     private static final String PATIENT_FIELD = "patient";
-
     private static final String GROUP_FIELD = "group";
     private static final String MSG_SEND_TIME = "msgSendTime";
-
     private static final String PATIENT_TEMPLATE_FIELD = "patientTemplate";
-
     private static final int ONE = 1;
-
-    @Override
-    public void loadHibernateCriteria(Criteria hibernateCriteria) {
-        if (ids != null) {
-            hibernateCriteria.add(Restrictions.in(ID_FIELD, ids));
-        }
-        if (patientTemplateId != null) {
-            hibernateCriteria
-                    .add(Restrictions.eq(PATIENT_TEMPLATE_FIELD + "." + ID_FIELD, patientTemplateId));
-        }
-        if (patientTemplatePatientId != null) {
-            hibernateCriteria
-                    .createAlias(PATIENT_TEMPLATE_FIELD + "." + PATIENT_FIELD, PATIENT_FIELD)
-                    .add(Restrictions.eq(PATIENT_FIELD + "." + PERSON_ID_FIELD, patientTemplatePatientId));
-        }
-        if (patientTemplateActorId != null) {
-            hibernateCriteria
-                    .createAlias(PATIENT_TEMPLATE_FIELD + "." + ACTOR_FIELD, ACTOR_FIELD)
-                    .add(Restrictions.eq(ACTOR_FIELD + "." + PERSON_ID_FIELD, patientTemplateActorId));
-        }
-        if (groupId != null) {
-            hibernateCriteria.add(Restrictions.eq(GROUP_FIELD + "." + ID_FIELD, groupId));
-        }
-        if (returnLastExecutionDateOnly) {
-            hibernateCriteria
-                    .createAlias(GROUP_FIELD, GROUP_FIELD)
-                    .addOrder(Order.desc(GROUP_FIELD + "." + MSG_SEND_TIME))
-                    .setMaxResults(ONE);
-        }
-    }
+    private List<Integer> ids;
+    private Integer patientTemplateId;
+    private Integer patientTemplatePatientId;
+    private Integer patientTemplateActorId;
+    private Integer groupId;
+    private boolean returnLastExecutionDateOnly;
 
     public static ScheduledServiceCriteria forIds(List<Integer> ids) {
         ScheduledServiceCriteria scheduledServiceCriteria = new ScheduledServiceCriteria();
@@ -117,6 +74,40 @@ public class ScheduledServiceCriteria extends BaseOpenmrsDataCriteria implements
         ScheduledServiceCriteria scheduledServiceCriteria = new ScheduledServiceCriteria();
         scheduledServiceCriteria.groupId = groupId;
         return scheduledServiceCriteria;
+    }
+
+    @Override
+    public void loadHibernateCriteria(Criteria hibernateCriteria) {
+        if (ids != null) {
+            hibernateCriteria.add(Restrictions.in(ID_FIELD, ids));
+        }
+        if (patientTemplateId != null) {
+            hibernateCriteria.add(Restrictions.eq(PATIENT_TEMPLATE_FIELD + "." + ID_FIELD, patientTemplateId));
+        }
+        if (patientTemplatePatientId != null) {
+            hibernateCriteria
+                    .createAlias(PATIENT_TEMPLATE_FIELD + "." + PATIENT_FIELD, PATIENT_FIELD)
+                    .add(Restrictions.eq(PATIENT_FIELD + "." + PERSON_ID_FIELD, patientTemplatePatientId));
+        }
+        if (patientTemplateActorId != null) {
+            hibernateCriteria
+                    .createAlias(PATIENT_TEMPLATE_FIELD + "." + ACTOR_FIELD, ACTOR_FIELD)
+                    .add(Restrictions.eq(ACTOR_FIELD + "." + PERSON_ID_FIELD, patientTemplateActorId));
+        }
+        if (groupId != null) {
+            hibernateCriteria.add(Restrictions.eq(GROUP_FIELD + "." + ID_FIELD, groupId));
+        }
+        if (returnLastExecutionDateOnly) {
+            hibernateCriteria
+                    .createAlias(GROUP_FIELD, GROUP_FIELD)
+                    .addOrder(Order.desc(GROUP_FIELD + "." + MSG_SEND_TIME))
+                    .setMaxResults(ONE);
+        }
+    }
+
+    public ScheduledServiceCriteria withPatientTemplatePatientId(Integer patientId) {
+        this.patientTemplatePatientId = patientId;
+        return this;
     }
 
     public List<Integer> getIds() {

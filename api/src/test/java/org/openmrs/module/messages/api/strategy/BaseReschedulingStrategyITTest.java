@@ -26,6 +26,7 @@ import org.openmrs.module.messages.api.model.types.ServiceStatus;
 import org.openmrs.module.messages.api.service.MessagingGroupService;
 import org.openmrs.module.messages.api.service.MessagingService;
 import org.openmrs.module.messages.api.util.JsonUtil;
+import org.openmrs.module.messages.api.util.ScheduledExecutionContextUtil;
 import org.openmrs.module.messages.builder.DeliveryAttemptBuilder;
 import org.openmrs.module.messages.builder.ScheduledServiceBuilder;
 import org.openmrs.module.messages.builder.ScheduledServiceGroupBuilder;
@@ -36,7 +37,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasItem;
@@ -56,31 +56,25 @@ import static org.openmrs.module.messages.api.service.DatasetConstants.XML_DATA_
 
 public abstract class BaseReschedulingStrategyITTest extends ContextSensitiveTest {
 
+    public static final String CHANNEL_TYPE_1_NAME = Constant.CHANNEL_TYPE_CALL;
     protected static final Long NEVER_REPEAT = 0L;
     protected static final int MAX_ATTEMPTS = 3;
-    public static final String CHANNEL_TYPE_1_NAME = Constant.CHANNEL_TYPE_CALL;
-
+    private final Gson gson = JsonUtil.getGson();
     @Autowired
     @Qualifier("schedulerService")
     protected SchedulerService schedulerService; // this is mocked in xml - in does not work in testing env
-
     @Autowired
     @Qualifier("messages.messagingService")
     protected MessagingService messagingService;
-
     @Autowired
     @Qualifier("messages.messagingGroupService")
     protected MessagingGroupService messagingGroupService;
-
-    @Captor
-    private ArgumentCaptor<TaskDefinition> taskCaptor;
-
-    private final Gson gson = JsonUtil.getGson();
-
     protected ScheduledService deliveredScheduledService;
     protected ScheduledService pendingScheduledService;
     protected ScheduledService pendingScheduledServiceInAnotherChannel;
     protected ScheduledService failedScheduledService;
+    @Captor
+    private ArgumentCaptor<TaskDefinition> taskCaptor;
 
     @Before
     public void setUp() throws Exception {
@@ -128,7 +122,7 @@ public abstract class BaseReschedulingStrategyITTest extends ContextSensitiveTes
         pendingScheduledService.setStatus(ServiceStatus.DELIVERED);
         pendingScheduledService = messagingService.saveOrUpdate(pendingScheduledService);
 
-        verify(schedulerService, times(0)).scheduleTask(Matchers.<TaskDefinition> any());
+        verify(schedulerService, times(0)).scheduleTask(Matchers.<TaskDefinition>any());
     }
 
     @Test
@@ -138,20 +132,17 @@ public abstract class BaseReschedulingStrategyITTest extends ContextSensitiveTes
 
         getStrategy().execute(failedScheduledService.getGroup());
 
-        verify(schedulerService, times(0)).scheduleTask(Matchers.<TaskDefinition> any());
+        verify(schedulerService, times(0)).scheduleTask(Matchers.<TaskDefinition>any());
     }
 
     @Test
     public void shouldNotRescheduleWhenAllServicesAreDelivered() throws Exception {
-        ScheduledServiceGroup scheduledServiceGroup = messagingGroupService.saveOrUpdate(
-                new ScheduledServiceGroupBuilder()
-                        .withPatientId(DEFAULT_PATIENT_ID)
-                        .withActorId(DEFAULT_PATIENT_ID)
-                        .withChannelType(CHANNEL_TYPE_1_NAME)
-                        .withScheduledServices(wrap(new ScheduledServiceBuilder()
-                                .withStatus(ServiceStatus.DELIVERED)
-                                .build()))
-                        .build());
+        ScheduledServiceGroup scheduledServiceGroup = messagingGroupService.saveOrUpdate(new ScheduledServiceGroupBuilder()
+                .withPatientId(DEFAULT_PATIENT_ID)
+                .withActorId(DEFAULT_PATIENT_ID)
+                .withChannelType(CHANNEL_TYPE_1_NAME)
+                .withScheduledServices(wrap(new ScheduledServiceBuilder().withStatus(ServiceStatus.DELIVERED).build()))
+                .build());
 
         getStrategy().execute(scheduledServiceGroup);
         verifyIfTaskIsNotCreated();
@@ -159,12 +150,11 @@ public abstract class BaseReschedulingStrategyITTest extends ContextSensitiveTes
 
     @Test
     public void shouldNotRescheduleWhenThereAreNoServicesToReschedule() throws Exception {
-        ScheduledServiceGroup scheduledServiceGroup = messagingGroupService.saveOrUpdate(
-                new ScheduledServiceGroupBuilder()
-                        .withPatientId(DEFAULT_PATIENT_ID)
-                        .withActorId(DEFAULT_PATIENT_ID)
-                        .withChannelType(CHANNEL_TYPE_1_NAME)
-                        .build());
+        ScheduledServiceGroup scheduledServiceGroup = messagingGroupService.saveOrUpdate(new ScheduledServiceGroupBuilder()
+                .withPatientId(DEFAULT_PATIENT_ID)
+                .withActorId(DEFAULT_PATIENT_ID)
+                .withChannelType(CHANNEL_TYPE_1_NAME)
+                .build());
 
         getStrategy().execute(scheduledServiceGroup);
         verifyIfTaskIsNotCreated();
@@ -178,22 +168,18 @@ public abstract class BaseReschedulingStrategyITTest extends ContextSensitiveTes
     }
 
     protected void verifyIfTaskIsNotCreated() throws SchedulerException {
-        verify(schedulerService, times(0)).scheduleTask(Matchers.<TaskDefinition> any());
+        verify(schedulerService, times(0)).scheduleTask(Matchers.<TaskDefinition>any());
     }
 
     protected ScheduledExecutionContext getExecutionContext(TaskDefinition task) {
-        return gson.fromJson(
-                task.getProperty(EXECUTION_CONTEXT),
-                ScheduledExecutionContext.class);
+        return ScheduledExecutionContextUtil.fromJson(task.getProperty(EXECUTION_CONTEXT));
     }
 
     protected void addDeliveryAttempts(ScheduledService failedScheduledService, int numberOfAttempts) {
         DeliveryAttemptBuilder deliveryAttemptBuilder = new DeliveryAttemptBuilder();
         List<DeliveryAttempt> deliveryAttempts = failedScheduledService.getDeliveryAttempts();
         for (int i = 0; i < numberOfAttempts; ++i) {
-            deliveryAttempts.add(deliveryAttemptBuilder
-                    .withScheduledService(failedScheduledService)
-                    .buildAsNew());
+            deliveryAttempts.add(deliveryAttemptBuilder.withScheduledService(failedScheduledService).buildAsNew());
         }
     }
 

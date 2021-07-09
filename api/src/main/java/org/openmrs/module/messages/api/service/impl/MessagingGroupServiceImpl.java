@@ -5,7 +5,7 @@ import org.openmrs.module.messages.api.model.ScheduledServiceGroup;
 import org.openmrs.module.messages.api.service.MessagingGroupService;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
+import java.time.Instant;
 
 /**
  * Implements methods related to creating, reading, updating and deleting scheduled service group entities
@@ -15,7 +15,7 @@ public class MessagingGroupServiceImpl extends BaseOpenmrsDataService<ScheduledS
 
     @Override
     @Transactional(readOnly = true)
-    public boolean isGroupExists(int patientId, int actorId, Date msgSendTime, String channelType) {
+    public boolean isGroupExists(int patientId, int actorId, Instant msgSendTime, String channelType) {
         return ((MessagingGroupDao) getDao()).countRowsByPatientIdActorIdAndMsgSendTime(patientId, actorId, msgSendTime,
                 channelType) > 0;
     }

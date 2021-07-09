@@ -21,7 +21,7 @@ import org.openmrs.module.messages.api.service.MessagesDeliveryService;
 import org.openmrs.module.messages.api.strategy.ReschedulingStrategy;
 import org.openmrs.module.messages.api.util.DateUtil;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 public abstract class AbstractReschedulingStrategy implements ReschedulingStrategy {
@@ -35,8 +35,7 @@ public abstract class AbstractReschedulingStrategy implements ReschedulingStrate
     public void execute(ScheduledServiceGroup group) {
         List<ScheduledService> servicesToExecute = extractServiceListToExecute(group);
         if (servicesToExecute.isEmpty()) {
-            logger.debug(String.format(
-                    "The group %s have been fully delivered, so the rescheduling logic will not be run",
+            logger.debug(String.format("The group %s have been fully delivered, so the rescheduling logic will not be run",
                     group.getId()));
             return;
         }
@@ -46,15 +45,10 @@ public abstract class AbstractReschedulingStrategy implements ReschedulingStrate
             return;
         }
 
-        deliveryService.scheduleDelivery(new ScheduledExecutionContext(
-                servicesToExecute,
-                group.getChannelType(),
-                getRescheduleDate(),
-                service.getPatientTemplate().getActor(),
-                service.getPatientTemplate().getPatient().getPatientId(),
-                service.getPatientTemplate().getActorTypeAsString(),
-                service.getGroup().getId()
-        ));
+        deliveryService.scheduleDelivery(
+                new ScheduledExecutionContext(servicesToExecute, group.getChannelType(), getRescheduleDate().toInstant(),
+                        service.getPatientTemplate().getActor(), service.getPatientTemplate().getPatient().getPatientId(),
+                        service.getPatientTemplate().getActorTypeAsString(), service.getGroup().getId()));
     }
 
     public void setConfigService(ConfigService configService) {
@@ -68,24 +62,21 @@ public abstract class AbstractReschedulingStrategy implements ReschedulingStrate
     protected boolean shouldReschedule(ScheduledService service) {
         boolean shouldReschedule = true;
         if (service.getStatus() != ServiceStatus.FAILED) {
-            logger.debug(String.format(
-                    "ScheduledService %d will be not rescheduled due to no failed status: %s",
-                    service.getId(),
-                    service.getStatus()));
+            logger.debug(
+                    String.format("ScheduledService %d will be not rescheduled due to no failed status: %s", service.getId(),
+                            service.getStatus()));
             shouldReschedule = false;
         } else if (service.getNumberOfAttempts() >= getMaxNumberOfAttempts()) {
             logger.info(String.format(
                     "ScheduledService %d will be not rescheduled due to exceeding the max number of attempts: %d/%d",
-                    service.getId(),
-                    service.getNumberOfAttempts(),
-                    getMaxNumberOfAttempts()));
+                    service.getId(), service.getNumberOfAttempts(), getMaxNumberOfAttempts()));
             shouldReschedule = false;
         }
         return shouldReschedule;
     }
 
     protected ScheduledService validateAndGetFirstServiceToRetry(List<ScheduledService> servicesToExecute,
-                                                               ScheduledServiceGroup group) {
+                                                                 ScheduledServiceGroup group) {
         // There are additional validation, which make sure that data is DB is valid.
         if (servicesToExecute.isEmpty()) {
             throw new MessagesRuntimeException(String.format(
@@ -95,10 +86,8 @@ public abstract class AbstractReschedulingStrategy implements ReschedulingStrate
         int numberOfAttempts = servicesToExecute.get(0).getNumberOfAttempts();
         for (ScheduledService ss : servicesToExecute) {
             if (ss.getNumberOfAttempts() != numberOfAttempts) {
-                throw new MessagesRuntimeException(String.format("Group rescheduling assumes that all entries to retry"
-                                + " have the same number of attempts, but they not in the group %s",
-                        group.getId()
-                ));
+                throw new MessagesRuntimeException(String.format("Group rescheduling assumes that all entries to retry" +
+                        " have the same number of attempts, but they not in the group %s", group.getId()));
             }
         }
         return servicesToExecute.get(0);
@@ -110,9 +99,8 @@ public abstract class AbstractReschedulingStrategy implements ReschedulingStrate
 
     protected abstract List<ScheduledService> extractServiceListToExecute(ScheduledServiceGroup group);
 
-    private Date getRescheduleDate() {
-        return DateUtil.getDatePlusSeconds(
-                getTimeIntervalToNextReschedule());
+    private ZonedDateTime getRescheduleDate() {
+        return DateUtil.now().plusSeconds(getTimeIntervalToNextReschedule());
     }
 
     private int getMaxNumberOfAttempts() {

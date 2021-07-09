@@ -24,7 +24,7 @@ import org.openmrs.module.messages.api.model.Template;
 import org.openmrs.module.messages.api.util.BestContactTimeHelper;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 public class ServiceExecutorImpl extends BaseOpenmrsService implements ServiceExecutor {
@@ -41,14 +41,14 @@ public class ServiceExecutorImpl extends BaseOpenmrsService implements ServiceEx
      * Executes a patient template {@link PatientTemplate} and result result as a {@link ServiceResultList}.
      *
      * @param patientTemplate - provided patient template
-     * @param dateTimeRange - date time range for executed query
+     * @param dateTimeRange   - date time range for executed query
      * @return - list of results. The result list contains the Service results according to provided dateTime range.
-     *      Services which weren't executed should have the status set as FUTURE.
+     * Services which weren't executed should have the status set as FUTURE.
      * @throws ExecutionException - exception occurred during service execution
      */
     @Transactional(noRollbackFor = {RuntimeException.class, SQLGrammarException.class}, readOnly = true)
     @Override
-    public ServiceResultList execute(PatientTemplate patientTemplate, Range<Date> dateTimeRange)
+    public ServiceResultList execute(PatientTemplate patientTemplate, Range<ZonedDateTime> dateTimeRange)
             throws ExecutionException {
         return execute(patientTemplate, dateTimeRange, null, false);
     }
@@ -56,18 +56,19 @@ public class ServiceExecutorImpl extends BaseOpenmrsService implements ServiceEx
     /**
      * Executes a patient template {@link PatientTemplate} and result result as a {@link ServiceResultList}.
      *
-     * @param patientTemplate - provided patient template
-     * @param dateTimeRange - date time range for executed query
+     * @param patientTemplate        - provided patient template
+     * @param dateTimeRange          - date time range for executed query
      * @param executionStartDateTime - date time of starting execution
-     * @param isCalendarQuery - determines if calendar or scheduler job service query should be executed
+     * @param isCalendarQuery        - determines if calendar or scheduler job service query should be executed
      * @return - list of results. The result list contains the Service results according to provided dateTime range.
-     *      Services which weren't executed should have the status set as FUTURE.
+     * Services which weren't executed should have the status set as FUTURE.
      * @throws ExecutionException - exception occurred during service execution
      */
     @Transactional(noRollbackFor = {RuntimeException.class, SQLGrammarException.class}, readOnly = true)
     @Override
-    public ServiceResultList execute(PatientTemplate patientTemplate, Range<Date> dateTimeRange, Date executionStartDateTime,
-                                     boolean isCalendarQuery) throws ExecutionException {
+    public ServiceResultList execute(PatientTemplate patientTemplate, Range<ZonedDateTime> dateTimeRange,
+                                     ZonedDateTime executionStartDateTime, boolean isCalendarQuery)
+            throws ExecutionException {
         ExecutionEngine executionEngine = getEngine(patientTemplate, null);
 
         ExecutionContext executionContext = new ExecutionContext(patientTemplate, dateTimeRange,
@@ -81,7 +82,7 @@ public class ServiceExecutorImpl extends BaseOpenmrsService implements ServiceEx
 
     @Transactional(noRollbackFor = {RuntimeException.class, SQLGrammarException.class}, readOnly = true)
     @Override
-    public List<ServiceResultList> executeTemplate(Template template, Range<Date> dateTimeRange)
+    public List<ServiceResultList> executeTemplate(Template template, Range<ZonedDateTime> dateTimeRange)
             throws ExecutionException {
         ExecutionEngine executionEngine = getEngine(null, template);
 
@@ -109,9 +110,9 @@ public class ServiceExecutorImpl extends BaseOpenmrsService implements ServiceEx
 
     private void logExecutingInfo(PatientTemplate patientTemplate, ExecutionEngine executionEngine) {
         if (LOG.isTraceEnabled()) {
-            LOG.trace(String.format("Executing template '%s' using query engine: %s",
-                    patientTemplate.getTemplate().getName(),
-                    executionEngine.getClass().getName()));
+            LOG.trace(
+                    String.format("Executing template '%s' using query engine: %s", patientTemplate.getTemplate().getName(),
+                            executionEngine.getClass().getName()));
         }
     }
 }

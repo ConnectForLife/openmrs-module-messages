@@ -1,10 +1,11 @@
 package org.openmrs.module.messages.builder;
 
-import java.util.Date;
 import org.openmrs.Person;
 import org.openmrs.Relationship;
 import org.openmrs.RelationshipType;
 import org.openmrs.module.messages.api.util.DateUtil;
+
+import java.util.Date;
 
 public class RelationshipBuilder extends AbstractBuilder<Relationship> {
 
@@ -21,8 +22,8 @@ public class RelationshipBuilder extends AbstractBuilder<Relationship> {
         personA = new Person(1);
         relationshipType = new RelationshipTypeBuilder().build();
         personB = new Person(2);
-        startDate = DateUtil.getDatePlusSeconds(1);
-        endDate = DateUtil.getDatePlusSeconds(2);
+        startDate = DateUtil.toDate(DateUtil.now().plusSeconds(1));
+        endDate = DateUtil.toDate(DateUtil.now().plusSeconds(1));
     }
 
     @Override

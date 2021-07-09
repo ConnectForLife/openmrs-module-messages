@@ -28,6 +28,7 @@ import org.openmrs.scheduler.TaskDefinition;
 import org.openmrs.scheduler.TaskFactory;
 import org.openmrs.scheduler.timer.TimerSchedulerTask;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.Timer;
 
@@ -53,7 +54,7 @@ public class MessagesSchedulerServiceImpl extends BaseOpenmrsDataService<Schedul
         TaskDefinition newTask = prepareTask(jobDefinition, previousTask, intervalInSecond);
 
         if (shouldBeExecuted(newTask, jobDefinition)) {
-            newTask.setLastExecutionTime(DateUtil.now());
+            newTask.setLastExecutionTime(DateUtil.toDate(DateUtil.now()));
             executeJob(jobDefinition);
         }
         if (previousTask == null) {
@@ -70,19 +71,18 @@ public class MessagesSchedulerServiceImpl extends BaseOpenmrsDataService<Schedul
     }
 
     @Override
-    public void createNewTask(JobDefinition jobDefinition, Date startTime,
-                              JobRepeatInterval repeatInterval) {
-        TaskDefinition newTask = prepareTask(jobDefinition, null, startTime, repeatInterval.getSeconds());
+    public void createNewTask(JobDefinition jobDefinition, Instant startTime, JobRepeatInterval repeatInterval) {
+        TaskDefinition newTask = prepareTask(jobDefinition, null, Date.from(startTime), repeatInterval.getSeconds());
         scheduleTask(newTask);
     }
 
+    @Override
+    public void createNewTask(JobDefinition jobDefinition, Date startTime, JobRepeatInterval repeatInterval) {
+        this.createNewTask(jobDefinition, startTime.toInstant(), repeatInterval);
+    }
+
     private void executeJob(JobDefinition jobDefinition) {
-        Daemon.runInDaemonThread(new Runnable() {
-            @Override
-            public void run() {
-                jobDefinition.execute();
-            }
-        }, daemonToken);
+        Daemon.runInDaemonThread(jobDefinition::execute, daemonToken);
     }
 
     private void scheduleTask(TaskDefinition task) {
@@ -102,21 +102,24 @@ public class MessagesSchedulerServiceImpl extends BaseOpenmrsDataService<Schedul
         if (isPrimaryTaskCreation(task)) {
             return jobDefinition.shouldStartAtFirstCreation();
         } else {
-            return task.getLastExecutionTime().before(DateUtil.getDateSecondsAgo(task.getRepeatInterval()));
+            return task
+                    .getLastExecutionTime()
+                    .toInstant()
+                    .isBefore(DateUtil.now().minusSeconds(task.getRepeatInterval()).toInstant());
         }
     }
 
     private TaskDefinition prepareTask(JobDefinition jobDefinition, TaskDefinition previousTask, long repeatInterval) {
         if (previousTask == null) {
-            return prepareTask(jobDefinition, null, DateUtil.now(), repeatInterval);
+            return prepareTask(jobDefinition, null, DateUtil.toDate(DateUtil.now()), repeatInterval);
         } else {
-            return prepareTask(jobDefinition, previousTask.getLastExecutionTime(),
-                    previousTask.getStartTime(), repeatInterval);
+            return prepareTask(jobDefinition, previousTask.getLastExecutionTime(), previousTask.getStartTime(),
+                    repeatInterval);
         }
     }
 
-    private TaskDefinition prepareTask(JobDefinition jobDefinition, Date lastExecutionTime,
-                                       Date startTime, long repeatInterval) {
+    private TaskDefinition prepareTask(JobDefinition jobDefinition, Date lastExecutionTime, Date startTime,
+                                       long repeatInterval) {
         TaskDefinition task = new TaskDefinition();
         task.setName(jobDefinition.getTaskName());
         task.setLastExecutionTime(lastExecutionTime);
@@ -140,7 +143,7 @@ public class MessagesSchedulerServiceImpl extends BaseOpenmrsDataService<Schedul
     This method uses one Timer instance for storing all tasks (instead of default OpenMRS implementation -
     one Timer per one task)
     Changed due to performance issues */
-    public Task customScheduleTask(TaskDefinition taskDefinition) throws SchedulerException {
+    private Task customScheduleTask(TaskDefinition taskDefinition) throws SchedulerException {
         Task clientTask = null;
         if (taskDefinition != null) {
             TimerSchedulerTask schedulerTask;
@@ -172,8 +175,8 @@ public class MessagesSchedulerServiceImpl extends BaseOpenmrsDataService<Schedul
                         }
                     } else if (repeatInterval > 0) {
                         // Start task on repeating schedule, delay for SCHEDULER_DEFAULT_DELAY seconds
-                        getTimer().scheduleAtFixedRate(schedulerTask,
-                                SchedulerConstants.SCHEDULER_DEFAULT_DELAY, repeatInterval);
+                        getTimer().scheduleAtFixedRate(schedulerTask, SchedulerConstants.SCHEDULER_DEFAULT_DELAY,
+                                repeatInterval);
                     } else {
                         // schedule for single execution, starting now
                         getTimer().schedule(schedulerTask, new Date());

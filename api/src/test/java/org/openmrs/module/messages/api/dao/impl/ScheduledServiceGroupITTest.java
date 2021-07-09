@@ -12,12 +12,15 @@ import org.openmrs.module.messages.api.helper.ScheduledServiceGroupHelper;
 import org.openmrs.module.messages.api.model.ScheduledService;
 import org.openmrs.module.messages.api.model.ScheduledServiceGroup;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
+import org.openmrs.module.messages.api.util.DateUtil;
 import org.openmrs.module.messages.api.util.TestConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -36,7 +39,8 @@ public class ScheduledServiceGroupITTest extends ContextSensitiveTest {
     private static final int ACTOR_ID = 997;
     private static final int WRONG_ACTOR_ID = 998;
     private static final int PATIENT_ID = 997;
-    private static final Date MSG_SEND_TIME = new Date(1574204400000L);
+    private static final ZonedDateTime MSG_SEND_TIME =
+            ZonedDateTime.ofInstant(Instant.ofEpochMilli(1574204400000L), ZoneId.of("UTC"));
 
     @Autowired
     @Qualifier("messages.MessagingGroupDao")
@@ -45,7 +49,7 @@ public class ScheduledServiceGroupITTest extends ContextSensitiveTest {
     @Autowired
     @Qualifier("messages.MessagingDao")
     private MessagingDao messagingDao;
-    
+
     private ScheduledServiceGroup scheduledServiceGroup1;
     private ScheduledServiceGroup scheduledServiceGroup2;
     private ScheduledServiceGroup scheduledServiceGroup3;
@@ -56,43 +60,39 @@ public class ScheduledServiceGroupITTest extends ContextSensitiveTest {
         scheduledServiceGroup2 = messagingGroupDao.saveOrUpdate(ScheduledServiceGroupHelper.createTestInstance());
         scheduledServiceGroup3 = messagingGroupDao.saveOrUpdate(ScheduledServiceGroupHelper.createTestInstance());
     }
-    
+
     @Test
     public void shouldSaveAllPropertiesInDb() {
         ScheduledServiceGroup savedScheduledServiceGroup = messagingGroupDao.getByUuid(scheduledServiceGroup1.getUuid());
-        
-        Assert.assertThat(savedScheduledServiceGroup, hasProperty("uuid",
-                is(scheduledServiceGroup1.getUuid())));
-        Assert.assertThat(savedScheduledServiceGroup, hasProperty("msgSendTime",
-                is(scheduledServiceGroup1.getMsgSendTime())));
-        Assert.assertThat(savedScheduledServiceGroup, hasProperty("patient",
-                is(scheduledServiceGroup1.getPatient())));
-        Assert.assertThat(savedScheduledServiceGroup, hasProperty("actor",
-                is(scheduledServiceGroup1.getActor())));
-        Assert.assertThat(savedScheduledServiceGroup, hasProperty("status",
-                is(scheduledServiceGroup1.getStatus())));
+
+        Assert.assertThat(savedScheduledServiceGroup, hasProperty("uuid", is(scheduledServiceGroup1.getUuid())));
+        Assert.assertThat(savedScheduledServiceGroup,
+                hasProperty("msgSendTime", is(scheduledServiceGroup1.getMsgSendTime())));
+        Assert.assertThat(savedScheduledServiceGroup, hasProperty("patient", is(scheduledServiceGroup1.getPatient())));
+        Assert.assertThat(savedScheduledServiceGroup, hasProperty("actor", is(scheduledServiceGroup1.getActor())));
+        Assert.assertThat(savedScheduledServiceGroup, hasProperty("status", is(scheduledServiceGroup1.getStatus())));
     }
-    
+
     @Test
     public void shouldReturnAllSavedScheduleServiceGroups() {
         List<ScheduledServiceGroup> scheduledServiceGroups = messagingGroupDao.getAll(true);
-        
+
         Assert.assertEquals(TestConstants.GET_ALL_EXPECTED_LIST_SIZE, scheduledServiceGroups.size());
     }
-    
+
     @Test
     public void shouldDeleteScheduleServiceGroup() {
         messagingGroupDao.delete(scheduledServiceGroup3);
-        
+
         Assert.assertNull(messagingGroupDao.getByUuid(scheduledServiceGroup3.getUuid()));
         Assert.assertEquals(TestConstants.DELETE_EXPECTED_LIST_SIZE, messagingGroupDao.getAll(true).size());
     }
-    
+
     @Test
     public void shouldUpdateExistingScheduleServiceGroup() {
         scheduledServiceGroup2.setStatus(ServiceStatus.FAILED);
         messagingGroupDao.saveOrUpdate(scheduledServiceGroup2);
-        
+
         Assert.assertThat(messagingGroupDao.getByUuid(scheduledServiceGroup2.getUuid()),
                 hasProperty("status", is(ServiceStatus.FAILED)));
     }
@@ -106,9 +106,8 @@ public class ScheduledServiceGroupITTest extends ContextSensitiveTest {
         scheduledService1.setGroup(scheduledServiceGroup1);
         scheduledService1 = messagingDao.saveOrUpdate(scheduledService1);
 
-        List<ScheduledService> scheduledServices = messagingGroupDao
-                .getByUuid(scheduledServiceGroup1.getUuid())
-                .getScheduledServices();
+        List<ScheduledService> scheduledServices =
+                messagingGroupDao.getByUuid(scheduledServiceGroup1.getUuid()).getScheduledServices();
 
         Assert.assertNotNull(scheduledServices);
         Assert.assertEquals(1, scheduledServices.size());
@@ -127,9 +126,7 @@ public class ScheduledServiceGroupITTest extends ContextSensitiveTest {
         scheduledServiceGroup1.setScheduledServices(scheduledServices);
         scheduledServiceGroup1 = messagingGroupDao.saveOrUpdate(scheduledServiceGroup1);
 
-        ScheduledServiceGroup group = messagingDao
-                .getByUuid(SCHEDULE_1_UUID)
-                .getGroup();
+        ScheduledServiceGroup group = messagingDao.getByUuid(SCHEDULE_1_UUID).getGroup();
 
         Assert.assertEquals(scheduledServiceGroup1, group);
     }
@@ -158,11 +155,12 @@ public class ScheduledServiceGroupITTest extends ContextSensitiveTest {
         executeMessageDataSet();
 
         ScheduledServiceGroup scheduledServiceGroup = messagingGroupDao.getByUuid(GROUP_UUID);
-        scheduledServiceGroup.setMsgSendTime(MSG_SEND_TIME);
+        scheduledServiceGroup.setMsgSendTime(DateUtil.toDate(MSG_SEND_TIME));
         messagingGroupDao.saveOrUpdate(scheduledServiceGroup);
 
-        long count = messagingGroupDao.countRowsByPatientIdActorIdAndMsgSendTime(PATIENT_ID, ACTOR_ID, MSG_SEND_TIME,
-                TEST_CHANNEL_TYPE);
+        long count =
+                messagingGroupDao.countRowsByPatientIdActorIdAndMsgSendTime(PATIENT_ID, ACTOR_ID, MSG_SEND_TIME.toInstant(),
+                        TEST_CHANNEL_TYPE);
 
         Assert.assertThat(count, equalTo(1L));
     }
@@ -171,8 +169,8 @@ public class ScheduledServiceGroupITTest extends ContextSensitiveTest {
     public void shouldReturn0CountForPatientActorAndMsgSendTime() throws Exception {
         executeMessageDataSet();
 
-        long count = messagingGroupDao.countRowsByPatientIdActorIdAndMsgSendTime(WRONG_ACTOR_ID, ACTOR_ID, MSG_SEND_TIME,
-                TEST_CHANNEL_TYPE);
+        long count = messagingGroupDao.countRowsByPatientIdActorIdAndMsgSendTime(WRONG_ACTOR_ID, ACTOR_ID,
+                MSG_SEND_TIME.toInstant(), TEST_CHANNEL_TYPE);
 
         Assert.assertThat(count, equalTo(0L));
     }

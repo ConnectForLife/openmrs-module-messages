@@ -16,9 +16,10 @@ import org.openmrs.module.messages.api.model.TemplateFieldValue;
 import org.openmrs.module.messages.builder.TemplateFieldBuilder;
 import org.openmrs.module.messages.builder.TemplateFieldValueBuilder;
 
+import java.time.Month;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import static org.openmrs.module.messages.TestUtil.getMaxTimeForDate;
@@ -28,11 +29,12 @@ import static org.openmrs.module.messages.api.model.TemplateFieldType.START_OF_M
 
 public class FieldDateUtilTest {
 
+    private static final ZoneId TEST_TZ = DateUtil.getDefaultSystemTimeZone();
     private static final int YEAR_2020 = 2020;
     private static final int YEAR_2022 = 2022;
     private static final int DAY_15 = 15;
     private static final int DAY_30 = 30;
-    private static final Date EXPECTED = getMaxTimeForDate(YEAR_2020,  Calendar.JANUARY, 8);
+    private static final ZonedDateTime EXPECTED = getMaxTimeForDate(YEAR_2020, Month.JANUARY.getValue(), 8, TEST_TZ);
     private static final String SEPARATOR = "|";
     private static final String OTHER_TEMPLATE = "Other";
     private static final int FIFTH_DAY_OF_MONTH = 5;
@@ -42,11 +44,10 @@ public class FieldDateUtilTest {
         List<TemplateFieldValue> values = new ArrayList<>();
         values.add(buildTemplateFieldWithValue(DAY_OF_WEEK, "Monday,Tuesday"));
         values.add(buildTemplateFieldWithValue(START_OF_MESSAGES, "2020-06-01"));
-        values.add(buildTemplateFieldWithValue(END_OF_MESSAGES,
-                EndDateType.AFTER_TIMES.getName() + "|2"));
-        Date endDate = getMaxTimeForDate(YEAR_2020, Calendar.JUNE, 2);
+        values.add(buildTemplateFieldWithValue(END_OF_MESSAGES, EndDateType.AFTER_TIMES.getName() + "|2"));
+        ZonedDateTime endDate = getMaxTimeForDate(YEAR_2020, Month.JUNE.getValue(), 2, TEST_TZ);
 
-        Date result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
+        ZonedDateTime result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
 
         Assert.assertEquals(endDate, result);
     }
@@ -56,19 +57,18 @@ public class FieldDateUtilTest {
         List<TemplateFieldValue> values = new ArrayList<>();
         values.add(buildTemplateFieldWithValue(DAY_OF_WEEK, "Monday,Tuesday"));
         values.add(buildTemplateFieldWithValue(START_OF_MESSAGES, "2020-06-01"));
-        values.add(buildTemplateFieldWithValue(END_OF_MESSAGES,
-                EndDateType.AFTER_TIMES.getName() + "|2"));
-        Date endDate = getMaxTimeForDate(YEAR_2020, Calendar.JUNE, 2);
+        values.add(buildTemplateFieldWithValue(END_OF_MESSAGES, EndDateType.AFTER_TIMES.getName() + "|2"));
+        ZonedDateTime endDate = getMaxTimeForDate(YEAR_2020, Month.JUNE.getValue(), 2, TEST_TZ);
 
-        Date result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
+        ZonedDateTime result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
 
         Assert.assertEquals(endDate, result);
     }
 
     @Test
     public void shouldGetValidDatePickerEndDate() {
-        final Date expected = getMaxTimeForDate(YEAR_2020, Calendar.JANUARY, 10);
-        Date result = FieldDateUtil.getEndDate(getValidDatePickerValues(), OTHER_TEMPLATE);
+        final ZonedDateTime expected = getMaxTimeForDate(YEAR_2020, Month.JANUARY.getValue(), 10, TEST_TZ);
+        ZonedDateTime result = FieldDateUtil.getEndDate(getValidDatePickerValues(), OTHER_TEMPLATE);
 
         Assert.assertEquals(expected, result);
     }
@@ -78,10 +78,9 @@ public class FieldDateUtilTest {
         List<TemplateFieldValue> values = new ArrayList<>();
         values.add(buildTemplateFieldWithValue(DAY_OF_WEEK, "Monday,Sunday"));
         values.add(buildTemplateFieldWithValue(START_OF_MESSAGES, "2019-12-20"));
-        values.add(buildTemplateFieldWithValue(END_OF_MESSAGES,
-                EndDateType.AFTER_TIMES.getName() + "|2020-sda01---|--08"));
+        values.add(buildTemplateFieldWithValue(END_OF_MESSAGES, EndDateType.AFTER_TIMES.getName() + "|2020-sda01---|--08"));
 
-        Date result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
+        ZonedDateTime result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
 
         Assert.assertNull(result);
     }
@@ -91,10 +90,9 @@ public class FieldDateUtilTest {
         List<TemplateFieldValue> values = new ArrayList<>();
         values.add(buildTemplateFieldWithValue(DAY_OF_WEEK, "Monday,Sunday"));
         values.add(buildTemplateFieldWithValue(START_OF_MESSAGES, "2019-12-20"));
-        values.add(buildTemplateFieldWithValue(END_OF_MESSAGES,
-                EndDateType.AFTER_TIMES.getName() + "|"));
+        values.add(buildTemplateFieldWithValue(END_OF_MESSAGES, EndDateType.AFTER_TIMES.getName() + "|"));
 
-        Date result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
+        ZonedDateTime result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
 
         Assert.assertNull(result);
     }
@@ -104,10 +102,9 @@ public class FieldDateUtilTest {
         List<TemplateFieldValue> values = new ArrayList<>();
         values.add(buildTemplateFieldWithValue(DAY_OF_WEEK, "Monday,Sunday"));
         values.add(buildTemplateFieldWithValue(START_OF_MESSAGES, "2019-12-20"));
-        values.add(buildTemplateFieldWithValue(END_OF_MESSAGES,
-                EndDateType.AFTER_TIMES.getName()));
+        values.add(buildTemplateFieldWithValue(END_OF_MESSAGES, EndDateType.AFTER_TIMES.getName()));
 
-        Date result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
+        ZonedDateTime result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
 
         Assert.assertNull(result);
     }
@@ -117,10 +114,9 @@ public class FieldDateUtilTest {
         List<TemplateFieldValue> values = new ArrayList<>();
         values.add(buildTemplateFieldWithValue(DAY_OF_WEEK, "Monday,Sunday"));
         values.add(buildTemplateFieldWithValue(START_OF_MESSAGES, "2019-12-20"));
-        values.add(buildTemplateFieldWithValue(END_OF_MESSAGES,
-                EndDateType.DATE_PICKER.getName() + "|2020-01-08"));
+        values.add(buildTemplateFieldWithValue(END_OF_MESSAGES, EndDateType.DATE_PICKER.getName() + "|2020-01-08"));
 
-        Date result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
+        ZonedDateTime result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
 
         Assert.assertEquals(EXPECTED, result);
     }
@@ -130,10 +126,9 @@ public class FieldDateUtilTest {
         List<TemplateFieldValue> values = new ArrayList<>();
         values.add(buildTemplateFieldWithValue(DAY_OF_WEEK, "Monday,Sunday"));
         values.add(buildTemplateFieldWithValue(START_OF_MESSAGES, "2019-12-20"));
-        values.add(buildTemplateFieldWithValue(END_OF_MESSAGES,
-                EndDateType.DATE_PICKER.getName() + "|2020-01-----08"));
+        values.add(buildTemplateFieldWithValue(END_OF_MESSAGES, EndDateType.DATE_PICKER.getName() + "|2020-01-----08"));
 
-        Date result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
+        ZonedDateTime result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
 
         Assert.assertNull(result);
     }
@@ -143,10 +138,9 @@ public class FieldDateUtilTest {
         List<TemplateFieldValue> values = new ArrayList<>();
         values.add(buildTemplateFieldWithValue(DAY_OF_WEEK, "Monday,Sunday"));
         values.add(buildTemplateFieldWithValue(START_OF_MESSAGES, "2019-12-20"));
-        values.add(buildTemplateFieldWithValue(END_OF_MESSAGES,
-                EndDateType.DATE_PICKER.getName() + "|"));
+        values.add(buildTemplateFieldWithValue(END_OF_MESSAGES, EndDateType.DATE_PICKER.getName() + "|"));
 
-        Date result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
+        ZonedDateTime result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
 
         Assert.assertNull(result);
     }
@@ -156,10 +150,9 @@ public class FieldDateUtilTest {
         List<TemplateFieldValue> values = new ArrayList<>();
         values.add(buildTemplateFieldWithValue(DAY_OF_WEEK, "Monday,Sunday"));
         values.add(buildTemplateFieldWithValue(START_OF_MESSAGES, "2019-12-20"));
-        values.add(buildTemplateFieldWithValue(END_OF_MESSAGES,
-                EndDateType.DATE_PICKER.getName()));
+        values.add(buildTemplateFieldWithValue(END_OF_MESSAGES, EndDateType.DATE_PICKER.getName()));
 
-        Date result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
+        ZonedDateTime result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
 
         Assert.assertNull(result);
     }
@@ -169,10 +162,9 @@ public class FieldDateUtilTest {
         List<TemplateFieldValue> values = new ArrayList<>();
         values.add(buildTemplateFieldWithValue(DAY_OF_WEEK, "Monday,Sunday"));
         values.add(buildTemplateFieldWithValue(START_OF_MESSAGES, "2019-12-20"));
-        values.add(buildTemplateFieldWithValue(END_OF_MESSAGES,
-                EndDateType.NO_DATE.getName() + "|2020---091---|08"));
+        values.add(buildTemplateFieldWithValue(END_OF_MESSAGES, EndDateType.NO_DATE.getName() + "|2020---091---|08"));
 
-        Date result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
+        ZonedDateTime result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
 
         Assert.assertNull(result);
     }
@@ -182,10 +174,9 @@ public class FieldDateUtilTest {
         List<TemplateFieldValue> values = new ArrayList<>();
         values.add(buildTemplateFieldWithValue(DAY_OF_WEEK, "Monday,Sunday"));
         values.add(buildTemplateFieldWithValue(START_OF_MESSAGES, "2019-12-20"));
-        values.add(buildTemplateFieldWithValue(END_OF_MESSAGES,
-                EndDateType.NO_DATE.getName() + "|EMPTY"));
+        values.add(buildTemplateFieldWithValue(END_OF_MESSAGES, EndDateType.NO_DATE.getName() + "|EMPTY"));
 
-        Date result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
+        ZonedDateTime result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
 
         Assert.assertNull(result);
     }
@@ -195,10 +186,9 @@ public class FieldDateUtilTest {
         List<TemplateFieldValue> values = new ArrayList<>();
         values.add(buildTemplateFieldWithValue(DAY_OF_WEEK, "Monday,Sunday"));
         values.add(buildTemplateFieldWithValue(START_OF_MESSAGES, "2019-12-20"));
-        values.add(buildTemplateFieldWithValue(END_OF_MESSAGES,
-                EndDateType.NO_DATE.getName() + "|"));
+        values.add(buildTemplateFieldWithValue(END_OF_MESSAGES, EndDateType.NO_DATE.getName() + "|"));
 
-        Date result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
+        ZonedDateTime result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
 
         Assert.assertNull(result);
     }
@@ -208,10 +198,9 @@ public class FieldDateUtilTest {
         List<TemplateFieldValue> values = new ArrayList<>();
         values.add(buildTemplateFieldWithValue(DAY_OF_WEEK, "Monday,Sunday"));
         values.add(buildTemplateFieldWithValue(START_OF_MESSAGES, "2019-12-20"));
-        values.add(buildTemplateFieldWithValue(END_OF_MESSAGES,
-                EndDateType.NO_DATE.getName()));
+        values.add(buildTemplateFieldWithValue(END_OF_MESSAGES, EndDateType.NO_DATE.getName()));
 
-        Date result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
+        ZonedDateTime result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
 
         Assert.assertNull(result);
     }
@@ -221,10 +210,10 @@ public class FieldDateUtilTest {
         List<TemplateFieldValue> values = new ArrayList<>();
         values.add(buildTemplateFieldWithValue(DAY_OF_WEEK, "Monday,Sunday"));
         values.add(buildTemplateFieldWithValue(START_OF_MESSAGES, "2019-12-20"));
-        values.add(buildTemplateFieldWithValueAndDefaultValue(END_OF_MESSAGES,
-                EndDateType.NO_DATE.getName() + "|EMPTY", "AFTER_TIMES|5"));
+        values.add(buildTemplateFieldWithValueAndDefaultValue(END_OF_MESSAGES, EndDateType.NO_DATE.getName() + "|EMPTY",
+                "AFTER_TIMES|5"));
 
-        Date actual = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
+        ZonedDateTime actual = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
 
         Assert.assertNull(actual);
     }
@@ -234,10 +223,9 @@ public class FieldDateUtilTest {
         List<TemplateFieldValue> values = new ArrayList<>();
         values.add(buildTemplateFieldWithValue(DAY_OF_WEEK, "Monday,Sunday"));
         values.add(buildTemplateFieldWithValue(START_OF_MESSAGES, "2019-12-20"));
-        values.add(buildTemplateFieldWithValueAndDefaultValue(END_OF_MESSAGES,
-                null , "AFTER_TIMES|5"));
-        Date expected = getMaxTimeForDate(YEAR_2020, Calendar.JANUARY, FIFTH_DAY_OF_MONTH);
-        Date actual = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
+        values.add(buildTemplateFieldWithValueAndDefaultValue(END_OF_MESSAGES, null, "AFTER_TIMES|5"));
+        ZonedDateTime expected = getMaxTimeForDate(YEAR_2020, Month.JANUARY.getValue(), FIFTH_DAY_OF_MONTH, TEST_TZ);
+        ZonedDateTime actual = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
 
         Assert.assertEquals(expected, actual);
     }
@@ -249,7 +237,7 @@ public class FieldDateUtilTest {
         values.add(buildTemplateFieldWithValue(START_OF_MESSAGES, "2019-12-20"));
         values.add(buildTemplateFieldWithValue(END_OF_MESSAGES, ""));
 
-        Date result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
+        ZonedDateTime result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
 
         Assert.assertNull(result);
     }
@@ -261,7 +249,7 @@ public class FieldDateUtilTest {
         values.add(buildTemplateFieldWithValue(START_OF_MESSAGES, "2019-12-20"));
         values.add(buildTemplateFieldWithValue(END_OF_MESSAGES, null));
 
-        Date result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
+        ZonedDateTime result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
 
         Assert.assertNull(result);
     }
@@ -311,8 +299,8 @@ public class FieldDateUtilTest {
         values.add(buildTemplateFieldWithValue(DAY_OF_WEEK, "Monday,Sunday"));
         values.add(buildTemplateFieldWithValue(START_OF_MESSAGES, "2019-12-20"));
         values.add(buildTemplateFieldWithValue(END_OF_MESSAGES, EndDateType.AFTER_TIMES.getName() + "|10"));
-        final Date endDate = getMaxTimeForDate(YEAR_2020, Calendar.JANUARY, 20);
-        Date result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
+        final ZonedDateTime endDate = getMaxTimeForDate(YEAR_2020, Month.JANUARY.getValue(), 20, TEST_TZ);
+        ZonedDateTime result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
 
         Assert.assertEquals(endDate, result);
     }
@@ -324,8 +312,8 @@ public class FieldDateUtilTest {
         values.add(buildTemplateFieldWithValue(START_OF_MESSAGES, "2019-12-20"));
         values.add(buildTemplateFieldWithValue(END_OF_MESSAGES, EndDateType.AFTER_TIMES.getName() + "|10"));
 
-        final Date endDate = getMaxTimeForDate(YEAR_2020, Calendar.JANUARY, 20);
-        Date result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
+        final ZonedDateTime endDate = getMaxTimeForDate(YEAR_2020, Month.JANUARY.getValue(), 20, TEST_TZ);
+        ZonedDateTime result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
 
         Assert.assertEquals(endDate, result);
     }
@@ -337,8 +325,8 @@ public class FieldDateUtilTest {
         values.add(buildTemplateFieldWithValue(START_OF_MESSAGES, "2019-12-20"));
         values.add(buildTemplateFieldWithValue(END_OF_MESSAGES, EndDateType.AFTER_TIMES.getName() + "|10"));
 
-        final Date endDate = getMaxTimeForDate(YEAR_2020, Calendar.JANUARY, 20);
-        Date result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
+        final ZonedDateTime endDate = getMaxTimeForDate(YEAR_2020, Month.JANUARY.getValue(), 20, TEST_TZ);
+        ZonedDateTime result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
 
         Assert.assertEquals(endDate, result);
     }
@@ -349,8 +337,8 @@ public class FieldDateUtilTest {
         values.add(buildTemplateFieldWithValue(DAY_OF_WEEK, ",Monday,,Sunday"));
         values.add(buildTemplateFieldWithValue(START_OF_MESSAGES, "2019-12-20"));
         values.add(buildTemplateFieldWithValue(END_OF_MESSAGES, EndDateType.AFTER_TIMES.getName() + "|10"));
-        final Date endDate = getMaxTimeForDate(2020, Calendar.JANUARY, 20);
-        Date result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
+        final ZonedDateTime endDate = getMaxTimeForDate(2020, Month.JANUARY.getValue(), 20, TEST_TZ);
+        ZonedDateTime result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
 
         Assert.assertEquals(endDate, result);
     }
@@ -363,9 +351,9 @@ public class FieldDateUtilTest {
         values.add(buildTemplateFieldWithValue(END_OF_MESSAGES,
                 EndDateType.OTHER + SEPARATOR + TimeType.MONTH + SEPARATOR + 2));
 
-        Date result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
+        ZonedDateTime result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
 
-        Assert.assertEquals(getMaxTimeForDate(YEAR_2020, Calendar.MARCH, DAY_15), result);
+        Assert.assertEquals(getMaxTimeForDate(YEAR_2020, Month.MARCH.getValue(), DAY_15, TEST_TZ), result);
     }
 
     @Test
@@ -376,9 +364,9 @@ public class FieldDateUtilTest {
         values.add(buildTemplateFieldWithValue(END_OF_MESSAGES,
                 EndDateType.OTHER + SEPARATOR + TimeType.DAY + SEPARATOR + DAY_15));
 
-        Date result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
+        ZonedDateTime result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
 
-        Assert.assertEquals(getMaxTimeForDate(YEAR_2020, Calendar.JANUARY, DAY_30), result);
+        Assert.assertEquals(getMaxTimeForDate(YEAR_2020, Month.JANUARY.getValue(), DAY_30, TEST_TZ), result);
     }
 
     @Test
@@ -386,12 +374,12 @@ public class FieldDateUtilTest {
         List<TemplateFieldValue> values = new ArrayList<>();
         values.add(buildTemplateFieldWithValue(DAY_OF_WEEK, "Monday"));
         values.add(buildTemplateFieldWithValue(START_OF_MESSAGES, "2020-01-15"));
-        values.add(buildTemplateFieldWithValue(END_OF_MESSAGES,
-                EndDateType.OTHER + SEPARATOR + TimeType.YEAR + SEPARATOR + 2));
+        values.add(
+                buildTemplateFieldWithValue(END_OF_MESSAGES, EndDateType.OTHER + SEPARATOR + TimeType.YEAR + SEPARATOR + 2));
 
-        Date result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
+        ZonedDateTime result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
 
-        Assert.assertEquals(getMaxTimeForDate(YEAR_2022, Calendar.JANUARY, DAY_15), result);
+        Assert.assertEquals(getMaxTimeForDate(YEAR_2022, Month.JANUARY.getValue(), DAY_15, TEST_TZ), result);
     }
 
     @Test
@@ -399,10 +387,9 @@ public class FieldDateUtilTest {
         List<TemplateFieldValue> values = new ArrayList<>();
         values.add(buildTemplateFieldWithValue(DAY_OF_WEEK, "Monday"));
         values.add(buildTemplateFieldWithValue(START_OF_MESSAGES, "2020-01-15"));
-        values.add(buildTemplateFieldWithValue(END_OF_MESSAGES,
-                EndDateType.OTHER + SEPARATOR + SEPARATOR + 2));
+        values.add(buildTemplateFieldWithValue(END_OF_MESSAGES, EndDateType.OTHER + SEPARATOR + SEPARATOR + 2));
 
-        Date result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
+        ZonedDateTime result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
 
         Assert.assertNull(result);
     }
@@ -412,10 +399,9 @@ public class FieldDateUtilTest {
         List<TemplateFieldValue> values = new ArrayList<>();
         values.add(buildTemplateFieldWithValue(DAY_OF_WEEK, "Monday"));
         values.add(buildTemplateFieldWithValue(START_OF_MESSAGES, "2020-01-15"));
-        values.add(buildTemplateFieldWithValue(END_OF_MESSAGES,
-                EndDateType.OTHER + SEPARATOR + TimeType.MONTH + SEPARATOR));
+        values.add(buildTemplateFieldWithValue(END_OF_MESSAGES, EndDateType.OTHER + SEPARATOR + TimeType.MONTH + SEPARATOR));
 
-        Date result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
+        ZonedDateTime result = FieldDateUtil.getEndDate(values, OTHER_TEMPLATE);
 
         Assert.assertNull(result);
     }
@@ -431,10 +417,7 @@ public class FieldDateUtilTest {
 
     private TemplateFieldValue buildTemplateFieldWithValue(TemplateFieldType type, String value) {
         return new TemplateFieldValueBuilder()
-                .withTemplateField(
-                        new TemplateFieldBuilder()
-                                .withTemplateFieldType(type)
-                                .build())
+                .withTemplateField(new TemplateFieldBuilder().withTemplateFieldType(type).build())
                 .withValue(value)
                 .build();
     }
@@ -443,10 +426,7 @@ public class FieldDateUtilTest {
                                                                           String defaultValue) {
         return new TemplateFieldValueBuilder()
                 .withTemplateField(
-                        new TemplateFieldBuilder()
-                                .withTemplateFieldType(type)
-                                .withDefaultValue(defaultValue)
-                                .build())
+                        new TemplateFieldBuilder().withTemplateFieldType(type).withDefaultValue(defaultValue).build())
                 .withValue(value)
                 .build();
     }

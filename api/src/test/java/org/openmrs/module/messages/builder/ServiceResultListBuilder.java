@@ -20,9 +20,9 @@ import org.openmrs.module.messages.api.model.Range;
 import org.openmrs.module.messages.api.model.TemplateField;
 import org.openmrs.module.messages.api.model.TemplateFieldValue;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 public final class ServiceResultListBuilder extends AbstractBuilder<ServiceResultList> {
@@ -99,7 +99,7 @@ public final class ServiceResultListBuilder extends AbstractBuilder<ServiceResul
         return this;
     }
 
-    public ServiceResultListBuilder withServiceResults(int count, Date date) {
+    public ServiceResultListBuilder withServiceResults(int count, ZonedDateTime date) {
         List<ServiceResult> list = new ArrayList<>();
         for (int i = 0; i < count; i++) {
             list.add(new ServiceResultBuilder()

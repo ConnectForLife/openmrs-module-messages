@@ -155,7 +155,7 @@ public final class ActorScheduleBuildingUtil {
         try {
             return DateUtil.convertServerSideDateFormatToFrontend(date);
         } catch (Exception e) {
-            LOGGER.debug(e);
+            LOGGER.error(e);
             return date;
         }
     }
