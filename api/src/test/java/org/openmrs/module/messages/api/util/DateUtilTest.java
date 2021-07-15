@@ -89,10 +89,37 @@ public class DateUtilTest extends BaseTest {
     }
 
     @Test
+    public void convertServerSideDateFormatToFrontendShouldParseDateOnly() {
+        // given
+        final String dateWithTimePart = "2021-07-15";
+        final String expected = "15 Jul 2021";
+
+        // when
+        final String actual = DateUtil.convertServerSideDateFormatToFrontend(dateWithTimePart);
+
+        // then
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
     public void parseServerSideDateShouldSupportTimePartInInput() {
         // given
         final String requestedZone = "Asia/Manila";
         final String dateWithTimePart = "2021-07-15 12:41:17";
+        final ZonedDateTime expected = ZonedDateTime.parse("2021-07-15T00:00:00+05:30[Asia/Manila]");
+
+        // when
+        final ZonedDateTime actual = DateUtil.parseServerSideDate(dateWithTimePart, ZoneId.of(requestedZone));
+
+        // then
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void parseServerSideDateShouldSupportDateOnly() {
+        // given
+        final String requestedZone = "Asia/Manila";
+        final String dateWithTimePart = "2021-07-15";
         final ZonedDateTime expected = ZonedDateTime.parse("2021-07-15T00:00:00+05:30[Asia/Manila]");
 
         // when
