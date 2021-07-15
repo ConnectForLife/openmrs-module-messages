@@ -131,17 +131,18 @@ public final class DateUtil {
     }
 
     /**
-     * Obtains a new instance of Zoned Date Time parsed from the {@code date}. Only the Date part is parsed, the time aprt
-     * is set to midnight, the default system timezone is used.
+     * Obtains a new instance of Zoned Date Time parsed from the {@code date}. Only the <b>local date</b> part is parsed,
+     * the time part is set to midnight. The Time-zone {@code zoneId} must be the time-zone of date stored as {@code date}.
      *
-     * @param date the string to parse, not null
+     * @param date   the string to parse, not null
+     * @param zoneId the zoneId representing the timezone of the {@code date}, not null
      * @return the new instance of Zoned Date Time, never null
      * @see #getDefaultSystemTimeZone()
      */
-    public static ZonedDateTime parseServerSideDate(String date) {
+    public static ZonedDateTime parseServerSideDate(String date, ZoneId zoneId) {
         final LocalDate localDate =
                 LocalDate.parse(date, DateTimeFormatter.ofPattern(MessagesConstants.DEFAULT_SERVER_SIDE_DATE_FORMAT));
-        return ZonedDateTime.of(localDate, LocalTime.MIDNIGHT, getDefaultSystemTimeZone());
+        return ZonedDateTime.of(localDate, LocalTime.MIDNIGHT, zoneId);
     }
 
     /**

@@ -18,17 +18,13 @@ import org.openmrs.module.messages.api.util.end.date.EndDateFactory;
 import org.openmrs.module.messages.api.util.end.date.EndDateParams;
 
 import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.openmrs.module.messages.api.constants.MessagesConstants.DEFAULT_SERVER_SIDE_DATE_FORMAT;
 import static org.openmrs.module.messages.api.model.TemplateFieldType.DAY_OF_WEEK;
 import static org.openmrs.module.messages.api.model.TemplateFieldType.DAY_OF_WEEK_SINGLE;
 import static org.openmrs.module.messages.api.model.TemplateFieldType.END_OF_MESSAGES;
@@ -240,8 +236,7 @@ public final class FieldDateUtil {
         }
 
         try {
-            final LocalDate localDate = LocalDate.parse(value, DateTimeFormatter.ofPattern(DEFAULT_SERVER_SIDE_DATE_FORMAT));
-            return Optional.of(ZonedDateTime.of(localDate, LocalTime.MIDNIGHT, DateUtil.getDefaultUserTimeZone()));
+            return Optional.of(DateUtil.parseServerSideDate(value, DateUtil.getDefaultUserTimeZone()));
         } catch (DateTimeParseException dte) {
             LOG.debug("Ignored date time value, could not parse string: " + value, dte);
             return Optional.empty();
