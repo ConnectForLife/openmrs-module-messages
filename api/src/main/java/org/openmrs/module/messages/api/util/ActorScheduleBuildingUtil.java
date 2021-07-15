@@ -121,23 +121,20 @@ public final class ActorScheduleBuildingUtil {
         }
     }
 
-    private static void addStartDateElement(List<String> scheduleElements,
-                                              PatientTemplate patientTemplate) {
-        String startDate = getTemplateFieldValue(patientTemplate,
-            TemplateFieldType.START_OF_MESSAGES, true);
-        startDate = getFormattedDateString(startDate);
-        if (startDate != null) {
-            scheduleElements.add(String.format("Starts: %s", startDate));
+    private static void addStartDateElement(List<String> scheduleElements, PatientTemplate patientTemplate) {
+        final String startDateFieldValue = getTemplateFieldValue(patientTemplate, TemplateFieldType.START_OF_MESSAGES, true);
+        final String startDateFormatted = getFormattedDateString(startDateFieldValue);
+
+        if (startDateFormatted != null) {
+            scheduleElements.add(String.format("Starts: %s", startDateFormatted));
         }
     }
 
-    private static void addEndDateElement(List<String> scheduleElements,
-                                          PatientTemplate patientTemplate) {
-        String endDate = getTemplateFieldValue(patientTemplate,
-            TemplateFieldType.END_OF_MESSAGES, true);
+    private static void addEndDateElement(List<String> scheduleElements, PatientTemplate patientTemplate) {
+        final String endDateFieldValue = getTemplateFieldValue(patientTemplate, TemplateFieldType.END_OF_MESSAGES, true);
 
-        if (endDate != null) {
-            scheduleElements.add(String.format("Ends: %s", FieldDateUtil.getEndDateText(endDate)));
+        if (endDateFieldValue != null) {
+            scheduleElements.add(String.format("Ends: %s", FieldDateUtil.getEndDateText(endDateFieldValue)));
         }
     }
 
@@ -152,6 +149,10 @@ public final class ActorScheduleBuildingUtil {
     }
 
     private static String getFormattedDateString(String date) {
+        if (StringUtils.isBlank(date)) {
+            return null;
+        }
+
         try {
             return DateUtil.convertServerSideDateFormatToFrontend(date);
         } catch (Exception e) {
