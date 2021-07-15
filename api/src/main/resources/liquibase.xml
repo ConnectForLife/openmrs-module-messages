@@ -4404,4 +4404,12 @@
                  splitStatements="false"
                  stripComments="false"/>
     </changeSet>
+
+    <changeSet id="messages-AGRE-1626-Missing-default-value" author="Piotr Wargulak">
+        <comment>Sets default value to the 'After number of days' message field.</comment>
+        <update tableName="messages_template_field">
+            <column name="default_value" value="3,7,14,21,28,35,42,49,56,63,70" />
+            <where>uuid='1f2a9027-e871-4eaf-92c4-8c99f8dbc380'</where>
+        </update>
+    </changeSet>
 </databaseChangeLog>
