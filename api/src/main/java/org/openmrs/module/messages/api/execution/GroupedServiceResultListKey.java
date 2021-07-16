@@ -3,7 +3,7 @@ package org.openmrs.module.messages.api.execution;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 
 public class GroupedServiceResultListKey {
 
@@ -11,7 +11,7 @@ public class GroupedServiceResultListKey {
     private final Integer actorId;
     private final Integer patientId;
     private final String actorType;
-    private final Date date;
+    private final ZonedDateTime date;
 
     public GroupedServiceResultListKey(final String singleChannelType, final ServiceResult serviceResult,
                                        final String actorType) {
@@ -38,20 +38,12 @@ public class GroupedServiceResultListKey {
         return actorType;
     }
 
-    public Date getDate() {
+    public ZonedDateTime getDate() {
         return date;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
         return EqualsBuilder.reflectionEquals(this, o);
     }
 

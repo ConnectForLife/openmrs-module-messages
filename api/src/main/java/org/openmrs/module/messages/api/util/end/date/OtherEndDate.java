@@ -14,8 +14,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.messages.api.util.TimeType;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.ZonedDateTime;
 
 import static org.openmrs.module.messages.api.util.FieldDateUtil.SEPARATOR;
 
@@ -30,15 +29,17 @@ public class OtherEndDate implements EndDate {
     }
 
     @Override
-    public Date getDate() {
-        Date endDate = null;
+    public ZonedDateTime getDate() {
+        ZonedDateTime endDate = null;
+
         if (null != params && null != params.getValue() && null != params.getStartDate()) {
             String[] chain = StringUtils.split(params.getValue(), SEPARATOR);
             if (chain.length > 1) {
                 try {
-                    TimeType timeType = TimeType.valueOf(chain[0]);
-                    Integer units = Integer.valueOf(chain[1]);
-                    endDate = getOtherEndDate(params.getStartDate(), timeType, units);
+                    final TimeType timeType = TimeType.valueOf(chain[0]);
+                    final int amount = Integer.parseInt(chain[1]);
+
+                    endDate = params.getStartDate().plus(amount, timeType.getTemporalUnit());
                 } catch (IllegalArgumentException e) {
                     LOGGER.warn("Exception occurred during processing end date: " + e.getMessage());
                 }
@@ -46,35 +47,7 @@ public class OtherEndDate implements EndDate {
         } else {
             LOGGER.warn("The end date could not be calculated for provided params:" + params);
         }
+
         return endDate;
-    }
-
-    private Date getOtherEndDate(Date startDate, TimeType timeType, Integer units) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(startDate);
-        try {
-            calculateOtherDate(calendar, timeType, units);
-        } catch (IllegalArgumentException e) {
-            return null;
-        }
-        return calendar.getTime();
-    }
-
-    private void calculateOtherDate(Calendar calendar, TimeType timeType, Integer units)
-            throws IllegalArgumentException {
-        switch (timeType) {
-            case DAY:
-                calendar.add(Calendar.DAY_OF_MONTH, units);
-                break;
-            case MONTH:
-                calendar.add(Calendar.MONTH, units);
-                break;
-            case YEAR:
-                calendar.add(Calendar.YEAR, units);
-                break;
-            default:
-                throw new IllegalArgumentException(String.format("Invalid Time Type provided '%s'.",
-                        timeType));
-        }
     }
 }

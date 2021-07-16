@@ -9,7 +9,9 @@ import org.openmrs.module.messages.api.model.ErrorMessage;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.service.MessagingService;
 import org.openmrs.module.messages.api.service.PatientTemplateService;
+import org.openmrs.module.messages.api.util.DateUtil;
 import org.openmrs.module.messages.domain.criteria.PatientTemplateCriteria;
+import org.openmrs.module.messages.model.ServiceResultListDTO;
 import org.openmrs.module.messages.web.model.MessagingParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -22,8 +24,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Exposes the endpoints related to managing of scheduled services
@@ -56,8 +59,7 @@ public class MessagingController extends BaseRestController {
     @ResponseBody
     public MessageDetailsDTO getMessageDetails(MessagingParams messagingParams) {
         PatientTemplateCriteria criteria = messagingParams.getCriteria();
-        List<PatientTemplate> patientTemplates = patientTemplateService.findAllByCriteria(
-                criteria);
+        List<PatientTemplate> patientTemplates = patientTemplateService.findAllByCriteria(criteria);
 
         return messageDetailsMapper.toDto(patientTemplates).withPersonId(criteria.getPersonId());
     }
@@ -65,28 +67,31 @@ public class MessagingController extends BaseRestController {
     /**
      * Fetches executions list for a service from given date range
      *
-     * @param personId id of person
-     * @param startDate the start of the date range
-     * @param endDate the end of the date range
-     * @param isPatient identifies whether person is a patient
+     * @param personId       id of person
+     * @param startDateMilli the start of the date range
+     * @param endDateMilli   the end of the date range
+     * @param isPatient      identifies whether person is a patient
      * @return list of service execution result
-     * @throws ExecutionException
      */
     @RequestMapping(value = "", method = RequestMethod.GET)
     @ResponseBody
-    public List<ServiceResultList> getMessages(
-            @RequestParam(value = "personId") Integer personId,
-            @RequestParam(value = "startDate") long startDate,
-            @RequestParam(value = "endDate") long endDate,
-            @RequestParam(value = "isPatient", defaultValue = "true") boolean isPatient
-    ) throws ExecutionException {
-        Date date1 = new Date(startDate);
-        Date date2 = new Date(endDate);
+    public List<ServiceResultListDTO> getMessages(@RequestParam(value = "personId") Integer personId,
+                                                  @RequestParam(value = "startDate") long startDateMilli,
+                                                  @RequestParam(value = "endDate") long endDateMilli,
+                                                  @RequestParam(value = "isPatient", defaultValue = "true")
+                                                          boolean isPatient) {
+        final ZonedDateTime startDate = DateUtil.ofEpochMilliInUserTimeZone(startDateMilli);
+        final ZonedDateTime endDate = DateUtil.ofEpochMilliInUserTimeZone(endDateMilli);
+
+        final List<ServiceResultList> resultLists;
+
         if (isPatient) {
-            return messagingService.retrieveAllServiceExecutions(personId, date1, date2);
+            resultLists = messagingService.retrieveAllServiceExecutions(personId, startDate, endDate);
         } else {
-            return messagingService.retrieveAllServiceExecutionsForActor(personId, date1, date2);
+            resultLists = messagingService.retrieveAllServiceExecutionsForActor(personId, startDate, endDate);
         }
+
+        return resultLists.stream().map(ServiceResultListDTO::new).collect(Collectors.toList());
     }
 
     /**

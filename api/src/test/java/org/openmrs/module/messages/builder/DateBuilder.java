@@ -9,9 +9,10 @@
 
 package org.openmrs.module.messages.builder;
 
-import java.util.Date;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
-public final class DateBuilder extends AbstractBuilder<Date> {
+public final class DateBuilder extends AbstractBuilder<ZonedDateTime> {
 
     public static final int DEFAULT_YEAR = 2019;
     public static final int DEFAULT_MONTH = 1;
@@ -19,6 +20,7 @@ public final class DateBuilder extends AbstractBuilder<Date> {
     public static final int DEFAULT_HRS = 0;
     public static final int DEFAULT_MIN = 0;
     public static final int DEFAULT_SEC = 0;
+    public static final ZoneId DEFAULT_TZ = ZoneId.of("UTC");
 
     private int year = DEFAULT_YEAR;
     private int month = DEFAULT_MONTH;
@@ -26,18 +28,19 @@ public final class DateBuilder extends AbstractBuilder<Date> {
     private int hrs = DEFAULT_HRS;
     private int min = DEFAULT_MIN;
     private int sec = DEFAULT_SEC;
+    private ZoneId zone = DEFAULT_TZ;
 
     public DateBuilder() {
         super();
     }
 
     @Override
-    public Date build() {
-        return new Date(year, month, day, hrs, min, sec);
+    public ZonedDateTime build() {
+        return ZonedDateTime.of(year, month, day, hrs, min, sec, 0, zone);
     }
 
     @Override
-    public Date buildAsNew() {
+    public ZonedDateTime buildAsNew() {
         return build();
     }
 
@@ -68,6 +71,11 @@ public final class DateBuilder extends AbstractBuilder<Date> {
 
     public DateBuilder withSec(int sec) {
         this.sec = sec;
+        return this;
+    }
+
+    public DateBuilder withTimeZone(ZoneId zone) {
+        this.zone = zone;
         return this;
     }
 }

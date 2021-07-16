@@ -14,19 +14,17 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.messages.api.model.TemplateFieldType;
 import org.openmrs.module.messages.api.model.TemplateFieldValue;
-import org.openmrs.module.messages.api.util.end.date.EndDate;
 import org.openmrs.module.messages.api.util.end.date.EndDateFactory;
 import org.openmrs.module.messages.api.util.end.date.EndDateParams;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
-import static org.openmrs.module.messages.api.constants.MessagesConstants.DEFAULT_FRONT_END_DATE_FORMAT;
-import static org.openmrs.module.messages.api.constants.MessagesConstants.DEFAULT_SERVER_SIDE_DATE_FORMAT;
 import static org.openmrs.module.messages.api.model.TemplateFieldType.DAY_OF_WEEK;
 import static org.openmrs.module.messages.api.model.TemplateFieldType.DAY_OF_WEEK_SINGLE;
 import static org.openmrs.module.messages.api.model.TemplateFieldType.END_OF_MESSAGES;
@@ -40,10 +38,9 @@ public final class FieldDateUtil {
     private static final String AFTER_TIMES_TEXT = "after %s time(s)";
     private static final String NEVER_TEXT = "never";
     private static final String EMPTY_TEXT = "";
-    private static final List<TemplateFieldType> FREQUENCIES = Arrays.asList(MESSAGING_FREQUENCY_WEEKLY_OR_MONTHLY,
-            MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY);
-    private static final List<TemplateFieldType> DAYS_OF_WEEK = Arrays.asList(DAY_OF_WEEK,
-        DAY_OF_WEEK_SINGLE);
+    private static final List<TemplateFieldType> FREQUENCIES =
+            Arrays.asList(MESSAGING_FREQUENCY_WEEKLY_OR_MONTHLY, MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY);
+    private static final List<TemplateFieldType> DAYS_OF_WEEK = Arrays.asList(DAY_OF_WEEK, DAY_OF_WEEK_SINGLE);
     private static final int OTHER_TYPE_MIN_PARTS = 3;
     private static final String ADHERENCE_REPORT_DAILY = "Adherence report daily";
     private static final String ADHERENCE_REPORT_WEEKLY = "Adherence report weekly";
@@ -52,75 +49,72 @@ public final class FieldDateUtil {
 
     private static final Log LOG = LogFactory.getLog(FieldDateUtil.class);
 
-    public static Date getStartDate(List<TemplateFieldValue> templateFieldValues) {
-        Date result = parseStringDbDateToServerSideFormat(getStartDateValue(templateFieldValues));
-        if (result == null) {
-            result = parseStringDbDateToServerSideFormat(getDefaultStartDateValue(templateFieldValues));
-        }
-        return result;
+    private FieldDateUtil() {
     }
 
-    public static Date getEndDate(List<TemplateFieldValue> templateFieldValues,
-                                  String templateName) {
-        Date startDate = getStartDate(templateFieldValues);
-        FrequencyType frequency = getFrequency(templateFieldValues, templateName);
-        String[] daysOfWeek = getDaysOfWeek(templateFieldValues);
-        String templateFieldValue = getEndDateValue(templateFieldValues);
-        Date result = null;
-        if (StringUtils.isNotBlank(templateFieldValue)) {
-            result = parseEndDate(templateFieldValue, startDate, frequency, daysOfWeek);
+    public static ZonedDateTime getStartDate(List<TemplateFieldValue> templateFieldValues) {
+        return getStartDateValue(templateFieldValues)
+                .flatMap(FieldDateUtil::parseStringDbDateToServerSideFormat)
+                .orElse(getDefaultStartDateValue(templateFieldValues)
+                        .flatMap(FieldDateUtil::parseStringDbDateToServerSideFormat)
+                        .orElse(null));
+    }
+
+    public static ZonedDateTime getEndDate(List<TemplateFieldValue> templateFieldValues, String templateName) {
+        final ZonedDateTime startDate = getStartDate(templateFieldValues);
+        final FrequencyType frequency = getFrequency(templateFieldValues, templateName);
+        final String[] daysOfWeek = getDaysOfWeek(templateFieldValues);
+
+        final Optional<String> templateFieldValue = getEndDateValue(templateFieldValues);
+
+        final Optional<ZonedDateTime> result;
+
+        if (templateFieldValue.isPresent()) {
+            result = parseEndDate(templateFieldValue.get(), startDate, frequency, daysOfWeek);
         } else {
-            String templateFieldDefaultValue = getDefaultEndDateValue(templateFieldValues);
-            result = parseEndDate(templateFieldDefaultValue, startDate,
-                    frequency, daysOfWeek);
+            result = getDefaultEndDateValue(templateFieldValues).flatMap(
+                    templateFieldDefaultValue -> parseEndDate(templateFieldDefaultValue, startDate, frequency, daysOfWeek));
         }
-        if (null != result) {
-            result = convertToDateWithMaxTime(result);
-        }
-        return result;
+
+        return result.map(FieldDateUtil::convertToDateWithMaxTime).orElse(null);
     }
 
-    private static Date convertToDateWithMaxTime(Date date) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        cal.add(Calendar.DATE, 1);
-        cal.add(Calendar.MILLISECOND, -1);
-        return cal.getTime();
+    private static ZonedDateTime convertToDateWithMaxTime(ZonedDateTime date) {
+        return date.truncatedTo(ChronoUnit.DAYS).plus(Duration.ofDays(1).minusMillis(1));
     }
 
     public static String getEndDateText(String endDate) {
         if (isSpecialPhraseFormat(endDate, EndDateType.AFTER_TIMES)) {
-            String value = StringUtils.split(endDate, SEPARATOR)[1];
+            final String value = StringUtils.split(endDate, SEPARATOR)[1];
             return String.format(AFTER_TIMES_TEXT, value);
         } else if (isSpecialPhraseFormat(endDate, EndDateType.NO_DATE)) {
             return NEVER_TEXT;
-        } else if (isDateParsable(endDate)) {
-            Date result = parseEndDate(endDate);
-            SimpleDateFormat newDateFormat = new SimpleDateFormat(DEFAULT_FRONT_END_DATE_FORMAT);
-            return newDateFormat.format(result);
         } else {
-            return StringUtils.defaultString(endDate, EMPTY_TEXT);
+            return parseEndDateSafe(endDate)
+                    .map(DateUtil::formatToFrontSideDate)
+                    .orElse(StringUtils.defaultString(endDate, EMPTY_TEXT));
         }
     }
 
-    private static Date parseEndDate(String dbValue) {
-        return parseEndDate(dbValue, null, null, null);
-    }
-
-    private static Date parseEndDate(String dbValue, Date startDate, FrequencyType frequency,
-                                     String[] daysOfWeek) {
-        Date result = null;
-        if (!StringUtils.isBlank(dbValue)) {
-            String[] chain = StringUtils.split(dbValue, SEPARATOR);
-            if (chain.length >= 2) {
-                String typeName = chain[0];
-                EndDateType type = EndDateType.fromName(typeName);
-                String value = parseEndDateTail(type, chain);
-                result = getDateFromType(type, new EndDateParams(value, startDate,
-                    frequency, nullableArrayToList(daysOfWeek)));
-            }
+    private static Optional<ZonedDateTime> parseEndDate(String dbValue, ZonedDateTime startDate, FrequencyType frequency,
+                                                        String[] daysOfWeek) {
+        if (StringUtils.isBlank(dbValue)) {
+            return Optional.empty();
         }
-        return result;
+
+        final ZonedDateTime result;
+
+        final String[] chain = StringUtils.split(dbValue, SEPARATOR);
+        if (chain.length >= 2) {
+            final String typeName = chain[0];
+            final EndDateType type = EndDateType.fromName(typeName);
+            final String value = parseEndDateTail(type, chain);
+            result = getDateFromType(type, new EndDateParams(value, startDate, frequency, nullableArrayToList(daysOfWeek)));
+        } else {
+            result = null;
+        }
+
+        return Optional.ofNullable(result);
     }
 
     private static List<String> nullableArrayToList(String[] array) {
@@ -145,144 +139,121 @@ public final class FieldDateUtil {
             case ADHERENCE_REPORT_WEEKLY:
                 return FrequencyType.WEEKLY;
             default:
-                String result = StringUtils.defaultString(
-                    getFrequencyValue(templateFieldValues),
-                    getDefaultFrequencyValue(templateFieldValues)
-                );
-                if (StringUtils.isBlank(result)) {
-                    return DEFAULT_FREQUENCY_TYPE;
-                }
-                return FrequencyType.fromName(result);
+                return getFirstValueOf(templateFieldValues, FREQUENCIES)
+                        .filter(FrequencyType::isValidName)
+                        .map(FrequencyType::fromName)
+                        .orElse(getFirstDefaultValueOf(templateFieldValues, FREQUENCIES)
+                                .filter(FrequencyType::isValidName)
+                                .map(FrequencyType::fromName)
+                                .orElse(DEFAULT_FREQUENCY_TYPE));
         }
     }
 
     private static String[] getDaysOfWeek(List<TemplateFieldValue> templateFieldValues) {
         final String separator = ",";
-        String[] result = StringUtils.split(getDaysOfWeekValue(templateFieldValues), separator);
-        if (result == null) {
-            result = StringUtils.split(getDefaultDaysOfWeekValue(templateFieldValues), separator);
-        }
-        return result;
+
+        return getFirstValueOf(templateFieldValues, DAYS_OF_WEEK)
+                .map(daysOfWeek -> StringUtils.split(daysOfWeek, separator))
+                .orElse(getFirstDefaultValueOf(templateFieldValues, DAYS_OF_WEEK)
+                        .map(defaultDaysOfWeek -> StringUtils.split(defaultDaysOfWeek, separator))
+                        .orElse(new String[0]));
     }
 
-    private static String getEndDateValue(List<TemplateFieldValue> templateFieldValues) {
+    private static Optional<String> getEndDateValue(List<TemplateFieldValue> templateFieldValues) {
         return getValue(templateFieldValues, END_OF_MESSAGES);
     }
 
-    private static String getStartDateValue(List<TemplateFieldValue> templateFieldValues) {
+    private static Optional<String> getStartDateValue(List<TemplateFieldValue> templateFieldValues) {
         return getValue(templateFieldValues, START_OF_MESSAGES);
     }
 
-    private static String getFrequencyValue(List<TemplateFieldValue> templateFieldValues) {
-        String value = null;
-        for (TemplateFieldType type : FREQUENCIES) {
-            value = getValue(templateFieldValues, type);
-            if (value != null) {
-                break;
+    private static Optional<String> getFirstValueOf(List<TemplateFieldValue> templateFieldValues,
+                                                    Iterable<TemplateFieldType> templateFieldTypes) {
+        for (TemplateFieldType type : templateFieldTypes) {
+            final Optional<String> typeValue = getValue(templateFieldValues, type);
+            if (typeValue.isPresent()) {
+                return typeValue;
             }
         }
-        return value;
+
+        return Optional.empty();
     }
 
-    private static String getDaysOfWeekValue(List<TemplateFieldValue> templateFieldValues) {
-        String value = null;
-        for (TemplateFieldType type : DAYS_OF_WEEK) {
-            value = getValue(templateFieldValues, type);
-            if (value != null) {
-                break;
-            }
-        }
-        return value;
-    }
-
-    private static String getDefaultStartDateValue(List<TemplateFieldValue> templateFieldValues) {
+    private static Optional<String> getDefaultStartDateValue(List<TemplateFieldValue> templateFieldValues) {
         return getDefaultValue(templateFieldValues, START_OF_MESSAGES);
     }
 
-    private static String getDefaultEndDateValue(List<TemplateFieldValue> templateFieldValues) {
+    private static Optional<String> getDefaultEndDateValue(List<TemplateFieldValue> templateFieldValues) {
         return getDefaultValue(templateFieldValues, END_OF_MESSAGES);
     }
 
-    private static String getDefaultFrequencyValue(List<TemplateFieldValue> templateFieldValues) {
-        String value = null;
-        for (TemplateFieldType type : FREQUENCIES) {
-            value = getDefaultValue(templateFieldValues, type);
-            if (value != null) {
-                break;
+    private static Optional<String> getFirstDefaultValueOf(List<TemplateFieldValue> templateFieldValues,
+                                                           Iterable<TemplateFieldType> templateFieldTypes) {
+        for (TemplateFieldType type : templateFieldTypes) {
+            final Optional<String> typeValue = getDefaultValue(templateFieldValues, type);
+            if (typeValue.isPresent()) {
+                return typeValue;
             }
         }
-        return value;
+
+        return Optional.empty();
     }
 
-    private static String getDefaultDaysOfWeekValue(List<TemplateFieldValue> templateFieldValues) {
+    private static Optional<String> getValue(List<TemplateFieldValue> templateFieldValues, TemplateFieldType type) {
         String value = null;
-        for (TemplateFieldType type : DAYS_OF_WEEK) {
-            value = getDefaultValue(templateFieldValues, type);
-            if (value != null) {
-                break;
-            }
-        }
-        return value;
-    }
 
-    private static String getValue(List<TemplateFieldValue> templateFieldValues, TemplateFieldType type) {
-        String value = null;
         for (TemplateFieldValue fieldValue : templateFieldValues) {
             if (fieldValue.getTemplateField().getTemplateFieldType().equals(type)) {
                 if (value == null) {
-                    value = fieldValue.getValue();
+                    value = StringUtils.isBlank(fieldValue.getValue()) ? null : fieldValue.getValue();
                 } else {
-                    LOG.warn(String.format("Found redundant field with type %s in the patient template with id %d. "
-                                    + "However, only one expected",
-                            type.name(),
-                            fieldValue.getPatientTemplate().getId()));
+                    LOG.warn(String.format("Found redundant field with type %s in the patient template with id %d. " +
+                            "However, only one expected", type.name(), fieldValue.getPatientTemplate().getId()));
                 }
             }
         }
-        return value;
+
+        return Optional.ofNullable(value);
     }
 
-    private static String getDefaultValue(List<TemplateFieldValue> templateFieldValues, TemplateFieldType type) {
+    private static Optional<String> getDefaultValue(List<TemplateFieldValue> templateFieldValues, TemplateFieldType type) {
         for (TemplateFieldValue fieldValue : templateFieldValues) {
             if (fieldValue.getTemplateField().getTemplateFieldType().equals(type)) {
-                return fieldValue.getTemplateField().getDefaultValue();
+                final String defaultValue = fieldValue.getTemplateField().getDefaultValue();
+                return Optional.ofNullable(StringUtils.isBlank(defaultValue) ? null : defaultValue);
             }
         }
-        return null;
+        return Optional.empty();
     }
 
-    private static Date getDateFromType(EndDateType type, EndDateParams params) {
-        EndDate builder = new EndDateFactory().create(type, params);
-        return builder.getDate();
+    private static ZonedDateTime getDateFromType(EndDateType type, EndDateParams params) {
+        return new EndDateFactory().create(type, params).getDate();
     }
 
-    private static Date parseStringDbDateToServerSideFormat(String value) {
+    private static Optional<ZonedDateTime> parseStringDbDateToServerSideFormat(String value) {
+        if (value == null) {
+            return Optional.empty();
+        }
+
         try {
-            SimpleDateFormat newDateFormat = new SimpleDateFormat(DEFAULT_SERVER_SIDE_DATE_FORMAT);
-            return newDateFormat.parse(value);
-        } catch (ParseException | NullPointerException e) {
-            return null;
+            return Optional.of(DateUtil.parseServerSideDate(value, DateUtil.getDefaultUserTimeZone()));
+        } catch (DateTimeParseException dte) {
+            LOG.debug("Ignored date time value, could not parse string: " + value, dte);
+            return Optional.empty();
         }
     }
 
-    private static boolean isDateParsable(String endDate) {
+    private static Optional<ZonedDateTime> parseEndDateSafe(String endDate) {
         try {
-            Date result = parseEndDate(endDate);
-            SimpleDateFormat newDateFormat = new SimpleDateFormat(DEFAULT_FRONT_END_DATE_FORMAT);
-            String text = newDateFormat.format(result);
-            return StringUtils.isNotBlank(text);
-        } catch (Exception ex) {
-            return false;
+            return parseEndDate(endDate, null, null, null);
+        } catch (DateTimeParseException ex) {
+            LOG.debug("Ignored endDate value, could not parse string: " + endDate, ex);
+            return Optional.empty();
         }
     }
 
     private static boolean isSpecialPhraseFormat(String endDate, EndDateType specialPhrase) {
         String[] chain = StringUtils.split(endDate, SEPARATOR);
-        return chain != null
-                && chain.length > 1
-                && StringUtils.equals(chain[0], specialPhrase.getName());
-    }
-
-    private FieldDateUtil() {
+        return chain != null && chain.length > 1 && StringUtils.equals(chain[0], specialPhrase.getName());
     }
 }

@@ -6,9 +6,9 @@ import org.openmrs.module.messages.builder.DateBuilder;
 import org.openmrs.module.messages.builder.ServiceResultBuilder;
 import org.openmrs.module.messages.builder.ServiceResultListBuilder;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -31,8 +31,8 @@ public class ServiceResultGroupHelperTest {
 
     @Test
     public void shouldGroupByActor() {
-        List<ServiceResultList> input = new ArrayList<ServiceResultList>();
-        Date date = getDate();
+        List<ServiceResultList> input = new ArrayList<>();
+        ZonedDateTime date = getDate();
 
         input.add(new ServiceResultListBuilder()
                 .withChannelType(TEST_CHANNEL_TYPE)
@@ -54,7 +54,7 @@ public class ServiceResultGroupHelperTest {
 
     @Test
     public void shouldGetOnlyFutureServicesWhenFlagIsSet() {
-        Date date = getDate();
+        ZonedDateTime date = getDate();
 
         List<ServiceResultList> input = getServiceResultListsWithOneFutureAndOnePendingStatus(date, ACTOR_1_ID);
 
@@ -65,7 +65,7 @@ public class ServiceResultGroupHelperTest {
 
     @Test
     public void shouldNotFilterServicesWhenGetOnlyFutureServicesFlagIsNotSet() {
-        Date date = getDate();
+        ZonedDateTime date = getDate();
 
         List<ServiceResultList> input = getServiceResultListsWithOneFutureAndOnePendingStatus(date, ACTOR_1_ID);
 
@@ -76,14 +76,14 @@ public class ServiceResultGroupHelperTest {
 
     @Test
     public void shouldGroupByExecutionDateWithAccuracyToSeconds() {
-        List<ServiceResultList> input = new ArrayList<ServiceResultList>();
-        List<ServiceResult> results = new ArrayList<ServiceResult>();
+        List<ServiceResultList> input = new ArrayList<>();
+        List<ServiceResult> results = new ArrayList<>();
 
-        Date date = getDateWithSec(0);
+        ZonedDateTime date = getDateWithSec(0);
         results.add(getResultWithDate(date, PATIENT_TEMPLATE_1_ID, ACTOR_1_ID));
         results.add(getResultWithDate(date, PATIENT_TEMPLATE_1_ID, ACTOR_1_ID));
 
-        Date datePlusOneSec = getDateWithSec(1);
+        ZonedDateTime datePlusOneSec = getDateWithSec(1);
         results.add(getResultWithDate(datePlusOneSec, PATIENT_TEMPLATE_1_ID, ACTOR_1_ID));
 
         input.add(new ServiceResultListBuilder()
@@ -100,11 +100,11 @@ public class ServiceResultGroupHelperTest {
 
     @Test
     public void shouldGroupByActorAndExecutionDate() {
-        List<ServiceResultList> input = new ArrayList<ServiceResultList>();
-        Date date = getDateWithSec(0);
-        Date datePlusOneSec = getDateWithSec(1);
+        List<ServiceResultList> input = new ArrayList<>();
+        ZonedDateTime date = getDateWithSec(0);
+        ZonedDateTime datePlusOneSec = getDateWithSec(1);
 
-        List<ServiceResult> resultsForActor1 = new ArrayList<ServiceResult>();
+        List<ServiceResult> resultsForActor1 = new ArrayList<>();
         resultsForActor1.add(getResultWithDate(date, PATIENT_TEMPLATE_1_ID, ACTOR_1_ID));
         resultsForActor1.add(getResultWithDate(datePlusOneSec, PATIENT_TEMPLATE_1_ID, ACTOR_1_ID));
         input.add(new ServiceResultListBuilder()
@@ -113,7 +113,7 @@ public class ServiceResultGroupHelperTest {
                 .withActorId(ACTOR_1_ID)
                 .build());
 
-        List<ServiceResult> resultsForActor2 = new ArrayList<ServiceResult>();
+        List<ServiceResult> resultsForActor2 = new ArrayList<>();
         resultsForActor2.add(getResultWithDate(date, PATIENT_TEMPLATE_1_ID, ACTOR_2_ID));
         resultsForActor2.add(getResultWithDate(date, PATIENT_TEMPLATE_1_ID, ACTOR_2_ID));
         resultsForActor2.add(getResultWithDate(datePlusOneSec, PATIENT_TEMPLATE_1_ID, ACTOR_2_ID));
@@ -133,13 +133,13 @@ public class ServiceResultGroupHelperTest {
 
     @Test
     public void shouldConsiderWholeDateNotOnlyDaytime() {
-        List<ServiceResultList> input = new ArrayList<ServiceResultList>();
-        List<ServiceResult> results = new ArrayList<ServiceResult>();
+        List<ServiceResultList> input = new ArrayList<>();
+        List<ServiceResult> results = new ArrayList<>();
 
-        Date date = getDateWithDay(0);
+        ZonedDateTime date = getDateWithDay(1);
         results.add(getResultWithDate(date, PATIENT_TEMPLATE_1_ID, ACTOR_1_ID));
 
-        Date datePlusOneDay = getDateWithDay(1);
+        ZonedDateTime datePlusOneDay = getDateWithDay(2);
         results.add(getResultWithDate(datePlusOneDay, PATIENT_TEMPLATE_1_ID, ACTOR_1_ID));
         results.add(getResultWithDate(datePlusOneDay, PATIENT_TEMPLATE_1_ID, ACTOR_1_ID));
 
@@ -157,8 +157,8 @@ public class ServiceResultGroupHelperTest {
 
     @Test
     public void shouldNotCreateGroupForEmptyResultsList() {
-        List<ServiceResultList> input = new ArrayList<ServiceResultList>();
-        List<ServiceResult> emptyResults = new ArrayList<ServiceResult>();
+        List<ServiceResultList> input = new ArrayList<>();
+        List<ServiceResult> emptyResults = new ArrayList<>();
 
         input.add(new ServiceResultListBuilder()
                 .withChannelType(TEST_CHANNEL_TYPE)
@@ -177,8 +177,8 @@ public class ServiceResultGroupHelperTest {
 
     @Test
     public void allElementsShouldHaveTheSameDateAsTheGroupObject() {
-        List<ServiceResultList> input = new ArrayList<ServiceResultList>();
-        Date date = getDate();
+        List<ServiceResultList> input = new ArrayList<>();
+        ZonedDateTime date = getDate();
 
         input.add(new ServiceResultListBuilder()
                 .withChannelType(TEST_CHANNEL_TYPE)
@@ -196,8 +196,8 @@ public class ServiceResultGroupHelperTest {
 
     @Test
     public void allElementsShouldHaveTheSameActorAsTheGroupObject() {
-        List<ServiceResultList> input = new ArrayList<ServiceResultList>();
-        Date date = getDate();
+        List<ServiceResultList> input = new ArrayList<>();
+        ZonedDateTime date = getDate();
 
         input.add(new ServiceResultListBuilder()
                 .withChannelType(TEST_CHANNEL_TYPE)
@@ -215,8 +215,8 @@ public class ServiceResultGroupHelperTest {
 
     @Test
     public void shouldGroupDifferentMessagesForTheSameActor() {
-        List<ServiceResultList> input = new ArrayList<ServiceResultList>();
-        Date date = getDate();
+        List<ServiceResultList> input = new ArrayList<>();
+        ZonedDateTime date = getDate();
 
         input.add(new ServiceResultListBuilder()
                 .withChannelType(TEST_CHANNEL_TYPE)
@@ -238,8 +238,8 @@ public class ServiceResultGroupHelperTest {
 
     @Test
     public void shouldGroupByActorWithProperActorType() {
-        List<ServiceResultList> input = new ArrayList<ServiceResultList>();
-        Date date = getDate();
+        List<ServiceResultList> input = new ArrayList<>();
+        ZonedDateTime date = getDate();
 
         input.add(new ServiceResultListBuilder()
                 .withChannelType(TEST_CHANNEL_TYPE)
@@ -269,8 +269,8 @@ public class ServiceResultGroupHelperTest {
         }
     }
 
-    private List<ServiceResultList> getServiceResultListsWithOneFutureAndOnePendingStatus(Date date, int actorId) {
-        List<ServiceResultList> input = new ArrayList<ServiceResultList>();
+    private List<ServiceResultList> getServiceResultListsWithOneFutureAndOnePendingStatus(ZonedDateTime date, int actorId) {
+        List<ServiceResultList> input = new ArrayList<>();
 
         input.add(new ServiceResultListBuilder()
                 .withChannelType(TEST_CHANNEL_TYPE)
@@ -283,36 +283,36 @@ public class ServiceResultGroupHelperTest {
         return input;
     }
 
-    private List<ServiceResult> getResultsFor(List<GroupedServiceResultList> input, int actorId, Date executionDate) {
+    private List<ServiceResult> getResultsFor(List<GroupedServiceResultList> input, int actorId, ZonedDateTime executionDate) {
         for (GroupedServiceResultList entry : input) {
-            if (entry.getKey().getActorId().equals(actorId) && entry.getKey().getDate().equals(executionDate)) {
+            if (entry.getKey().getActorId().equals(actorId) && entry.getKey().getDate().isEqual(executionDate)) {
                 return mapToServiceResult(entry.getGroup());
             }
         }
-        return new ArrayList<ServiceResult>();
+        return new ArrayList<>();
     }
 
     private List<ServiceResult> mapToServiceResult(Collection<GroupedServiceResult> groupedServiceResults) {
-        final List<ServiceResult> result = new ArrayList<ServiceResult>();
+        final List<ServiceResult> result = new ArrayList<>();
         for (GroupedServiceResult groupedServiceResult : groupedServiceResults) {
             result.add(groupedServiceResult.getServiceResult());
         }
         return result;
     }
 
-    private Date getDateWithDay(int day) {
+    private ZonedDateTime getDateWithDay(int day) {
         return new DateBuilder().withDay(day).build();
     }
 
-    private Date getDateWithSec(int sec) {
+    private ZonedDateTime getDateWithSec(int sec) {
         return new DateBuilder().withSec(sec).build();
     }
 
-    private Date getDate() {
+    private ZonedDateTime getDate() {
         return new DateBuilder().build();
     }
 
-    private ServiceResult getResultWithDate(Date date, Integer patientTemplateId, Integer actorAndPatientId) {
+    private ServiceResult getResultWithDate(ZonedDateTime date, Integer patientTemplateId, Integer actorAndPatientId) {
         return new ServiceResultBuilder()
                 .withActorId(actorAndPatientId)
                 .withPatientId(actorAndPatientId)
@@ -323,7 +323,7 @@ public class ServiceResultGroupHelperTest {
     }
 
     private <T> List<T> wrap(T toWrap) {
-        ArrayList<T> list = new ArrayList<T>();
+        ArrayList<T> list = new ArrayList<>();
         list.add(toWrap);
         return list;
     }

@@ -1,11 +1,11 @@
 package org.openmrs.module.messages.api.util.end.date;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 
 public class NoEndDate implements EndDate {
 
     @Override
-    public Date getDate() {
+    public ZonedDateTime getDate() {
         return null;
     }
 }

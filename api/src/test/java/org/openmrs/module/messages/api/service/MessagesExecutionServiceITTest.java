@@ -24,14 +24,13 @@ import org.openmrs.module.messages.api.model.ScheduledServiceGroup;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
 import org.openmrs.module.messages.api.util.DateUtil;
 import org.openmrs.module.messages.api.util.JsonUtil;
-import org.openmrs.scheduler.SchedulerException;
+import org.openmrs.module.messages.api.util.ScheduledExecutionContextUtil;
 import org.openmrs.scheduler.SchedulerService;
 import org.openmrs.scheduler.TaskDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.everyItem;
@@ -60,28 +59,21 @@ public class MessagesExecutionServiceITTest extends ContextSensitiveTest {
 
     private static final String CHANNEL_TYPE_1_NAME = Constant.CHANNEL_TYPE_CALL;
     private static final String EXECUTION_ID = "executionId123";
-
+    private final Gson gson = JsonUtil.getGson();
     @Autowired
     @Qualifier("schedulerService")
     private SchedulerService schedulerService; // this is mocked in xml - in does not work in testing env
-
     @Autowired
     @Qualifier("messages.messagingGroupService")
     private MessagingGroupService messagingGroupService;
-
     @Autowired
     @Qualifier("messages.messagingService")
     private MessagingService messagingService;
-
     @Autowired
     @Qualifier("messages.messagesExecutionService")
     private MessagesExecutionService executionService;
-
     @Captor
     private ArgumentCaptor<TaskDefinition> taskCaptor;
-
-    private final Gson gson = JsonUtil.getGson();
-
     private ScheduledServiceGroup scheduledServiceGroup;
 
     private ScheduledService deliveredScheduledService;
@@ -138,10 +130,12 @@ public class MessagesExecutionServiceITTest extends ContextSensitiveTest {
         final ServiceStatus previousGroupStatus = scheduledServiceGroup.getStatus();
         assumeThat(previousGroupStatus, not(isOneOf(ServiceStatus.FAILED, ServiceStatus.DELIVERED)));
 
-        messagingService.registerAttempt(pendingScheduledService, ServiceStatus.DELIVERED, DateUtil.now(), EXECUTION_ID);
-        messagingService.registerAttempt(failedScheduledService, ServiceStatus.DELIVERED, DateUtil.now(), EXECUTION_ID);
-        messagingService.registerAttempt(pendingScheduledServiceInAnotherChannel,
-                ServiceStatus.DELIVERED, DateUtil.now(), EXECUTION_ID);
+        messagingService.registerAttempt(pendingScheduledService, ServiceStatus.DELIVERED, DateUtil.toDate(DateUtil.now()),
+                EXECUTION_ID);
+        messagingService.registerAttempt(failedScheduledService, ServiceStatus.DELIVERED, DateUtil.toDate(DateUtil.now()),
+                EXECUTION_ID);
+        messagingService.registerAttempt(pendingScheduledServiceInAnotherChannel, ServiceStatus.DELIVERED,
+                DateUtil.toDate(DateUtil.now()), EXECUTION_ID);
 
         executionService.executionCompleted(SCHEDULED_SERVICE_GROUP, EXECUTION_ID, CHANNEL_TYPE_1_NAME);
 
@@ -152,15 +146,13 @@ public class MessagesExecutionServiceITTest extends ContextSensitiveTest {
     @Test
     public void executionCompletedShouldBeCompletedSuccessfulWithNullExecutionId() {
         final int previousAttemptsNumForFailedService = failedScheduledService.getNumberOfAttempts();
-        assumeThat(failedScheduledService.getDeliveryAttempts(),
-                not(hasItem(hasProperty("serviceExecution", nullValue()))));
+        assumeThat(failedScheduledService.getDeliveryAttempts(), not(hasItem(hasProperty("serviceExecution", nullValue()))));
 
         executionService.executionCompleted(SCHEDULED_SERVICE_GROUP, null, CHANNEL_TYPE_1_NAME);
 
         failedScheduledService = messagingService.getById(FAILED_SCHEDULED_SERVICE);
         assertThat(failedScheduledService.getNumberOfAttempts(), is(previousAttemptsNumForFailedService + 1));
-        assertThat(failedScheduledService.getDeliveryAttempts(),
-                hasItem(hasProperty("serviceExecution", nullValue())));
+        assertThat(failedScheduledService.getDeliveryAttempts(), hasItem(hasProperty("serviceExecution", nullValue())));
     }
 
     @Test(expected = EntityNotFoundException.class)
@@ -169,8 +161,7 @@ public class MessagesExecutionServiceITTest extends ContextSensitiveTest {
     }
 
     @Test
-    public void executionCompletedShouldInvokeReschedulingAlsoForFailedAndPendingServices()
-            throws Exception {
+    public void executionCompletedShouldInvokeReschedulingAlsoForFailedAndPendingServices() {
         assumeThat(pendingScheduledService.getStatus(), is(ServiceStatus.PENDING));
         assumeThat(failedScheduledService.getStatus(), is(ServiceStatus.FAILED));
 
@@ -180,18 +171,16 @@ public class MessagesExecutionServiceITTest extends ContextSensitiveTest {
 
         ScheduledExecutionContext executionContext = getExecutionContext(task);
         assertThat(executionContext.getGroupId(), is(SCHEDULED_SERVICE_GROUP));
-        assertThat(executionContext.getServiceIdsToExecute(), hasItems(
-                failedScheduledService.getId(),
-                pendingScheduledService.getId()));
-        assertThat(executionContext.getServiceIdsToExecute(), allOf(
-                not(hasItems(pendingScheduledServiceInAnotherChannel.getId())),
-                not(hasItems(deliveredScheduledService.getId()))
-        ));
+        assertThat(executionContext.getServiceIdsToExecute(),
+                hasItems(failedScheduledService.getId(), pendingScheduledService.getId()));
+        assertThat(executionContext.getServiceIdsToExecute(),
+                allOf(not(hasItems(pendingScheduledServiceInAnotherChannel.getId())),
+                        not(hasItems(deliveredScheduledService.getId()))));
     }
 
     @Test
-    public void executionCompletedShouldInvokeReschedulingAlsoWhenAllServicesHavePendingStatus() throws Exception {
-        ArrayList<Integer> servicesWithPendingStatusIds = new ArrayList<Integer>();
+    public void executionCompletedShouldInvokeReschedulingAlsoWhenAllServicesHavePendingStatus() {
+        ArrayList<Integer> servicesWithPendingStatusIds = new ArrayList<>();
         for (ScheduledService ss : scheduledServiceGroup.getScheduledServices()) {
             ss.setStatus(ServiceStatus.PENDING);
             servicesWithPendingStatusIds.add(ss.getId());
@@ -206,17 +195,15 @@ public class MessagesExecutionServiceITTest extends ContextSensitiveTest {
 
         ScheduledExecutionContext executionContext = getExecutionContext(task);
         assertThat(executionContext.getGroupId(), is(SCHEDULED_SERVICE_GROUP));
-        assertThat(executionContext.getServiceIdsToExecute(), Matchers.<List<Integer>>is(servicesWithPendingStatusIds));
+        assertThat(executionContext.getServiceIdsToExecute(), Matchers.is(servicesWithPendingStatusIds));
     }
 
-    private TaskDefinition getCreatedTask() throws SchedulerException {
+    private TaskDefinition getCreatedTask() {
         verify(schedulerService, times(2)).saveTaskDefinition(taskCaptor.capture());
         return taskCaptor.getValue();
     }
 
-    protected ScheduledExecutionContext getExecutionContext(TaskDefinition task) {
-        return gson.fromJson(
-                task.getProperty(EXECUTION_CONTEXT),
-                ScheduledExecutionContext.class);
+    private ScheduledExecutionContext getExecutionContext(TaskDefinition task) {
+        return ScheduledExecutionContextUtil.fromJson(task.getProperty(EXECUTION_CONTEXT));
     }
 }

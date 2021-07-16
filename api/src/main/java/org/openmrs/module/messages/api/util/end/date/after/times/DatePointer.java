@@ -1,22 +1,15 @@
 package org.openmrs.module.messages.api.util.end.date.after.times;
 
-import org.joda.time.LocalDate;
-
-import java.util.Date;
+import java.time.ZonedDateTime;
 
 public class DatePointer {
 
     private int counter;
-    private LocalDate date;
+    private ZonedDateTime date;
 
-    public DatePointer(int counter, LocalDate date) {
+    public DatePointer(int counter, ZonedDateTime date) {
         this.counter = counter;
         this.date = date;
-    }
-
-    public DatePointer(int counter, Date date) {
-        this.counter = counter;
-        this.date = new LocalDate(date);
     }
 
     public int getCounter() {
@@ -44,7 +37,7 @@ public class DatePointer {
         date = date.withDayOfMonth(1);
     }
 
-    public LocalDate getDate() {
+    public ZonedDateTime getDate() {
         return date;
     }
 }

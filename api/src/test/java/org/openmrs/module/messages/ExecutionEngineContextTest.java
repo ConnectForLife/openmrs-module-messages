@@ -9,7 +9,6 @@
 
 package org.openmrs.module.messages;
 
-import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Test;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
@@ -31,15 +30,17 @@ import org.openmrs.module.messages.api.model.types.ServiceStatus;
 import org.openmrs.module.messages.api.service.PatientTemplateService;
 import org.openmrs.module.messages.api.service.TemplateFieldService;
 import org.openmrs.module.messages.api.service.TemplateService;
+import org.openmrs.module.messages.api.util.DateUtil;
 import org.openmrs.module.messages.api.util.EndDateType;
 import org.openmrs.module.messages.builder.TemplateFieldBuilder;
 import org.openmrs.module.messages.builder.TemplateFieldValueBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import java.time.Month;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -51,21 +52,24 @@ import static org.openmrs.module.messages.api.model.TemplateFieldType.START_OF_M
 
 public class ExecutionEngineContextTest extends ContextSensitiveTest {
 
-    private static final Date START_DATE = DateUtils.addYears(new Date(), -2);
-    private static final Date END_DATE = DateUtils.addYears(new Date(), 2);
+    private static final ZonedDateTime TEST_NOW = DateUtil.now();
+    private static final ZonedDateTime START_DATE = TEST_NOW.minusYears(2);
+    private static final ZonedDateTime END_DATE = TEST_NOW.plusYears(2);
 
     private static final int YEAR_2020 = 2020;
     private static final int YEAR_2019 = 2019;
-    private static final Date DECEMBER_15_2019 = getMinTimeForDate(YEAR_2019, Calendar.DECEMBER, 15);
+    private static final ZonedDateTime DECEMBER_15_2019 =
+            getMinTimeForDate(YEAR_2019, Month.DECEMBER.getValue(), 15, TEST_NOW.getZone());
     private static final String DECEMBER_15_2019_TXT = "2019-12-15";
-    private static final Date JANUARY_10 = getMaxTimeForDate(YEAR_2020, Calendar.JANUARY, 10);
+    private static final ZonedDateTime JANUARY_10 = getMaxTimeForDate(YEAR_2020, Month.JANUARY.getValue(), 10,
+            TEST_NOW.getZone());
     private static final String JANUARY_10_TXT = "2020-01-10";
-    private static final Date JANUARY_13 = getMinTimeForDate(YEAR_2020, Calendar.JANUARY, 13);
+    private static final ZonedDateTime JANUARY_13 = getMinTimeForDate(YEAR_2020, Month.JANUARY.getValue(), 13, TEST_NOW.getZone());
     private static final String JANUARY_13_TXT = "2020-01-13";
 
     private static final String SERVICE_NAME = "Service Name";
     // drop mili precision for H2 testing purposes
-    private static final Date BIRTH_DATE = DateUtils.setMilliseconds(DateUtils.addYears(new Date(), -1), 0);
+    private static final ZonedDateTime BIRTH_DATE = TEST_NOW.minusYears(1).truncatedTo(ChronoUnit.SECONDS);
 
     @Autowired
     @Qualifier("messages.ServiceExecutor")
@@ -92,7 +96,7 @@ public class ExecutionEngineContextTest extends ContextSensitiveTest {
     @Test
     public void shouldSetupContext() throws ExecutionException {
         PatientTemplate patientTemplate = prepareData();
-        Range<Date> dateRange = new Range<>(START_DATE, END_DATE);
+        Range<ZonedDateTime> dateRange = new Range<>(START_DATE, END_DATE);
 
         ServiceResultList serviceResultList = serviceExecutor.execute(patientTemplate, dateRange);
 
@@ -108,7 +112,7 @@ public class ExecutionEngineContextTest extends ContextSensitiveTest {
         assertEquals(Constant.CHANNEL_TYPE_CALL, result.getChannelType());
         assertEquals(ServiceStatus.FUTURE, result.getServiceStatus());
         // query adds 1 year to the birth date
-        assertEquals(DateUtils.addYears(BIRTH_DATE, 1).getTime(), result.getExecutionDate().getTime());
+        assertEquals(BIRTH_DATE.plusYears(1).toInstant(), result.getExecutionDate().toInstant());
 
         assertEquals(1, result.getAdditionalParams().size());
         assertEquals("M", result.getAdditionalParams().get("GENDER"));
@@ -117,7 +121,7 @@ public class ExecutionEngineContextTest extends ContextSensitiveTest {
     @Test
     public void shouldReturnPatientTemplateEndDateIfItIsBeforeRangeEndDate() throws ExecutionException {
         PatientTemplate patientTemplate = prepareData2(DECEMBER_15_2019_TXT, JANUARY_10_TXT);
-        Range<Date> dateRange = new Range<>(DECEMBER_15_2019, JANUARY_13);
+        Range<ZonedDateTime> dateRange = new Range<>(DECEMBER_15_2019, JANUARY_13);
 
         ServiceResultList serviceResultList = serviceExecutor.execute(patientTemplate, dateRange);
 
@@ -130,7 +134,7 @@ public class ExecutionEngineContextTest extends ContextSensitiveTest {
     @Test
     public void shouldReturnRangeEndDateIfItIsBeforePatientTemplateEndDate() throws ExecutionException {
         PatientTemplate patientTemplate = prepareData2(DECEMBER_15_2019_TXT, JANUARY_13_TXT);
-        Range<Date> dateRange = new Range<>(DECEMBER_15_2019, JANUARY_10);
+        Range<ZonedDateTime> dateRange = new Range<>(DECEMBER_15_2019, JANUARY_10);
 
         ServiceResultList serviceResultList = serviceExecutor.execute(patientTemplate, dateRange);
 
@@ -148,7 +152,7 @@ public class ExecutionEngineContextTest extends ContextSensitiveTest {
         Patient patient = new Patient();
         patient.addName(new PersonName("Test", "John", "Boe"));
         patient.setGender("M");
-        patient.setBirthdate(BIRTH_DATE);
+        patient.setBirthdate(DateUtil.toDate(BIRTH_DATE));
 
         PatientIdentifier id = new PatientIdentifier("XXX", idType, locationService.getDefaultLocation());
         patient.addIdentifier(id);
@@ -157,8 +161,7 @@ public class ExecutionEngineContextTest extends ContextSensitiveTest {
 
         Template template = new Template();
         template.setServiceQuery("SELECT DATEADD('YEAR', 1, per.birthdate) AS EXECUTION_DATE, 'msg' AS MESSAGE_ID, " +
-                "'Call' AS CHANNEL_ID, per.gender AS GENDER " +
-                "FROM patient p " +
+                "'Call' AS CHANNEL_ID, per.gender AS GENDER " + "FROM patient p " +
                 "JOIN person per ON per.person_id = p.patient_id  " +
                 "WHERE per.birthdate > :startDateTime AND per.birthdate < :endDateTime");
         template.setCalendarServiceQuery("SELECT CALENDAR SERVICE QUERY");
@@ -188,8 +191,7 @@ public class ExecutionEngineContextTest extends ContextSensitiveTest {
     private PatientTemplate prepareData2(String start, String end) {
         Template template = new Template();
         template.setServiceQuery("SELECT DATEADD('YEAR', 1, per.birthdate) AS EXECUTION_DATE, 'msg' AS MESSAGE_ID, " +
-                "'Call' AS CHANNEL_ID, per.gender AS GENDER " +
-                "FROM patient p " +
+                "'Call' AS CHANNEL_ID, per.gender AS GENDER " + "FROM patient p " +
                 "JOIN person per ON per.person_id = p.patient_id  " +
                 "WHERE per.birthdate > :startDateTime AND per.birthdate < :startDateTime");
         template.setCalendarServiceQuery("SELECT CALENDAR SERVICE QUERY");
@@ -201,13 +203,11 @@ public class ExecutionEngineContextTest extends ContextSensitiveTest {
         PatientTemplate patientTemplate = prepareBase();
 
         List<TemplateFieldValue> values = new ArrayList<>();
-        values.add(buildTemplateFieldWithValue(MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY,
-            "Daily",
-                template, patientTemplate));
-        values.add(buildTemplateFieldWithValue(START_OF_MESSAGES, start,
-                template, patientTemplate));
-        values.add(buildTemplateFieldWithValue(END_OF_MESSAGES, EndDateType.DATE_PICKER.getName() + "|" + end,
-                template, patientTemplate));
+        values.add(buildTemplateFieldWithValue(MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY, "Daily", template,
+                patientTemplate));
+        values.add(buildTemplateFieldWithValue(START_OF_MESSAGES, start, template, patientTemplate));
+        values.add(buildTemplateFieldWithValue(END_OF_MESSAGES, EndDateType.DATE_PICKER.getName() + "|" + end, template,
+                patientTemplate));
 
         patientTemplate.setTemplateFieldValues(values);
         patientTemplate.setTemplate(template);
@@ -215,14 +215,10 @@ public class ExecutionEngineContextTest extends ContextSensitiveTest {
         return patientTemplateService.saveOrUpdate(patientTemplate);
     }
 
-    private TemplateFieldValue buildTemplateFieldWithValue(TemplateFieldType type,
-                                                           String value,
-                                                           Template template,
+    private TemplateFieldValue buildTemplateFieldWithValue(TemplateFieldType type, String value, Template template,
                                                            PatientTemplate patientTemplate) {
-        TemplateField field = templateFieldService.saveOrUpdate(new TemplateFieldBuilder()
-                .withTemplateFieldType(type)
-                .withTemplate(template)
-                .build());
+        TemplateField field = templateFieldService.saveOrUpdate(
+                new TemplateFieldBuilder().withTemplateFieldType(type).withTemplate(template).build());
         return new TemplateFieldValueBuilder()
                 .withPatientTemplate(patientTemplate)
                 .withTemplateField(field)
@@ -238,7 +234,7 @@ public class ExecutionEngineContextTest extends ContextSensitiveTest {
         Patient patient = new Patient();
         patient.addName(new PersonName("Test", "John", "Boe"));
         patient.setGender("M");
-        patient.setBirthdate(BIRTH_DATE);
+        patient.setBirthdate(DateUtil.toDate(BIRTH_DATE));
 
         PatientIdentifier id = new PatientIdentifier("XXX", idType, locationService.getDefaultLocation());
         patient.addIdentifier(id);

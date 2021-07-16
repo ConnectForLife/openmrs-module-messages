@@ -99,7 +99,7 @@ public class PatientTemplateServiceImpl extends BaseOpenmrsDataService<PatientTe
 
         TemplateFieldValue dateStartValue = new TemplateFieldValue();
         dateStartValue.setTemplateField(dateStart);
-        dateStartValue.setValue(DateUtil.convertDate(DateUtil.now(), "yyyy-MM-dd"));
+        dateStartValue.setValue(DateUtil.formatToServerSideDate(DateUtil.now()));
         dateStartValue.setPatientTemplate(visitReminder);
 
         TemplateFieldValue dateEndValue = new TemplateFieldValue();

@@ -8,6 +8,7 @@ import org.openmrs.module.messages.api.execution.GroupedServiceResultList;
 import org.openmrs.module.messages.api.model.ScheduledService;
 import org.openmrs.module.messages.api.model.ScheduledServiceGroup;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
+import org.openmrs.module.messages.api.util.DateUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,7 @@ public class ScheduledGroupMapper extends AbstractOpenMrsDataMapper<GroupedServi
         result.setActor(new Person(dto.getKey().getActorId()));
         result.setStatus(ServiceStatus.PENDING);
         result.setScheduledServices(getScheduledServices(dto.getGroup()));
-        result.setMsgSendTime(dto.getKey().getDate());
+        result.setMsgSendTime(DateUtil.toDate(dto.getKey().getDate()));
         result.setChannelType(dto.getKey().getChannelType());
         return result;
     }

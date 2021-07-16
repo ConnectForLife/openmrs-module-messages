@@ -11,14 +11,14 @@ package org.openmrs.module.messages.builder;
 
 import org.openmrs.module.messages.api.execution.ServiceResult;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import java.util.Map;
 
 public final class ServiceResultBuilder extends AbstractBuilder<ServiceResult> {
 
     private Integer patientId;
     private Integer actorId;
-    private Date executionDate;
+    private ZonedDateTime executionDate;
     private String channelType;
     private Integer patientTemplateId;
     private Map<String, Object> additionalParams;
@@ -54,7 +54,7 @@ public final class ServiceResultBuilder extends AbstractBuilder<ServiceResult> {
         return this;
     }
 
-    public ServiceResultBuilder withExecutionDate(Date executionDate) {
+    public ServiceResultBuilder withExecutionDate(ZonedDateTime executionDate) {
         this.executionDate = executionDate;
         return this;
     }

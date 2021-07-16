@@ -9,7 +9,6 @@
 
 package org.openmrs.module.messages.api.scheduler.job;
 
-import com.google.gson.Gson;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
@@ -20,7 +19,7 @@ import org.openmrs.module.messages.api.service.ConfigService;
 import org.openmrs.module.messages.api.service.MessagingService;
 import org.openmrs.module.messages.api.service.ServiceResultsHandlerService;
 import org.openmrs.module.messages.api.util.DateUtil;
-import org.openmrs.module.messages.api.util.JsonUtil;
+import org.openmrs.module.messages.api.util.ScheduledExecutionContextUtil;
 import org.openmrs.module.messages.domain.criteria.ScheduledServiceCriteria;
 
 import java.util.HashMap;
@@ -33,8 +32,6 @@ public class ServiceGroupDeliveryJobDefinition extends JobDefinition {
 
     private static final Log LOGGER = LogFactory.getLog(ServiceGroupDeliveryJobDefinition.class);
     private static final String SHORT_DATE_FORMAT = "yyyyMMddHHmmz";
-
-    private final Gson gson = JsonUtil.getGson();
 
     private ScheduledExecutionContext executionContext;
 
@@ -49,8 +46,7 @@ public class ServiceGroupDeliveryJobDefinition extends JobDefinition {
     @Override
     public void execute() {
         // Firstly, we need to initialize object fields basing on the saved properties
-        executionContext =
-                gson.fromJson(taskDefinition.getProperties().get(EXECUTION_CONTEXT), ScheduledExecutionContext.class);
+        executionContext = ScheduledExecutionContextUtil.fromJson(taskDefinition.getProperties().get(EXECUTION_CONTEXT));
         LOGGER.info(String.format("Started task with id %s", taskDefinition.getId()));
         executeInternal();
     }
@@ -59,7 +55,8 @@ public class ServiceGroupDeliveryJobDefinition extends JobDefinition {
     public String getTaskName() {
         return String.format("a:%s:%dp:%dd:%s", this.executionContext.getChannelType(), this.executionContext.getActorId(),
                 this.executionContext.getPatientId(),
-                DateUtil.convertDate(this.executionContext.getExecutionDate(), SHORT_DATE_FORMAT));
+                DateUtil.formatDateTime(this.executionContext.getExecutionDate().atZone(DateUtil.getDefaultSystemTimeZone()),
+                        SHORT_DATE_FORMAT));
     }
 
     @Override
@@ -74,7 +71,7 @@ public class ServiceGroupDeliveryJobDefinition extends JobDefinition {
 
     @Override
     public Map<String, String> getProperties() {
-        return wrapByMap(EXECUTION_CONTEXT, gson.toJson(executionContext));
+        return wrapByMap(EXECUTION_CONTEXT, ScheduledExecutionContextUtil.toJson(executionContext));
     }
 
     private void executeInternal() {
@@ -99,7 +96,7 @@ public class ServiceGroupDeliveryJobDefinition extends JobDefinition {
     }
 
     private Map<String, String> wrapByMap(String key, String value) {
-        HashMap<String, String> map = new HashMap<String, String>();
+        HashMap<String, String> map = new HashMap<>();
         map.put(key, value);
         return map;
     }
