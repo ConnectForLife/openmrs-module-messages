@@ -13,6 +13,8 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.messages.api.constants.ConfigConstants;
 import org.openmrs.module.messages.api.event.MessagesEvent;
 import org.openmrs.module.messages.api.event.SmsEventParamConstants;
 import org.openmrs.module.messages.api.model.NotificationTemplate;
@@ -109,6 +111,7 @@ public class SmsServiceResultsHandlerServiceImpl extends AbstractServiceResultsH
         }
 
         final Map<String, Object> params = new HashMap<>();
+        params.put(SmsEventParamConstants.CONFIG, getSMSConfig(executionContext));
         params.put(SmsEventParamConstants.MESSAGE_ID, smsService.getId());
         params.put(SmsEventParamConstants.RECIPIENTS,
                 Collections.singletonList(getPersonPhone(executionContext.getActorId())));
@@ -145,5 +148,12 @@ public class SmsServiceResultsHandlerServiceImpl extends AbstractServiceResultsH
             serviceParams.put(SmsEventParamConstants.MESSAGE_GROUP_ID, smsService.getGroup().getId().toString());
         }
         return serviceParams;
+    }
+
+    private String getSMSConfig(ScheduledExecutionContext executionContext) {
+        return executionContext.getChannelConfiguration()
+                .getOrDefault(SMS_CHANNEL_CONFIG_NAME,
+                        Context.getAdministrationService()
+                                .getGlobalProperty(ConfigConstants.SMS_CONFIG, ConfigConstants.SMS_CONFIG_DEFAULT_VALUE));
     }
 }
