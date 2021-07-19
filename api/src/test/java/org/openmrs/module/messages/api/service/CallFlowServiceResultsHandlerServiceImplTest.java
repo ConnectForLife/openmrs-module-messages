@@ -49,6 +49,8 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 public class CallFlowServiceResultsHandlerServiceImplTest {
 
     private static final String PHONE_NUMBER = "612345987";
+    private static final String CALL_FLOW_NAME = "WelcomeFlow";
+    private static final String CONFIG_NAME = "nexmo";
 
     @Mock
     private PersonService personService;
@@ -68,6 +70,8 @@ public class CallFlowServiceResultsHandlerServiceImplTest {
     @InjectMocks
     private CallFlowServiceResultsHandlerServiceImpl callFlowServiceResultsHandlerService;
 
+    private ScheduledService scheduledService;
+
     @Before
     public void setUp() {
         mockStatic(Context.class);
@@ -78,22 +82,22 @@ public class CallFlowServiceResultsHandlerServiceImplTest {
                 ConfigConstants.CALL_DEFAULT_FLOW_DEFAULT_VALUE))
                 .thenReturn(ConfigConstants.CALL_DEFAULT_FLOW_DEFAULT_VALUE);
         PowerMockito.when(Context.getAdministrationService()).thenReturn(administrationService);
+
+        PatientTemplate patientTemplate = new PatientTemplateBuilder().build();
+        scheduledService = new ScheduledServiceBuilder()
+                .withTemplate(patientTemplate)
+                .build();
+
+        when(person.getAttribute(ConfigConstants.PERSON_PHONE_ATTR)).thenReturn(personAttribute);
+        when(personAttribute.getValue()).thenReturn(PHONE_NUMBER);
     }
 
     @Test
     public void shouldSendEventWithProperEventParams() {
-        PatientTemplate patientTemplate = new PatientTemplateBuilder().build();
-        ScheduledService scheduledService = new ScheduledServiceBuilder()
-                .withTemplate(patientTemplate)
-                .build();
         ScheduledExecutionContext scheduledExecutionContext = new ScheduledExecutionContextBuilder().build();
-
         when(personService.getPerson(scheduledExecutionContext.getActorId())).thenReturn(person);
-        when(person.getAttribute(ConfigConstants.PERSON_PHONE_ATTR)).thenReturn(personAttribute);
-        when(personAttribute.getValue()).thenReturn(PHONE_NUMBER);
 
-        callFlowServiceResultsHandlerService.handle(Collections.singletonList(scheduledService),
-                new ScheduledExecutionContextBuilder().build());
+        callFlowServiceResultsHandlerService.handle(Collections.singletonList(scheduledService), scheduledExecutionContext);
 
         verify(messagesEventService).sendEventMessage(messagesEventCaptor.capture());
 
@@ -108,5 +112,26 @@ public class CallFlowServiceResultsHandlerServiceImplTest {
         assertThat(additionalParams.get(ACTOR_ID), is(Integer.toString(scheduledExecutionContext.getActorId())));
         assertThat(additionalParams.get(ACTOR_TYPE), is(scheduledExecutionContext.getActorType()));
         assertThat(additionalParams.get(REF_KEY), is(Integer.toString(scheduledExecutionContext.getGroupId())));
+    }
+
+    @Test
+    public void shouldSendEventWithProperCallConfigAndCallFlowName() {
+        ScheduledExecutionContext scheduledExecutionContext = new ScheduledExecutionContextBuilder().build();
+        scheduledExecutionContext.getChannelConfiguration().put(
+                CallFlowServiceResultsHandlerServiceImpl.CALL_CHANNEL_CONF_FLOW_NAME, CALL_FLOW_NAME);
+        scheduledExecutionContext.getChannelConfiguration().put(
+                CallFlowServiceResultsHandlerServiceImpl.CALL_CHANNEL_CONFIG_NAME, CONFIG_NAME);
+
+        when(personService.getPerson(scheduledExecutionContext.getActorId())).thenReturn(person);
+
+        callFlowServiceResultsHandlerService.handle(Collections.singletonList(scheduledService), scheduledExecutionContext);
+
+        verify(messagesEventService).sendEventMessage(messagesEventCaptor.capture());
+
+        MessagesEvent messagesEvent = messagesEventCaptor.getValue();
+        Map<String, Object> params = messagesEvent.getParameters();
+
+        assertThat(params.get(CONFIG), is(CONFIG_NAME));
+        assertThat(params.get(FLOW_NAME), is(CALL_FLOW_NAME));
     }
 }

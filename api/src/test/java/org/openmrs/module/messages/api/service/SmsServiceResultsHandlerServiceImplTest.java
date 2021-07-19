@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.openmrs.Person;
 import org.openmrs.PersonAttribute;
+import org.openmrs.api.AdministrationService;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.api.constants.ConfigConstants;
@@ -23,6 +24,7 @@ import org.openmrs.module.messages.builder.PatientTemplateBuilder;
 import org.openmrs.module.messages.builder.ScheduledExecutionContextBuilder;
 import org.openmrs.module.messages.builder.ScheduledServiceBuilder;
 import org.openmrs.module.messages.builder.ScheduledServiceParameterBuilder;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -34,6 +36,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.openmrs.module.messages.api.constants.MessagesConstants.SMS_INITIATE_EVENT;
@@ -49,6 +52,9 @@ public class SmsServiceResultsHandlerServiceImplTest {
 
     private static final String SMS_EXPECTED_MESSAGE = "This is message.";
     private static final String SMS_PARSED_TEMPLATE = String.format("{ message:\"%s\" }", SMS_EXPECTED_MESSAGE);
+
+    private static final String SMS_CONFIG_GP_NAME = "nexmo";
+    private static final String SMS_CONFIG_CONTEXT_NAME = "turnIO";
 
     @Mock
     private PersonService personService;
@@ -82,21 +88,25 @@ public class SmsServiceResultsHandlerServiceImplTest {
                 .withTemplate(patientTemplate)
                 .build();
 
-        ScheduledExecutionContext scheduledExecutionContext = new ScheduledExecutionContextBuilder().build();
 
-        when(personService.getPerson(scheduledExecutionContext.getActorId())).thenReturn(person);
         when(person.getAttribute(ConfigConstants.PERSON_PHONE_ATTR)).thenReturn(personAttribute);
         when(personAttribute.getValue()).thenReturn(PHONE_NUMBER);
+
+        AdministrationService administrationService = mock(AdministrationService.class);
+        PowerMockito.when(Context.getAdministrationService()).thenReturn(administrationService);
+        when(administrationService.getGlobalProperty(ConfigConstants.SMS_CONFIG,
+                ConfigConstants.SMS_CONFIG_DEFAULT_VALUE)).thenReturn(SMS_CONFIG_GP_NAME);
     }
 
     @Test
     public void shouldSendEventWithProperEventParamsForVisitReminderSms() {
         prepareVisitReminderService();
 
+        ScheduledExecutionContext scheduledExecutionContext = new ScheduledExecutionContextBuilder().build();
+        when(personService.getPerson(scheduledExecutionContext.getActorId())).thenReturn(person);
         when(notificationTemplateService.parseTemplate(eq(patientTemplate), anyMap())).thenReturn(SMS_PARSED_TEMPLATE);
 
-        smsServiceResultsHandlerService.handle(Collections.singletonList(scheduledService),
-                new ScheduledExecutionContextBuilder().build());
+        smsServiceResultsHandlerService.handle(Collections.singletonList(scheduledService), scheduledExecutionContext);
 
         verify(messagesEventService).sendEventMessage(messagesEventCaptor.capture());
 
@@ -106,16 +116,18 @@ public class SmsServiceResultsHandlerServiceImplTest {
         assertThat(messagesEvent.getSubject(), is(SMS_INITIATE_EVENT));
         assertThat(params.get(SmsEventParamConstants.RECIPIENTS), is(Collections.singletonList(PHONE_NUMBER)));
         assertThat(params.get(SmsEventParamConstants.MESSAGE), is(SMS_EXPECTED_MESSAGE));
+        assertThat(params.get(SmsEventParamConstants.CONFIG), is(SMS_CONFIG_GP_NAME));
     }
 
     @Test
     public void shouldSendEventWithProperEventParamsForVisitReminderWhatsapp() {
         prepareVisitReminderService();
 
+        ScheduledExecutionContext scheduledExecutionContext = new ScheduledExecutionContextBuilder().build();
+        when(personService.getPerson(scheduledExecutionContext.getActorId())).thenReturn(person);
         when(notificationTemplateService.parseTemplate(eq(patientTemplate), anyMap())).thenReturn(WHATSAPP_PARSED_TEMPLATE);
 
-        smsServiceResultsHandlerService.handle(Collections.singletonList(scheduledService),
-                new ScheduledExecutionContextBuilder().build());
+        smsServiceResultsHandlerService.handle(Collections.singletonList(scheduledService), scheduledExecutionContext);
 
         verify(messagesEventService).sendEventMessage(messagesEventCaptor.capture());
 
@@ -124,6 +136,29 @@ public class SmsServiceResultsHandlerServiceImplTest {
 
         assertThat(messagesEvent.getSubject(), is(SMS_INITIATE_EVENT));
         assertThat(params.get(SmsEventParamConstants.RECIPIENTS), is(Collections.singletonList(PHONE_NUMBER)));
+        assertThat(params.get(SmsEventParamConstants.CONFIG), is(SMS_CONFIG_GP_NAME));
+    }
+
+    @Test
+    public void shouldSendEventWithProperSmsConfigFromExecutionContext() {
+        prepareVisitReminderService();
+
+        ScheduledExecutionContext scheduledExecutionContext = new ScheduledExecutionContextBuilder().build();
+        scheduledExecutionContext.getChannelConfiguration().put(
+                SmsServiceResultsHandlerServiceImpl.SMS_CHANNEL_CONFIG_NAME, SMS_CONFIG_CONTEXT_NAME);
+        when(personService.getPerson(scheduledExecutionContext.getActorId())).thenReturn(person);
+        when(notificationTemplateService.parseTemplate(eq(patientTemplate), anyMap())).thenReturn(WHATSAPP_PARSED_TEMPLATE);
+
+        smsServiceResultsHandlerService.handle(Collections.singletonList(scheduledService), scheduledExecutionContext);
+
+        verify(messagesEventService).sendEventMessage(messagesEventCaptor.capture());
+
+        MessagesEvent messagesEvent = messagesEventCaptor.getValue();
+        Map<String, Object> params = messagesEvent.getParameters();
+
+        assertThat(messagesEvent.getSubject(), is(SMS_INITIATE_EVENT));
+        assertThat(params.get(SmsEventParamConstants.RECIPIENTS), is(Collections.singletonList(PHONE_NUMBER)));
+        assertThat(params.get(SmsEventParamConstants.CONFIG), is(SMS_CONFIG_CONTEXT_NAME));
     }
 
     private void prepareVisitReminderService() {

@@ -42,6 +42,10 @@ public class SmsServiceResultsHandlerServiceImpl extends AbstractServiceResultsH
      * The name of configuration property with Message template value.
      */
     public static final String SMS_CHANNEL_CONF_TEMPLATE_VALUE = "templateValue";
+    /**
+     * The name of sms-channel configuration property with SMS config.
+     */
+    public static final String SMS_CHANNEL_CONFIG_NAME = "config";
 
     public static final String MESSAGE_KEY = "message";
 

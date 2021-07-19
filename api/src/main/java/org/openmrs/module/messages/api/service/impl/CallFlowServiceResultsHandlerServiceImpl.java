@@ -41,6 +41,10 @@ public class CallFlowServiceResultsHandlerServiceImpl extends AbstractServiceRes
      * The name of Call-channel configuration property with Call Flow name.
      */
     public static final String CALL_CHANNEL_CONF_FLOW_NAME = "callFlow";
+    /**
+     * The name of Call-channel configuration property with Call config.
+     */
+    public static final String CALL_CHANNEL_CONFIG_NAME = "config";
 
     private static final Log LOG = LogFactory.getLog(CallFlowServiceResultsHandlerServiceImpl.class);
 
