@@ -32,5 +32,10 @@ public final class SmsEventParamConstants {
      */
     public static final String SERVICE_NAME = "service";
 
+    /**
+     * Config that is used for the SMS message
+     */
+    public static final String CONFIG = "config";
+
     private SmsEventParamConstants() { }
 }

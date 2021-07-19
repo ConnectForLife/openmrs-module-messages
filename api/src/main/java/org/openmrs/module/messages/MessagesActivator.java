@@ -122,6 +122,7 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
         createNotificationTemplateConfig();
         createDefaultUserTimezone();
         createCallConfiguration();
+        createSMSConfiguration();
         createSchedulerConfiguration();
     }
 
@@ -264,6 +265,12 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
         createGlobalSettingIfNotExists(ConfigConstants.CALL_DEFAULT_FLOW,
                 ConfigConstants.CALL_DEFAULT_FLOW_DEFAULT_VALUE,
                 ConfigConstants.CALL_DEFAULT_FLOW_DESCRIPTION);
+    }
+
+    private void createSMSConfiguration() {
+        createGlobalSettingIfNotExists(ConfigConstants.SMS_CONFIG,
+                ConfigConstants.SMS_CONFIG_DEFAULT_VALUE,
+                ConfigConstants.SMS_CONFIG_DESCRIPTION);
     }
 
     private void createSchedulerConfiguration() {

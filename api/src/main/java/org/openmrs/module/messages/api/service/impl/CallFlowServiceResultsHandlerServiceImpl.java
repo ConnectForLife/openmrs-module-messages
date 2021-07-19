@@ -41,6 +41,10 @@ public class CallFlowServiceResultsHandlerServiceImpl extends AbstractServiceRes
      * The name of Call-channel configuration property with Call Flow name.
      */
     public static final String CALL_CHANNEL_CONF_FLOW_NAME = "callFlow";
+    /**
+     * The name of Call-channel configuration property with Call config.
+     */
+    public static final String CALL_CHANNEL_CONFIG_NAME = "config";
 
     private static final Log LOG = LogFactory.getLog(CallFlowServiceResultsHandlerServiceImpl.class);
 
@@ -61,7 +65,7 @@ public class CallFlowServiceResultsHandlerServiceImpl extends AbstractServiceRes
 
     private MessagesEvent buildMessage(List<ScheduledService> callServices, ScheduledExecutionContext executionContext) {
         Map<String, Object> params = new HashMap<>();
-        params.put(CONFIG, getCallConfig());
+        params.put(CONFIG, getCallConfig(executionContext));
         params.put(FLOW_NAME, getCallFlow(executionContext));
 
         String personPhone = getPersonPhone(executionContext.getActorId());
@@ -96,17 +100,18 @@ public class CallFlowServiceResultsHandlerServiceImpl extends AbstractServiceRes
         return result;
     }
 
-    private Object getCallConfig() {
-        return Context
-                .getAdministrationService()
-                .getGlobalProperty(ConfigConstants.CALL_CONFIG, ConfigConstants.CALL_CONFIG_DEFAULT_VALUE);
+    private Object getCallConfig(ScheduledExecutionContext executionContext) {
+        return executionContext.getChannelConfiguration()
+                .getOrDefault(CALL_CHANNEL_CONFIG_NAME,
+                        Context.getAdministrationService()
+                        .getGlobalProperty(ConfigConstants.CALL_CONFIG, ConfigConstants.CALL_CONFIG_DEFAULT_VALUE));
     }
 
     private String getCallFlow(ScheduledExecutionContext executionContext) {
-        final String defaultCallFlow = Context
-                .getAdministrationService()
-                .getGlobalProperty(ConfigConstants.CALL_DEFAULT_FLOW, ConfigConstants.CALL_DEFAULT_FLOW_DEFAULT_VALUE);
-
-        return executionContext.getChannelConfiguration().getOrDefault(CALL_CHANNEL_CONF_FLOW_NAME, defaultCallFlow);
+        return executionContext.getChannelConfiguration()
+                .getOrDefault(CALL_CHANNEL_CONF_FLOW_NAME,
+                        Context.getAdministrationService()
+                                .getGlobalProperty(ConfigConstants.CALL_DEFAULT_FLOW,
+                                        ConfigConstants.CALL_DEFAULT_FLOW_DEFAULT_VALUE));
     }
 }

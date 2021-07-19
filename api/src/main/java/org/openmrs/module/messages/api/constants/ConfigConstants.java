@@ -295,6 +295,11 @@ public final class ConfigConstants {
             "interval (in second) of launching the job which will schedule tasks for the upcoming messages. " +
             "A server reboot is required to effect changes.";
 
+    public static final String SMS_CONFIG = "messages.smsConfig";
+    public static final String SMS_CONFIG_DEFAULT_VALUE = "";
+    public static final String SMS_CONFIG_DESCRIPTION = "The string value representing the default value of " +
+            "sms configuration used to send sms. If empty, SMS module will use default config set in this module";
+
     private ConfigConstants() {
     }
 }
