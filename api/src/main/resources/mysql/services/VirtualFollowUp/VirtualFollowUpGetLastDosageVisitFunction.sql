@@ -3,7 +3,7 @@ CREATE FUNCTION `GET_LAST_DOSAGE_VISIT`(regimen_name varchar(128), patient_id in
 BEGIN
     DECLARE indx int;
     DECLARE visit_types_list varchar(512);
-    DECLARE regimen_visits_json varchar(4048);
+    DECLARE regimen_visits_json text;
     DECLARE visit_name_json varchar(64);
     DECLARE prev_visit_dose_number int;
     DECLARE visit_dose_number int;
