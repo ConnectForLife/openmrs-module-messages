@@ -4381,18 +4381,6 @@
         ]]></sql>
     </changeSet>
 
-    <changeSet id="messages-AGRE-1626-Virtual-Follow-Up-service-functions" author="Piotr Wargulak">
-        <comment>Adds DB functions used by Virtual Follow Up message template.</comment>
-        <sqlFile encoding="UTF-8"
-                 path="mysql/services/CommonStartDateFunction.sql"
-                 splitStatements="false"
-                 stripComments="false"/>
-        <sqlFile encoding="UTF-8"
-                 path="mysql/services/VirtualFollowUp/VirtualFollowUpGetLastDosageVisitFunction.sql"
-                 splitStatements="false"
-                 stripComments="false"/>
-    </changeSet>
-
     <changeSet id="messages-AGRE-1626-Virtual-Follow-Up-service-queries" author="Piotr Wargulak">
         <comment>Sets correct SQL queries for Virtual Follow Up message template.</comment>
         <sqlFile encoding="UTF-8"
@@ -4411,5 +4399,24 @@
             <column name="default_value" value="3,7,14,21,28,35,42,49,56,63,70" />
             <where>uuid='1f2a9027-e871-4eaf-92c4-8c99f8dbc380'</where>
         </update>
+    </changeSet>
+
+    <changeSet id="increase-regimen-visits-json-var-size" author="Dawid Ruchniewicz" runOnChange="true">
+        <comment>
+            Adds DB functions used by Virtual Follow Up message template
+            and updates regimen visits json variable size from varchar to text.
+        </comment>
+        <sql>
+            DROP FUNCTION IF EXISTS GET_PREDICTION_START_DATE_FOR_TEMPLATE;
+            DROP FUNCTION IF EXISTS GET_LAST_DOSAGE_VISIT;
+        </sql>
+        <sqlFile encoding="UTF-8"
+                 path="mysql/services/CommonStartDateFunction.sql"
+                 splitStatements="false"
+                 stripComments="false"/>
+        <sqlFile encoding="UTF-8"
+                 path="mysql/services/VirtualFollowUp/VirtualFollowUpGetLastDosageVisitFunction.sql"
+                 splitStatements="false"
+                 stripComments="false"/>
     </changeSet>
 </databaseChangeLog>
