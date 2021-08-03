@@ -59,7 +59,7 @@
     <person_attribute
             person_id="997"
             person_attribute_id="1010"
-            value="ACTIVE"
+            value="ACTIVATED"
             person_attribute_type_id="710"
             creator="1"
             date_created="2010-11-16"
@@ -108,13 +108,13 @@
 
     <person_attribute
             person_id="1111"
-            person_attribute_id="1010"
+            person_attribute_id="1011"
             value="DEACTIVATED"
             person_attribute_type_id="710"
             creator="1"
             date_created="2010-11-16"
             voided="false"
-            uuid="a3deb6dd-49da-4568-a24a-e6f0dae4133c"/>
+            uuid="a3deb6dd-49da-4568-a24a-e6f0dae4133d"/>
 
     <patient
             patient_id="1111"
@@ -159,7 +159,7 @@
     <person_attribute
             person_attribute_id="999"
             person_id="999"
-            value="ACTIVE"
+            value="ACTIVATED"
             person_attribute_type_id="710"
             creator="1"
             date_created="2010-11-16"
@@ -478,7 +478,7 @@
     <person_attribute
             person_id="677"
             person_attribute_id="1677"
-            value="ACTIVE"
+            value="ACTIVATED"
             person_attribute_type_id="710"
             creator="1"
             date_created="2010-11-16"
@@ -528,7 +528,7 @@
     <person_attribute
             person_id="674"
             person_attribute_id="674"
-            value="ACTIVE"
+            value="ACTIVATED"
             person_attribute_type_id="710"
             creator="1"
             date_created="2010-11-16"
@@ -771,7 +771,7 @@
     <person_attribute
             person_id="675"
             person_attribute_id="675"
-            value="ACTIVE"
+            value="ACTIVATED"
             person_attribute_type_id="710"
             creator="1"
             date_created="2010-11-16"
