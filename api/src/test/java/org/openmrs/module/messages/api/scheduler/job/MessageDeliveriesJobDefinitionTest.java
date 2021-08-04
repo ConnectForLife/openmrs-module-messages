@@ -160,7 +160,7 @@ public class MessageDeliveriesJobDefinitionTest extends BaseModuleContextSensiti
     }
 
     @Test
-    public void shouldNOTSaveScheduledServicesGroupForActorWithNoConsentWhenConsentControlNotEnabled() {
+    public void shouldNotSaveScheduledServicesGroupForActorWithNoConsentWhenConsentControlNotEnabled() {
         Context.getAdministrationService().setGlobalProperty(ConfigConstants.CONSENT_CONTROL_KEY, "false");
         List<ScheduledService> listBeforeSave =
                 findScheduledServicesByDefaultPatientAndActorId(DEFAULT_NO_CONSENT_CAREGIVER_ID);
