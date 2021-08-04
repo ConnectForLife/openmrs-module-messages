@@ -22,7 +22,6 @@ import org.openmrs.module.messages.api.mappers.ScheduledGroupMapper;
 import org.openmrs.module.messages.api.model.PersonStatus;
 import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
 import org.openmrs.module.messages.api.model.ScheduledServiceGroup;
-import org.openmrs.module.messages.api.service.ConfigService;
 import org.openmrs.module.messages.api.service.MessagesDeliveryService;
 import org.openmrs.module.messages.api.service.MessagingGroupService;
 import org.openmrs.module.messages.api.service.MessagingService;
@@ -90,8 +89,7 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
 
     private boolean shouldGroupBeCreated(Person patient, Person person, GroupedServiceResultList groupedResult) {
         return isGroupNotExist(patient.getId(), person.getId(), groupedResult.getKey().getDate(),
-                groupedResult.getKey().getChannelType()) &&
-                (isConsentControlDisabled() || (isActive(person) && isActive(patient)));
+                groupedResult.getKey().getChannelType()) && isActive(person) && isActive(patient);
     }
 
     private ScheduledServiceGroup convertAndSave(GroupedServiceResultList groupedResult) {
@@ -107,14 +105,6 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
                     person.getId()));
         }
         return isActive;
-    }
-
-    private boolean isConsentControlDisabled() {
-        boolean isControl = getConfigService().isConsentControlEnabled();
-        if (!isControl) {
-            LOGGER.debug("Consent control is not enabled. Skipping validation...");
-        }
-        return !isControl;
     }
 
     private boolean isGroupNotExist(int patientId, int actorId, ZonedDateTime executionDate, String channelType) {
@@ -145,10 +135,6 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
 
     private PersonService getPersonService() {
         return Context.getRegisteredComponent(MessagesConstants.PERSON_SERVICE, PersonService.class);
-    }
-
-    private ConfigService getConfigService() {
-        return Context.getRegisteredComponent(MessagesConstants.CONFIG_SERVICE, ConfigService.class);
     }
 
     private void logNumberOfResults(List<ServiceResultList> results) {
