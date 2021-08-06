@@ -9,6 +9,7 @@ import org.openmrs.module.messages.api.event.MessagesEvent;
 import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
 import org.openmrs.module.messages.api.service.MessagesEventService;
 import org.openmrs.module.messages.api.service.ServiceResultsHandlerService;
+import org.openmrs.module.messages.api.util.PersonUtil;
 
 import static org.openmrs.module.messages.api.constants.ConfigConstants.PERSON_PHONE_ATTR;
 
@@ -42,7 +43,7 @@ public abstract class AbstractServiceResultsHandlerService implements ServiceRes
         PersonAttribute attribute = person.getAttribute(PERSON_PHONE_ATTR);
         if (attribute == null || StringUtils.isBlank(attribute.getValue())) {
             throw new MessagesRuntimeException(String.format("Phone number not specified for " +
-                "person %s", person.getId()));
+                "person with name: %s and id: %d", PersonUtil.getPersonFullName(person), person.getId()));
         }
         return attribute.getValue();
     }

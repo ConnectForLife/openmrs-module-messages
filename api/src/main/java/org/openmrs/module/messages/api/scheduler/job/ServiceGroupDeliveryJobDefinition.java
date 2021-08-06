@@ -48,7 +48,11 @@ public class ServiceGroupDeliveryJobDefinition extends JobDefinition {
         // Firstly, we need to initialize object fields basing on the saved properties
         executionContext = ScheduledExecutionContextUtil.fromJson(taskDefinition.getProperties().get(EXECUTION_CONTEXT));
         LOGGER.info(String.format("Started task with id %s", taskDefinition.getId()));
-        executeInternal();
+        try {
+            executeInternal();
+        } catch (Exception ex) {
+            LOGGER.error(String.format("Error occurred during executing task with id: %d", taskDefinition.getId()), ex);
+        }
     }
 
     @Override
