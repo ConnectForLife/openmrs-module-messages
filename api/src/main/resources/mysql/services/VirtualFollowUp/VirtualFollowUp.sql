@@ -10,7 +10,12 @@ UPDATE messages_template SET service_query =
     FROM (
         SELECT
             DATE_ADD(
-                (SELECT IFNULL(e.encounter_datetime, v.date_started) FROM visit v LEFT JOIN encounter e ON e.visit_id = v.visit_id WHERE v.visit_id = foo.LAST_DOSAGE_VISIT_ID),
+                (SELECT IFNULL(e.encounter_datetime, v.date_started)
+                    FROM visit v
+                    LEFT JOIN encounter e ON e.voided = 0 AND e.visit_id = v.visit_id
+                    WHERE v.visit_id = foo.LAST_DOSAGE_VISIT_ID
+                    ORDER BY IFNULL(e.encounter_datetime, v.date_started) DESC
+                    LIMIT 1),
                 INTERVAL CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(foo.DAYS_AFTER_VISIT_CFG, \',\', n.`number`), \',\', -1) AS UNSIGNED) DAY
             ) as EXECUTION_DATE,
             foo.PATIENT_ID AS PATIENT_ID,

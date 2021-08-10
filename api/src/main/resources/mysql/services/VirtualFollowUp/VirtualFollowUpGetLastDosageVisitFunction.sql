@@ -4,6 +4,7 @@ BEGIN
     DECLARE indx int;
     DECLARE visit_types_list varchar(512);
     DECLARE regimen_visits_json text;
+    DECLARE regimen_visits_count int;
     DECLARE visit_name_json varchar(64);
     DECLARE prev_visit_dose_number int;
     DECLARE visit_dose_number int;
@@ -27,6 +28,12 @@ BEGIN
              FROM global_property gp
              WHERE gp.property = 'cfl.vaccines');
 
+    SET regimen_visits_count = JSON_LENGTH(regimen_visits_json);
+
+    IF (regimen_visits_count IS NULL || regimen_visits_count = 0) THEN
+        RETURN 0;
+    END IF;
+
     SET visit_types_list = ',';
     SET indx = 0;
     SET prev_visit_dose_number = -1;
@@ -41,7 +48,7 @@ BEGIN
         END IF;
 
         SET indx = indx + 1;
-    UNTIL indx = JSON_LENGTH(regimen_visits_json)
+    UNTIL indx = regimen_visits_count
         END REPEAT;
 
     SELECT count(v.visit_id) INTO visit_number
@@ -67,6 +74,8 @@ BEGIN
                     FROM visit rv
                              INNER JOIN visit_type rvt ON rv.visit_type_id = rvt.visit_type_id
                     WHERE rvt.name = last_visit_type and rv.patient_id = patient_id
+                    ORDER BY rv.date_started DESC
+                    LIMIT 1
                 ),
                 0
         );
