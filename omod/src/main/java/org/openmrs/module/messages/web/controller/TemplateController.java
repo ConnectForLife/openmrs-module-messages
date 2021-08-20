@@ -6,6 +6,7 @@ import org.openmrs.module.messages.api.exception.ValidationException;
 import org.openmrs.module.messages.api.mappers.TemplateMapper;
 import org.openmrs.module.messages.api.model.ErrorMessage;
 import org.openmrs.module.messages.api.model.Template;
+import org.openmrs.module.messages.api.service.NotificationTemplateService;
 import org.openmrs.module.messages.api.service.TemplateService;
 import org.openmrs.module.messages.api.util.validate.ValidationComponent;
 import org.openmrs.module.messages.domain.PagingInfo;
@@ -37,6 +38,9 @@ public class TemplateController extends BaseRestController {
     private TemplateService templateService;
 
     @Autowired
+    private NotificationTemplateService notificationTemplateService;
+
+    @Autowired
     @Qualifier("messages.templateMapper")
     private TemplateMapper templateMapper;
 
@@ -60,6 +64,18 @@ public class TemplateController extends BaseRestController {
     }
 
     /**
+     * Gets names of Notification Template Global Properties required for all non-retired Message Templates.
+     *
+     * @return the list of Strings, never null
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/globalProperties")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public List<String> getRequiredNotificationTemplatePropertyNames() {
+        return notificationTemplateService.getRequiredNotificationTemplatePropertyNames();
+    }
+
+    /**
      * Creates a new template
      *
      * @param templateDTO DTO object containing all necessary data to create template
@@ -78,15 +94,14 @@ public class TemplateController extends BaseRestController {
     /**
      * Updates existing template
      *
-     * @param templateId id of existing template
+     * @param templateId  id of existing template
      * @param templateDto DTO object containing data needed to update template
      * @return DTO object containing data related to updated template
      */
     @RequestMapping(value = "/{templateId}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public TemplateDTO updateTemplate(@PathVariable Integer templateId,
-                                      @RequestBody TemplateDTO templateDto) {
+    public TemplateDTO updateTemplate(@PathVariable Integer templateId, @RequestBody TemplateDTO templateDto) {
         validateTemplateId(templateId);
         Template existing = templateService.getById(templateId);
         validateTemplate(templateDto, existing, templateId);
@@ -106,8 +121,8 @@ public class TemplateController extends BaseRestController {
     @ResponseBody
     public TemplateWrapper updateTemplates(@RequestBody TemplateWrapper templateWrapper) {
         validateTemplates(templateWrapper.getTemplates());
-        return new TemplateWrapper(templateMapper.toDtos(
-                templateService.saveOrUpdateByDtos(templateWrapper.getTemplates())));
+        return new TemplateWrapper(
+                templateMapper.toDtos(templateService.saveOrUpdateByDtos(templateWrapper.getTemplates())));
     }
 
     private void validateTemplates(List<TemplateDTO> templateDtos) {
@@ -126,8 +141,7 @@ public class TemplateController extends BaseRestController {
 
     private void validateIfNewTemplate(TemplateDTO templateDTO) {
         if (templateDTO.getId() != null) {
-            throw new ValidationException(new ErrorMessage("id",
-                    "Template isn't a new object (use PUT tu update)."));
+            throw new ValidationException(new ErrorMessage("id", "Template isn't a new object (use PUT tu update)."));
         }
     }
 
@@ -139,8 +153,8 @@ public class TemplateController extends BaseRestController {
 
     private void validateOldTemplate(@PathVariable Integer templateId, Template oldTemplate) {
         if (oldTemplate == null) {
-            throw new ValidationException(new ErrorMessage("templateId",
-                    String.format("The template with %d id doesn't exist", templateId)));
+            throw new ValidationException(
+                    new ErrorMessage("templateId", String.format("The template with %d id doesn't exist", templateId)));
         }
     }
 }

@@ -13,6 +13,7 @@ import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.messages.api.model.NotificationTemplate;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -33,5 +34,13 @@ public interface NotificationTemplateService extends OpenmrsService {
     String buildMessageByGlobalProperty(Map<String, Object> param, String globalPropertyName);
 
     String parseTemplate(PatientTemplate patientTemplate, NotificationTemplate notificationTemplate,
-                                     Map<String, String> serviceParam);
+                         Map<String, String> serviceParam);
+
+    /**
+     * Gets a list of names of Global Properties which are storing Notification Templates for all non-retired Message
+     * Templates.
+     *
+     * @return the list of GP names, never null
+     */
+    List<String> getRequiredNotificationTemplatePropertyNames();
 }
