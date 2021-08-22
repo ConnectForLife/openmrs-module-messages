@@ -4381,18 +4381,6 @@
         ]]></sql>
     </changeSet>
 
-    <changeSet id="messages-AGRE-1626-Virtual-Follow-Up-service-queries" author="Piotr Wargulak">
-        <comment>Sets correct SQL queries for Virtual Follow Up message template.</comment>
-        <sqlFile encoding="UTF-8"
-                 path="mysql/services/VirtualFollowUp/VirtualFollowUp.sql"
-                 splitStatements="false"
-                 stripComments="false"/>
-        <sqlFile encoding="UTF-8"
-                 path="mysql/services/VirtualFollowUp/VirtualFollowUpCalendarQuery.sql"
-                 splitStatements="false"
-                 stripComments="false"/>
-    </changeSet>
-
     <changeSet id="messages-AGRE-1626-Missing-default-value" author="Piotr Wargulak">
         <comment>Sets default value to the 'After number of days' message field.</comment>
         <update tableName="messages_template_field">
@@ -4416,6 +4404,18 @@
                  stripComments="false"/>
         <sqlFile encoding="UTF-8"
                  path="mysql/services/VirtualFollowUp/VirtualFollowUpGetLastDosageVisitFunction.sql"
+                 splitStatements="false"
+                 stripComments="false"/>
+    </changeSet>
+
+    <changeSet id="messages-AGRE-1626-Virtual-Follow-Up-service-queries-update" author="Piotr Wargulak" runOnChange="true">
+        <comment>Sets correct SQL queries for Virtual Follow Up message template.</comment>
+        <sqlFile encoding="UTF-8"
+                 path="mysql/services/VirtualFollowUp/VirtualFollowUp.sql"
+                 splitStatements="false"
+                 stripComments="false"/>
+        <sqlFile encoding="UTF-8"
+                 path="mysql/services/VirtualFollowUp/VirtualFollowUpCalendarQuery.sql"
                  splitStatements="false"
                  stripComments="false"/>
     </changeSet>
