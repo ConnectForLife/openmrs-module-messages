@@ -12,11 +12,16 @@ package org.openmrs.module.messages.api.dao.impl;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.BaseOpenmrsMetadata;
 import org.openmrs.GlobalProperty;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.module.messages.api.constants.ConfigConstants;
 import org.openmrs.module.messages.api.dao.NotificationTemplateDao;
 import org.openmrs.module.messages.api.model.NotificationTemplate;
+import org.openmrs.module.messages.api.model.Template;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class GPNotificationTemplateDaoImpl implements NotificationTemplateDao {
 
@@ -30,14 +35,6 @@ public class GPNotificationTemplateDaoImpl implements NotificationTemplateDao {
 
     private AdministrationService administrationService;
 
-    /**
-     * Gets a notification template that has the given <code>templateName</code>
-     *
-     * @param templateName - given service template name
-     * @return - notification template object if exists
-     * @should return null when no notification template matches given template name
-     * @should return null when given null template name
-     */
     @Override
     public NotificationTemplate getTemplate(String templateName) {
         if (StringUtils.isBlank(templateName)) {
@@ -49,25 +46,12 @@ public class GPNotificationTemplateDaoImpl implements NotificationTemplateDao {
         return this.convertToNotificationTemplate(globalProperty);
     }
 
-    /**
-     * Gets the string representation of services which will can be used during template processing.
-     *
-     * @return - the string representation of injected services
-     * @should return empty string when services' configuration is missing
-     */
     @Override
     public String getInjectedServicesMap() {
         return this.administrationService.getGlobalProperty(ConfigConstants.NOTIFICATION_TEMPLATE_INJECTED_SERVICES,
                 StringUtils.EMPTY);
     }
 
-    /**
-     * Converts the {@link GlobalProperty} into the {@link NotificationTemplate} representation.
-     *
-     * @param globalProperty - given global property
-     * @return - notification template representation
-     * @should return null when null global property is given
-     */
     @Override
     public NotificationTemplate convertToNotificationTemplate(GlobalProperty globalProperty) {
         NotificationTemplate notificationTemplate = null;
@@ -77,6 +61,15 @@ public class GPNotificationTemplateDaoImpl implements NotificationTemplateDao {
             notificationTemplate.setValue(globalProperty.getPropertyValue());
         }
         return notificationTemplate;
+    }
+
+    @Override
+    public List<String> getRequiredGlobalPropertyNames(List<Template> templates) {
+        return templates
+                .stream()
+                .map(BaseOpenmrsMetadata::getName)
+                .map(this::getGlobalPropertyName)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -95,12 +88,13 @@ public class GPNotificationTemplateDaoImpl implements NotificationTemplateDao {
      * @return - the global property name
      */
     private String getGlobalPropertyName(String templateName) {
-        String globalPropertyName = NOTIFICATION_TEMPLATE_PROPERTY_PREFIX
-                + templateName.trim().replaceAll(WHITESPACE_REGEX, DASH_SIGN);
+        String globalPropertyName =
+                NOTIFICATION_TEMPLATE_PROPERTY_PREFIX + templateName.trim().replaceAll(WHITESPACE_REGEX, DASH_SIGN);
         globalPropertyName = globalPropertyName.toLowerCase();
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(String.format("Global property name `%s` was created based on `%s` template name",
-                    globalPropertyName, templateName));
+            LOGGER.debug(
+                    String.format("Global property name `%s` was created based on `%s` template name", globalPropertyName,
+                            templateName));
         }
         return globalPropertyName;
     }

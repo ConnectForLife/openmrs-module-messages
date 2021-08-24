@@ -16,6 +16,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.api.context.ServiceContext;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.messages.api.dao.NotificationTemplateDao;
+import org.openmrs.module.messages.api.dao.TemplateDao;
 import org.openmrs.module.messages.api.model.NotificationTemplate;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.service.NotificationTemplateService;
@@ -26,6 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -44,6 +46,7 @@ public abstract class NotificationTemplateServiceImpl extends BaseOpenmrsService
     private static final String ACTOR_PROP = "actor";
 
     private NotificationTemplateDao notificationTemplateDao;
+    private TemplateDao templateDao;
 
     /**
      * Loads and eval the template and returns the outcome message as String.
@@ -82,6 +85,11 @@ public abstract class NotificationTemplateServiceImpl extends BaseOpenmrsService
         return internalParseTemplate(patientTemplate, notificationTemplate, serviceParam);
     }
 
+    @Override
+    public List<String> getRequiredNotificationTemplatePropertyNames() {
+        return notificationTemplateDao.getRequiredGlobalPropertyNames(templateDao.getAll(false));
+    }
+
     /**
      * Sets the notification template dao bean value
      *
@@ -89,6 +97,10 @@ public abstract class NotificationTemplateServiceImpl extends BaseOpenmrsService
      */
     public void setNotificationTemplateDao(NotificationTemplateDao notificationTemplateDao) {
         this.notificationTemplateDao = notificationTemplateDao;
+    }
+
+    public void setTemplateDao(TemplateDao templateDao) {
+        this.templateDao = templateDao;
     }
 
     private String internalParseTemplate(PatientTemplate patientTemplate, NotificationTemplate notificationTemplate,

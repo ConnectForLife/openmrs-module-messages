@@ -11,6 +11,9 @@ package org.openmrs.module.messages.api.dao;
 
 import org.openmrs.GlobalProperty;
 import org.openmrs.module.messages.api.model.NotificationTemplate;
+import org.openmrs.module.messages.api.model.Template;
+
+import java.util.List;
 
 public interface NotificationTemplateDao {
 
@@ -32,5 +35,23 @@ public interface NotificationTemplateDao {
      */
     String getInjectedServicesMap();
 
+    /**
+     * Converts the {@link GlobalProperty} into the {@link NotificationTemplate} representation.
+     *
+     * @param globalProperty - given global property
+     * @return - notification template representation
+     * @should return null when null global property is given
+     */
     NotificationTemplate convertToNotificationTemplate(GlobalProperty globalProperty);
+
+    /**
+     * Gets list of Global Property names required for the {@code templates}.
+     * <p>
+     * This method provides a list of required names only, it does NOT assure that such GPs exist.
+     * </p>
+     *
+     * @param templates the list of Templates, not null
+     * @return the list of Global Property names required by {@code templates}, never null
+     */
+    List<String> getRequiredGlobalPropertyNames(List<Template> templates);
 }
