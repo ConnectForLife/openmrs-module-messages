@@ -24,7 +24,28 @@ UPDATE messages_template SET service_query =
         FROM (
                 SELECT
                     p.patient_id AS PATIENT_ID,
-                    GET_LAST_DOSAGE_VISIT(pa.value, p.patient_id) AS LAST_DOSAGE_VISIT_ID,
+                    (SELECT v.visit_id
+                     FROM   visit v
+                            INNER JOIN visit_attribute va
+                                    ON va.visit_id = v.visit_id
+                                       AND va.value_reference = \'true\'
+                                       AND va.voided = 0
+                            INNER JOIN visit_attribute_type vat
+                                    ON vat.visit_attribute_type_id = va.attribute_type_id
+                                       AND vat.name = \'isLastDosingVisit\'
+                                       AND va.voided = 0
+                            INNER JOIN visit_attribute va2
+                                    ON va2.visit_id = v.visit_id
+                                       AND va2.value_reference = \'OCCURRED\'
+                                       AND va2.voided = 0
+                            INNER JOIN visit_attribute_type vat2
+                                    ON vat2.visit_attribute_type_id = va2.attribute_type_id
+                                       AND vat2.name = \'Visit Status\'
+                                       AND va2.voided = 0
+                     WHERE  v.voided = 0
+                            AND v.patient_id = p.patient_id
+                     ORDER  BY v.date_started DESC
+                     LIMIT  1 )  AS LAST_DOSAGE_VISIT_ID,
                     IFNULL(mtfv.value, mtf.default_value) AS DAYS_AFTER_VISIT_CFG
                 FROM
                     patient p
@@ -46,7 +67,6 @@ UPDATE messages_template SET service_query =
                     AND pa.person_attribute_type_id = pat.person_attribute_type_id
                 WHERE
                     p.voided = 0
-                    AND GET_LAST_DOSAGE_VISIT(pa.value, p.patient_id) != 0
             ) foo
         INNER JOIN NUMBERS_100 n ON
             CHAR_LENGTH(foo.DAYS_AFTER_VISIT_CFG)-CHAR_LENGTH(REPLACE(foo.DAYS_AFTER_VISIT_CFG, \',\', \'\')) >= n.`number`-1
