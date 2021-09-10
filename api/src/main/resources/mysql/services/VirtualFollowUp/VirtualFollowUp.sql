@@ -43,7 +43,7 @@ UPDATE messages_template SET service_query =
                                        AND vat2.name = \'Visit Status\'
                                        AND va2.voided = 0
                      WHERE  v.voided = 0
-                            AND v.patient_id = patient_id
+                            AND v.patient_id = p.patient_id
                      ORDER  BY v.date_started DESC
                      LIMIT  1 )  AS LAST_DOSAGE_VISIT_ID,
                     IFNULL(mtfv.value, mtf.default_value) AS DAYS_AFTER_VISIT_CFG
