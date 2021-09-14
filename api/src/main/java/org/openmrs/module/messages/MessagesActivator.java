@@ -111,13 +111,10 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
 
     private void createConfig() {
         createActorTypeConfig();
-        createDaysBeforeVisitReminderConfig();
         createReschedulingStrategyConfig();
         createServiceResultHandlersConfig();
         createConsentConfig();
         createPersonStatusConfig();
-        createAdherenceFeedbackConfig();
-        createHealthTipConfig();
         createStatusesEndingCallflowConfig();
         createNotificationTemplateConfig();
         createDefaultUserTimezone();
@@ -130,35 +127,11 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
         createGlobalSettingIfNotExists(ConfigConstants.NOTIFICATION_TEMPLATE_INJECTED_SERVICES,
                 ConfigConstants.NOTIFICATION_TEMPLATE_INJECTED_SERVICES_DEFAULT_VALUE,
                 ConfigConstants.NOTIFICATION_TEMPLATE_INJECTED_SERVICES_DESCRIPTION);
-        createGlobalSettingIfNotExists(ConfigConstants.NOTIFICATION_TEMPLATE_ADHERENCE_DAILY,
-                ConfigConstants.NOTIFICATION_TEMPLATE_ADHERENCE_DAILY_DEFAULT_VALUE,
-                ConfigConstants.NOTIFICATION_TEMPLATE_ADHERENCE_DAILY_DESCRIPTION);
-        createGlobalSettingIfNotExists(ConfigConstants.NOTIFICATION_TEMPLATE_VISIT_REMINDER,
-                ConfigConstants.NOTIFICATION_TEMPLATE_VISIT_REMINDER_DEFAULT_VALUE,
-                ConfigConstants.NOTIFICATION_TEMPLATE_VISIT_REMINDER_DESCRIPTION);
-        createGlobalSettingIfNotExists(ConfigConstants.NOTIFICATION_TEMPLATE_HEALTH_TIP,
-                ConfigConstants.NOTIFICATION_TEMPLATE_HEALTH_TIP_DEFAULT_VALUE,
-                ConfigConstants.NOTIFICATION_TEMPLATE_HEALTH_TIP_DESCRIPTION);
-        createGlobalSettingIfNotExists(ConfigConstants.NOTIFICATION_TEMPLATE_ADHERENCE_FEEDBACK,
-                ConfigConstants.NOTIFICATION_TEMPLATE_ADHERENCE_FEEDBACK_DEFAULT_VALUE,
-                ConfigConstants.NOTIFICATION_TEMPLATE_ADHERENCE_FEEDBACK_DESCRIPTION);
-        createGlobalSettingIfNotExists(ConfigConstants.NOTIFICATION_TEMPLATE_ADHERENCE_WEEKLY,
-                ConfigConstants.NOTIFICATION_TEMPLATE_ADHERENCE_WEEKLY_DEFAULT_VALUE,
-                ConfigConstants.NOTIFICATION_TEMPLATE_ADHERENCE_WEEKLY_DESCRIPTION);
-        createGlobalSettingIfNotExists(ConfigConstants.NOTIFICATION_TEMPLATE_VIRTUAL_FOLLOW_UP,
-                ConfigConstants.NOTIFICATION_TEMPLATE_VIRTUAL_FOLLOW_UP_DEFAULT_VALUE,
-                ConfigConstants.NOTIFICATION_TEMPLATE_VIRTUAL_FOLLOW_UP_DESCRIPTION);
     }
 
     private void createActorTypeConfig() {
         createGlobalSettingIfNotExists(ConfigConstants.ACTOR_TYPES_KEY,
                 ConfigConstants.ACTOR_TYPES_DEFAULT_VALUE, ConfigConstants.ACTOR_TYPES_DESCRIPTION);
-    }
-
-    private void createDaysBeforeVisitReminderConfig() {
-        createGlobalSettingIfNotExists(ConfigConstants.DAYS_NUMBER_BEFORE_VISIT_REMINDER_KEY,
-                ConfigConstants.DAYS_NUMBER_BEFORE_VISIT_REMINDER_DEFAULT_VALUE,
-                ConfigConstants.DAYS_NUMBER_BEFORE_VISIT_REMINDER_DESCRIPTION);
     }
 
     private void createConsentConfig() {
@@ -185,27 +158,6 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
         createGlobalSettingIfNotExists(ConfigConstants.SERVICE_RESULT_HANDLERS,
                 ConfigConstants.SERVICE_RESULT_HANDLERS_DEFAULT_VALUE,
                 ConfigConstants.SERVICE_RESULT_HANDLERS_DESCRIPTION);
-    }
-
-    private void createAdherenceFeedbackConfig() {
-        createGlobalSettingIfNotExists(ConfigConstants.CUT_OFF_SCORE_FOR_HIGH_MEDIUM_ADHERENCE_LEVEL_KEY,
-                ConfigConstants.CUT_OFF_SCORE_FOR_HIGH_MEDIUM_ADHERENCE_LEVEL_DEFAULT_VALUE,
-                ConfigConstants.CUT_OFF_SCORE_FOR_HIGH_MEDIUM_ADHERENCE_LEVEL_DESCRIPTION);
-        createGlobalSettingIfNotExists(ConfigConstants.CUT_OFF_SCORE_FOR_MEDIUM_LOW_ADHERENCE_LEVEL_KEY,
-                ConfigConstants.CUT_OFF_SCORE_FOR_MEDIUM_LOW_ADHERENCE_LEVEL_DEFAULT_VALUE,
-                ConfigConstants.CUT_OFF_SCORE_FOR_MEDIUM_LOW_ADHERENCE_LEVEL_DESCRIPTION);
-        createGlobalSettingIfNotExists(ConfigConstants.CUT_OFF_SCORE_FOR_ADHERENCE_TREND_KEY,
-                ConfigConstants.CUT_OFF_SCORE_FOR_ADHERENCE_TREND_DEFAULT_VALUE,
-                ConfigConstants.CUT_OFF_SCORE_FOR_ADHERENCE_TREND_DESCRIPTION);
-        createGlobalSettingIfNotExists(ConfigConstants.BENCHMARK_PERIOD_KEY,
-                ConfigConstants.BENCHMARK_PERIOD_DEFAULT_VALUE,
-                ConfigConstants.BENCHMARK_PERIOD_DESCRIPTION);
-    }
-
-    private void createHealthTipConfig() {
-        createGlobalSettingIfNotExists(ConfigConstants.NUMBER_OF_HEALTH_TIPS_PLAYED_PER_CALL_KEY,
-                ConfigConstants.NUMBER_OF_HEALTH_TIPS_PLAYED_PER_CALL_DEFAULT_VALUE,
-                ConfigConstants.NUMBER_OF_HEALTH_TIPS_PLAYED_PER_CALL_DESCRIPTION);
     }
 
     private void createStatusesEndingCallflowConfig() {
@@ -282,9 +234,9 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
     private Long getJobInterval() {
         String gpName = ConfigConstants.MESSAGE_DELIVERY_JOB_INTERVAL;
         String stringValue = Context.getAdministrationService().getGlobalProperty(gpName);
-        Long interval = null;
+        Long interval;
         try {
-            interval = Long.valueOf(GlobalPropertyUtil.parseInt(gpName, stringValue));
+            interval = (long) GlobalPropertyUtil.parseInt(gpName, stringValue);
         } catch (MessagesRuntimeException e) {
             interval = JobRepeatInterval.DAILY.getSeconds();
             LOGGER.warn(String.format("Error occurred during getting job interval: %s. " +
