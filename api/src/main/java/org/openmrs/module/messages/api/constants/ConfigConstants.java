@@ -81,13 +81,6 @@ public final class ConfigConstants {
     public static final String BEST_CONTACT_TIME_DESCRIPTION = "Map of actor types and their default contact times" +
             " for services for different actor types. Example of usage: " + BEST_CONTACT_TIME_DEFAULT_VALUE;
 
-    public static final String DAYS_NUMBER_BEFORE_VISIT_REMINDER_KEY = "message.daysToCallBeforeVisit.default";
-    public static final String DAYS_NUMBER_BEFORE_VISIT_REMINDER_DEFAULT_VALUE = "1,7";
-    public static final String DAYS_NUMBER_BEFORE_VISIT_REMINDER_DESCRIPTION =
-            "Used to determine the how many days before visit reminder should be scheduled. " +
-                    "Note: if the property will store negative values then " +
-                    "the visit reminder will be sent after visit.";
-
     public static final String DEFAULT_RESCHEDULING_STRATEGY = "messages.failedAndPendingMessagesReschedulingStrategy";
 
     public static final String RESCHEDULING_STRATEGY_KEY = "messages.reschedulingStrategy";
@@ -280,12 +273,12 @@ public final class ConfigConstants {
      " The message module events and best contact time are interpreted with this timezone.";
 
     public static final String CALL_CONFIG = "messages.callConfig";
-    public static final String CALL_CONFIG_DEFAULT_VALUE = "voxeo-mobile";
+    public static final String CALL_CONFIG_DEFAULT_VALUE = "";
     public static final String CALL_CONFIG_DESCRIPTION = "The string value representing the default value of " +
                 "call configuration used to make calls.";
 
     public static final String CALL_DEFAULT_FLOW = "messages.defaultFlow";
-    public static final String CALL_DEFAULT_FLOW_DEFAULT_VALUE = "MainFlow";
+    public static final String CALL_DEFAULT_FLOW_DEFAULT_VALUE = "";
     public static final String CALL_DEFAULT_FLOW_DESCRIPTION = "The string value representing the default value of " +
             " call flow used to make calls.";
 
