@@ -5,6 +5,9 @@ import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
 
 /**
  * Provides methods related to messages delivery management
+ * <p>
+ * The service automatically schedules proper message delivery tasks during system startup.
+ * </p>
  */
 public interface MessagesDeliveryService extends OpenmrsService {
     /**
