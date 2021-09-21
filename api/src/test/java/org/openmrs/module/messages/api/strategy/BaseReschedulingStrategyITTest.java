@@ -43,6 +43,8 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -163,12 +165,12 @@ public abstract class BaseReschedulingStrategyITTest extends ContextSensitiveTes
     protected abstract ReschedulingStrategy getStrategy();
 
     protected TaskDefinition getCreatedTask() throws SchedulerException {
-        verify(schedulerService, times(2)).saveTaskDefinition(taskCaptor.capture());
+        verify(schedulerService, atLeastOnce()).saveTaskDefinition(taskCaptor.capture());
         return taskCaptor.getValue();
     }
 
     protected void verifyIfTaskIsNotCreated() throws SchedulerException {
-        verify(schedulerService, times(0)).scheduleTask(Matchers.<TaskDefinition>any());
+        verify(schedulerService, never()).scheduleTask(Matchers.<TaskDefinition>any());
     }
 
     protected ScheduledExecutionContext getExecutionContext(TaskDefinition task) {

@@ -38,7 +38,8 @@
     <bean id="messages.TemplateDao" class="org.openmrs.module.messages.api.dao.impl.TemplateDaoImpl">
     </bean>
 
-    <bean id="messages.TemplateFieldDefaultValueDao" class="org.openmrs.module.messages.api.dao.impl.TemplateFieldDefaultValueDaoImpl">
+    <bean id="messages.TemplateFieldDefaultValueDao"
+          class="org.openmrs.module.messages.api.dao.impl.TemplateFieldDefaultValueDaoImpl">
         <property name="dbSessionFactory">
             <ref bean="dbSessionFactory"/>
         </property>
@@ -80,9 +81,10 @@
         </property>
     </bean>
 
-    <bean id="messages.patientTemplateService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+    <bean id="messages.patientTemplateService"
+          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="transactionManager">
-            <ref bean="transactionManager" />
+            <ref bean="transactionManager"/>
         </property>
         <property name="target">
             <bean class="org.openmrs.module.messages.api.service.impl.PatientTemplateServiceImpl">
@@ -92,10 +94,10 @@
             </bean>
         </property>
         <property name="preInterceptors">
-            <ref bean="serviceInterceptors" />
+            <ref bean="serviceInterceptors"/>
         </property>
         <property name="transactionAttributeSource">
-            <ref bean="transactionAttributeSource" />
+            <ref bean="transactionAttributeSource"/>
         </property>
     </bean>
 
@@ -191,7 +193,7 @@
     <bean id="messages.defaultPatientTemplateService"
           class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="transactionManager">
-            <ref bean="transactionManager" />
+            <ref bean="transactionManager"/>
         </property>
         <property name="target">
             <bean class="org.openmrs.module.messages.api.service.impl.DefaultPatientTemplateServiceImpl">
@@ -213,10 +215,10 @@
             </bean>
         </property>
         <property name="preInterceptors">
-            <ref bean="serviceInterceptors" />
+            <ref bean="serviceInterceptors"/>
         </property>
         <property name="transactionAttributeSource">
-            <ref bean="transactionAttributeSource" />
+            <ref bean="transactionAttributeSource"/>
         </property>
     </bean>
 
@@ -272,7 +274,17 @@
         </property>
     </bean>
 
-    <bean id="messages.templateFieldDefaultValueMapper" class="org.openmrs.module.messages.api.mappers.TemplateFieldDefaultValueMapper"/>
+    <bean parent="serviceContext">
+        <property name="moduleService">
+            <list merge="true">
+                <value>org.openmrs.module.messages.api.service.MessagesSchedulerService</value>
+                <ref local="messages.schedulerService"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="messages.templateFieldDefaultValueMapper"
+          class="org.openmrs.module.messages.api.mappers.TemplateFieldDefaultValueMapper"/>
 
     <bean id="messages.templateFieldMapper" class="org.openmrs.module.messages.api.mappers.TemplateFieldMapper">
         <property name="templateFieldDefaultValueMapper">
@@ -400,23 +412,27 @@
         </property>
     </bean>
 
+    <bean id="messages.ExtendedSchedulerDao" class="org.openmrs.module.messages.api.dao.impl.ExtendedSchedulerDaoImpl"/>
+
     <bean id="messages.deliveryService"
           class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="target">
             <bean class="org.openmrs.module.messages.api.service.impl.MessagesDeliveryServiceImpl">
-                <property name="schedulerService">
-                    <ref bean="messages.schedulerService"/>
-                </property>
+                <property name="schedulerService" ref="messages.schedulerService"/>
+                <property name="extendedSchedulerDao" ref="messages.ExtendedSchedulerDao"/>
             </bean>
         </property>
-        <property name="transactionManager">
-            <ref bean="transactionManager"/>
-    </property>
-        <property name="preInterceptors">
-            <ref bean="serviceInterceptors"/>
-        </property>
-        <property name="transactionAttributeSource">
-            <ref bean="transactionAttributeSource"/>
+        <property name="transactionManager" ref="transactionManager"/>
+        <property name="preInterceptors" ref="serviceInterceptors"/>
+        <property name="transactionAttributeSource" ref="transactionAttributeSource"/>
+    </bean>
+
+    <bean parent="serviceContext">
+        <property name="moduleService">
+            <list merge="true">
+                <value>org.openmrs.module.messages.api.service.MessagesDeliveryService</value>
+                <ref local="messages.deliveryService"/>
+            </list>
         </property>
     </bean>
 
@@ -467,7 +483,7 @@
     </bean>
 
     <bean id="messages.callflowExecutionCompletionListener"
-          class="org.openmrs.module.messages.api.event.listener.CallflowExecutionCompletionListener" />
+          class="org.openmrs.module.messages.api.event.listener.CallflowExecutionCompletionListener"/>
 
     <bean id="messages.peopleActionListener"
           class="org.openmrs.module.messages.api.event.listener.subscribable.PeopleActionListener"
@@ -512,7 +528,7 @@
     </bean>
 
     <bean id="messages.personStatusHelper"
-        class="org.openmrs.module.messages.api.util.PersonStatusHelper">
+          class="org.openmrs.module.messages.api.util.PersonStatusHelper">
         <property name="personService" ref="personService"/>
         <property name="configService">
             <ref local="messages.configService"/>
@@ -545,8 +561,8 @@
 
     <bean id="messages.velocityNotificationTemplateServiceImpl"
           class="org.openmrs.module.messages.api.service.impl.VelocityNotificationTemplateServiceImpl">
-        <property name="notificationTemplateDao" ref="messages.GPNotificationTemplateDao" />
-        <property name="templateDao" ref="messages.TemplateDao" />
+        <property name="notificationTemplateDao" ref="messages.GPNotificationTemplateDao"/>
+        <property name="templateDao" ref="messages.TemplateDao"/>
     </bean>
 
     <bean id="messages.healthTipService" class="org.openmrs.module.messages.api.service.impl.HealthTipServiceImpl">

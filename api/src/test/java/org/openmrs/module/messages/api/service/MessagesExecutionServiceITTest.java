@@ -44,6 +44,7 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assume.assumeThat;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -199,7 +200,7 @@ public class MessagesExecutionServiceITTest extends ContextSensitiveTest {
     }
 
     private TaskDefinition getCreatedTask() {
-        verify(schedulerService, times(2)).saveTaskDefinition(taskCaptor.capture());
+        verify(schedulerService, atLeastOnce()).saveTaskDefinition(taskCaptor.capture());
         return taskCaptor.getValue();
     }
 

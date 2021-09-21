@@ -62,5 +62,9 @@
         <url-pattern>/ws/messages/*</url-pattern>
     </filter-mapping>
 
+    <advice>
+        <point>org.openmrs.scheduler.SchedulerService</point>
+        <class>org.openmrs.module.messages.advice.CustomShutdownTaskAfterAdvice</class>
+    </advice>
 </module>
 
