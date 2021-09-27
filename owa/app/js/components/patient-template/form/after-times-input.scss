@@ -1,0 +1,31 @@
+/* * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+
+.input-after-days {
+  input {
+    // copied from OpenMRS main style (overriding not consistent styles from OpenMRS React Components)
+    min-width: 80%;
+    color: #363463;
+    display: block;
+    padding: 5px 10px;
+    margin: 0;
+    margin-top: 5px;
+    background-color: #FFF;
+    border: 1px solid #dddddd;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+  }
+
+  input:focus {
+    // copied from OpenMRS main style (overriding not consistent styles from OpenMRS React Components)
+    border: 2px solid #007fff;
+    background: #fffdf7;
+  }
+}

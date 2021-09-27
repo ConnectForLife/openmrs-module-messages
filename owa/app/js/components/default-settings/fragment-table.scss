@@ -1,0 +1,37 @@
+$TABLE_BORDER: 1px solid rgba(0, 0, 0, 0.06);
+
+.fragment-table {
+  border-left: $TABLE_BORDER;
+  border-collapse: separate;
+  border-spacing: 0;
+
+  display: flex;
+  overflow-x: auto;
+
+  .fragment-column {
+    border-top: $TABLE_BORDER;
+    // Override bootstrap col padding which disrupts borders for cells
+    padding: 0;
+  }
+
+  .fragment-row {
+    border-bottom: $TABLE_BORDER;
+    border-right: $TABLE_BORDER; 
+    padding-top: 10px;
+    padding-left: 10px;
+
+    background-color: white;
+
+    &.even {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+    
+    &.header {
+      border-radius: 0;
+    }
+  }
+}
+
+.u-ta-center {
+  text-align: center;
+}

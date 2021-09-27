@@ -1,0 +1,441 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <!-- Patient with two related actors -->
+    <person_attribute_type
+            person_attribute_type_id="738"
+            name="Best contact time"
+            description="Person Best contact time"
+            format="java.util.Date"
+            creator="1"
+            sort_weight="1"
+            searchable="0"
+            retired="false"
+            date_created="2010-11-16"
+            uuid="0c713cad-a176-4df7-9a2f-9ea9a9bf774a"/>
+
+    <person
+            person_id="254451"
+            gender="M"
+            dead="false"
+            creator="1"
+            date_created="2010-11-16 15:57:09.0"
+            voided="false"
+            uuid="7321f17d-bdef-4571-8f9b-c2ec868dc251"/>
+
+    <person_name
+            person_name_id="254451"
+            preferred="true"
+            person_id="254451"
+            given_name="Arkadiusz"
+            middle_name=""
+            family_name="Arkadiusz"
+            creator="1"
+            date_created="2010-11-16 15:57:09.0"
+            voided="false"
+            void_reason=""
+            uuid="de589bdc-106f-47f7-afc9-dd1fdf5f202a"/>
+
+    <person_attribute
+            person_attribute_id="85423"
+            person_id="254451"
+            value="23:38"
+            person_attribute_type_id="738"
+            creator="1"
+            date_created="2010-11-16"
+            voided="false"
+            uuid="e9deb6dd-49da-4568-a24a-e6f0dae4133c"/>
+
+    <person_attribute
+            person_attribute_id="85424"
+            person_id="254451"
+            value="15:38"
+            person_attribute_type_id="738"
+            creator="1"
+            date_created="2010-11-16"
+            voided="true"
+            uuid="b456db75-4349-4a05-a48b-987fae5bbc09"/>
+
+    <patient
+            patient_id="254451"
+            creator="1"
+            date_created="2010-11-16 15:57:09.0"
+            voided="false"/>
+
+    <patient_identifier_type
+            patient_identifier_type_id="353134"
+            name="Test Identifier Type"
+            description="Test description"
+            creator="1"
+            date_created="2010-11-16 15:57:09.0"
+            required="false"
+            retired="false"
+            uuid="41e81bef-5847-4222-8e0b-8917a5f613d8"/>
+
+    <patient_identifier
+            patient_identifier_id="3243425"
+            patient_id="254451" identifier="1234"
+            identifier_type="353134"
+            preferred="1"
+            location_id="1"
+            creator="1"
+            date_created="2010-11-16 15:57:09.0"
+            voided="false"
+            uuid="1ac98ec8-e9d9-4626-998c-c795c2f0aa9f"/>
+
+    <person
+            person_id="254452"
+            gender="M"
+            dead="false"
+            creator="1"
+            date_created="2010-11-16 15:57:09.0"
+            voided="false"
+            uuid="982fbff4-2d3d-4e32-acf6-3ffc47f4def2"/>
+
+    <person_attribute
+            person_attribute_id="254452"
+            person_id="254452"
+            value="11:38"
+            person_attribute_type_id="738"
+            creator="1"
+            date_created="2010-11-16"
+            voided="false"
+            uuid="2e0e51f7-15f9-43c6-b6ca-148945518902"/>
+
+    <person_name
+            person_name_id="254452"
+            preferred="true"
+            person_id="254452"
+            given_name="Daniel"
+            middle_name=""
+            family_name="Daniel"
+            creator="1"
+            date_created="2010-11-16 15:57:09.0"
+            voided="false"
+            void_reason=""
+            uuid="7e209e85-731f-4286-8196-90753cc17a25"/>
+
+    <person
+            person_id="254453"
+            gender="M"
+            dead="false"
+            creator="1"
+            date_created="2010-11-16 15:57:09.0"
+            voided="false"
+            uuid="64bb6ca5-0c4a-4f48-89e0-884955e85329"/>
+
+    <person_name
+            person_name_id="254453"
+            preferred="true"
+            person_id="254453"
+            given_name="Wojciech"
+            middle_name=""
+            family_name="Wojciech"
+            creator="1"
+            date_created="2010-11-16 15:57:09.0"
+            voided="false"
+            void_reason=""
+            uuid="39fff3c7-05da-40f6-ab1a-21a36154b170"/>
+
+    <relationship_type
+            relationship_type_id="2313"
+            a_is_to_b="Caregiver"
+            b_is_to_a="Caretaker"
+            preferred="0"
+            weight="0"
+            description="Caregiver relationship"
+            creator="1"
+            date_created="2010-11-16"
+            retired="0"
+            uuid="1286b4bc-2d35-46d6-b645-a1b563aaf62a"/>
+
+    <relationship_type
+            relationship_type_id="2314"
+            a_is_to_b="Child"
+            b_is_to_a="Father"
+            preferred="0"
+            weight="0"
+            description="Father relationship"
+            creator="1"
+            date_created="2010-11-16"
+            retired="0"
+            uuid="5b82938d-5cab-43b7-a8f1-e4d6fbb484cc"/>
+
+    <relationship
+            relationship_id="34451"
+            person_a="254452"
+            relationship="2313"
+            person_b="254451"
+            creator="1"
+            date_created="2010-11-16 15:57:09.0"
+            voided="false"
+            uuid="08edc099-471e-4f0d-a5f2-b4b88d9d20de"/>
+
+    <relationship
+            relationship_id="34452"
+            person_a="254451"
+            relationship="2314"
+            person_b="254453"
+            creator="1"
+            date_created="2010-11-16 15:57:09.0"
+            voided="false"
+            uuid="6a9b2da5-608e-4bd4-92a1-4729cc13d685"/>
+
+    <person
+            person_id="254454"
+            gender="M"
+            dead="false"
+            creator="1"
+            date_created="2010-11-16 15:57:09.0"
+            voided="false"
+            uuid="45dfd0c4-d059-40bf-b6f0-a903d5ad1b29"/>
+
+    <person_attribute
+            person_attribute_id="254454"
+            person_id="254454"
+            value="07:15"
+            person_attribute_type_id="738"
+            creator="1"
+            date_created="2010-11-16"
+            voided="false"
+            uuid="1177ff5d-e555-4b9e-a1f5-a2c0cc340b4c"/>
+
+    <person_name
+            person_name_id="254454"
+            preferred="true"
+            person_id="254454"
+            given_name="Oskar"
+            middle_name=""
+            family_name="Oskar"
+            creator="1"
+            date_created="2010-11-16 15:57:09.0"
+            voided="false"
+            void_reason=""
+            uuid="31201118-9157-4f8b-ab30-c768974109eb"/>
+
+    <!-- Template -->
+    <messages_template
+            messages_template_id="2231"
+            service_query="SELECT 'test query';"
+            calendar_service_query="SELECT CALENDAR SERVICE QUERY;"
+            service_query_type="test query type"
+            name="Service1"
+            should_use_optimized_query="false"
+            uuid="7f62432a-96d3-4bef-af4c-b4e0304eb830"
+            creator="1"
+            retired="0"
+            date_created="2010-11-16 00:00:00.0"/>
+
+    <messages_template_field
+            messages_template_field_id="3321"
+            name="testField1"
+            mandatory="1"
+            default_value="Deactivated"
+            template_field_type="SERVICE_TYPE"
+            template_id="2231"
+            uuid="9d342f25-7303-46c7-b681-c3a4c82e764e"
+            creator="1"
+            voided="0"
+            date_created="2010-11-16 00:00:00.0"/>
+
+    <messages_template_field
+            messages_template_field_id="3322"
+            name="testField2"
+            mandatory="0"
+            default_value="Daily"
+            template_field_type="MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY"
+            template_id="2231"
+            uuid="afdffb6f-8e54-42e7-97a1-2b759bc543bc"
+            creator="1"
+            voided="0"
+            date_created="2010-11-16 00:00:00.0"/>
+
+    <messages_template_field_default_values
+            messages_template_field_default_values_id="1"
+            relationship_type="2313"
+            relationship_direction="A"
+            template_field="3321"
+            default_value="Call"
+            uuid="afdffb6f-8e54-42e7-97a1-2b759bc5435f"
+            creator="1"
+            voided="0"
+            date_created="2010-11-16 00:00:00.0"/>
+    <messages_template_field_default_values
+            messages_template_field_default_values_id="2"
+            relationship_type="2313"
+            relationship_direction="A"
+            template_field="3322"
+            default_value="Weekly"
+            uuid="afdffb6f-8e54-42e7-97a1-2b759bc543bf"
+            creator="1"
+            voided="0"
+            date_created="2010-11-16 00:00:00.0"/>
+
+    <!-- Patient #2 and related patient template -->
+    <person
+            person_id="102"
+            gender="M"
+            dead="false"
+            creator="1"
+            date_created="2019-11-16 15:57:09.0"
+            voided="false"/>
+
+    <person_name
+            person_name_id="102"
+            preferred="true"
+            person_id="102"
+            given_name="Another"
+            middle_name="Sick"
+            family_name="Person"
+            creator="1"
+            date_created="2019-11-16 15:57:09.0"
+            voided="false"/>
+
+    <patient
+            patient_id="102"
+            creator="1"
+            date_created="2019-11-16 15:57:09.0"
+            voided="false"/>
+
+    <patient_identifier
+            patient_identifier_id="102"
+            patient_id="102"
+            identifier="BBC123ABC123"
+            identifier_type="353134"
+            preferred="1"
+            location_id="1"
+            creator="1"
+            date_created="2019-11-16 15:57:09.0"
+            voided="false"/>
+
+    <messages_patient_template
+            messages_patient_template_id="1"
+            actor_id="102"
+            template_id="2231"
+            patient_id="102"
+            service_query_type="SQL"
+            service_query="SELECT (*) FROM messages_scheduled_service;"
+            calendar_service_query="SELECT CALENDAR SERVICE QUERY;"
+            creator="1"
+            date_created="2019-11-20 00:00:00.1"
+            voided="false"
+            uuid="fe21c3c3-66c7-401d-86d3-84e8bf2ea9c3"/>
+
+    <messages_template_field_value
+            messages_template_field_value_id="1"
+            value="SMS"
+            patient_template_id="1"
+            template_field_id="3321"
+            creator="1"
+            date_created="2019-11-20 00:00:00.2"
+            voided="false"
+            uuid="adb5f376-c9b9-4a1f-89eb-00e478aa9f6f"/>
+
+    <!-- Template 2 -->
+    <messages_template
+            messages_template_id="2232"
+            service_query="SELECT 'test query';"
+            calendar_service_query="SELECT CALENDAR SERVICE QUERY;"
+            service_query_type="test query type"
+            name="Brand new template"
+            should_use_optimized_query="false"
+            uuid="gh62432a-96d3-4bef-af4c-b4e0304eb830"
+            creator="1"
+            retired="0"
+            date_created="2010-11-16 00:00:00.0"/>
+
+    <messages_template_field
+            messages_template_field_id="3329"
+            name="newField"
+            mandatory="1"
+            default_value="SMS"
+            template_field_type="SERVICE_TYPE"
+            template_id="2232"
+            uuid="gh342f25-7303-46c7-b681-c3a4c82e764f"
+            creator="1"
+            voided="0"
+            date_created="2010-11-16 00:00:00.0"/>
+
+    <!--    Patient 3-->
+    <person
+            person_id="103"
+            gender="M"
+            dead="false"
+            creator="1"
+            date_created="2019-11-16 15:57:09.0"
+            voided="false"/>
+
+    <person_name
+            person_name_id="103"
+            preferred="true"
+            person_id="103"
+            given_name="Different"
+            middle_name="Sick"
+            family_name="Person"
+            creator="1"
+            date_created="2019-11-16 15:57:09.0"
+            voided="false"/>
+
+    <patient
+            patient_id="103"
+            creator="1"
+            date_created="2019-11-16 15:57:09.0"
+            voided="false"/>
+
+    <patient_identifier
+            patient_identifier_id="103"
+            patient_id="103"
+            identifier="BBC123ABC123"
+            identifier_type="353134"
+            preferred="1"
+            location_id="1"
+            creator="1"
+            date_created="2019-11-16 15:57:09.0"
+            voided="false"/>
+
+    <messages_patient_template
+            messages_patient_template_id="5"
+            actor_id="103"
+            template_id="2231"
+            patient_id="103"
+            service_query_type="SQL"
+            service_query="SELECT (*) FROM messages_scheduled_service;"
+            calendar_service_query="SELECT CALENDAR SERVICE QUERY;"
+            creator="1"
+            date_created="2019-11-20 00:00:00.1"
+            voided="false"
+            uuid="ae21c3c3-66c7-401d-86d3-84e8bf2ea9c3"/>
+
+    <messages_template_field_value
+            messages_template_field_value_id="10"
+            value="SMS"
+            patient_template_id="5"
+            template_field_id="3321"
+            creator="1"
+            date_created="2019-11-20 00:00:00.2"
+            voided="false"
+            uuid="gdb5f376-c9b9-4a1f-89eb-00e478aa9f6f"/>
+
+    <messages_patient_template
+            messages_patient_template_id="6"
+            actor_id="103"
+            template_id="2232"
+            patient_id="103"
+            service_query_type="SQL"
+            service_query="SELECT (*) FROM messages_scheduled_service;"
+            calendar_service_query="SELECT CALENDAR SERVICE QUERY;"
+            creator="1"
+            date_created="2019-11-20 00:00:00.1"
+            voided="false"
+            uuid="te21c3c3-66c7-401d-86d3-84e8bf2ea9c3"/>
+
+    <messages_template_field_value
+            messages_template_field_value_id="11"
+            value="EXISTING"
+            patient_template_id="6"
+            template_field_id="3329"
+            creator="1"
+            date_created="2019-11-20 00:00:00.2"
+            voided="false"
+            uuid="fdb5f376-c9b9-4a1f-89eb-00e478aa9f6f"/>
+
+</dataset>

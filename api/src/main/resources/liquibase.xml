@@ -1,0 +1,1094 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
+                  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+
+    <changeSet id="messages-1" author="Dawid Ruchniewicz">
+        <preConditions onFail="MARK_RAN">
+            <not><tableExists tableName="messages_scheduled_service_group"/></not>
+        </preConditions>
+        <comment>Created the messages_scheduled_service_group table</comment>
+        <createTable tableName="messages_scheduled_service_group">
+            <column name="messages_scheduled_service_group_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="msg_send_time" type="datetime"/>
+            <column name="patient_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="varchar(255)"/>
+            <column name="uuid" type="char(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="creator" type="int"/>
+            <column name="changed_by" type="int"/>
+            <column name="date_changed" type="datetime"/>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_voided" type="datetime"/>
+            <column name="void_reason" type="varchar(255)"/>
+            <column name="voided" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voided_by" type="int"/>
+        </createTable>
+        <addForeignKeyConstraint constraintName="messages_scheduled_service_group_creator_fk"
+                                 baseTableName="messages_scheduled_service_group" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_scheduled_service_group_changed_by_fk"
+                                 baseTableName="messages_scheduled_service_group" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_scheduled_service_group_voided_by_fk"
+                                 baseTableName="messages_scheduled_service_group" baseColumnNames="voided_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_scheduled_service_group_patient_fk"
+                                 baseTableName="messages_scheduled_service_group" baseColumnNames="patient_id"
+                                 referencedTableName="patient" referencedColumnNames="patient_id"/>
+    </changeSet>
+
+    <changeSet id="messages-2" author="Dawid Ruchniewicz">
+        <preConditions onFail="MARK_RAN">
+            <not><tableExists tableName="messages_template"/></not>
+        </preConditions>
+        <comment>Created the messages_template table</comment>
+        <createTable tableName="messages_template">
+            <column name="messages_template_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="service_query" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="service_query_type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="uuid" type="char(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="creator" type="int"/>
+            <column name="changed_by" type="int"/>
+            <column name="date_changed" type="datetime"/>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_voided" type="datetime"/>
+            <column name="void_reason" type="varchar(255)"/>
+            <column name="voided" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voided_by" type="int"/>
+        </createTable>
+        <addForeignKeyConstraint constraintName="messages_template_creator_fk"
+                                 baseTableName="messages_template" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_template_changed_by_fk"
+                                 baseTableName="messages_template" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_template_voided_by_fk"
+                                 baseTableName="messages_template" baseColumnNames="voided_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        </changeSet>
+
+    <changeSet id="messages-3" author="Dawid Ruchniewicz">
+        <preConditions onFail="MARK_RAN">
+            <not><tableExists tableName="messages_template_field"/></not>
+        </preConditions>
+        <comment>Created the messages_template_field table</comment>
+        <createTable tableName="messages_template_field">
+            <column name="messages_template_field_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mandatory" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="default_value" type="TEXT"/>
+            <column name="template_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value_concept" type="int"/>
+            <column name="uuid" type="char(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="creator" type="int"/>
+            <column name="changed_by" type="int"/>
+            <column name="date_changed" type="datetime"/>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_voided" type="datetime"/>
+            <column name="void_reason" type="varchar(255)"/>
+            <column name="voided" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voided_by" type="int"/>
+        </createTable>
+        <addForeignKeyConstraint constraintName="messages_template_field_creator_fk"
+                                 baseTableName="messages_template_field" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_template_field_changed_by_fk"
+                                 baseTableName="messages_template_field" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_template_field_voided_by_fk"
+                                 baseTableName="messages_template_field" baseColumnNames="voided_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_template_field_template_fk"
+                                 baseTableName="messages_template_field" baseColumnNames="template_id"
+                                 referencedTableName="messages_template" referencedColumnNames="messages_template_id"/>
+        <addForeignKeyConstraint constraintName="messages_template_field_value_concept_fk"
+                                 baseTableName="messages_template_field" baseColumnNames="value_concept"
+                                 referencedTableName="concept" referencedColumnNames="concept_id"/>
+    </changeSet>
+
+    <changeSet id="messages-4" author="Dawid Ruchniewicz">
+        <preConditions onFail="MARK_RAN">
+            <not><tableExists tableName="messages_template_field_value"/></not>
+        </preConditions>
+        <comment>Created the messages_template_field_value table</comment>
+        <createTable tableName="messages_template_field_value">
+            <column name="messages_template_field_value_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="value" type="varchar(255)"/>
+            <column name="template_field_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="patient_template_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="uuid" type="char(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="creator" type="int"/>
+            <column name="changed_by" type="int"/>
+            <column name="date_changed" type="datetime"/>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_voided" type="datetime"/>
+            <column name="void_reason" type="varchar(255)"/>
+            <column name="voided" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voided_by" type="int"/>
+        </createTable>
+        <addForeignKeyConstraint constraintName="messages_template_field_value_creator_fk"
+                                 baseTableName="messages_template_field_value" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_template_field_value_changed_by_fk"
+                                 baseTableName="messages_template_field_value" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_template_field_value_voided_by_fk"
+                                 baseTableName="messages_template_field_value" baseColumnNames="voided_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_template_field_value_template_field_fk"
+                                 baseTableName="messages_template_field_value" baseColumnNames="template_field_id"
+                                 referencedTableName="messages_template_field"
+                                 referencedColumnNames="messages_template_field_id"/>
+        </changeSet>
+
+    <changeSet id="messages-5" author="Dawid Ruchniewicz">
+        <preConditions onFail="MARK_RAN">
+            <not><tableExists tableName="messages_patient_template"/></not>
+        </preConditions>
+        <comment>Created the messages_patient_template table</comment>
+        <createTable tableName="messages_patient_template">
+            <column name="messages_patient_template_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="actor_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="actor_type" type="int"/>
+            <column name="service_query" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="service_query_type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="patient_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="template_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="uuid" type="char(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="creator" type="int"/>
+            <column name="changed_by" type="int"/>
+            <column name="date_changed" type="datetime"/>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_voided" type="datetime"/>
+            <column name="void_reason" type="varchar(255)"/>
+            <column name="voided" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voided_by" type="int"/>
+        </createTable>
+        <addForeignKeyConstraint constraintName="messages_patient_template_creator_fk"
+                                 baseTableName="messages_patient_template" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_patient_template_changed_by_fk"
+                                 baseTableName="messages_patient_template" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_patient_template_voided_by_fk"
+                                 baseTableName="messages_patient_template" baseColumnNames="voided_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_patient_template_actor_fk"
+                                 baseTableName="messages_patient_template" baseColumnNames="actor_id"
+                                 referencedTableName="person" referencedColumnNames="person_id"/>
+        <addForeignKeyConstraint constraintName="messages_patient_template_actor_type_fk"
+                                 baseTableName="messages_patient_template" baseColumnNames="actor_type"
+                                 referencedTableName="relationship" referencedColumnNames="relationship_id"/>
+        <addForeignKeyConstraint constraintName="messages_patient_template_patient_fk"
+                                 baseTableName="messages_patient_template" baseColumnNames="patient_id"
+                                 referencedTableName="patient" referencedColumnNames="patient_id"/>
+        <addForeignKeyConstraint constraintName="messages_patient_template_template_fk"
+                                 baseTableName="messages_patient_template" baseColumnNames="template_id"
+                                 referencedTableName="messages_template_field_value"
+                                 referencedColumnNames="messages_template_field_value_id"/>
+    </changeSet>
+
+    <changeSet id="messages-6" author="Dawid Ruchniewicz">
+        <preConditions>
+            <not><tableExists tableName="messages_scheduled_service"/></not>
+        </preConditions>
+        <comment>Created the messages_scheduled_service table</comment>
+        <createTable tableName="messages_scheduled_service">
+            <column name="messages_scheduled_service_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="group_id" type="int"/>
+            <column name="service" type="int"/>
+            <column name="patient_template_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="channel_type" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="varchar(255)"/>
+            <column name="last_service_execution_id" type="int"/>
+            <column name="uuid" type="char(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="creator" type="int"/>
+            <column name="changed_by" type="int"/>
+            <column name="date_changed" type="datetime"/>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_voided" type="datetime"/>
+            <column name="void_reason" type="varchar(255)"/>
+            <column name="voided" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voided_by" type="int"/>
+        </createTable>
+        <addForeignKeyConstraint constraintName="messages_scheduled_service_creator_fk"
+                                 baseTableName="messages_scheduled_service" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_scheduled_service_changed_by_fk"
+                                 baseTableName="messages_scheduled_service" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_scheduled_service_voided_by_fk"
+                                 baseTableName="messages_scheduled_service" baseColumnNames="voided_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_scheduled_service_group_fk"
+                                 baseTableName="messages_scheduled_service" baseColumnNames="group_id"
+                                 referencedTableName="messages_scheduled_service_group"
+                                 referencedColumnNames="messages_scheduled_service_group_id"/>
+        <addForeignKeyConstraint constraintName="messages_scheduled_service_service_fk"
+                                 baseTableName="messages_scheduled_service" baseColumnNames="service"
+                                 referencedTableName="concept" referencedColumnNames="concept_id"/>
+        <addForeignKeyConstraint constraintName="messages_scheduled_service_patient_template_fk"
+                                 baseTableName="messages_scheduled_service" baseColumnNames="patient_template_id"
+                                 referencedTableName="messages_patient_template"
+                                 referencedColumnNames="messages_patient_template_id"/>
+        <addForeignKeyConstraint constraintName="messages_scheduled_service_channel_type_fk"
+                                 baseTableName="messages_scheduled_service" baseColumnNames="channel_type"
+                                 referencedTableName="concept" referencedColumnNames="concept_id"/>
+    </changeSet>
+
+    <changeSet id="messages-7" author="Dawid Ruchniewicz">
+        <preConditions>
+            <not><tableExists tableName="messages_actor_response"/></not>
+        </preConditions>
+        <comment>Created the messages_actor_response table</comment>
+        <createTable tableName="messages_actor_response">
+            <column name="messages_actor_response_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="scheduled_service_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="question" type="int"/>
+            <column name="response" type="int"/>
+            <column name="text_response" type="TEXT"/>
+            <column name="answered_time" type="datetime"/>
+            <column name="uuid" type="char(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="creator" type="int"/>
+            <column name="changed_by" type="int"/>
+            <column name="date_changed" type="datetime"/>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_voided" type="datetime"/>
+            <column name="void_reason" type="varchar(255)"/>
+            <column name="voided" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voided_by" type="int"/>
+        </createTable>
+        <addForeignKeyConstraint constraintName="messages_actor_response_creator_fk"
+                                 baseTableName="messages_actor_response" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_actor_response_changed_by_fk"
+                                 baseTableName="messages_actor_response" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_actor_response_voided_by_fk"
+                                 baseTableName="messages_actor_response" baseColumnNames="voided_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_actor_response_scheduled_service_fk"
+                                 baseTableName="messages_actor_response" baseColumnNames="scheduled_service_id"
+                                 referencedTableName="messages_scheduled_service"
+                                 referencedColumnNames="messages_scheduled_service_id"/>
+        <addForeignKeyConstraint constraintName="messages_actor_response_question_fk"
+                                 baseTableName="messages_actor_response" baseColumnNames="question"
+                                 referencedTableName="concept" referencedColumnNames="concept_id"/>
+        <addForeignKeyConstraint constraintName="messages_actor_response_response_fk"
+                                 baseTableName="messages_actor_response" baseColumnNames="response"
+                                 referencedTableName="concept" referencedColumnNames="concept_id"/>
+    </changeSet>
+
+    <changeSet id="messages-8" author="Dawid Ruchniewicz">
+        <preConditions>
+            <not><tableExists tableName="messages_delivery_attempt"/></not>
+        </preConditions>
+        <comment>Created the messages_delivery_attempt table</comment>
+        <createTable tableName="messages_delivery_attempt">
+            <column name="messages_delivery_attempt_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="scheduled_service_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="timestamp" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="new_status" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="attempt_number" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="service_execution_id" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="uuid" type="char(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="creator" type="int"/>
+            <column name="changed_by" type="int"/>
+            <column name="date_changed" type="datetime"/>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_voided" type="datetime"/>
+            <column name="void_reason" type="varchar(255)"/>
+            <column name="voided" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voided_by" type="int"/>
+        </createTable>
+        <addForeignKeyConstraint constraintName="messages_delivery_attempt_creator_fk"
+                                 baseTableName="messages_delivery_attempt" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_delivery_attempt_changed_by_fk"
+                                 baseTableName="messages_delivery_attempt" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_delivery_attempt_voided_by_fk"
+                                 baseTableName="messages_delivery_attempt" baseColumnNames="voided_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_delivery_attempt_service_fk"
+                                 baseTableName="messages_delivery_attempt" baseColumnNames="scheduled_service_id"
+                                 referencedTableName="concept" referencedColumnNames="concept_id"/>
+    </changeSet>
+
+    <changeSet id="messages-9" author="Dawid Ruchniewicz">
+        <preConditions>
+            <not><tableExists tableName="messages_schedule_service_parameter"/></not>
+        </preConditions>
+        <comment>Created the messages_schedule_service_parameter table</comment>
+        <createTable tableName="messages_schedule_service_parameter">
+            <column name="messages_schedule_service_parameter_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="scheduled_message" type="int"/>
+            <column name="parameter_type" type="varchar(255)"/>
+            <column name="parameter_value" type="TEXT"/>
+            <column name="uuid" type="char(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="creator" type="int"/>
+            <column name="changed_by" type="int"/>
+            <column name="date_changed" type="datetime"/>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_voided" type="datetime"/>
+            <column name="void_reason" type="varchar(255)"/>
+            <column name="voided" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voided_by" type="int"/>
+        </createTable>
+        <addForeignKeyConstraint constraintName="messages_schedule_service_parameter_creator_fk"
+                                 baseTableName="messages_schedule_service_parameter" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_schedule_service_parameter_changed_by_fk"
+                                 baseTableName="messages_schedule_service_parameter" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_schedule_service_parameter_voided_by_fk"
+                                 baseTableName="messages_schedule_service_parameter" baseColumnNames="voided_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_schedule_service_parameter_scheduled_message_fk"
+                                 baseTableName="messages_schedule_service_parameter" baseColumnNames="scheduled_message"
+                                 referencedTableName="messages_scheduled_service"
+                                 referencedColumnNames="messages_scheduled_service_id"/>
+    </changeSet>
+
+    <changeSet id="messages-10" author="Paweł Cieszko">
+        <addUniqueConstraint columnNames="actor_id, patient_id, template_id"
+                             constraintName="messages_patient_template_actor_id_patient_id_template_id_ux"
+                             tableName="messages_patient_template"/>
+    </changeSet>
+
+    <changeSet id="messages-11" author="Dawid Ruchniewcz">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="messages_template_field_value"/>
+            <columnExists tableName="messages_template_field_value" columnName="patient_template_id"/>
+        </preConditions>
+        <comment>Removed patient_template_id column</comment>
+        <dropColumn tableName="messages_template_field_value"
+                    columnName="patient_template_id"/>
+    </changeSet>
+
+    <changeSet id="messages-12" author="Dawid Ruchniewicz">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="messages_scheduled_service"/>
+            <columnExists tableName="messages_scheduled_service" columnName="last_service_execution_id"/>
+        </preConditions>
+        <comment>Removed lastServiceExecution column</comment>
+        <dropColumn tableName="messages_scheduled_service"
+                    columnName="last_service_execution_id"/>
+    </changeSet>
+
+    <changeSet id="messages-13" author="Dawid Ruchniewicz">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="messages_scheduled_service"/>
+        </preConditions>
+        <comment>Added lastServiceExecution column</comment>
+        <addColumn tableName="messages_scheduled_service">
+            <column name="last_service_execution_id" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="messages-14" author="Daniel Serkowski">
+        <preConditions>
+            <tableExists tableName="messages_delivery_attempt"/>
+        </preConditions>
+        <dropForeignKeyConstraint constraintName="messages_delivery_attempt_service_fk"
+                                  baseTableName="messages_delivery_attempt" />
+        <addForeignKeyConstraint constraintName="messages_delivery_attempt_scheduled_service_fk"
+                                 baseTableName="messages_delivery_attempt" baseColumnNames="scheduled_service_id"
+                                 referencedTableName="messages_scheduled_service"
+                                 referencedColumnNames="messages_scheduled_service_id" />
+    </changeSet>
+
+    <changeSet id="messages-15" author="Arkadiusz Lalo">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="messages_template_field"/>
+        </preConditions>
+        <comment>Added templateFieldType column</comment>
+        <addColumn tableName="messages_template_field">
+            <column name="template_field_type" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+        <dropForeignKeyConstraint constraintName="messages_template_field_value_concept_fk" baseTableName="messages_template_field"/>
+        <dropColumn tableName="messages_template_field" columnName="value_concept"/>
+    </changeSet>
+
+    <changeSet id="messages-16" author="Arkadiusz Lalo">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="messages_template"/>
+        </preConditions>
+        <comment>Added name column</comment>
+        <addColumn tableName="messages_template">
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="messages-17" author="Karol Cissewski">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="messages_template_field_value"/>
+        </preConditions>
+        <comment>Added patient_template_id column</comment>
+        <addColumn tableName="messages_template_field_value">
+            <column name="patient_template_id" type="int">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+        <addForeignKeyConstraint baseTableName="messages_template_field_value" baseColumnNames="patient_template_id"
+                                 constraintName="fk_messages_template_field_value_patient_template_id"
+                                 referencedTableName="messages_patient_template"
+                                 referencedColumnNames="messages_patient_template_id"/>
+    </changeSet>
+
+    <changeSet id="messages-18" author="Daniel Serkowski">
+        <preConditions>
+            <tableExists tableName="messages_patient_template" />
+            <tableExists tableName="messages_template" />
+        </preConditions>
+        <comment>Fixing incorrect FK definition between PatientTemplate and Template tables</comment>
+        <dropForeignKeyConstraint baseTableName="messages_patient_template"
+                                  constraintName="messages_patient_template_template_fk" />
+        <addForeignKeyConstraint constraintName="messages_patient_template_template_fk"
+                                 baseTableName="messages_patient_template" baseColumnNames="template_id"
+                                 referencedTableName="messages_template"
+                                 referencedColumnNames="messages_template_id"/>
+    </changeSet>
+
+    <changeSet id="messages-20" author="Daniel Serkowski">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="messages_scheduled_service_group"/>
+        </preConditions>
+        <comment>Adding missing actor_id column</comment>
+        <addColumn tableName="messages_scheduled_service_group">
+            <column name="actor_id" type="int">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+        <addForeignKeyConstraint constraintName="messages_scheduled_service_group_actor_fk"
+                                 baseTableName="messages_scheduled_service_group" baseColumnNames="actor_id"
+                                 referencedTableName="person" referencedColumnNames="person_id"/>
+    </changeSet>
+
+    <changeSet id="messages-24" author="Oskar Hinc">
+        <preConditions>
+            <tableExists tableName="messages_scheduled_service"/>
+            <foreignKeyConstraintExists foreignKeyName="messages_scheduled_service_channel_type_fk"/>
+            <foreignKeyConstraintExists foreignKeyName="messages_scheduled_service_service_fk"/>
+            <columnExists tableName="messages_scheduled_service" columnName="channel_type"/>
+            <columnExists tableName="messages_scheduled_service" columnName="service"/>
+        </preConditions>
+
+        <comment>Changes type of few messages_scheduled_service columns from concept to string</comment>
+
+        <dropForeignKeyConstraint constraintName="messages_scheduled_service_channel_type_fk"
+                                  baseTableName="messages_scheduled_service" />
+        <dropColumn tableName="messages_scheduled_service"
+                    columnName="channel_type"/>
+
+        <dropForeignKeyConstraint constraintName="messages_scheduled_service_service_fk"
+                                  baseTableName="messages_scheduled_service" />
+        <dropColumn tableName="messages_scheduled_service"
+                    columnName="service"/>
+
+        <addColumn tableName="messages_template">
+            <column name="channel_type" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="service" type="varchar(255)" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="messages-26" author="Daniel Serkowski">
+        <preConditions>
+            <tableExists tableName="messages_scheduled_service"/>
+            <tableExists tableName="messages_template"/>
+            <not><columnExists tableName="messages_scheduled_service" columnName="channel_type"/></not>
+            <not><columnExists tableName="messages_scheduled_service" columnName="service"/></not>
+            <columnExists tableName="messages_template" columnName="channel_type"/>
+            <columnExists tableName="messages_template" columnName="service"/>
+        </preConditions>
+
+        <comment>Fixed the issue with defining channel_type and service in messages_template instead in
+            messages_scheduled_service (issue of the changeSet 'messages-24')</comment>
+
+        <dropColumn tableName="messages_template" columnName="channel_type"/>
+        <dropColumn tableName="messages_template" columnName="service"/>
+
+        <addColumn tableName="messages_scheduled_service">
+            <column name="channel_type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="service" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="messages-28" author="Arkadiusz Lalo">
+        <preConditions>
+            <tableExists tableName="global_property"/>
+        </preConditions>
+
+        <comment>
+            Resets message.consent.validation to the default value. It is in order to apply the new changes to all
+            already existing environments. The migration can be removed if the liquibase refactor will be
+            conducted (eg. replacing all changes by one changeSet).
+        </comment>
+
+        <delete tableName="global_property">
+            <where>property='message.consent.validation'</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="messages-29" author="Oskar Hinc">
+        <preConditions>
+            <tableExists tableName="global_property"/>
+        </preConditions>
+
+        <comment>
+            Resets message.bestContactTime.default to the default value. It is in order to apply the new changes to all
+            already existing environments. The migration can be removed if the liquibase refactor will be
+            conducted (eg. replacing all changes by one changeSet).
+        </comment>
+
+        <delete tableName="global_property">
+            <where>property='message.bestContactTime.default'</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="messages-30" author="Arkadiusz Lalo">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="person_attribute_type" />
+            <sqlCheck expectedResult="1">
+                select count(*) from person_attribute_type
+                    where uuid = 'dda246c6-c806-402a-9b7c-e2c1574a6441' and name like 'Patient status'
+            </sqlCheck>
+        </preConditions>
+
+        <comment>
+            Change the name and description for the person status attribute. It is in order to apply the new changes to all
+            already existing environments. The migration can be removed if the liquibase refactor will be
+            conducted (eg. replacing all changes by one changeSet).
+        </comment>
+
+        <update tableName="person_attribute_type">
+            <column name="name" value="Person status" />
+            <column name="description" value="Person status attribute" />
+            <where>uuid = 'dda246c6-c806-402a-9b7c-e2c1574a6441'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="messages-39" author="Artur Fijał">
+        <preConditions>
+            <not><tableExists tableName="messages_template_field_default_values"/></not>
+        </preConditions>
+        <comment>Created the template_field_default_values table</comment>
+        <createTable tableName="messages_template_field_default_values">
+            <column name="messages_template_field_default_values_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="uuid" type="char(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="relationship_type" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="relationship_direction" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="template_field" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="default_value" type="TEXT"/>
+            <column name="creator" type="int"/>
+            <column name="changed_by" type="int"/>
+            <column name="date_changed" type="datetime"/>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_voided" type="datetime"/>
+            <column name="void_reason" type="varchar(255)"/>
+            <column name="voided" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voided_by" type="int"/>
+        </createTable>
+        <addForeignKeyConstraint constraintName="messages_template_field_default_values_relationship_type_fk"
+                                 baseTableName="messages_template_field_default_values" baseColumnNames="relationship_type"
+                                 referencedTableName="relationship_type" referencedColumnNames="relationship_type_id"/>
+        <addForeignKeyConstraint constraintName="messages_template_field_default_values_template_field_fk"
+                                 baseTableName="messages_template_field_default_values" baseColumnNames="template_field"
+                                 referencedTableName="messages_template_field" referencedColumnNames="messages_template_field_id"/>
+    </changeSet>
+
+    <changeSet id="messages-41" author="Arkadiusz Lalo">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_property"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from global_property
+                where property = 'message.personStatus.configuration'
+            </sqlCheck>
+        </preConditions>
+
+        <comment>Resets message.personStatus.configuration to the default value (the property structure and its description
+            have been changed). It is in order to apply the new changes to all already existing environments. The
+            migration can be removed if the liquibase refactor will be conducted (eg. replacing all changes by one
+            changeSet).</comment>
+
+        <delete tableName="global_property">
+            <where>property='message.personStatus.configuration'</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="messages-54" author="Daniel Serkowski">
+        <preConditions>
+            <tableExists tableName="global_property"/>
+        </preConditions>
+
+        <comment>Resets messages.reschedulingStrategy to the default value (the property structure and its description
+            have been changed). It is in order to apply the new changes to all already existing environments. The
+            migration can be removed if the liquibase refactor will be conducted (eg. replacing all changes by one
+            changeSet).</comment>
+
+        <delete tableName="global_property">
+            <where>property='messages.reschedulingStrategy'</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="messages-55" author="Daniel Serkowski">
+        <comment>Removes the not null constraint on service_execution_id in messages_delivery_attempt. In some cases,
+            the attempts can fail before executor invokes eg. real call. The failure may be caused by temporary internal
+            server error, so in order to register it in this table, we need to get rid of the not null requirement.</comment>
+
+        <dropNotNullConstraint tableName="messages_delivery_attempt"
+                               columnName="service_execution_id"
+                               columnDataType="varchar(255)"/>
+    </changeSet>
+
+    <changeSet id="messages-58" author="Arkadiusz Lalo">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="messages_actor_response" />
+            <not>
+                <tableExists tableName="messages_actor_response_type" />
+            </not>
+            <not>
+                <columnExists tableName="messages_actor_response" columnName="actor_id" />
+            </not>
+            <not>
+                <columnExists tableName="messages_actor_response" columnName="patient_id" />
+            </not>
+            <not>
+                <columnExists tableName="messages_actor_response" columnName="source_id" />
+            </not>
+            <not>
+                <columnExists tableName="messages_actor_response" columnName="source_type" />
+            </not>
+            <not>
+                <columnExists tableName="messages_actor_response" columnName="text_question" />
+            </not>
+        </preConditions>
+        <comment>
+            Adds new columns which will be used in next migration in order to change
+            the structure of messages_actor_response. Additionally creates messages_actor_response_type
+            table which will be used by new messages_actor_response table.
+        </comment>
+        <createTable tableName="messages_actor_response_type">
+            <column name="name" type="varchar(255)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+        <insert tableName="messages_actor_response_type">
+            <column name="name" value="SCHEDULED_SERVICE" />
+        </insert>
+        <insert tableName="messages_actor_response_type">
+            <column name="name" value="SCHEDULED_SERVICE_GROUP" />
+        </insert>
+        <insert tableName="messages_actor_response_type">
+            <column name="name" value="OTHER" />
+        </insert>
+        <addColumn tableName="messages_actor_response">
+            <column name="actor_id" type="int"/>
+            <column name="patient_id" type="int"/>
+            <column name="source_id" type="varchar(255)"/>
+            <column name="source_type" type="varchar(255)" />
+            <column name="text_question" type="TEXT" />
+        </addColumn>
+        <addForeignKeyConstraint constraintName="messages_actor_response_actor_fk"
+                                 baseTableName="messages_actor_response" baseColumnNames="actor_id"
+                                 referencedTableName="person" referencedColumnNames="person_id"/>
+        <addForeignKeyConstraint constraintName="messages_actor_response_patient_fk"
+                                 baseTableName="messages_actor_response" baseColumnNames="patient_id"
+                                 referencedTableName="patient" referencedColumnNames="patient_id"/>
+        <addForeignKeyConstraint constraintName="messages_actor_response_source_type_fk"
+                                 baseTableName="messages_actor_response" baseColumnNames="source_type"
+                                 referencedTableName="messages_actor_response_type" referencedColumnNames="name"/>
+    </changeSet>
+
+    <changeSet id="messages-59" author="Arkadiusz Lalo">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="messages_actor_response" />
+            <tableExists tableName="messages_actor_response_type" />
+            <columnExists tableName="messages_actor_response" columnName="actor_id" />
+            <columnExists tableName="messages_actor_response" columnName="patient_id" />
+            <columnExists tableName="messages_actor_response" columnName="source_id" />
+            <columnExists tableName="messages_actor_response" columnName="source_type" />
+            <columnExists tableName="messages_actor_response" columnName="text_question" />
+            <columnExists tableName="messages_actor_response" columnName="scheduled_service_id" />
+            <columnExists tableName="messages_actor_response" columnName="text_question" />
+        </preConditions>
+        <comment>
+            Updates already existing data in database according to new changes (messages-54).
+            Insert scheduled_service_group_id into new source id column.
+        </comment>
+        <sql>
+            UPDATE messages_actor_response ar
+                LEFT JOIN messages_scheduled_service ss ON ar.scheduled_service_id = ss.messages_scheduled_service_id
+                LEFT JOIN messages_scheduled_service_group ssg ON ss.group_id = ssg.messages_scheduled_service_group_id
+            SET ar.patient_id = ssg.patient_id, ar.actor_id = ssg.actor_id,
+                ar.source_id = ssg.messages_scheduled_service_group_id,
+                ar.source_type = 'SCHEDULED_SERVICE_GROUP'
+        </sql>
+    </changeSet>
+
+    <changeSet id="messages-60" author="Arkadiusz Lalo">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="messages_actor_response" />
+            <columnExists tableName="messages_actor_response" columnName="source_type" />
+            <columnExists tableName="messages_actor_response" columnName="scheduled_service_id" />
+        </preConditions>
+        <comment>
+            Removes the unnecessary column from messages_actor_response table according to changes from messages-54.
+            Additionally adds missing constraint for source_type column.
+        </comment>
+        <addNotNullConstraint tableName="messages_actor_response" columnName="source_type" columnDataType="varchar(255)"/>
+        <dropForeignKeyConstraint baseTableName="messages_actor_response"
+                          constraintName="messages_actor_response_scheduled_service_fk" />
+        <dropColumn tableName="messages_actor_response" columnName="scheduled_service_id" />
+    </changeSet>
+
+    <changeSet id="messages-63" author="Arkadiusz Lalo">
+        <preConditions>
+            <tableExists tableName="global_property"/>
+        </preConditions>
+
+        <comment>
+            Resets messages.notificationTemplate.injectedServices to the default value.
+            It is in order to apply the new changes to all already existing environments.
+            The migration can be removed if the liquibase refactor will be
+            conducted (eg. replacing all changes by one changeSet).
+        </comment>
+
+        <delete tableName="global_property">
+            <where>property='messages.notificationTemplate.injectedServices'</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="messages-64" author="Arkadiusz Lalo">
+        <preConditions>
+            <tableExists tableName="messages_template"/>
+        </preConditions>
+
+        <comment>
+            Adds the unique constraint on `name` column in the `messages_template` table.
+        </comment>
+
+        <addUniqueConstraint tableName="messages_template" columnNames="name"/>
+    </changeSet>
+
+    <changeSet id="messages-68" author="Daniel Serkowski" runOnChange="true">
+        <preConditions>
+            <tableExists tableName="messages_template"/>
+        </preConditions>
+
+        <comment>
+            Adding triggers and procedure which check patientTemplate uniqueness for
+            actor_id, patient_id and template_id columns with the support for voided entries.
+
+            This migration also provides the mechanism for automatic update of the procedure
+            when the sql file with its definition is changed.
+        </comment>
+
+        <sql>
+            DROP TRIGGER IF EXISTS messages_patient_template_insert_validation;
+            DROP TRIGGER IF EXISTS messages_patient_template_update_validation;
+            DROP PROCEDURE IF EXISTS validate_messages_patient_template;
+        </sql>
+
+        <sqlFile encoding="UTF-8"
+                 path="mysql/validators/PatientTemplateValidation.sql"
+                 splitStatements="false"
+                 stripComments="true"/>
+
+        <sql>
+            CREATE TRIGGER messages_patient_template_insert_validation
+            AFTER INSERT ON messages_patient_template
+            FOR EACH ROW CALL validate_messages_patient_template(NEW.actor_id, NEW.patient_id, NEW.template_id);
+
+            CREATE TRIGGER messages_patient_template_update_validation
+            AFTER UPDATE ON messages_patient_template
+            FOR EACH ROW CALL validate_messages_patient_template(NEW.actor_id, NEW.patient_id, NEW.template_id);
+        </sql>
+    </changeSet>
+
+    <changeSet id="messages-69" author="Daniel Serkowski">
+        <preConditions>
+            <tableExists tableName="messages_patient_template"/>
+            <foreignKeyConstraintExists foreignKeyName="messages_patient_template_actor_fk"/>
+            <foreignKeyConstraintExists foreignKeyName="messages_patient_template_patient_fk"/>
+            <foreignKeyConstraintExists foreignKeyName="messages_patient_template_template_fk"/>
+            <indexExists indexName="messages_patient_template_actor_id_patient_id_template_id_ux"/>
+        </preConditions>
+
+        <comment>
+            Remove the unique constraint because it have been replaced by the trigger
+            supporting voided entries (introduced in messages-68).
+        </comment>
+
+        <!-- removing these 3 constraints for a while -->
+        <dropForeignKeyConstraint baseTableName="messages_patient_template"
+                                  constraintName="messages_patient_template_actor_fk"/>
+        <dropForeignKeyConstraint baseTableName="messages_patient_template"
+                                  constraintName="messages_patient_template_patient_fk"/>
+        <dropForeignKeyConstraint baseTableName="messages_patient_template"
+                                  constraintName="messages_patient_template_template_fk"/>
+
+        <dropUniqueConstraint tableName="messages_patient_template"
+                              constraintName="messages_patient_template_actor_id_patient_id_template_id_ux"/>
+
+        <!-- the constraints restore -->
+        <addForeignKeyConstraint constraintName="messages_patient_template_actor_fk"
+                                 baseTableName="messages_patient_template" baseColumnNames="actor_id"
+                                 referencedTableName="person" referencedColumnNames="person_id"/>
+        <addForeignKeyConstraint constraintName="messages_patient_template_patient_fk"
+                                 baseTableName="messages_patient_template" baseColumnNames="patient_id"
+                                 referencedTableName="patient" referencedColumnNames="patient_id"/>
+        <addForeignKeyConstraint constraintName="messages_patient_template_template_fk"
+                                 baseTableName="messages_patient_template" baseColumnNames="template_id"
+                                 referencedTableName="messages_template"
+                                 referencedColumnNames="messages_template_id"/>
+    </changeSet>
+
+    <changeSet id="messages-70" author="Dawid Ruchniewicz">
+        <preConditions>
+            <tableExists tableName="messages_patient_template"/>
+            <columnExists tableName="messages_patient_template" columnName="service_query" />
+            <columnExists tableName="messages_patient_template" columnName="service_query_type" />
+        </preConditions>
+        <comment>
+            Removed not null constraints from service_query and service_query_type fields in PatientTemplate
+            to avoid unpredictable saving values to those fields
+        </comment>
+        <dropNotNullConstraint tableName="messages_patient_template"
+                               columnName="service_query"
+                               columnDataType="TEXT" />
+        <dropNotNullConstraint tableName="messages_patient_template"
+                               columnName="service_query_type"
+                               columnDataType="varchar(255)" />
+    </changeSet>
+
+    <changeSet id="messages-74" author="Arkadiusz Lalo">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_property"/>
+            <sqlCheck expectedResult="1">
+                SELECT COUNT(*) FROM global_property WHERE property='messages.maxNumberOfRescheduling'
+            </sqlCheck>
+        </preConditions>
+
+        <comment>Removed messages.maxNumberOfRescheduling property because the property name
+            has been changed to 'messages.maxNumberOfAttempts'.
+            The migration can be removed if the liquibase refactor will be conducted (eg. replacing all changes by one
+            changeSet).</comment>
+
+        <delete tableName="global_property">
+            <where>property='messages.maxNumberOfRescheduling'</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="messages-80" author="Arkadiusz Lalo">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="messages_template_field"/>
+            <not><columnExists tableName="messages_template_field" columnName="possible_values"/></not>
+        </preConditions>
+        <comment>Adds the possible_values column which can be used to store
+            the set of possible values for specific field type</comment>
+        <addColumn tableName="messages_template_field">
+            <column name="possible_values" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="messages-89" author="Dawid Ruchniewicz">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="messages_template"/>
+            <tableExists tableName="messages_patient_template"/>
+        </preConditions>
+        <comment>Added calendarServiceQuery column to template and patient template tables</comment>
+        <addColumn tableName="messages_template">
+            <column name="calendar_service_query" type="TEXT"/>
+        </addColumn>
+        <addColumn tableName="messages_patient_template">
+            <column name="calendar_service_query" type="TEXT"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="messages-2021-02-09-12:00" author="Piotr Wargulak">
+        <comment>Template entity now derives from BaseOpenmrsMetadata</comment>
+        <addColumn tableName="messages_template">
+            <column name="description" type="varchar(255)" />
+        </addColumn>
+        <renameColumn tableName="messages_template" columnDataType="tinyint(1)" oldColumnName="voided" newColumnName="retired" />
+        <renameColumn tableName="messages_template" columnDataType="datetime" oldColumnName="date_voided" newColumnName="date_retired" />
+        <renameColumn tableName="messages_template" columnDataType="int(11)" oldColumnName="voided_by" newColumnName="retired_by" />
+        <renameColumn tableName="messages_template" columnDataType="varchar(255)" oldColumnName="void_reason" newColumnName="retire_reason" />
+    </changeSet>
+
+    <changeSet id="messages-92" author="Dawid Ruchniewicz">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="messages_template"/>
+        </preConditions>
+        <comment>Added shouldUseOptimizedQuery column to template</comment>
+        <addColumn tableName="messages_template">
+            <column name="should_use_optimized_query" type="BOOLEAN" defaultValueBoolean="false"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="messages-94-AGRE-1420-move-channelType-1" author="Piotr Wargulak">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="messages_scheduled_service_group" columnName="channel_type"/>
+            </not>
+        </preConditions>
+        <comment>
+            Adds nullable ScheduledServiceGroup.channelType if needed. Sets 'Deactivate service' in all
+            existing rows
+        </comment>
+        <addColumn tableName="messages_scheduled_service_group">
+            <column name="channel_type" type="varchar(255)" value="Deactivate service">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="messages-94-AGRE-1420-move-channelType-2" author="Piotr Wargulak">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="messages_scheduled_service" columnName="channel_type"/>
+        </preConditions>
+        <comment>Drops ScheduledService.channelType if needed. Makes ScheduledServiceGroup.channelType not-null.</comment>
+        <dropColumn tableName="messages_scheduled_service" columnName="channel_type"/>
+        <addNotNullConstraint tableName="messages_scheduled_service_group" columnName="channel_type"
+                              columnDataType="varchar(255)"/>
+    </changeSet>
+</databaseChangeLog>

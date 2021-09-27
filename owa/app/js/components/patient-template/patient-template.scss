@@ -1,0 +1,24 @@
+.page-header {
+  margin-bottom: 20px;
+}
+
+.fields-form {
+  border-bottom: 1px solid #eee;
+  margin-bottom: 20px;
+  overflow: visible;
+}
+
+.fields-form-title {
+  border-bottom: 1px solid #eee;
+}
+
+.note-container {
+  span {
+    position: initial;
+  }
+
+  p {
+    position: initial !important;
+    vertical-align: super !important;
+  }
+}

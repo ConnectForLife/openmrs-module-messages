@@ -1,0 +1,43 @@
+#best-contact-time {
+
+  .button-section {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  fieldset {
+    border: 1px solid silver;
+    margin: 0 2px;
+    width: fit-content;
+    padding: 0px 20px 10px 20px;
+  }
+
+  legend {
+    width: auto;
+    border: none;
+    margin-bottom: 0px;
+    font-size: 14pt;
+  }
+
+  .sections {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .time-section {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 5px;
+  }
+
+  button {
+    margin: 5px;
+  }
+
+  .ant-time-picker {
+    width: 100%;
+  }
+}
+div.ant-time-picker-panel-select ul {
+  padding: 0;
+}

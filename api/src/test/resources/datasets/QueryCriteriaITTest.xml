@@ -1,0 +1,152 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <person person_id="1001"
+            gender="M"
+            birthdate="2000-05-01 00:00:00.0"
+            dead="false"
+            uuid="b114f1ca-1000-0000-0000-000000001001"
+            creator="1"
+            date_created="2021-05-19 15:00:00.0"
+            voided="false"/>
+    <patient patient_id="1001"
+             date_created="2021-05-19 15:00:00.0"
+             voided="false"/>
+
+    <person person_id="1002"
+            gender="F"
+            birthdate="2000-05-02 00:00:00.0"
+            dead="false"
+            uuid="b114f1ca-1000-0000-0000-000000001002"
+            creator="1"
+            date_created="2021-05-19 15:00:00.0"
+            voided="false"/>
+    <patient patient_id="1002"
+             date_created="2021-05-19 15:00:00.0"
+             voided="false"/>
+
+    <person person_id="1003"
+            gender="O"
+            birthdate="2000-05-03 00:00:00.0"
+            dead="false"
+            uuid="b114f1ca-1000-0000-0000-000000001003"
+            creator="1"
+            date_created="2021-05-19 15:00:00.0"
+            voided="false"/>
+    <patient patient_id="1003"
+             date_created="2021-05-19 15:00:00.0"
+             voided="false"/>
+
+    <person_attribute_type
+            person_attribute_type_id="2001"
+            name="MyAttribute1"
+            description="MyAttribute1 for QueryCriteria"
+            format="java.lang.String"
+            creator="1"
+            sort_weight="1"
+            searchable="0"
+            retired="false"
+            date_created="2021-05-19 15:00:00.0"
+            uuid="0b114f1ca-1000-0000-0000-000000002001"/>
+
+    <person_attribute_type
+            person_attribute_type_id="2002"
+            name="MyAttribute2"
+            description="MyAttribute2 for QueryCriteria"
+            format="java.lang.String"
+            creator="1"
+            sort_weight="2"
+            searchable="0"
+            retired="false"
+            date_created="2021-05-19 15:00:00.0"
+            uuid="0b114f1ca-1000-0000-0000-000000002002"/>
+
+    <person_attribute
+            person_attribute_id="3001"
+            person_id="1001"
+            value="First"
+            person_attribute_type_id="2001"
+            creator="1"
+            date_created="2021-05-19 15:00:00.0"
+            voided="false"
+            uuid="0b114f1ca-1000-0000-0000-000000003001"/>
+
+    <person_attribute
+            person_attribute_id="3002"
+            person_id="1002"
+            value="Second"
+            person_attribute_type_id="2001"
+            creator="1"
+            date_created="2021-05-19 15:00:00.0"
+            voided="false"
+            uuid="0b114f1ca-1000-0000-0000-000000003002"/>
+
+    <person_attribute
+            person_attribute_id="3003"
+            person_id="1003"
+            value="Third"
+            person_attribute_type_id="2001"
+            creator="1"
+            date_created="2021-05-19 15:00:00.0"
+            voided="false"
+            uuid="0b114f1ca-1000-0000-0000-000000003003"/>
+
+    <person_attribute
+            person_attribute_id="3004"
+            person_id="1001"
+            value="First again"
+            person_attribute_type_id="2002"
+            creator="1"
+            date_created="2021-05-19 15:00:00.0"
+            voided="false"
+            uuid="0b114f1ca-1000-0000-0000-000000003004"/>
+
+    <person_attribute
+            person_attribute_id="3005"
+            person_id="1002"
+            value="Second again"
+            person_attribute_type_id="2002"
+            creator="1"
+            date_created="2021-05-19 15:00:00.0"
+            voided="false"
+            uuid="0b114f1ca-1000-0000-0000-000000003005"/>
+
+    <person_attribute
+            person_attribute_id="3006"
+            person_id="1003"
+            value="Third again"
+            person_attribute_type_id="2002"
+            creator="1"
+            date_created="2021-05-19 15:00:00.0"
+            voided="false"
+            uuid="0b114f1ca-1000-0000-0000-000000003006"/>
+
+    <person_address
+            person_address_id="4001"
+            person_id="1001"
+            preferred="true"
+            country="CountryA"
+            creator="1"
+            date_created="2021-05-19 15:00:00.0"
+            voided="false"
+            uuid="0b114f1ca-1000-0000-0000-000000004001"/>
+
+    <person_address
+            person_address_id="4002"
+            person_id="1002"
+            preferred="true"
+            country="CountryB"
+            creator="1"
+            date_created="2021-05-19 15:00:00.0"
+            voided="false"
+            uuid="0b114f1ca-1000-0000-0000-000000004002"/>
+
+    <person_address
+            person_address_id="4003"
+            person_id="1003"
+            preferred="true"
+            country="CountryA"
+            creator="1"
+            date_created="2021-05-19 15:00:00.0"
+            voided="false"
+            uuid="0b114f1ca-1000-0000-0000-000000004003"/>
+</dataset>

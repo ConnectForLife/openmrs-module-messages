@@ -1,0 +1,584 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Beans to add to the current Application context definition -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+
+    <bean id="messages.ServiceExecutor" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="target">
+            <bean class="org.openmrs.module.messages.api.execution.impl.ServiceExecutorImpl">
+                <constructor-arg ref="messages.ExecutionEngineManager"/>
+            </bean>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="preInterceptors">
+            <ref bean="serviceInterceptors"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean id="messages.configService" class="org.openmrs.module.messages.api.service.impl.ConfigServiceImpl"/>
+
+    <bean id="messages.actorService" class="org.openmrs.module.messages.api.service.impl.ActorServiceImpl">
+        <property name="configService">
+            <ref local="messages.configService"/>
+        </property>
+        <property name="personService" ref="personService"/>
+        <property name="patientService" ref="patientService"/>
+    </bean>
+
+    <bean id="messages.TemplateDao" class="org.openmrs.module.messages.api.dao.impl.TemplateDaoImpl">
+    </bean>
+
+    <bean id="messages.TemplateFieldDefaultValueDao" class="org.openmrs.module.messages.api.dao.impl.TemplateFieldDefaultValueDaoImpl">
+        <property name="dbSessionFactory">
+            <ref bean="dbSessionFactory"/>
+        </property>
+    </bean>
+
+    <bean id="messages.TemplateFieldDao" class="org.openmrs.module.messages.api.dao.impl.TemplateFieldDaoImpl">
+        <property name="dbSessionFactory">
+            <ref bean="dbSessionFactory"/>
+        </property>
+    </bean>
+
+    <bean id="messages.PatientTemplateDao" class="org.openmrs.module.messages.api.dao.impl.PatientTemplateDaoImpl">
+        <property name="dbSessionFactory">
+            <ref bean="dbSessionFactory"/>
+        </property>
+    </bean>
+
+    <bean id="messages.MessagingGroupDao" class="org.openmrs.module.messages.api.dao.impl.MessagingGroupDaoImpl">
+        <property name="dbSessionFactory">
+            <ref bean="dbSessionFactory"/>
+        </property>
+    </bean>
+
+    <bean id="messages.MessagingDao" class="org.openmrs.module.messages.api.dao.impl.MessagingDaoImpl">
+        <property name="dbSessionFactory">
+            <ref bean="dbSessionFactory"/>
+        </property>
+    </bean>
+
+    <bean id="messages.ActorResponseDao" class="org.openmrs.module.messages.api.dao.impl.ActorResponseDaoImpl">
+        <property name="dbSessionFactory">
+            <ref bean="dbSessionFactory"/>
+        </property>
+    </bean>
+
+    <bean id="messages.PatientAdvancedDao" class="org.openmrs.module.messages.api.dao.impl.PatientAdvancedDaoImpl">
+        <property name="dbSessionFactory">
+            <ref bean="dbSessionFactory"/>
+        </property>
+    </bean>
+
+    <bean id="messages.patientTemplateService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="transactionManager">
+            <ref bean="transactionManager" />
+        </property>
+        <property name="target">
+            <bean class="org.openmrs.module.messages.api.service.impl.PatientTemplateServiceImpl">
+                <property name="daoBeanName" value="messages.PatientTemplateDao"/>
+                <property name="patientTemplateMapper" ref="messages.patientTemplateMapper"/>
+                <property name="templateService" ref="messages.templateService"/>
+            </bean>
+        </property>
+        <property name="preInterceptors">
+            <ref bean="serviceInterceptors" />
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource" />
+        </property>
+    </bean>
+
+    <bean parent="serviceContext">
+        <property name="moduleService">
+            <list merge="true">
+                <value>org.openmrs.module.messages.api.service.PatientTemplateService</value>
+                <ref local="messages.patientTemplateService"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="messages.templateService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="target">
+            <bean class="org.openmrs.module.messages.api.service.impl.TemplateServiceImpl">
+                <property name="templateMapper">
+                    <ref local="messages.templateMapper"/>
+                </property>
+            </bean>
+        </property>
+        <property name="preInterceptors">
+            <ref bean="serviceInterceptors"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean parent="serviceContext">
+        <property name="moduleService">
+            <list merge="true">
+                <value>org.openmrs.module.messages.api.service.TemplateService</value>
+                <ref local="messages.templateService"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="messages.templateFieldService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="target">
+            <bean class="org.openmrs.module.messages.api.service.impl.TemplateFieldServiceImpl">
+                <property name="daoBeanName" value="messages.TemplateFieldDao"/>
+            </bean>
+        </property>
+        <property name="preInterceptors">
+            <ref bean="serviceInterceptors"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean id="messages.messagingService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="target">
+            <bean class="org.openmrs.module.messages.api.service.impl.MessagingServiceImpl">
+                <property name="daoBeanName" value="messages.MessagingDao"/>
+                <property name="conceptService">
+                    <ref bean="conceptServiceTarget"/>
+                </property>
+                <property name="actorResponseDao">
+                    <ref local="messages.ActorResponseDao"/>
+                </property>
+                <property name="patientTemplateService">
+                    <ref local="messages.patientTemplateService"/>
+                </property>
+                <property name="serviceExecutor">
+                    <ref local="messages.ServiceExecutor"/>
+                </property>
+                <property name="templateService">
+                    <ref local="messages.templateService"/>
+                </property>
+                <property name="personService" ref="personService"/>
+                <property name="patientService" ref="patientService"/>
+            </bean>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="preInterceptors">
+            <ref bean="serviceInterceptors"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+
+    <bean id="messages.defaultPatientTemplateService"
+          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="transactionManager">
+            <ref bean="transactionManager" />
+        </property>
+        <property name="target">
+            <bean class="org.openmrs.module.messages.api.service.impl.DefaultPatientTemplateServiceImpl">
+                <property name="patientTemplateService">
+                    <ref local="messages.patientTemplateService"/>
+                </property>
+
+                <property name="templateService">
+                    <ref local="messages.templateService"/>
+                </property>
+
+                <property name="actorService">
+                    <ref local="messages.actorService"/>
+                </property>
+
+                <property name="messageDetailsMapper">
+                    <ref local="messages.MessageDetailsMapper"/>
+                </property>
+            </bean>
+        </property>
+        <property name="preInterceptors">
+            <ref bean="serviceInterceptors" />
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource" />
+        </property>
+    </bean>
+
+    <bean name="messages.ExecutionEngineManager"
+          class="org.openmrs.module.messages.api.execution.impl.ExecutionEngineManager"/>
+
+    <bean name="messages.SqlExecutionEngine"
+          class="org.openmrs.module.messages.api.execution.impl.SqlExecutionEngine">
+        <constructor-arg ref="dbSessionFactory"/>
+    </bean>
+
+    <bean id="messages.UserMapper" class="org.openmrs.module.messages.api.mappers.UserMapper"/>
+
+    <bean id="messages.ActorScheduleMapper" class="org.openmrs.module.messages.api.mappers.ActorScheduleMapper"/>
+
+    <bean id="messages.MessageDetailsMapper" class="org.openmrs.module.messages.api.mappers.MessageDetailsMapper">
+        <property name="messageMapper">
+            <ref local="messages.MessageMapper"/>
+        </property>
+    </bean>
+
+    <bean id="messages.MessageMapper" class="org.openmrs.module.messages.api.mappers.MessageMapper">
+        <property name="userMapper">
+            <ref local="messages.UserMapper"/>
+        </property>
+        <property name="actorScheduleMapper">
+            <ref local="messages.ActorScheduleMapper"/>
+        </property>
+    </bean>
+
+    <bean id="messages.templateFieldValueMapper" class="org.openmrs.module.messages.api.mappers.TemplateFieldValueMapper"/>
+
+    <bean id="messages.patientTemplateMapper" class="org.openmrs.module.messages.api.mappers.PatientTemplateMapper">
+        <property name="valueMapper">
+            <ref local="messages.templateFieldValueMapper"/>
+        </property>
+    </bean>
+
+    <bean id="messages.schedulerService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="target">
+            <bean class="org.openmrs.module.messages.api.service.impl.MessagesSchedulerServiceImpl">
+                <property name="schedulerService" ref="schedulerService"/>
+            </bean>
+        </property>
+        <property name="preInterceptors">
+            <ref bean="serviceInterceptors"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean id="messages.templateFieldDefaultValueMapper" class="org.openmrs.module.messages.api.mappers.TemplateFieldDefaultValueMapper"/>
+
+    <bean id="messages.templateFieldMapper" class="org.openmrs.module.messages.api.mappers.TemplateFieldMapper">
+        <property name="templateFieldDefaultValueMapper">
+            <ref local="messages.templateFieldDefaultValueMapper"/>
+        </property>
+    </bean>
+
+    <bean id="messages.templateMapper" class="org.openmrs.module.messages.api.mappers.TemplateMapper">
+        <property name="templateFieldMapper">
+            <ref local="messages.templateFieldMapper"/>
+        </property>
+    </bean>
+
+    <bean id="messagesValidationFactory" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
+
+    <bean id="messages.validationComponent" class="org.openmrs.module.messages.api.util.validate.ValidationComponent">
+        <property name="factory">
+            <ref local="messagesValidationFactory"/>
+        </property>
+    </bean>
+
+    <bean id="messages.messagingGroupService"
+          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="target">
+            <bean class="org.openmrs.module.messages.api.service.impl.MessagingGroupServiceImpl">
+                <property name="daoBeanName" value="messages.MessagingGroupDao"/>
+            </bean>
+        </property>
+        <property name="preInterceptors">
+            <ref bean="serviceInterceptors"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean id="messages.actorMapper" class="org.openmrs.module.messages.api.mappers.ActorMapper"/>
+
+    <bean id="messages.messagesEventService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="target">
+            <bean class="org.openmrs.module.messages.api.service.impl.MessagesEventServiceImpl"/>
+        </property>
+        <property name="preInterceptors">
+            <ref bean="serviceInterceptors"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean parent="serviceContext">
+        <property name="moduleService">
+            <list merge="true">
+                <value>org.openmrs.module.messages.api.service.MessagesEventService</value>
+                <ref local="messages.messagesEventService"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="messages.abstractReschedulingStrategy"
+          class="org.openmrs.module.messages.api.strategy.impl.AbstractReschedulingStrategy"
+          abstract="true">
+        <property name="configService">
+            <ref local="messages.configService"/>
+        </property>
+        <property name="deliveryService">
+            <ref local="messages.deliveryService"/>
+        </property>
+    </bean>
+
+    <bean id="messages.failedAndPendingMessagesReschedulingStrategy"
+          class="org.openmrs.module.messages.api.strategy.impl.FailedAndPendingMessagesReschedulingStrategyImpl"
+          parent="messages.abstractReschedulingStrategy"/>
+
+    <bean id="messages.abstractServiceResultHandlerService"
+          class="org.openmrs.module.messages.api.service.impl.AbstractServiceResultsHandlerService"
+          abstract="true">
+        <property name="personService">
+            <ref bean="personService"/>
+        </property>
+        <property name="messagesEventService">
+            <ref local="messages.messagesEventService"/>
+        </property>
+    </bean>
+
+    <bean id="messages.defaultServiceResultHandlerService"
+          class="org.openmrs.module.messages.api.service.impl.DefaultServiceResultsHandlerServiceImpl"
+          parent="messages.abstractServiceResultHandlerService"/>
+
+    <bean id="messages.callFlowServiceResultHandlerService"
+          class="org.openmrs.module.messages.api.service.impl.CallFlowServiceResultsHandlerServiceImpl"
+          parent="messages.abstractServiceResultHandlerService"/>
+
+    <bean id="messages.smsServiceResultHandlerService"
+          class="org.openmrs.module.messages.api.service.impl.SmsServiceResultsHandlerServiceImpl"
+          parent="messages.abstractServiceResultHandlerService">
+        <property name="notificationTemplateService">
+            <ref local="messages.velocityNotificationTemplateServiceImpl"/>
+        </property>
+        <property name="messagingService">
+            <ref local="messages.messagingService"/>
+        </property>
+        <property name="messagesExecutionService">
+            <ref local="messages.messagesExecutionService"/>
+        </property>
+    </bean>
+
+    <bean id="messages.scheduledParamsMapper" class="org.openmrs.module.messages.api.mappers.ScheduledParamsMapper"/>
+
+    <bean id="messages.scheduledServiceMapper" class="org.openmrs.module.messages.api.mappers.ScheduledServiceMapper">
+        <property name="paramsMapper">
+            <ref local="messages.scheduledParamsMapper"/>
+        </property>
+    </bean>
+
+    <bean id="messages.scheduledGroupMapper" class="org.openmrs.module.messages.api.mappers.ScheduledGroupMapper">
+        <property name="serviceMapper">
+            <ref local="messages.scheduledServiceMapper"/>
+        </property>
+    </bean>
+
+    <bean id="messages.deliveryService"
+          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="target">
+            <bean class="org.openmrs.module.messages.api.service.impl.MessagesDeliveryServiceImpl">
+                <property name="schedulerService">
+                    <ref bean="messages.schedulerService"/>
+                </property>
+            </bean>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+    </property>
+        <property name="preInterceptors">
+            <ref bean="serviceInterceptors"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean id="messages.MessagingParameterDao" class="org.openmrs.module.messages.api.dao.impl.MessagingParameterDaoImpl"/>
+
+    <bean id="messages.messagingParameterService"
+          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="target">
+            <bean class="org.openmrs.module.messages.api.service.impl.MessagingParameterServiceImpl">
+                <property name="daoBeanName" value="messages.MessagingParameterDao"/>
+            </bean>
+        </property>
+        <property name="preInterceptors">
+            <ref bean="serviceInterceptors"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean id="messages.messagesExecutionService"
+          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="target">
+            <bean class="org.openmrs.module.messages.api.service.impl.MessagesExecutionServiceImpl">
+                <property name="configService">
+                    <ref local="messages.configService"/>
+                </property>
+                <property name="messagingService">
+                    <ref local="messages.messagingService"/>
+                </property>
+                <property name="messagingGroupService">
+                    <ref local="messages.messagingGroupService"/>
+                </property>
+            </bean>
+        </property>
+        <property name="preInterceptors">
+            <ref bean="serviceInterceptors"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean id="messages.callflowExecutionCompletionListener"
+          class="org.openmrs.module.messages.api.event.listener.CallflowExecutionCompletionListener" />
+
+    <bean id="messages.peopleActionListener"
+          class="org.openmrs.module.messages.api.event.listener.subscribable.PeopleActionListener"
+          abstract="true">
+        <property name="personService" ref="personService"/>
+    </bean>
+
+    <bean id="messages.relationshipActionListener"
+          class="org.openmrs.module.messages.api.event.listener.subscribable.RelationshipActionListener"
+          abstract="true">
+        <property name="personService" ref="personService"/>
+    </bean>
+
+    <bean id="messages.personCreatedListener"
+          class="org.openmrs.module.messages.api.event.listener.subscribable.InitialPersonAttributeListener"
+          init-method="init"
+          destroy-method="close"
+          parent="messages.peopleActionListener">
+        <property name="configService">
+            <ref local="messages.configService"/>
+        </property>
+    </bean>
+
+    <bean id="messages.removingPeopleListener"
+          class="org.openmrs.module.messages.api.event.listener.subscribable.RemovingPeopleListener"
+          init-method="init"
+          destroy-method="close"
+          parent="messages.peopleActionListener">
+        <property name="patientTemplateService">
+            <ref local="messages.patientTemplateService"/>
+        </property>
+    </bean>
+
+    <bean id="messages.removingRelationshipListener"
+          class="org.openmrs.module.messages.api.event.listener.subscribable.RemovingRelationshipListener"
+          init-method="init"
+          destroy-method="close"
+          parent="messages.relationshipActionListener">
+        <property name="patientTemplateService">
+            <ref local="messages.patientTemplateService"/>
+        </property>
+    </bean>
+
+    <bean id="messages.personStatusHelper"
+        class="org.openmrs.module.messages.api.util.PersonStatusHelper">
+        <property name="personService" ref="personService"/>
+        <property name="configService">
+            <ref local="messages.configService"/>
+        </property>
+    </bean>
+
+    <bean id="messages.actorTypeMapper" class="org.openmrs.module.messages.api.mappers.ActorTypeMapper"/>
+
+    <bean id="messages.actorResponseService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="target">
+            <bean class="org.openmrs.module.messages.api.service.impl.ActorResponseServiceImpl">
+                <property name="daoBeanName" value="messages.ActorResponseDao"/>
+            </bean>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="preInterceptors">
+            <ref bean="serviceInterceptors"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean id="messages.GPNotificationTemplateDao"
+          class="org.openmrs.module.messages.api.dao.impl.GPNotificationTemplateDaoImpl">
+        <property name="administrationService" ref="adminService"/>
+    </bean>
+
+    <bean id="messages.velocityNotificationTemplateServiceImpl"
+          class="org.openmrs.module.messages.api.service.impl.VelocityNotificationTemplateServiceImpl">
+        <property name="notificationTemplateDao" ref="messages.GPNotificationTemplateDao" />
+        <property name="templateDao" ref="messages.TemplateDao" />
+    </bean>
+
+    <bean id="messages.healthTipService" class="org.openmrs.module.messages.api.service.impl.HealthTipServiceImpl">
+        <property name="patientTemplateService">
+            <ref local="messages.patientTemplateService"/>
+        </property>
+        <property name="conceptService" ref="conceptService"/>
+        <property name="messagingService">
+            <ref local="messages.messagingService"/>
+        </property>
+    </bean>
+
+    <bean id="messages.templateFieldValueDao"
+          class="org.openmrs.module.messages.api.dao.impl.TemplateFieldValueDaoImpl">
+    </bean>
+
+    <bean id="messages.templateFieldValueServiceImpl"
+          class="org.openmrs.module.messages.api.service.impl.TemplateFieldValueServiceImpl">
+        <property name="patientTemplateService">
+            <ref local="messages.patientTemplateService"/>
+        </property>
+        <property name="templateFieldValueDao">
+            <ref local="messages.templateFieldValueDao"/>
+        </property>
+    </bean>
+
+    <bean id="messages.graphService" class="org.openmrs.module.messages.api.service.impl.GraphServiceImpl">
+        <constructor-arg ref="dbSessionFactory"/>
+    </bean>
+
+    <bean id="messages.scheduledServiceGroupService"
+          class="org.openmrs.module.messages.api.service.impl.ScheduledServiceGroupServiceImpl">
+        <property name="messagingGroupService" ref="messages.messagingGroupService"/>
+    </bean>
+</beans>
