@@ -35,14 +35,15 @@ export class PatientTemplateUI extends ObjectUI<IPatientTemplate> implements IPa
       .value()
 
     const schema = _(templates)
-      .filter(template => template.id === this.templateId)
-      .first()!
-      .getValidationSchema(validateNotTouched);
-
-    const validationResult = await validateFormSafely(form, schema);
+      .find(template => template.id === this.templateId)
+      ?.getValidationSchema(validateNotTouched);
 
     const patientTemplate = _.clone(this);
-    patientTemplate.errors = validationResult;
+
+    if (schema) {
+      patientTemplate.errors = await validateFormSafely(form, schema);
+    }
+
     return patientTemplate;
   }
 
