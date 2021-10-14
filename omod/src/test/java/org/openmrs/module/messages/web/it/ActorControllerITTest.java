@@ -32,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
 @WebAppConfiguration
 public class ActorControllerITTest extends BaseModuleWebContextSensitiveTest {
 
@@ -110,7 +111,7 @@ public class ActorControllerITTest extends BaseModuleWebContextSensitiveTest {
     public void shouldReturnValidationExceptionWhenPatientWithPassedIdNotExist() throws Exception {
         mockMvc.perform(get(BASE_URL + "/" + NOT_EXISTING_PATIENT_ID.toString())
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is(org.apache.http.HttpStatus.SC_BAD_REQUEST))
+                .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
                 .andExpect(content().contentType(ApiConstant.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.error").value(EXPECTED_ERROR));
     }

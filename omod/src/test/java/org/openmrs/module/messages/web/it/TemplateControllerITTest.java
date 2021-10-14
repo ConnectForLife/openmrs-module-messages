@@ -157,7 +157,7 @@ public class TemplateControllerITTest extends BaseModuleWebContextSensitiveTest 
         mockMvc.perform(post(BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json(request)))
-                .andExpect(status().is(org.apache.http.HttpStatus.SC_BAD_REQUEST))
+                .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
                 .andExpect(content().contentType(ApiConstant.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.errorMessages.length()").value(EXPECTED_NUMBER_OF_ERROR));
     }
@@ -168,7 +168,7 @@ public class TemplateControllerITTest extends BaseModuleWebContextSensitiveTest 
         mockMvc.perform(post(BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json(request)))
-                .andExpect(status().is(org.apache.http.HttpStatus.SC_CREATED))
+                .andExpect(status().is(HttpStatus.CREATED.value()))
                 .andExpect(content().contentType(ApiConstant.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.id").value(notNullValue()))
                 .andExpect(jsonPath("$.uuid").value(notNullValue()));
@@ -180,7 +180,7 @@ public class TemplateControllerITTest extends BaseModuleWebContextSensitiveTest 
         mockMvc.perform(post(BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json(request)))
-                .andExpect(status().is(org.apache.http.HttpStatus.SC_BAD_REQUEST))
+                .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
                 .andExpect(content().contentType(ApiConstant.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.errorMessages.[0].message").value(EXPECTED_ERROR_MESSAGE));
     }
@@ -197,7 +197,7 @@ public class TemplateControllerITTest extends BaseModuleWebContextSensitiveTest 
         mockMvc.perform(put(BASE_URL + "/" + existingTemplate.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json(templateDTO)))
-                .andExpect(status().is(org.apache.http.HttpStatus.SC_OK))
+                .andExpect(status().is(HttpStatus.OK.value()))
                 .andExpect(content().contentType(ApiConstant.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.name").value(UPDATED_NAME))
                 .andExpect(jsonPath("$.templateFields.length()").value(EXPECTED_NUMBER_OF_FIELDS));
@@ -217,7 +217,7 @@ public class TemplateControllerITTest extends BaseModuleWebContextSensitiveTest 
         TemplateWrapper updated = getWrapperFromResult(mockMvc.perform(put(BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json(request)))
-                .andExpect(status().is(org.apache.http.HttpStatus.SC_OK))
+                .andExpect(status().is(HttpStatus.OK.value()))
                 .andExpect(content().contentType(ApiConstant.APPLICATION_JSON_UTF8))
                 .andReturn());
 

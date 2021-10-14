@@ -1,7 +1,7 @@
 package org.openmrs.module.messages.model;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.http.HttpHeaders;
+import org.springframework.http.HttpHeaders;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import java.util.UUID;
