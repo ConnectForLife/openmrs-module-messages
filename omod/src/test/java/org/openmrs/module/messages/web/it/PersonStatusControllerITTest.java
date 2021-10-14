@@ -147,7 +147,7 @@ public class PersonStatusControllerITTest extends BaseModuleWebContextSensitiveW
     public void shouldReturnEntityNotFoundExceptionIfPersonNotExists() throws Exception {
         mockMvc.perform(get(String.format(BASE_URL_PATTERN, NOT_EXIST_PERSON))
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is(org.apache.http.HttpStatus.SC_NOT_FOUND))
+                .andExpect(status().is(HttpStatus.NOT_FOUND.value()))
                 .andExpect(content().contentType(ApiConstant.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.errorMessages.[0].code").value(ErrorMessageEnum.ERR_ENTITY_NOT_FOUND.getCode()))
                 .andExpect(jsonPath("$.errorMessages.[0].message").value(String.format(EXPECTED_ERROR, NOT_EXIST_PERSON)));
@@ -175,7 +175,7 @@ public class PersonStatusControllerITTest extends BaseModuleWebContextSensitiveW
         mockMvc.perform(put(String.format(BASE_URL_PATTERN, person.getUuid()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json(status)))
-                .andExpect(status().is(org.apache.http.HttpStatus.SC_OK))
+                .andExpect(status().is(HttpStatus.OK.value()))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.personId").value(person.getPersonId()))
                 .andExpect(jsonPath("$.title").value(PersonStatus.DEACTIVATED.getTitleKey()))

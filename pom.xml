@@ -30,7 +30,6 @@
     </modules>
 
     <properties>
-        <apacheHttpClientVersion>4.4.1</apacheHttpClientVersion>
         <openmrsPlatformVersion>2.0.1</openmrsPlatformVersion>
         <javaCompilerSource>1.8</javaCompilerSource>
         <javaCompilerTarget>1.8</javaCompilerTarget>
@@ -45,12 +44,13 @@
         <uiframeworkVersion>3.9</uiframeworkVersion>
         <uiCommonsVersion>2.6.1</uiCommonsVersion>
         <eventVersion>2.8.0</eventVersion>
-        <jtsCoreVersion>1.14.0</jtsCoreVersion>
         <pmdPluginSkip>false</pmdPluginSkip>
         <checkStylePluginSkip>false</checkStylePluginSkip>
         <reportingVersion>1.20.0</reportingVersion>
         <calculationVersion>1.1</calculationVersion>
         <serializationXstream>0.2.12</serializationXstream>
+        <!-- Test dependencies -->
+        <jtsCoreVersion>1.14.0</jtsCoreVersion>
     </properties>
 
     <dependencyManagement>
@@ -73,11 +73,6 @@
                 <artifactId>javax.servlet-api</artifactId>
                 <version>${javax.servlet.version}</version>
                 <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient</artifactId>
-                <version>${apacheHttpClientVersion}</version>
             </dependency>
             <dependency>
                 <groupId>org.openmrs.module</groupId>
