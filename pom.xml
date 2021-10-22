@@ -35,7 +35,8 @@
         <javaCompilerTarget>1.8</javaCompilerTarget>
         <gsonVersion>2.8.5</gsonVersion>
         <pmdPluginVersion>3.12.0</pmdPluginVersion>
-        <checkStylePluginVersion>3.0.0</checkStylePluginVersion>
+        <checkStylePluginVersion>3.1.2</checkStylePluginVersion>
+        <checkStyleVersion>9.0.1</checkStyleVersion>
         <findBugsPluginVersion>3.0.5</findBugsPluginVersion>
         <legacyVersion>1.5.0</legacyVersion>
         <jacocoVersion>0.8.2</jacocoVersion>
@@ -143,6 +144,13 @@
                         <includeTestSourceDirectory>false</includeTestSourceDirectory>
                         <skip>${checkStylePluginSkip}</skip>
                     </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.puppycrawl.tools</groupId>
+                            <artifactId>checkstyle</artifactId>
+                            <version>${checkStyleVersion}</version>
+                        </dependency>
+                    </dependencies>
                     <executions>
                         <execution>
                             <id>verify-checkstyle</id>
