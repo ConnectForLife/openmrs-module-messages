@@ -50,6 +50,8 @@
         <reportingVersion>1.20.0</reportingVersion>
         <calculationVersion>1.1</calculationVersion>
         <serializationXstream>0.2.12</serializationXstream>
+        <metadatasharingVersion>1.2.2</metadatasharingVersion>
+        <metadatadeployVersion>1.7</metadatadeployVersion>
         <!-- Test dependencies -->
         <jtsCoreVersion>1.14.0</jtsCoreVersion>
     </properties>
@@ -122,6 +124,18 @@
                 <groupId>org.openmrs.module</groupId>
                 <artifactId>serialization.xstream-api</artifactId>
                 <version>${serializationXstream}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.openmrs.module</groupId>
+                <artifactId>metadatasharing-api</artifactId>
+                <version>${metadatasharingVersion}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.openmrs.module</groupId>
+                <artifactId>metadatadeploy-api</artifactId>
+                <version>${metadatadeployVersion}</version>
                 <scope>provided</scope>
             </dependency>
         </dependencies>

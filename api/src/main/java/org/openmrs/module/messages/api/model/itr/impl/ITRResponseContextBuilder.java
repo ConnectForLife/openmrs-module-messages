@@ -1,0 +1,48 @@
+package org.openmrs.module.messages.api.model.itr.impl;
+
+import org.openmrs.module.messages.api.model.itr.ITRResponseContext;
+
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
+/**
+ * The ITRResponseContextBuilder Class.
+ * <p>The builder for ITRResponseContext.
+ * <p>Warning: This class is sued from Velocity template which doesn't support generics,  therefore it was not possible to
+ * use derive from ITRContextBuilder.
+ */
+public class ITRResponseContextBuilder {
+  private Locale locale;
+  private String receivedText;
+  private Map<String, Object> parameters = new HashMap<>();
+
+  public ITRResponseContext build() {
+    return new ITRResponseContextImpl(locale, receivedText, parameters);
+  }
+
+  public ITRResponseContextBuilder withLocale(String languageTag) {
+    this.locale = Locale.forLanguageTag(languageTag);
+    return this;
+  }
+
+  public ITRResponseContextBuilder withLocale(Locale locale) {
+    this.locale = locale;
+    return this;
+  }
+
+  public ITRResponseContextBuilder withReceivedText(String receivedText) {
+    this.receivedText = receivedText;
+    return this;
+  }
+
+  public ITRResponseContextBuilder withParameters(Map<String, Object> parameters) {
+    this.parameters = parameters;
+    return this;
+  }
+
+  public ITRResponseContextBuilder addParameter(String name, Object value) {
+    this.parameters.put(name, value);
+    return this;
+  }
+}

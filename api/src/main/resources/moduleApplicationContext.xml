@@ -597,4 +597,63 @@
           class="org.openmrs.module.messages.api.service.impl.ScheduledServiceGroupServiceImpl">
         <property name="messagingGroupService" ref="messages.messagingGroupService"/>
     </bean>
+
+    <bean id="messages.ExtendedConceptDAO" class="org.openmrs.module.messages.api.dao.impl.ExtendedConceptDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="messages.ITRService" class="org.openmrs.module.messages.api.service.impl.ITRServiceImpl">
+        <property name="extendedConceptDAO" ref="messages.ExtendedConceptDAO"/>
+    </bean>
+    <bean parent="serviceContext">
+        <property name="moduleService">
+            <list merge="true">
+                <value>org.openmrs.module.messages.api.service.ITRService</value>
+                <ref local="messages.ITRService"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="messages.ITRConverterService" class="org.openmrs.module.messages.api.service.impl.ITRConverterServiceImpl"/>
+    <bean parent="serviceContext">
+        <property name="moduleService">
+            <list merge="true">
+                <value>org.openmrs.module.messages.api.service.ITRConverterService</value>
+                <ref local="messages.ITRConverterService"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="messages.ITRScriptUtilsService"
+          class="org.openmrs.module.messages.api.service.impl.ITRScriptUtilsServiceImpl">
+        <property name="itrService" ref="messages.ITRService"/>
+        <property name="itrMessageConverterService" ref="messages.ITRConverterService"/>
+    </bean>
+    <bean parent="serviceContext">
+        <property name="moduleService">
+            <list merge="true">
+                <value>org.openmrs.module.messages.api.service.ITRScriptUtilsService</value>
+                <ref local="messages.ITRScriptUtilsService"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="messages.ITRMessageSenderService"
+          class="org.openmrs.module.messages.api.service.impl.ITRMessageSenderServiceImpl">
+        <property name="itrService" ref="messages.ITRService"/>
+        <property name="itrConverterService" ref="messages.ITRConverterService"/>
+        <property name="messagesEventService" ref="messages.messagesEventService"/>
+    </bean>
+    <bean parent="serviceContext">
+        <property name="moduleService">
+            <list merge="true">
+                <value>org.openmrs.module.messages.api.service.ITRMessageSenderService</value>
+                <ref local="messages.ITRMessageSenderService"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="messages.ITRConceptClassesBundle" class="org.openmrs.module.messages.bundle.ITRConceptClassesBundle"/>
+    <bean id="emessages.ITRConceptAttributeTypesBundle"
+          class="org.openmrs.module.messages.bundle.ITRConceptAttributeTypesBundle"/>
 </beans>
