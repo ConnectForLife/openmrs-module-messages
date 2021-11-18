@@ -27,6 +27,9 @@
         <require_module version="${reportingVersion}">
             org.openmrs.module.reporting
         </require_module>
+        <require_module version="${metadatadeployVersion}">
+            org.openmrs.module.metadatadeploy
+        </require_module>
     </require_modules>
 
     <!-- <updateURL>https://modules.openmrs.org/modules/download/@MODULE_ID@/update.rdf</updateURL> -->

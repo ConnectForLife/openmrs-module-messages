@@ -293,6 +293,21 @@ public final class ConfigConstants {
     public static final String SMS_CONFIG_DESCRIPTION = "The string value representing the default value of " +
             "sms configuration used to send sms. If empty, SMS module will use default config set in this module";
 
+    public static final String ITR_ANSWER_REGEX_CONCEPT_ATTR_TYPE_UUID = "messages.concept.attributeType.answerRegex.uuid";
+    public static final String ITR_ANSWER_REGEX_CONCEPT_ATTR_TYPE_UUID_DESC = "The UUID of Concept Attribute Type with " +
+        "Answer Regex.";
+
+    public static final String ITR_PROVIDER_TEMPLATE_NAME_CONCEPT_ATTR_TYPE_UUID = "messages.concept.attributeType" +
+        ".providerTemplateName.uuid";
+    public static final String ITR_PROVIDER_TEMPLATE_NAME_CONCEPT_ATTR_TYPE_UUID_DESC = "The UUID of Concept Attribute Type with " +
+        "message provider name of with template of the message defined by Concept.";
+
+    public static final String ITR_MESSAGE_TEXT_ATTR_TYPE_UUID = "messages.concept.attributeType.messageText.uuid";
+    public static final String ITR_MESSAGE_TEXT_ATTR_TYPE_UUID_DESC = "The text of the message.";
+
+    public static final String ITR_DEFAULT_ITR_MESSAGE_CONCEPT_UUID = "messages.concept.defaultITRMessage.uuid";
+    public static final String ITR_DEFAULT_ITR_MESSAGE_CONCEPT_UUID_DESC = "The UUID of Concept with default ITR message.";
+
     private ConfigConstants() {
     }
 }
