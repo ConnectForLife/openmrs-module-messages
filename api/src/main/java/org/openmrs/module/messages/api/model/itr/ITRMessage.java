@@ -10,6 +10,23 @@ import java.util.Optional;
  * <p>The representation of a single ITR message.
  */
 public interface ITRMessage {
+  String TEXT_TYPE = "text";
+  String TEMPLATE_TYPE = "template";
+  String IMAGE_TYPE = "image";
+
+  /**
+   * Gets the type of message.
+   * <p>Supported types are:
+   * <ul>
+   *   <li>text - the text-only message</li>
+   *   <li>template - the provider-side template message</li>
+   *   <li>image - the image with caption</li>
+   * </ul>
+   *
+   * @return the type of message, never null
+   */
+  String getType();
+
   /**
    * @return the name of message, never nul
    */
@@ -30,6 +47,11 @@ public interface ITRMessage {
    * @return optional with a name of provider-side template to use instead of message text, never null
    */
   Optional<String> getProviderTemplateName();
+
+  /**
+   * @return optional with an URL for image to sent, never null
+   */
+  Optional<String> getImageURL();
 
   /**
    * @return the List of message parameters, never null

@@ -1,5 +1,6 @@
 package org.openmrs.module.messages.api.model.itr.impl;
 
+import org.apache.commons.lang.StringUtils;
 import org.openmrs.Concept;
 import org.openmrs.module.messages.api.constants.ConfigConstants;
 import org.openmrs.module.messages.api.model.itr.ITRMessage;
@@ -16,10 +17,12 @@ import static java.util.stream.Collectors.toList;
  * The immutable Concept adapter for ITRMessage.
  */
 public final class ITRMessageConceptAdapterImpl extends ITRMessageBase implements ITRMessage {
+  private final String type;
   private final String name;
   private final String uuid;
   private final String messageText;
   private final String providerTemplateName;
+  private final String imageURL;
   private final List<ITRMessageGenericParameter> parameters;
 
   public ITRMessageConceptAdapterImpl(Concept messageConcept) {
@@ -28,11 +31,30 @@ public final class ITRMessageConceptAdapterImpl extends ITRMessageBase implement
     this.messageText = getStringAttribute(ConfigConstants.ITR_MESSAGE_TEXT_ATTR_TYPE_UUID, messageConcept);
     this.providerTemplateName =
         getStringAttribute(ConfigConstants.ITR_PROVIDER_TEMPLATE_NAME_CONCEPT_ATTR_TYPE_UUID, messageConcept);
+    this.imageURL = getStringAttribute(ConfigConstants.ITR_IMAGE_URL_CONCEPT_ATTR_TYPE_UUID, messageConcept);
     this.parameters = getParameters(messageConcept);
+
+    // Do after all other properties are known
+    this.type = resolveMessageType();
+  }
+
+  private String resolveMessageType() {
+    if (StringUtils.isNotBlank(providerTemplateName)) {
+      return TEMPLATE_TYPE;
+    } else if (StringUtils.isNotBlank(imageURL)) {
+      return IMAGE_TYPE;
+    } else {
+      return TEXT_TYPE;
+    }
   }
 
   private List<ITRMessageGenericParameter> getParameters(Concept messageConcept) {
     return messageConcept.getSetMembers().stream().map(ITRMessageGenericParameterConceptAdapterImpl::new).collect(toList());
+  }
+
+  @Override
+  public String getType() {
+    return type;
   }
 
   @Override
@@ -53,6 +75,11 @@ public final class ITRMessageConceptAdapterImpl extends ITRMessageBase implement
   @Override
   public Optional<String> getProviderTemplateName() {
     return Optional.ofNullable(providerTemplateName);
+  }
+
+  @Override
+  public Optional<String> getImageURL() {
+    return Optional.ofNullable(imageURL);
   }
 
   @Override

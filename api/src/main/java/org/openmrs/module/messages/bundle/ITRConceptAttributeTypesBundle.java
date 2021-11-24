@@ -41,6 +41,9 @@ public class ITRConceptAttributeTypesBundle extends VersionedMetadataBundle {
     setUuidInGlobalProperty(installConceptAttributeType("ITR Provider Template Name",
         "The fully name of provider-side template to use instead of the message text.", FreeTextDatatype.class),
         ConfigConstants.ITR_PROVIDER_TEMPLATE_NAME_CONCEPT_ATTR_TYPE_UUID);
+
+    setUuidInGlobalProperty(installConceptAttributeType("ITR Message Image URL", "The URL to an image to send as message.",
+        FreeTextDatatype.class), ConfigConstants.ITR_IMAGE_URL_CONCEPT_ATTR_TYPE_UUID);
   }
 
   private ConceptAttributeType installConceptAttributeType(String name, String description,

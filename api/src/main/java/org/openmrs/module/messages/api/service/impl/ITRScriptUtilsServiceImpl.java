@@ -9,7 +9,6 @@ import org.openmrs.module.messages.api.model.itr.impl.ITRResponseContextBuilder;
 import org.openmrs.module.messages.api.service.ITRConverterService;
 import org.openmrs.module.messages.api.service.ITRScriptUtilsService;
 import org.openmrs.module.messages.api.service.ITRService;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;

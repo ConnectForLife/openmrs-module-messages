@@ -235,6 +235,8 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
         ConfigConstants.ITR_ANSWER_REGEX_CONCEPT_ATTR_TYPE_UUID_DESC);
     createGlobalSettingIfNotExists(ConfigConstants.ITR_PROVIDER_TEMPLATE_NAME_CONCEPT_ATTR_TYPE_UUID, null,
         ConfigConstants.ITR_PROVIDER_TEMPLATE_NAME_CONCEPT_ATTR_TYPE_UUID_DESC);
+    createGlobalSettingIfNotExists(ConfigConstants.ITR_IMAGE_URL_CONCEPT_ATTR_TYPE_UUID, null,
+        ConfigConstants.ITR_IMAGE_URL_CONCEPT_ATTR_TYPE_UUID_DESC);
     createGlobalSettingIfNotExists(ConfigConstants.ITR_MESSAGE_TEXT_ATTR_TYPE_UUID, null,
         ConfigConstants.ITR_MESSAGE_TEXT_ATTR_TYPE_UUID_DESC);
     createGlobalSettingIfNotExists(ConfigConstants.ITR_DEFAULT_ITR_MESSAGE_CONCEPT_UUID, null,
