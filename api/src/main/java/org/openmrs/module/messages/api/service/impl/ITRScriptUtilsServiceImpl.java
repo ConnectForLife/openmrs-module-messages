@@ -35,7 +35,7 @@ public class ITRScriptUtilsServiceImpl implements ITRScriptUtilsService {
     return new ITRResponseContextBuilder();
   }
 
-  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  @Transactional(readOnly = true)
   @Override
   public String getITRResponseMessageJson(ITRResponseContext responseContext) {
     requireNonNull(responseContext);
