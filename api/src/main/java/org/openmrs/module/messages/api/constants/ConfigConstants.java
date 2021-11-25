@@ -127,23 +127,23 @@ public final class ConfigConstants {
     public static final String CUT_OFF_SCORE_FOR_HIGH_MEDIUM_ADHERENCE_LEVEL_DEFAULT_VALUE = "90";
     public static final String CUT_OFF_SCORE_FOR_HIGH_MEDIUM_ADHERENCE_LEVEL_DESCRIPTION =
             "Used to specify a percentage cut-off score for High and Medium adherence level";
-    
+
     public static final String CUT_OFF_SCORE_FOR_MEDIUM_LOW_ADHERENCE_LEVEL_KEY =
             "messages.cutOffScoreForMediumLowAdherenceLevel";
     public static final String CUT_OFF_SCORE_FOR_MEDIUM_LOW_ADHERENCE_LEVEL_DEFAULT_VALUE = "70";
     public static final String CUT_OFF_SCORE_FOR_MEDIUM_LOW_ADHERENCE_LEVEL_DESCRIPTION =
             "Used to specify a percentage cut-off score for Medium and Low adherence level";
-    
+
     public static final String CUT_OFF_SCORE_FOR_ADHERENCE_TREND_KEY = "messages.cutOffScoreForAdherenceTrend";
     public static final String CUT_OFF_SCORE_FOR_ADHERENCE_TREND_DEFAULT_VALUE = "5";
     public static final String CUT_OFF_SCORE_FOR_ADHERENCE_TREND_DESCRIPTION =
             "Used to specify a percentage cut-off score for adherence trend";
-    
+
     public static final String BENCHMARK_PERIOD_KEY = "messages.benchmarkPeriod";
     public static final String BENCHMARK_PERIOD_DEFAULT_VALUE = "7";
     public static final String BENCHMARK_PERIOD_DESCRIPTION =
             "Used to specify the number of days from which adherence trend is calculated";
-    
+
     public static final String NUMBER_OF_HEALTH_TIPS_PLAYED_PER_CALL_KEY =
             "messages.numberOfHealthTipsPlayedPerOneCall";
     public static final String NUMBER_OF_HEALTH_TIPS_PLAYED_PER_CALL_DEFAULT_VALUE = "3";
@@ -292,6 +292,26 @@ public final class ConfigConstants {
     public static final String SMS_CONFIG_DEFAULT_VALUE = "";
     public static final String SMS_CONFIG_DESCRIPTION = "The string value representing the default value of " +
             "sms configuration used to send sms. If empty, SMS module will use default config set in this module";
+
+    public static final String ITR_ANSWER_REGEX_CONCEPT_ATTR_TYPE_UUID = "messages.concept.attributeType.answerRegex.uuid";
+    public static final String ITR_ANSWER_REGEX_CONCEPT_ATTR_TYPE_UUID_DESC = "The UUID of Concept Attribute Type with " +
+        "Answer Regex.";
+
+    public static final String ITR_PROVIDER_TEMPLATE_NAME_CONCEPT_ATTR_TYPE_UUID = "messages.concept.attributeType" +
+        ".providerTemplateName.uuid";
+    public static final String ITR_PROVIDER_TEMPLATE_NAME_CONCEPT_ATTR_TYPE_UUID_DESC = "The UUID of Concept Attribute Type with " +
+        "message provider name of with template of the message defined by Concept.";
+
+    public static final String ITR_IMAGE_URL_CONCEPT_ATTR_TYPE_UUID = "messages.concept.attributeType" +
+        ".imageUrl.uuid";
+    public static final String ITR_IMAGE_URL_CONCEPT_ATTR_TYPE_UUID_DESC = "The UUID of Concept Attribute Type with " +
+        "image URL to send as message.";
+
+    public static final String ITR_MESSAGE_TEXT_ATTR_TYPE_UUID = "messages.concept.attributeType.messageText.uuid";
+    public static final String ITR_MESSAGE_TEXT_ATTR_TYPE_UUID_DESC = "The text of the message.";
+
+    public static final String ITR_DEFAULT_ITR_MESSAGE_CONCEPT_UUID = "messages.concept.defaultITRMessage.uuid";
+    public static final String ITR_DEFAULT_ITR_MESSAGE_CONCEPT_UUID_DESC = "The UUID of Concept with default ITR message.";
 
     private ConfigConstants() {
     }

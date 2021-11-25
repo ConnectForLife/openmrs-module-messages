@@ -101,6 +101,16 @@
 			<version>${serializationXstream}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>metadatasharing-api</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>metadatadeploy-api</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>

@@ -13,16 +13,27 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.openmrs</groupId>
             <artifactId>event-api</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>metadatasharing-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>metadatadeploy-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>com.vividsolutions</groupId>
             <artifactId>jts-core</artifactId>
+        </dependency>
+        <dependency>
+            <!-- DEPRECATED, use Jackson -->
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
         </dependency>
     </dependencies>
 </project>
