@@ -9,6 +9,12 @@
 
 package org.openmrs.module.messages.web.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import java.net.HttpURLConnection;
 import org.apache.commons.collections.CollectionUtils;
 import org.openmrs.Person;
 import org.openmrs.module.messages.api.dto.PersonStatusDTO;
@@ -31,8 +37,12 @@ import java.util.List;
 /**
  * Exposes endpoints which can be used for managing the person status resources
  */
+@Api(
+    value = "Manage Person Status",
+    tags = {"REST API for managing person statuses"}
+)
 @Controller
-@RequestMapping("/messages/person-statuses")
+@RequestMapping(value = "/messages/person-statuses")
 public class PersonStatusController extends BaseRestController {
 
     @Autowired
@@ -45,10 +55,33 @@ public class PersonStatusController extends BaseRestController {
      * @param personIdOrUuid DB id or UUID of person
      * @return DTO object containing data about person status
      */
+    @ApiOperation(
+        value = "Fetch patient status",
+        notes = "Fetch patient status",
+        response = PersonStatusDTO.class
+    )
+    @ApiResponses(
+        value = {
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_OK,
+                message = "Person status fetched"
+            ),
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_INTERNAL_ERROR,
+                message = "Person status not fetched"
+            ),
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_NOT_FOUND,
+                message = "Person not found"
+            )
+        }
+    )
     @RequestMapping(value = "/{personIdOrUuid}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public PersonStatusDTO getPersonStatus(@PathVariable("personIdOrUuid") String personIdOrUuid) {
+    public PersonStatusDTO getPersonStatus(
+        @ApiParam(name = "personIdOrUuid", value = "personIdOrUuid", required = true)
+        @PathVariable("personIdOrUuid") String personIdOrUuid) {
         PersonStatusDTO result = personStatusHelper.getStatus(personIdOrUuid);
         if (result == null) {
             throw new EntityNotFoundException(String.format("Could not fetch person status for personIdOrUuid: %s",
@@ -64,11 +97,35 @@ public class PersonStatusController extends BaseRestController {
      * @param personStatusDTO DTO object containing data about person status
      * @return updated DTO object containing data about person status
      */
+    @ApiOperation(
+        value = "Update Person status",
+        notes = "Update person status",
+        response = PersonStatusDTO.class
+    )
+    @ApiResponses(
+        value = {
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_OK,
+                message = "Person status details updated"
+            ),
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_INTERNAL_ERROR,
+                message = "Person status details could not be updated"
+            ),
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_NOT_FOUND,
+                message = "Person not found"
+            )
+        }
+    )
     @RequestMapping(value = "/{personIdOrUuid}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public PersonStatusDTO updatePersonStatus(@PathVariable("personIdOrUuid") String personIdOrUuid,
-                                              @RequestBody PersonStatusDTO personStatusDTO) {
+    public PersonStatusDTO updatePersonStatus(
+        @ApiParam(name = "personIdOrUuid", value = "personIdOrUuid", required = true)
+        @PathVariable("personIdOrUuid") String personIdOrUuid,
+        @ApiParam(name = "personStatusDTO", value = "personStatusDTO", required = true)
+        @RequestBody PersonStatusDTO personStatusDTO) {
         Person person = personStatusHelper.getPersonFromDashboardPersonId(personIdOrUuid);
         personStatusDTO.setPersonId(person.getPersonId());
         personStatusHelper.saveStatus(personStatusDTO);
@@ -80,6 +137,23 @@ public class PersonStatusController extends BaseRestController {
      *
      * @return list of possible reasons
      */
+    @ApiOperation(
+        value = "Fetch patient deactivation reasons",
+        notes = "Fetch patient deactivation reasons",
+        response = String.class
+    )
+    @ApiResponses(
+        value = {
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_OK,
+                message = "Patient deactivation reasons fetched"
+            ),
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_INTERNAL_ERROR,
+                message = "Patient deactivation reasons not fetched"
+            )
+        }
+    )
     @RequestMapping(value = "/reasons", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody

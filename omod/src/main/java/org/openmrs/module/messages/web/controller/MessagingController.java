@@ -1,5 +1,11 @@
 package org.openmrs.module.messages.web.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import java.net.HttpURLConnection;
 import org.openmrs.module.messages.api.dto.ErrorResponseDTO;
 import org.openmrs.module.messages.api.dto.MessageDetailsDTO;
 import org.openmrs.module.messages.api.execution.ExecutionException;
@@ -12,7 +18,6 @@ import org.openmrs.module.messages.api.service.PatientTemplateService;
 import org.openmrs.module.messages.api.util.DateUtil;
 import org.openmrs.module.messages.domain.criteria.PatientTemplateCriteria;
 import org.openmrs.module.messages.model.ServiceResultListDTO;
-import org.openmrs.module.messages.web.model.MessagingParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -31,8 +36,12 @@ import java.util.stream.Collectors;
 /**
  * Exposes the endpoints related to managing of scheduled services
  */
+@Api(
+    value = "Managing of scheduled messaging services",
+    tags = {"REST API for managing scheduled messaging services"}
+)
 @Controller
-@RequestMapping("/messages")
+@RequestMapping(value = "/messages")
 public class MessagingController extends BaseRestController {
 
     private static final String ERR_EXECUTION = "system.error.execution";
@@ -52,13 +61,39 @@ public class MessagingController extends BaseRestController {
     /**
      * Fetches detailed settings of configured patient templates
      *
-     * @param messagingParams object containing basic information needed to fetch patient templates e.g. patient, actor
-     * @return DTO object containing detailed information about messages settings in patient templates
+     *@return DTO object containing detailed information about messages settings in patient templates
      */
+    @ApiOperation(
+        value = "Fetch patient template details",
+        notes = "Fetch patient template details",
+        response = MessageDetailsDTO.class
+    )
+    @ApiResponses(
+        value = {
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_OK,
+                message = "Default patient template details fetched"
+            ),
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_INTERNAL_ERROR,
+                message = "Default patient template details not fetched"
+            )
+        }
+    )
     @RequestMapping(value = "/details", method = RequestMethod.GET)
     @ResponseBody
-    public MessageDetailsDTO getMessageDetails(MessagingParams messagingParams) {
-        PatientTemplateCriteria criteria = messagingParams.getCriteria();
+    public MessageDetailsDTO getMessageDetails(
+        @ApiParam(name = "personId", value = "personId")
+        @RequestParam(value = "personId") Integer personId,
+        @ApiParam(name = "isPatient", value = "isPatient", defaultValue = "true")
+        @RequestParam(value = "isPatient", defaultValue = "true") boolean isPatient) {
+
+        PatientTemplateCriteria criteria = null;
+        if (isPatient) {
+             criteria =  PatientTemplateCriteria.forPatientId(personId);
+        }
+        criteria =  PatientTemplateCriteria.forActorId(personId);
+
         List<PatientTemplate> patientTemplates = patientTemplateService.findAllByCriteria(criteria);
 
         return messageDetailsMapper.toDto(patientTemplates).withPersonId(criteria.getPersonId());
@@ -73,13 +108,38 @@ public class MessagingController extends BaseRestController {
      * @param isPatient      identifies whether person is a patient
      * @return list of service execution result
      */
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @ApiOperation(
+        value = "Fetch execution list for a service for a date range",
+        notes = "Fetch execution list for a service for a date range",
+        response = ServiceResultListDTO.class
+    )
+    @ApiResponses(
+        value = {
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_OK,
+                message = "Execution details fetched for a date range"
+            ),
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_INTERNAL_ERROR,
+                message = "Execution details not fetched for the date range"
+            ),
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_NOT_FOUND,
+                message = "Person not found"
+            )
+        }
+    )
+    @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public List<ServiceResultListDTO> getMessages(@RequestParam(value = "personId") Integer personId,
-                                                  @RequestParam(value = "startDate") long startDateMilli,
-                                                  @RequestParam(value = "endDate") long endDateMilli,
-                                                  @RequestParam(value = "isPatient", defaultValue = "true")
-                                                          boolean isPatient) {
+    public List<ServiceResultListDTO> getMessages(
+        @ApiParam(name = "personId", value = "personId", required = true)
+        @RequestParam(value = "personId") Integer personId,
+        @ApiParam(name = "startDate", value = "startDate", required = true)
+        @RequestParam(value = "startDate") long startDateMilli,
+        @ApiParam(name = "endDate", value = "endDate", required = true)
+        @RequestParam(value = "endDate") long endDateMilli,
+        @ApiParam(name = "isPatient", value = "isPatient", defaultValue = "true")
+        @RequestParam(value = "isPatient", defaultValue = "true") boolean isPatient) {
         final ZonedDateTime startDate = DateUtil.ofEpochMilliInUserTimeZone(startDateMilli);
         final ZonedDateTime endDate = DateUtil.ofEpochMilliInUserTimeZone(endDateMilli);
 

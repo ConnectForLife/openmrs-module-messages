@@ -1,5 +1,11 @@
 package org.openmrs.module.messages.web.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import java.net.HttpURLConnection;
 import org.openmrs.module.messages.api.dto.PageDTO;
 import org.openmrs.module.messages.api.dto.TemplateDTO;
 import org.openmrs.module.messages.api.exception.ValidationException;
@@ -29,6 +35,10 @@ import java.util.List;
 /**
  * Templates Controller to manage Templates resource
  */
+@Api(
+    value = "Manage Template resources",
+    tags = {"REST API for managing template resources"}
+)
 @Controller
 @RequestMapping(value = "/messages/templates")
 public class TemplateController extends BaseRestController {
@@ -54,6 +64,23 @@ public class TemplateController extends BaseRestController {
      * @param pageableParams parameters representing expected page shape
      * @return a page containing available templates
      */
+    @ApiOperation(
+        value = "Fetch all available templates",
+        notes = "Fetch all available templates",
+        response = TemplateDTO.class
+    )
+    @ApiResponses(
+        value = {
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_OK,
+                message = "Available templates fetched"
+            ),
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_INTERNAL_ERROR,
+                message = "Available templates not fetched"
+            )
+        }
+    )
     @RequestMapping(method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -68,6 +95,23 @@ public class TemplateController extends BaseRestController {
      *
      * @return the list of Strings, never null
      */
+    @ApiOperation(
+        value = "Get names of notification template global properties",
+        notes = "Get names of notification template global properties",
+        response = String.class
+    )
+    @ApiResponses(
+        value = {
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_OK,
+                message = "Names of notification templates fetched"
+            ),
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_INTERNAL_ERROR,
+                message = "Names of notification templates not fetched"
+            )
+        }
+    )
     @RequestMapping(method = RequestMethod.GET, value = "/globalProperties")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -81,6 +125,23 @@ public class TemplateController extends BaseRestController {
      * @param templateDTO DTO object containing all necessary data to create template
      * @return DTO object containing data related to new template
      */
+    @ApiOperation(
+        value = "Create A new Template",
+        notes = "Create a new Template",
+        response = TemplateDTO.class
+    )
+    @ApiResponses(
+        value = {
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_CREATED,
+                message = "Template created"
+            ),
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_INTERNAL_ERROR,
+                message = "Template not created"
+            )
+        }
+    )
     @RequestMapping(method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
@@ -98,10 +159,35 @@ public class TemplateController extends BaseRestController {
      * @param templateDto DTO object containing data needed to update template
      * @return DTO object containing data related to updated template
      */
+    @ApiOperation(
+        value = "Update template with given Id",
+        notes = "Update template with given Id",
+        response = TemplateDTO.class
+    )
+    @ApiResponses(
+        value = {
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_OK,
+                message = "Template with Id updated"
+            ),
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_INTERNAL_ERROR,
+                message = "Template with Id not updated"
+            ),
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_NOT_FOUND,
+                message = "Template not found"
+            )
+        }
+    )
     @RequestMapping(value = "/{templateId}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public TemplateDTO updateTemplate(@PathVariable Integer templateId, @RequestBody TemplateDTO templateDto) {
+    public TemplateDTO updateTemplate(
+        @ApiParam(name = "templateId", value = "templateId", required = true)
+        @PathVariable Integer templateId,
+        @ApiParam(name = "templateDto", value = "templateDto", required = true)
+        @RequestBody TemplateDTO templateDto) {
         validateTemplateId(templateId);
         Template existing = templateService.getById(templateId);
         validateTemplate(templateDto, existing, templateId);
@@ -116,10 +202,33 @@ public class TemplateController extends BaseRestController {
      * @param templateWrapper template wrapper object stores list of templates
      * @return template wrapper object with updated list of templates
      */
+    @ApiOperation(
+        value = "Update existing template details",
+        notes = "Update existing template details",
+        response = TemplateWrapper.class
+    )
+    @ApiResponses(
+        value = {
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_OK,
+                message = "Template details updated"
+            ),
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_INTERNAL_ERROR,
+                message = "Template details not updated"
+            ),
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_NOT_FOUND,
+                message = "Template not found"
+            )
+        }
+    )
     @RequestMapping(method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public TemplateWrapper updateTemplates(@RequestBody TemplateWrapper templateWrapper) {
+    public TemplateWrapper updateTemplates(
+        @ApiParam(name = "templateWrapper", value = "templateWrapper", required = true)
+        @RequestBody TemplateWrapper templateWrapper) {
         validateTemplates(templateWrapper.getTemplates());
         return new TemplateWrapper(
                 templateMapper.toDtos(templateService.saveOrUpdateByDtos(templateWrapper.getTemplates())));
