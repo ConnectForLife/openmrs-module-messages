@@ -54,6 +54,7 @@
         <metadatadeployVersion>1.7</metadatadeployVersion>
         <!-- Test dependencies -->
         <jtsCoreVersion>1.14.0</jtsCoreVersion>
+        <legacyUiVersion>1.6.0</legacyUiVersion>
     </properties>
 
     <dependencyManagement>
@@ -136,6 +137,32 @@
                 <groupId>org.openmrs.module</groupId>
                 <artifactId>metadatadeploy-api</artifactId>
                 <version>${metadatadeployVersion}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.swagger</groupId>
+                <artifactId>swagger-core</artifactId>
+                <scope>provided</scope>
+                <version>1.6.2</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javax.ws.rs</groupId>
+                        <artifactId>jsr311-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>javax.validation</groupId>
+                        <artifactId>validation-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.openmrs.module</groupId>
+                <artifactId>legacyui-omod</artifactId>
+                <version>${legacyUiVersion}</version>
                 <scope>provided</scope>
             </dependency>
         </dependencies>

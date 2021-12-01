@@ -1,0 +1,1132 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "REST API for Messages Module.",
+    "version" : "v1",
+    "title" : "Messages Module REST API"
+  },
+  "basePath" : "/openmrs/ws",
+  "tags" : [ {
+    "name" : "REST API for Actor Details"
+  }, {
+    "name" : "REST API for Default patient template Details"
+  }, {
+    "name" : "REST API for managing patient templates"
+  }, {
+    "name" : "REST API for managing person statuses"
+  }, {
+    "name" : "REST API for managing scheduled messaging services"
+  }, {
+    "name" : "REST API for managing template resources"
+  } ],
+  "paths" : {
+    "/messages" : {
+      "get" : {
+        "tags" : [ "REST API for managing scheduled messaging services" ],
+        "summary" : "Fetch execution list for a service for a date range",
+        "description" : "Fetch execution list for a service for a date range",
+        "operationId" : "getMessages",
+        "parameters" : [ {
+          "name" : "personId",
+          "in" : "query",
+          "description" : "personId",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int32"
+        }, {
+          "name" : "startDate",
+          "in" : "query",
+          "description" : "startDate",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "endDate",
+          "in" : "query",
+          "description" : "endDate",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "isPatient",
+          "in" : "query",
+          "description" : "isPatient",
+          "required" : true,
+          "type" : "boolean",
+          "default" : true
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Execution details fetched for a date range",
+            "schema" : {
+              "$ref" : "#/definitions/ServiceResultListDTO"
+            }
+          },
+          "404" : {
+            "description" : "Person not found"
+          },
+          "500" : {
+            "description" : "Execution details not fetched for the date range"
+          }
+        }
+      }
+    },
+    "/messages/actor/contact-time" : {
+      "post" : {
+        "tags" : [ "REST API for Actor Details" ],
+        "summary" : "Save best contact time",
+        "description" : "Save best contact time",
+        "operationId" : "setBestContactTime",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "contactTimeDTO",
+          "description" : "contactTimeDTO",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/ContactTimeDTO"
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "Best contact time saved for a person"
+          },
+          "400" : {
+            "description" : "Person not found"
+          },
+          "500" : {
+            "description" : "Best contact time not saved for a person"
+          }
+        }
+      }
+    },
+    "/messages/actor/contact-times" : {
+      "get" : {
+        "tags" : [ "REST API for Actor Details" ],
+        "summary" : "Fetch contact times For all Persons",
+        "description" : "Fetch contact times Actors For all Persons",
+        "operationId" : "getBestContactTimes",
+        "parameters" : [ {
+          "name" : "personIds[]",
+          "in" : "query",
+          "description" : "personIds",
+          "required" : true,
+          "type" : "array",
+          "items" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "collectionFormat" : "multi"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Contact times for persons fetched",
+            "schema" : {
+              "$ref" : "#/definitions/ContactTimeDTO"
+            }
+          },
+          "500" : {
+            "description" : "Contact times for persons not fetched"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "REST API for Actor Details" ],
+        "summary" : "Best contact times for all persons saved",
+        "description" : "Best contact times for all persons saved",
+        "operationId" : "setBestContactTimes",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "contactTimeDTOs",
+          "description" : "contactTimeDTOs",
+          "required" : true,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ContactTimeDTO"
+            }
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "Best contact times for persons saved"
+          },
+          "400" : {
+            "description" : "Person not found"
+          },
+          "500" : {
+            "description" : "Best contact times for persons not saved"
+          }
+        }
+      }
+    },
+    "/messages/actor/contact-times/default" : {
+      "get" : {
+        "tags" : [ "REST API for Actor Details" ],
+        "summary" : "Fetch default best contact times",
+        "description" : "Fetch default best contact times",
+        "operationId" : "getBestContactTimes",
+        "responses" : {
+          "200" : {
+            "description" : "Default best times fetched",
+            "schema" : {
+              "$ref" : "#/definitions/DefaultContactTimeDTO"
+            }
+          },
+          "500" : {
+            "description" : "Default best times not fetched"
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "REST API for Actor Details" ],
+        "summary" : "Saves default best contact times",
+        "description" : "Saves default best contact times",
+        "operationId" : "setBestContactTimes",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "contactTimes",
+          "description" : "contactTimes",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/DefaultContactTimeWrapper"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Default best times saved"
+          },
+          "500" : {
+            "description" : "Default best times not saved"
+          }
+        }
+      }
+    },
+    "/messages/actor/types" : {
+      "get" : {
+        "tags" : [ "REST API for Actor Details" ],
+        "summary" : "Fetch All Actors Types",
+        "description" : "Fetch All Actors Types",
+        "operationId" : "getAllActorTypes",
+        "responses" : {
+          "200" : {
+            "description" : "All actor types fetched",
+            "schema" : {
+              "$ref" : "#/definitions/ActorTypeDTO"
+            }
+          },
+          "500" : {
+            "description" : "Actor types not fetched"
+          }
+        }
+      }
+    },
+    "/messages/actor/{personId}" : {
+      "get" : {
+        "tags" : [ "REST API for Actor Details" ],
+        "summary" : "Fetch All Actors For a Person",
+        "description" : "Fetch All Actors For a Person",
+        "operationId" : "getAllForPerson",
+        "parameters" : [ {
+          "name" : "personId",
+          "in" : "path",
+          "description" : "personId",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "isPatient",
+          "in" : "query",
+          "description" : "isPatient",
+          "required" : true,
+          "type" : "boolean",
+          "default" : true
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "All actors for the person fetched",
+            "schema" : {
+              "$ref" : "#/definitions/ActorDTO"
+            }
+          },
+          "404" : {
+            "description" : "Person not found"
+          },
+          "500" : {
+            "description" : "Actors for the person not fetched"
+          }
+        }
+      }
+    },
+    "/messages/actor/{personId}/contact-time" : {
+      "get" : {
+        "tags" : [ "REST API for Actor Details" ],
+        "summary" : "Fetch contact time For a Person",
+        "description" : "Fetch contact time For a Person",
+        "operationId" : "getBestContactTime",
+        "parameters" : [ {
+          "name" : "personId",
+          "in" : "path",
+          "description" : "personId",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Contact time for the person fetched",
+            "schema" : {
+              "type" : "string"
+            }
+          },
+          "404" : {
+            "description" : "Person not found"
+          },
+          "500" : {
+            "description" : "Contact time for the person not fetched"
+          }
+        }
+      }
+    },
+    "/messages/defaults/healthTipCategories" : {
+      "get" : {
+        "tags" : [ "REST API for Default patient template Details" ],
+        "summary" : "Get list of health tip categories",
+        "description" : "Get list of health tip categories",
+        "operationId" : "getHealthTipCategoriesForUser",
+        "responses" : {
+          "200" : {
+            "description" : "Health tip categories fetched",
+            "schema" : {
+              "$ref" : "#/definitions/ActorDTO"
+            }
+          },
+          "500" : {
+            "description" : "Health tip categories not fetched"
+          }
+        }
+      }
+    },
+    "/messages/defaults/{patientId}/check" : {
+      "get" : {
+        "tags" : [ "REST API for Default patient template Details" ],
+        "summary" : "Fetch patient template details",
+        "description" : "Fetch patient template details",
+        "operationId" : "checkDefaultValuesUsed",
+        "parameters" : [ {
+          "name" : "patientId",
+          "in" : "path",
+          "description" : "patientId",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int32"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Default patient template details fetched",
+            "schema" : {
+              "$ref" : "#/definitions/DefaultPatientTemplateStateDTO"
+            }
+          },
+          "404" : {
+            "description" : "Person not found"
+          },
+          "500" : {
+            "description" : "Default patient template details not fetched"
+          }
+        }
+      }
+    },
+    "/messages/defaults/{patientId}/generate-and-save" : {
+      "post" : {
+        "tags" : [ "REST API for Default patient template Details" ],
+        "summary" : "Saves default patient template",
+        "description" : "Saves default patient template",
+        "operationId" : "generateDefaultPatientTemplates",
+        "parameters" : [ {
+          "name" : "patientId",
+          "in" : "path",
+          "description" : "patientId",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int32"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Default patient template saved",
+            "schema" : {
+              "$ref" : "#/definitions/PatientTemplateDTO"
+            }
+          },
+          "400" : {
+            "description" : "Person not found"
+          },
+          "500" : {
+            "description" : "Default patient template not saved"
+          }
+        }
+      }
+    },
+    "/messages/details" : {
+      "get" : {
+        "tags" : [ "REST API for managing scheduled messaging services" ],
+        "summary" : "Fetch patient template details",
+        "description" : "Fetch patient template details",
+        "operationId" : "getMessageDetails",
+        "parameters" : [ {
+          "name" : "personId",
+          "in" : "query",
+          "description" : "personId",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int32"
+        }, {
+          "name" : "isPatient",
+          "in" : "query",
+          "description" : "isPatient",
+          "required" : true,
+          "type" : "boolean",
+          "default" : true
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Default patient template details fetched",
+            "schema" : {
+              "$ref" : "#/definitions/MessageDetailsDTO"
+            }
+          },
+          "500" : {
+            "description" : "Default patient template details not fetched"
+          }
+        }
+      }
+    },
+    "/messages/patient-templates/patient/{id}" : {
+      "get" : {
+        "tags" : [ "REST API for managing patient templates" ],
+        "summary" : "Fetch patient template details for a particular patient",
+        "description" : "Fetch patient template details for a particular patient",
+        "operationId" : "getPatientTemplates",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "id",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int32"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Patient template details for the patient fetched",
+            "schema" : {
+              "$ref" : "#/definitions/PatientTemplateDTO"
+            }
+          },
+          "500" : {
+            "description" : "Patient template details not fetched for the patient"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "REST API for managing patient templates" ],
+        "summary" : "Create or update patient template",
+        "description" : "Create or update patient template",
+        "operationId" : "updatePatientTemplates",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "id",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int32"
+        }, {
+          "in" : "body",
+          "name" : "wrapper",
+          "description" : "wrapper",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/PatientTemplatesWrapper"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Patient template details created/updated",
+            "schema" : {
+              "$ref" : "#/definitions/PatientTemplatesWrapper"
+            }
+          },
+          "404" : {
+            "description" : "Person not found"
+          },
+          "500" : {
+            "description" : "Patient template details not created/updated"
+          }
+        }
+      }
+    },
+    "/messages/person-statuses/reasons" : {
+      "get" : {
+        "tags" : [ "REST API for managing person statuses" ],
+        "summary" : "Fetch patient deactivation reasons",
+        "description" : "Fetch patient deactivation reasons",
+        "operationId" : "getPossibleReasons",
+        "responses" : {
+          "200" : {
+            "description" : "Patient deactivation reasons fetched",
+            "schema" : {
+              "type" : "string"
+            }
+          },
+          "500" : {
+            "description" : "Patient deactivation reasons not fetched"
+          }
+        }
+      }
+    },
+    "/messages/person-statuses/{personIdOrUuid}" : {
+      "get" : {
+        "tags" : [ "REST API for managing person statuses" ],
+        "summary" : "Fetch patient status",
+        "description" : "Fetch patient status",
+        "operationId" : "getPersonStatus",
+        "parameters" : [ {
+          "name" : "personIdOrUuid",
+          "in" : "path",
+          "description" : "personIdOrUuid",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Person status fetched",
+            "schema" : {
+              "$ref" : "#/definitions/PersonStatusDTO"
+            }
+          },
+          "404" : {
+            "description" : "Person not found"
+          },
+          "500" : {
+            "description" : "Person status not fetched"
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "REST API for managing person statuses" ],
+        "summary" : "Update Person status",
+        "description" : "Update person status",
+        "operationId" : "updatePersonStatus",
+        "parameters" : [ {
+          "name" : "personIdOrUuid",
+          "in" : "path",
+          "description" : "personIdOrUuid",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "personStatusDTO",
+          "description" : "personStatusDTO",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/PersonStatusDTO"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Person status details updated",
+            "schema" : {
+              "$ref" : "#/definitions/PersonStatusDTO"
+            }
+          },
+          "404" : {
+            "description" : "Person not found"
+          },
+          "500" : {
+            "description" : "Person status details could not be updated"
+          }
+        }
+      }
+    },
+    "/messages/templates" : {
+      "get" : {
+        "tags" : [ "REST API for managing template resources" ],
+        "summary" : "Fetch all available templates",
+        "description" : "Fetch all available templates",
+        "operationId" : "getAll",
+        "responses" : {
+          "200" : {
+            "description" : "Available templates fetched",
+            "schema" : {
+              "$ref" : "#/definitions/TemplateDTO"
+            }
+          },
+          "500" : {
+            "description" : "Available templates not fetched"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "REST API for managing template resources" ],
+        "summary" : "Create A new Template",
+        "description" : "Create a new Template",
+        "operationId" : "createTemplate",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/TemplateDTO"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/TemplateDTO"
+            }
+          },
+          "201" : {
+            "description" : "Template created"
+          },
+          "500" : {
+            "description" : "Template not created"
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "REST API for managing template resources" ],
+        "summary" : "Update existing template details",
+        "description" : "Update existing template details",
+        "operationId" : "updateTemplates",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "templateWrapper",
+          "description" : "templateWrapper",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/TemplateWrapper"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Template details updated",
+            "schema" : {
+              "$ref" : "#/definitions/TemplateWrapper"
+            }
+          },
+          "404" : {
+            "description" : "Template not found"
+          },
+          "500" : {
+            "description" : "Template details not updated"
+          }
+        }
+      }
+    },
+    "/messages/templates/globalProperties" : {
+      "get" : {
+        "tags" : [ "REST API for managing template resources" ],
+        "summary" : "Get names of notification template global properties",
+        "description" : "Get names of notification template global properties",
+        "operationId" : "getRequiredNotificationTemplatePropertyNames",
+        "responses" : {
+          "200" : {
+            "description" : "Names of notification templates fetched",
+            "schema" : {
+              "type" : "string"
+            }
+          },
+          "500" : {
+            "description" : "Names of notification templates not fetched"
+          }
+        }
+      }
+    },
+    "/messages/templates/{templateId}" : {
+      "put" : {
+        "tags" : [ "REST API for managing template resources" ],
+        "summary" : "Update template with given Id",
+        "description" : "Update template with given Id",
+        "operationId" : "updateTemplate",
+        "parameters" : [ {
+          "name" : "templateId",
+          "in" : "path",
+          "description" : "templateId",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int32"
+        }, {
+          "in" : "body",
+          "name" : "templateDto",
+          "description" : "templateDto",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/TemplateDTO"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Template with Id updated",
+            "schema" : {
+              "$ref" : "#/definitions/TemplateDTO"
+            }
+          },
+          "404" : {
+            "description" : "Template not found"
+          },
+          "500" : {
+            "description" : "Template with Id not updated"
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "ActorDTO" : {
+      "type" : "object",
+      "properties" : {
+        "actorId" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "actorName" : {
+          "type" : "string"
+        },
+        "actorTypeName" : {
+          "type" : "string"
+        },
+        "actorTypeId" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "relationshipTypeId" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "relationshipTypeUuid" : {
+          "type" : "string"
+        }
+      }
+    },
+    "ActorScheduleDTO" : {
+      "type" : "object",
+      "properties" : {
+        "actorId" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "actorType" : {
+          "type" : "string"
+        },
+        "schedule" : {
+          "type" : "string"
+        },
+        "patientId" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "patientName" : {
+          "type" : "string"
+        },
+        "id" : {
+          "type" : "integer",
+          "format" : "int32"
+        }
+      }
+    },
+    "ActorTypeDTO" : {
+      "type" : "object",
+      "properties" : {
+        "uuid" : {
+          "type" : "string"
+        },
+        "display" : {
+          "type" : "string"
+        },
+        "relationshipTypeId" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "relationshipTypeDirection" : {
+          "type" : "string",
+          "enum" : [ "A", "B" ]
+        }
+      }
+    },
+    "ContactTimeDTO" : {
+      "type" : "object",
+      "properties" : {
+        "personId" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "time" : {
+          "type" : "string"
+        }
+      }
+    },
+    "DefaultContactTimeDTO" : {
+      "type" : "object",
+      "properties" : {
+        "actor" : {
+          "type" : "string"
+        },
+        "time" : {
+          "type" : "string"
+        }
+      }
+    },
+    "DefaultContactTimeWrapper" : {
+      "type" : "object",
+      "properties" : {
+        "records" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/DefaultContactTimeDTO"
+          }
+        }
+      }
+    },
+    "DefaultPatientTemplateStateDTO" : {
+      "type" : "object",
+      "properties" : {
+        "defaultValuesUsed" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "allValuesDefault" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "lackingPatientTemplates" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/PatientTemplateDTO"
+          }
+        },
+        "details" : {
+          "$ref" : "#/definitions/MessageDetailsDTO"
+        }
+      }
+    },
+    "MessageDTO" : {
+      "type" : "object",
+      "properties" : {
+        "type" : {
+          "type" : "string"
+        },
+        "createdAt" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "author" : {
+          "$ref" : "#/definitions/UserDTO"
+        },
+        "actorSchedules" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/ActorScheduleDTO"
+          }
+        }
+      }
+    },
+    "MessageDetailsDTO" : {
+      "type" : "object",
+      "properties" : {
+        "personId" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "messages" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/MessageDTO"
+          }
+        }
+      }
+    },
+    "PatientTemplateDTO" : {
+      "type" : "object",
+      "required" : [ "actorId", "patientId", "templateId" ],
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "templateFieldValues" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/TemplateFieldValueDTO"
+          }
+        },
+        "patientId" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "templateId" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "actorId" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "actorTypeId" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "uuid" : {
+          "type" : "string"
+        }
+      }
+    },
+    "PatientTemplatesWrapper" : {
+      "type" : "object",
+      "properties" : {
+        "patientTemplates" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/PatientTemplateDTO"
+          }
+        }
+      }
+    },
+    "PersonStatusDTO" : {
+      "type" : "object",
+      "properties" : {
+        "title" : {
+          "type" : "string"
+        },
+        "value" : {
+          "type" : "string"
+        },
+        "style" : {
+          "type" : "string"
+        },
+        "reason" : {
+          "type" : "string"
+        },
+        "personId" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "personUuid" : {
+          "type" : "string"
+        }
+      }
+    },
+    "ServiceResultDTO" : {
+      "type" : "object",
+      "properties" : {
+        "executionDate" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "messageId" : {
+          "type" : "object"
+        },
+        "channelType" : {
+          "type" : "string"
+        },
+        "patientId" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "actorId" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "serviceStatus" : {
+          "type" : "string",
+          "enum" : [ "DELIVERED", "FAILED", "FUTURE", "PENDING" ]
+        },
+        "additionalParams" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "object"
+          }
+        },
+        "patientTemplateId" : {
+          "type" : "integer",
+          "format" : "int32"
+        }
+      }
+    },
+    "ServiceResultListDTO" : {
+      "type" : "object",
+      "properties" : {
+        "channelType" : {
+          "type" : "string"
+        },
+        "patientId" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "actorId" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "actorType" : {
+          "type" : "string"
+        },
+        "serviceId" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "serviceName" : {
+          "type" : "string"
+        },
+        "startDate" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "endDate" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "results" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/ServiceResultDTO"
+          }
+        }
+      }
+    },
+    "TemplateDTO" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "serviceQuery" : {
+          "type" : "string"
+        },
+        "serviceQueryType" : {
+          "type" : "string"
+        },
+        "calendarServiceQuery" : {
+          "type" : "string"
+        },
+        "shouldUseOptimizedQuery" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "templateFields" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/TemplateFieldDTO"
+          }
+        },
+        "createdAt" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "uuid" : {
+          "type" : "string"
+        }
+      }
+    },
+    "TemplateFieldDTO" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "mandatory" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "defaultValue" : {
+          "type" : "string"
+        },
+        "defaultValues" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/TemplateFieldDefaultValueDTO"
+          }
+        },
+        "possibleValues" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "type" : {
+          "type" : "string"
+        },
+        "uuid" : {
+          "type" : "string"
+        }
+      }
+    },
+    "TemplateFieldDefaultValueDTO" : {
+      "type" : "object",
+      "required" : [ "direction", "relationshipTypeId" ],
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "relationshipTypeId" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "direction" : {
+          "type" : "string",
+          "enum" : [ "A", "B" ]
+        },
+        "templateFieldId" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "defaultValue" : {
+          "type" : "string"
+        }
+      }
+    },
+    "TemplateFieldValueDTO" : {
+      "type" : "object",
+      "required" : [ "templateFieldId" ],
+      "properties" : {
+        "uuid" : {
+          "type" : "string"
+        },
+        "id" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "templateFieldId" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "value" : {
+          "type" : "string"
+        }
+      }
+    },
+    "TemplateWrapper" : {
+      "type" : "object",
+      "properties" : {
+        "templates" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/TemplateDTO"
+          }
+        }
+      }
+    },
+    "UserDTO" : {
+      "type" : "object",
+      "properties" : {
+        "username" : {
+          "type" : "string"
+        }
+      }
+    }
+  }
+}

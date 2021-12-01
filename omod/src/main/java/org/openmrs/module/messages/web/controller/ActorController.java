@@ -1,5 +1,11 @@
 package org.openmrs.module.messages.web.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import java.net.HttpURLConnection;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
@@ -33,6 +39,10 @@ import java.util.List;
 /**
  * Exposes the endpoints related to managing data for actor
  */
+@Api(
+    value = "Actor Details",
+    tags = {"REST API for Actor Details"}
+)
 @Controller
 @RequestMapping(value = "/messages/actor")
 public class ActorController extends BaseRestController {
@@ -60,11 +70,34 @@ public class ActorController extends BaseRestController {
      * @param isPatient identifies whether person is a patient
      * @return list of DTO objects containing all actors related to the person
      */
+    @ApiOperation(
+        value = "Fetch All Actors For a Person",
+        notes = "Fetch All Actors For a Person",
+        response = ActorDTO.class
+    )
+    @ApiResponses(
+        value = {
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_OK,
+                message = "All actors for the person fetched"
+            ),
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_INTERNAL_ERROR,
+                message = "Actors for the person not fetched"
+            ),
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_NOT_FOUND,
+                message = "Person not found"
+            )
+        }
+    )
     @RequestMapping(value = "/{personId}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public List<ActorDTO> getAllForPerson(
+        @ApiParam(name = "personId", value = "personId", required = true)
             @PathVariable String personId,
+            @ApiParam(name = "isPatient", value = "isPatient", defaultValue = "true")
             @RequestParam(value = "isPatient", defaultValue = "true") boolean isPatient) {
         validateId(personId);
         Person person = personService.getPerson(Integer.parseInt(personId));
@@ -81,10 +114,33 @@ public class ActorController extends BaseRestController {
      * @param personId id of person
      * @return best contact time as a text
      */
+    @ApiOperation(
+        value = "Fetch contact time For a Person",
+        notes = "Fetch contact time For a Person",
+        response = String.class
+    )
+    @ApiResponses(
+        value = {
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_OK,
+                message = "Contact time for the person fetched"
+            ),
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_INTERNAL_ERROR,
+                message = "Contact time for the person not fetched"
+            ),
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_NOT_FOUND,
+                message = "Person not found"
+            )
+        }
+    )
     @RequestMapping(value = "/{personId}/contact-time", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public String getBestContactTime(@PathVariable String personId) {
+    public String getBestContactTime(
+        @ApiParam(name = "personId", value = "personId", required = true)
+        @PathVariable String personId) {
         validateId(personId);
         return actorService.getContactTime(Integer.parseInt(personId));
     }
@@ -95,10 +151,29 @@ public class ActorController extends BaseRestController {
      * @param personIds list of people ids
      * @return list of DTO objects containing best contact times data
      */
+    @ApiOperation(
+        value = "Fetch contact times For all Persons",
+        notes = "Fetch contact times Actors For all Persons",
+        response = ContactTimeDTO.class
+    )
+    @ApiResponses(
+        value = {
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_OK,
+                message = "Contact times for persons fetched"
+            ),
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_INTERNAL_ERROR,
+                message = "Contact times for persons not fetched"
+            )
+        }
+    )
     @RequestMapping(value = "/contact-times", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<ContactTimeDTO> getBestContactTimes(@RequestParam(value = "personIds[]") List<Integer> personIds) {
+    public List<ContactTimeDTO> getBestContactTimes(
+        @ApiParam(name = "personIds[]", value = "personIds", required = true)
+        @RequestParam(value = "personIds[]") List<Integer> personIds) {
         return actorService.getContactTimes(personIds);
     }
 
@@ -107,6 +182,23 @@ public class ActorController extends BaseRestController {
      *
      * @return list of DTO objects containing available actor types
      */
+    @ApiOperation(
+        value = "Fetch All Actors Types",
+        notes = "Fetch All Actors Types",
+        response = ActorTypeDTO.class
+    )
+    @ApiResponses(
+        value = {
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_OK,
+                message = "All actor types fetched"
+            ),
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_INTERNAL_ERROR,
+                message = "Actor types not fetched"
+            )
+        }
+    )
     @RequestMapping(value = "/types", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -119,6 +211,23 @@ public class ActorController extends BaseRestController {
      *
      * @return list of DTO objects containing default best contact times data
      */
+    @ApiOperation(
+        value = "Fetch default best contact times",
+        notes = "Fetch default best contact times",
+        response = DefaultContactTimeDTO.class
+    )
+    @ApiResponses(
+        value = {
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_OK,
+                message = "Default best times fetched"
+            ),
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_INTERNAL_ERROR,
+                message = "Default best times not fetched"
+            )
+        }
+    )
     @RequestMapping(value = "/contact-times/default", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -131,9 +240,27 @@ public class ActorController extends BaseRestController {
      *
      * @param contactTimes list of default best contact times
      */
+    @ApiOperation(
+        value = "Saves default best contact times",
+        notes = "Saves default best contact times"
+    )
+    @ApiResponses(
+        value = {
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_OK,
+                message = "Default best times saved"
+            ),
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_INTERNAL_ERROR,
+                message = "Default best times not saved"
+            )
+        }
+    )
     @RequestMapping(value = "/contact-times/default", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
-    public void setBestContactTimes(@RequestBody DefaultContactTimeWrapper contactTimes) {
+    public void setBestContactTimes(
+        @ApiParam(name = "contactTimes", value = "contactTimes", required = true)
+        @RequestBody DefaultContactTimeWrapper contactTimes) {
         BestContactTimeHelper.setDefaultContactTimes(contactTimes.getRecords());
     }
 
@@ -142,9 +269,31 @@ public class ActorController extends BaseRestController {
      *
      * @param contactTimeDTO DTO object containing best contact time data
      */
+    @ApiOperation(
+        value = "Save best contact time",
+        notes = "Save best contact time"
+    )
+    @ApiResponses(
+        value = {
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_CREATED,
+                message = "Best contact time saved for a person"
+            ),
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_INTERNAL_ERROR,
+                message = "Best contact time not saved for a person"
+            ),
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_BAD_REQUEST,
+                message = "Person not found"
+            )
+        }
+    )
     @RequestMapping(value = "/contact-time", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public void setBestContactTime(@RequestBody ContactTimeDTO contactTimeDTO) {
+    public void setBestContactTime(
+        @ApiParam(name = "contactTimeDTO", value = "contactTimeDTO", required = true)
+        @RequestBody ContactTimeDTO contactTimeDTO) {
         actorService.saveContactTime(contactTimeDTO);
     }
 
@@ -153,9 +302,31 @@ public class ActorController extends BaseRestController {
      *
      * @param contactTimeDTOs list of DTO objects containing best contact times data
      */
+    @ApiOperation(
+        value = "Best contact times for all persons saved",
+        notes = "Best contact times for all persons saved"
+    )
+    @ApiResponses(
+        value = {
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_CREATED,
+                message = "Best contact times for persons saved"
+            ),
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_INTERNAL_ERROR,
+                message = "Best contact times for persons not saved"
+            ),
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_BAD_REQUEST,
+                message = "Person not found"
+            )
+        }
+    )
     @RequestMapping(value = "/contact-times", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public void setBestContactTimes(@RequestBody List<ContactTimeDTO> contactTimeDTOs) {
+    public void setBestContactTimes(
+        @ApiParam(name = "contactTimeDTOs", value = "contactTimeDTOs", required = true)
+        @RequestBody List<ContactTimeDTO> contactTimeDTOs) {
         List<ContactTimeDTO> contactTimes = convertContactTimeDTOs(contactTimeDTOs);
         actorService.saveContactTimes(contactTimes);
     }

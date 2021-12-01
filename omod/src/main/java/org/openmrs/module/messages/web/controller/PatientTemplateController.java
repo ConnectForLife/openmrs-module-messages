@@ -1,5 +1,11 @@
 package org.openmrs.module.messages.web.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import java.net.HttpURLConnection;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.StaleStateException;
@@ -38,8 +44,12 @@ import static org.openmrs.module.messages.api.model.ErrorMessageEnum.ERR_SYSTEM;
 /**
  * Exposes the endpoints related to managing of patient templates
  */
+@Api(
+    value = "Manage patient templates",
+    tags = {"REST API for managing patient templates"}
+)
 @Controller
-@RequestMapping("/messages/patient-templates")
+@RequestMapping(value = "/messages/patient-templates")
 public class PatientTemplateController extends BaseRestController {
 
     private final Log logger = LogFactory.getLog(getClass());
@@ -67,11 +77,29 @@ public class PatientTemplateController extends BaseRestController {
      * @param pageableParams parameters representing expected page shape
      * @return a page containing patient templates details
      */
+    @ApiOperation(
+        value = "Fetch patient template details for a particular patient",
+        notes = "Fetch patient template details for a particular patient",
+        response = PatientTemplateDTO.class
+    )
+    @ApiResponses(
+        value = {
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_OK,
+                message = "Patient template details for the patient fetched"
+            ),
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_INTERNAL_ERROR,
+                message = "Patient template details not fetched for the patient"
+            )
+        }
+    )
     @RequestMapping(value = "/patient/{id}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public PageDTO<PatientTemplateDTO> getPatientTemplates(@PathVariable("id") Integer id,
-                                                           PageableParams pageableParams) {
+    public PageDTO<PatientTemplateDTO> getPatientTemplates(
+        @ApiParam(name = "id", value = "id", required = true)
+        @PathVariable("id") Integer id, PageableParams pageableParams) {
         Patient patient = new Patient();
         patient.setId(id);
         PagingInfo pagingInfo = pageableParams.getPagingInfo();
@@ -92,11 +120,35 @@ public class PatientTemplateController extends BaseRestController {
      * @throws APIException
      * @throws StaleStateException
      */
+    @ApiOperation(
+        value = "Create or update patient template",
+        notes = "Create or update patient template",
+        response = PatientTemplatesWrapper.class
+    )
+    @ApiResponses(
+        value = {
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_OK,
+                message = "Patient template details created/updated"
+            ),
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_INTERNAL_ERROR,
+                message = "Patient template details not created/updated"
+            ),
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_NOT_FOUND,
+                message = "Person not found"
+            )
+        }
+    )
     @RequestMapping(value = "/patient/{id}", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public PatientTemplatesWrapper updatePatientTemplates(@PathVariable("id") Integer patientId,
-                                                          @RequestBody PatientTemplatesWrapper wrapper)
+    public PatientTemplatesWrapper updatePatientTemplates(
+        @ApiParam(name = "id", value = "id", required = true)
+        @PathVariable("id") Integer patientId,
+        @ApiParam(name = "wrapper", value = "wrapper", required = true)
+        @RequestBody PatientTemplatesWrapper wrapper)
             throws ValidationException, APIException, StaleStateException {
         List<PatientTemplateDTO> patientTemplates = wrapper.getPatientTemplates();
         validateConsistency(patientId, patientTemplates);
