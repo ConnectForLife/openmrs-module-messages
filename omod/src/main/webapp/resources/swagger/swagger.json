@@ -367,8 +367,8 @@
     "/messages/details" : {
       "get" : {
         "tags" : [ "REST API for managing scheduled messaging services" ],
-        "summary" : "Fetch patient template details",
-        "description" : "Fetch patient template details",
+        "summary" : "Fetch detailed settings of configured patient templates",
+        "description" : "Fetch detailed settings of configured patient templates",
         "operationId" : "getMessageDetails",
         "parameters" : [ {
           "name" : "personId",

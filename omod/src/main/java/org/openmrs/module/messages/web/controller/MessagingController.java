@@ -64,8 +64,8 @@ public class MessagingController extends BaseRestController {
      *@return DTO object containing detailed information about messages settings in patient templates
      */
     @ApiOperation(
-        value = "Fetch patient template details",
-        notes = "Fetch patient template details",
+        value = "Fetch detailed settings of configured patient templates",
+        notes = "Fetch detailed settings of configured patient templates",
         response = MessageDetailsDTO.class
     )
     @ApiResponses(
