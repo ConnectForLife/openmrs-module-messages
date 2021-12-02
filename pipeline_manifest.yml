@@ -1,0 +1,137 @@
+common:
+  buildAnnouncements:
+    enabled: true
+    destinations:
+      emails:
+        type: email             # Supported values: slack, teams, email
+        format: buildstate
+        recipients: [ pgevers@its.jnj.com, nanakapa@ITS.JNJ.com, aagrawa4@its.jnj.com, PWargula@ITS.JNJ.com, DRuchni1@ITS.JNJ.com]
+        startEnabled: false     # announce when build starts, defaults to false
+        successEnabled: false   # announce when build succeeds, defaults to false
+        unstableEnabled: true   # announce when build completes as unstable, defaults to true
+        failureEnabled: true    # announce when build fails, defaults to true
+        jobTriggers: []
+  lint:
+    configLocation: checkstyle.xml
+    enabled: false
+    type: maven-checkstyle
+    violationSeverity: error
+  mergeConflict:
+    enabled: true
+  pipelineType: maven
+  staticAnalysis:
+    type: sonar
+    enabled: true
+    createEmptyAnalyis: false
+    shortLivedBuildResults:
+      QUALITY_GATE:
+        IGNORE:
+          CODE_SMELL: true
+          INFO: true
+      BLOCKER:
+        FAILURE: 0
+      CRITICAL:
+        FAILURE: 15
+        UNSTABLE: 15
+      MAJOR:
+        FAILURE: 100
+        UNSTABLE: 100
+      MINOR:
+        FAILURE: 1000
+        UNSTABLE: 100
+
+    longLivedBuildResults:
+      QUALITY_GATE:
+        ERROR: "SUCCESS"
+        WARN: "SUCCESS"
+        IGNORE:
+          CODE_SMELL: true
+          INFO: true
+      BLOCKER:
+        FAILURE: 0
+      CRITICAL:
+        FAILURE: 15
+        UNSTABLE: 15
+      MAJOR:
+        FAILURE: 100
+        UNSTABLE: 100
+      MINOR:
+        FAILURE: 1000
+        UNSTABLE: 100
+  unitTest:
+    enabled: true
+    type: maven
+    dockerImage: jnj.artifactrepo.jnj.com/jpm/maven:3.6.3-jdk-8
+    mvnCommand: mvn clean install -Pcode-coverage
+    executeOnError: false
+    ignoreError: false
+  versionCalculation:
+    confirmVersion: false
+    enabled: false
+    patternType: jnj-dev-branch
+  maven:
+    repositories:
+      - id: taur-maven-release
+        name: taur-maven-release
+        url: https://artifactrepo.jnj.com/artifactory/taur-maven-release
+        credentialsId: jnj-eat-artifactory-build
+        snapshots: false
+        plugins: true
+      - id: taur-maven-snapshot
+        name: taur-maven-snapshot
+        url: https://artifactrepo.jnj.com/artifactory/taur-maven-snapshot
+        credentialsId: jnj-eat-artifactory-build
+        snapshots: true
+        plugins: true
+      - id: jnj-java
+        name: jnj-java
+        url: https://artifactrepo.jnj.com/artifactory/jnj-java
+        credentialsId: jnj-eat-artifactory-build
+        snapshots: false
+        plugins: true
+  package:
+    enabled: false
+    type: maven
+    dockerImage: jnj.artifactrepo.jnj.com/jpm/maven:3.6.3-jdk-8
+    executeOnError: false
+    ignoreError: false
+  publish:
+    enabled: false
+    type: maven
+    dockerImage: jnj.artifactrepo.jnj.com/jpm/maven:3.6.3-jdk-8
+    executeOnError: false
+    ignoreError: false
+
+environments:
+  PREDEV:
+    mergeConflict:
+      enable: true
+      targetBranch: development
+    lint:
+      enabled: false
+    staticAnalysis:
+      enabled: true
+      shortLivedAnalysis: true
+      longLivedAnalysis: false
+    unitTest:
+      enabled: true
+  DEV:
+    unitTest:
+      enabled: true
+    staticAnalysis:
+      enabled: true
+      shortLivedAnalysis: false
+      longLivedAnalysis: true
+    package:
+      enabled: true
+    publish:
+      allowBuildParameters: true
+      enabled: true
+      server: https://artifactrepo.jnj.com/artifactory/taur-maven-snapshot
+      credentialsId: jnj-eat-artifactory-build
+  SIT:
+    unitTest:
+      enabled: false
+  PROD:
+    unitTest:
+      enabled: false

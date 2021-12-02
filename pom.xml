@@ -351,9 +351,21 @@
             <id>central</id>
             <name>Maven Repository Switchboard</name>
             <layout>default</layout>
-            <url>https://repo1.maven.org/maven2</url>
+            <url>http://repo1.maven.org/maven2</url>
         </repository>
     </repositories>
+    <distributionManagement>
+        <repository>
+            <id>taur-maven-release</id>
+            <name>taur-maven-release</name>
+            <url>https://artifactrepo.jnj.com/artifactory/taur-maven-release</url>
+        </repository>
+        <snapshotRepository>
+            <id>taur-maven-snapshot</id>
+            <name>taur-maven-snapshot</name>
+            <url>https://artifactrepo.jnj.com/artifactory/taur-maven-snapshot</url>
+        </snapshotRepository>
+    </distributionManagement>
     <pluginRepositories>
         <pluginRepository>
             <id>openmrs-repo</id>

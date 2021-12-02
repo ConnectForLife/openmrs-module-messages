@@ -1,0 +1,42 @@
+- url: https://jenkins.eat.jnj.com/taur-dev/ 
+  buildFrom:
+    - 'feature/jenkins'                              
+  jobs:
+    - jobStyle: multi-branch-pipeline        # Jenkins Job Style. Supported values: multi-branch-pipeline, pipeline
+      jobName: "CFL/OpenMRS/omrs-messages/Predev"     # Fully qualified location to create jobJenkins Job Name. Supported values: alphanumeric string with no spaces or special characters (ie. pipeline-job-name or folder/pipeline-job-name )
+      jobCredentials: sourcecode-bitbucket   # Credentials Jenkins will use to pull the configuration of JPM pipeline. Default: sourcecode-bitbucket
+      includeBranches:                       # List of branches for which the Jenkins will trigger jobs
+        - feature/*
+        - bugfix/*
+        - hotfix/*
+        - conf/*
+      excludeBranches:                       # List of branches for which the Jenkins will skip job trigger
+      - feature/neverBuild
+    - jobStyle: multi-branch-pipeline        # Jenkins Job Style. Supported values: multi-branch-pipeline, pipeline
+      jobName: "CFL/OpenMRS/omrs-messages/Development"     # Fully qualified location to create jobJenkins Job Name. Supported values: alphanumeric string with no spaces or special characters (ie. pipeline-job-name or folder/pipeline-job-name )
+      jobCredentials: sourcecode-bitbucket   # Credentials Jenkins will use to pull the configuration of JPM pipeline. Default: sourcecode-bitbucket
+      includeBranches:                       # List of branches for which the Jenkins will trigger jobs
+        - development
+      excludeBranches:                       # List of branches for which the Jenkins will skip job trigger
+      - feature/neverBuild
+    - jobStyle: multi-branch-pipeline        # Jenkins Job Style. Supported values: multi-branch-pipeline, pipeline
+      jobName: "CFL/OpenMRS/omrs-messages/Staging"     # Fully qualified location to create jobJenkins Job Name. Supported values: alphanumeric string with no spaces or special characters (ie. pipeline-job-name or folder/pipeline-job-name )
+      jobCredentials: sourcecode-bitbucket   # Credentials Jenkins will use to pull the configuration of JPM pipeline. Default: sourcecode-bitbucket
+      includeBranches:                       # List of branches for which the Jenkins will trigger jobs
+        - staging
+      excludeBranches:                       # List of branches for which the Jenkins will skip job trigger
+      - feature/neverBuild
+    - jobStyle: multi-branch-pipeline        # Jenkins Job Style. Supported values: multi-branch-pipeline, pipeline
+      jobName: "CFL/OpenMRS/omrs-messages/SIT"     # Fully qualified location to create jobJenkins Job Name. Supported values: alphanumeric string with no spaces or special characters (ie. pipeline-job-name or folder/pipeline-job-name )
+      jobCredentials: sourcecode-bitbucket   # Credentials Jenkins will use to pull the configuration of JPM pipeline. Default: sourcecode-bitbucket
+      includeBranches:                       # List of branches for which the Jenkins will trigger jobs
+        - sit
+      excludeBranches:                       # List of branches for which the Jenkins will skip job trigger
+      - feature/neverBuild
+    - jobStyle: multi-branch-pipeline        # Jenkins Job Style. Supported values: multi-branch-pipeline, pipeline
+      jobName: "CFL/OpenMRS/omrs-messages/Production"     # Fully qualified location to create jobJenkins Job Name. Supported values: alphanumeric string with no spaces or special characters (ie. pipeline-job-name or folder/pipeline-job-name )
+      jobCredentials: sourcecode-bitbucket   # Credentials Jenkins will use to pull the configuration of JPM pipeline. Default: sourcecode-bitbucket
+      includeBranches:                       # List of branches for which the Jenkins will trigger jobs
+        - master
+      excludeBranches:                       # List of branches for which the Jenkins will skip job trigger
+      - feature/neverBuild
