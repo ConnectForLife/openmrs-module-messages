@@ -1,0 +1,18 @@
+version: "1.0"
+sources:
+  - name: common
+    location:
+      locationType: project
+      file: pipeline_manifest.yml
+    manifest:
+      type: simple
+      required: true
+      path: common
+  - name: environment
+    location:
+      locationType: project
+      file: pipeline_manifest.yml
+    manifest:
+      type: by-environment
+      required: true
+      path: environments
