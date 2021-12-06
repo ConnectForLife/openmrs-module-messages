@@ -19,12 +19,10 @@ import java.util.Objects;
 import static java.text.MessageFormat.format;
 import static java.util.Objects.requireNonNull;
 
-/**
- * The default implementation of ITRScriptUtilsService.
- */
+/** The default implementation of ITRScriptUtilsService. */
 public class ITRScriptUtilsServiceImpl implements ITRScriptUtilsService {
-  private final static String MESSAGE_PROP = "message";
-  private final static String CUSTOM_PARAMETERS_PROP = "customParameters";
+  private static final String MESSAGE_PROP = "message";
+  private static final String CUSTOM_PARAMETERS_PROP = "customParameters";
 
   private ITRService itrService;
   private ITRConverterService itrMessageConverterService;
@@ -40,22 +38,27 @@ public class ITRScriptUtilsServiceImpl implements ITRScriptUtilsService {
     requireNonNull(responseContext);
 
     final ITRMessage responseMessage =
-        itrService.findResponse(responseContext.getReceivedText()).orElseGet(() -> itrService.getDefaultResponse());
+        itrService
+            .findResponse(responseContext.getReceivedText())
+            .orElseGet(() -> itrService.getDefaultResponse());
 
     final Map<String, Object> smsEventMessageData =
         itrMessageConverterService.convertToSmsEvent(responseMessage, responseContext);
 
     final Map<String, Object> responseMessageJson = new HashMap<>();
     responseMessageJson.put(MESSAGE_PROP, smsEventMessageData.get(SmsEventParamConstants.MESSAGE));
-    responseMessageJson.put(CUSTOM_PARAMETERS_PROP, smsEventMessageData.get(SmsEventParamConstants.CUSTOM_PARAMS));
+    responseMessageJson.put(
+        CUSTOM_PARAMETERS_PROP, smsEventMessageData.get(SmsEventParamConstants.CUSTOM_PARAMS));
 
     try {
       final ObjectMapper objectMapper = new ObjectMapper();
       return objectMapper.writeValueAsString(responseMessageJson);
     } catch (IOException ioe) {
       throw new APIException(
-          format("Failed to serialize ITR response for message: {0} and response Map: " + "{1}", responseMessage.getName(),
-              Objects.toString(responseMessageJson)), ioe);
+          format(
+              "Failed to serialize ITR response for message: {0} and response Map: {1}",
+              responseMessage.getName(), Objects.toString(responseMessageJson)),
+          ioe);
     }
   }
 
