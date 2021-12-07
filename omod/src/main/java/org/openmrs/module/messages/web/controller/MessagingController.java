@@ -88,11 +88,12 @@ public class MessagingController extends BaseRestController {
         @ApiParam(name = "isPatient", value = "isPatient", defaultValue = "true")
         @RequestParam(value = "isPatient", defaultValue = "true") boolean isPatient) {
 
-        PatientTemplateCriteria criteria = null;
+        final PatientTemplateCriteria criteria;
         if (isPatient) {
-             criteria =  PatientTemplateCriteria.forPatientId(personId);
+            criteria = PatientTemplateCriteria.forPatientId(personId);
+        } else {
+            criteria = PatientTemplateCriteria.forActorId(personId);
         }
-        criteria =  PatientTemplateCriteria.forActorId(personId);
 
         List<PatientTemplate> patientTemplates = patientTemplateService.findAllByCriteria(criteria);
 
