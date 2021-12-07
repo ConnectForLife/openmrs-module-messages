@@ -1,10 +1,17 @@
 package org.openmrs.module.messages.web.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import java.net.HttpURLConnection;
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
 import org.openmrs.Patient;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.messages.api.dto.ActorDTO;
 import org.openmrs.module.messages.api.dto.DefaultPatientTemplateStateDTO;
 import org.openmrs.module.messages.api.dto.MessageDetailsDTO;
 import org.openmrs.module.messages.api.dto.PatientTemplateDTO;
@@ -32,8 +39,12 @@ import java.util.Locale;
 /**
  * Exposes the endpoint related to managing data for default patient templates
  */
+@Api(
+    value = "Default patient template Details",
+    tags = {"REST API for Default patient template Details"}
+)
 @Controller
-@RequestMapping("/messages/defaults")
+@RequestMapping(value = "/messages/defaults")
 public class DefaultPatientTemplateController extends BaseRestController {
 
     @Autowired
@@ -58,10 +69,33 @@ public class DefaultPatientTemplateController extends BaseRestController {
      * @param id id of patient
      * @return DTO object containing information about available patient templates and their detailed data
      */
+    @ApiOperation(
+        value = "Fetch patient template details",
+        notes = "Fetch patient template details",
+        response = DefaultPatientTemplateStateDTO.class
+    )
+    @ApiResponses(
+        value = {
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_OK,
+                message = "Default patient template details fetched"
+            ),
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_INTERNAL_ERROR,
+                message = "Default patient template details not fetched"
+            ),
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_NOT_FOUND,
+                message = "Person not found"
+            )
+        }
+    )
     @RequestMapping(value = "{patientId}/check", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public DefaultPatientTemplateStateDTO checkDefaultValuesUsed(@PathVariable("patientId") Integer id) {
+    public DefaultPatientTemplateStateDTO checkDefaultValuesUsed(
+        @ApiParam(name = "patientId", value = "patientId", required = true)
+        @PathVariable("patientId") Integer id) {
         Patient patient = getPatientById(id);
         List<PatientTemplate> existing = patientTemplateService
             .findAllByCriteria(new PatientTemplateCriteria(patient));
@@ -81,10 +115,33 @@ public class DefaultPatientTemplateController extends BaseRestController {
      * @param id if of patient
      * @return list of DTO objects containing default patient templates
      */
+    @ApiOperation(
+        value = "Saves default patient template",
+        notes = "Saves default patient template",
+        response = PatientTemplateDTO.class
+    )
+    @ApiResponses(
+        value = {
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_OK,
+                message = "Default patient template saved"
+            ),
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_INTERNAL_ERROR,
+                message = "Default patient template not saved"
+            ),
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_BAD_REQUEST,
+                message = "Person not found"
+            )
+        }
+    )
     @RequestMapping(value = "{patientId}/generate-and-save", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<PatientTemplateDTO> generateDefaultPatientTemplates(@PathVariable("patientId") Integer id) {
+    public List<PatientTemplateDTO> generateDefaultPatientTemplates(
+        @ApiParam(name = "patientId", value = "patientId", required = true)
+        @PathVariable("patientId") Integer id) {
         return mapper.toDtos(
             defaultPatientTemplateService.generateDefaultPatientTemplates(getPatientById(id))
         );
@@ -95,6 +152,23 @@ public class DefaultPatientTemplateController extends BaseRestController {
      *
      * @return the List of Health Tip categories, never null
      */
+    @ApiOperation(
+        value = "Get list of health tip categories",
+        notes = "Get list of health tip categories",
+        response = ActorDTO.class
+    )
+    @ApiResponses(
+        value = {
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_OK,
+                message = "Health tip categories fetched"
+            ),
+            @ApiResponse(
+                code = HttpURLConnection.HTTP_INTERNAL_ERROR,
+                message = "Health tip categories not fetched"
+            )
+        }
+    )
     @RequestMapping(value = "healthTipCategories", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody

@@ -37,6 +37,11 @@
 
     <require_version>${openmrsPlatformVersion}</require_version>
 
+    <extension>
+        <point>org.openmrs.admin.list</point>
+        <class>org.openmrs.module.messages.extension.html.AdminList</class>
+    </extension>
+
     <privilege>
         <name>Messages schedule privilege</name>
         <description>Allows user to define scheduled messages at the patient level</description>
