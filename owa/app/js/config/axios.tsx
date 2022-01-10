@@ -1,11 +1,12 @@
 import axios from 'axios';
 import { loginActions } from '@openmrs/react-components';
+import DOMPurify from 'dompurify';
 
 // According to OpenMRS convention, setting page to 0 will result in returning all records
 export const ALL_RECORDS_PAGE = 0;
 export const OPENMRS_CONTEXT_PATH = '/openmrs';
 export const DOMAIN_PATH = window.location.protocol + '//' + window.location.host + OPENMRS_CONTEXT_PATH;
-export const REDIRECT_URL = window.location.href;
+export const REDIRECT_URL = DOMPurify.sanitize(window.location.href);
 
 const getApiBaseUrl = () => {
   const path = window.location.pathname;
