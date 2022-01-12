@@ -22,7 +22,7 @@ const MODULE_ROUTE = '/';
 const OMRS_ROUTE = '../../';
 const PATIENT_TEMPLATE_ROUTE = (patientId, patientUuid, dashboardType) => `/messages/${dashboardType}/${patientId}&patientUuid=${patientUuid}/patient-template`;
 const CALENDAR_OVERVIEW_ROUTE = (patientId, patientUuid, dashboardType) => `/messages/${dashboardType}/${patientId}&patientUuid=${patientUuid}`;
-const PATIENT_DASHBOARD_ROUTE = patientUuid => `${OMRS_ROUTE}coreapps/clinicianfacing/patient.page?patientId=${patientUuid}`;
+const PATIENT_DASHBOARD_ROUTE = (patientUuid: string, dashboardType: string) => `${OMRS_ROUTE}coreapps/clinicianfacing/patient.page?patientId=${patientUuid}&dashboard=${dashboardType}`;
 const SYSTEM_ADMINISTRATION_ROUTE = `${OMRS_ROUTE}coreapps/systemadministration/systemAdministration.page`;
 
 interface IBreadCrumbProps extends DispatchProps, StateProps, RouteComponentProps {
@@ -93,13 +93,15 @@ class BreadCrumb extends React.PureComponent<IBreadCrumbProps, IBreadCrumbState>
 
   getPatientNameCrumb = (path: string) => {
     const match = BASE_MESSAGES_PATTERN.match(path.toLowerCase());
-    const patientUuid = match.patientUuid;
+    const { patientUuid, dashboardType } = match;
 
     if (this.props.person.uuid != patientUuid) {
       this.props.getPerson(patientUuid);
     }
+
     const personName = this.props.person ? this.props.person.display : '';
-    return this.renderCrumb(PATIENT_DASHBOARD_ROUTE(patientUuid), personName, true)
+
+    return this.renderCrumb(PATIENT_DASHBOARD_ROUTE(patientUuid, dashboardType), personName, true);
   }
 
   getManagePatientTemplateCrumbs = (path: string): Array<ReactFragment> => {
