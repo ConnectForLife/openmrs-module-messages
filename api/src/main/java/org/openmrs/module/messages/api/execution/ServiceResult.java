@@ -28,220 +28,232 @@ import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
-/**
- * Represents a single execution for a service/message.
- */
+/** Represents a single execution for a service/message. */
 public class ServiceResult implements Serializable, DTO {
-    public static final String EXEC_DATE_ALIAS = "EXECUTION_DATE";
-    public static final String MSG_ID_ALIAS = "MESSAGE_ID";
-    public static final String CHANNEL_NAME_ALIAS = "CHANNEL_ID";
-    public static final String STATUS_COL_ALIAS = "STATUS_ID";
-    public static final String PATIENT_ID_ALIAS = "PATIENT_ID";
-    public static final String ACTOR_ID_ALIAS = "ACTOR_ID";
-    public static final int MIN_COL_NUM = 3;
-    private static final long serialVersionUID = 2598236499107927781L;
-    private ZonedDateTime executionDate;
-    private Object messageId;
-    private String channelType;
+  public static final String EXEC_DATE_ALIAS = "EXECUTION_DATE";
+  public static final String MSG_ID_ALIAS = "MESSAGE_ID";
+  public static final String CHANNEL_NAME_ALIAS = "CHANNEL_ID";
+  public static final String STATUS_COL_ALIAS = "STATUS_ID";
+  public static final String PATIENT_ID_ALIAS = "PATIENT_ID";
+  public static final String ACTOR_ID_ALIAS = "ACTOR_ID";
+  public static final int MIN_COL_NUM = 3;
+  private static final long serialVersionUID = 2598236499107927781L;
+  private ZonedDateTime executionDate;
+  private Object messageId;
+  private String channelType;
 
-    private Integer patientId;
-    private Integer actorId;
+  private Integer patientId;
+  private Integer actorId;
 
-    private ServiceStatus serviceStatus = ServiceStatus.FUTURE;
-    private Map<String, Object> additionalParams = new HashMap<>();
-    private Integer patientTemplateId;
+  private ServiceStatus serviceStatus = ServiceStatus.FUTURE;
+  private Map<String, Object> additionalParams = new HashMap<>();
+  private Integer patientTemplateId;
 
-    public ServiceResult() {
+  public ServiceResult() {}
+
+  public ServiceResult(
+      ZonedDateTime executionDate,
+      Object messageId,
+      String channelType,
+      Integer patientId,
+      Integer actorId,
+      ServiceStatus serviceStatus,
+      Map<String, Object> additionalParams) {
+    if (executionDate == null) {
+      throw new IllegalArgumentException("Execution date is mandatory");
+    }
+    if (messageId == null) {
+      throw new IllegalArgumentException("Message ID (external execution id) is required");
     }
 
-    public ServiceResult(ZonedDateTime executionDate, Object messageId, String channelType, Integer patientId,
-                         Integer actorId, ServiceStatus serviceStatus, Map<String, Object> additionalParams) {
-        if (executionDate == null) {
-            throw new IllegalArgumentException("Execution date is mandatory");
+    this.executionDate = executionDate;
+    this.messageId = messageId;
+    this.channelType = channelType;
+    this.patientId = patientId;
+    this.actorId = actorId;
+    this.serviceStatus = serviceStatus;
+    this.additionalParams = additionalParams == null ? new HashMap<>() : additionalParams;
+  }
+
+  @SuppressWarnings("PMD.CyclomaticComplexity")
+  public static ServiceResult parse(Map<String, Object> row) {
+    if (row.size() < MIN_COL_NUM) {
+      throw new IllegalStateException("Invalid number of columns in result row: " + row.size());
+    }
+
+    ZonedDateTime date = null;
+    Object msgId = null;
+    String channelType = null;
+    Integer patientId = null;
+    Integer actorId = null;
+    ServiceStatus status = ServiceStatus.FUTURE;
+    Map<String, Object> params = new HashMap<String, Object>();
+
+    for (Map.Entry<String, Object> entry : row.entrySet()) {
+      // Skip null values
+      if (entry.getValue() == null) {
+        continue;
+      }
+
+      if (EXEC_DATE_ALIAS.equals(entry.getKey())) {
+        date = DateUtil.convertOpenMRSDatabaseDate((Date) entry.getValue());
+      } else if (MSG_ID_ALIAS.equals(entry.getKey())) {
+        msgId = entry.getValue();
+      } else if (CHANNEL_NAME_ALIAS.equals(entry.getKey())) {
+        channelType = String.valueOf(entry.getValue());
+      } else if (STATUS_COL_ALIAS.equals(entry.getKey())) {
+        status = parseStatus((String) entry.getValue());
+      } else if (PATIENT_ID_ALIAS.equals(entry.getKey())) {
+        patientId = Integer.parseInt(entry.getValue().toString());
+      } else if (ACTOR_ID_ALIAS.equals(entry.getKey())) {
+        actorId = Integer.parseInt(entry.getValue().toString());
+      } else {
+        params.put(entry.getKey(), entry.getValue());
+      }
+    }
+    return new ServiceResult(date, msgId, channelType, patientId, actorId, status, params);
+  }
+
+  public static List<ServiceResult> parseList(
+      List<Map<String, Object>> list, PatientTemplate patientTemplate) {
+    Map<String, ServiceResult> resultServices = new LinkedHashMap<String, ServiceResult>();
+
+    for (Map<String, Object> row : list) {
+      final ServiceResult result = ServiceResult.parse(row);
+
+      setFieldsFromPatientTemplate(result, patientTemplate);
+
+      result.setExecutionDate(
+          adjustLocalTimeIfFuturePlannedEvent(
+              result.getExecutionDate(), result.getServiceStatus()));
+
+      final String key =
+          DateUtil.formatToServerSideDateTime(result.getExecutionDate()) + result.getChannelType();
+
+      if (resultServices.containsKey(key)) {
+        if (result.getServiceStatus() != null
+            && !ServiceStatus.FUTURE.equals(result.getServiceStatus())) {
+          resultServices.put(key, result);
         }
-        if (messageId == null) {
-            throw new IllegalArgumentException("Message ID (external execution id) is required");
-        }
-
-        this.executionDate = executionDate;
-        this.messageId = messageId;
-        this.channelType = channelType;
-        this.patientId = patientId;
-        this.actorId = actorId;
-        this.serviceStatus = serviceStatus;
-        this.additionalParams = additionalParams == null ? new HashMap<String, Object>() : additionalParams;
+      } else {
+        resultServices.put(key, result);
+      }
     }
 
-    @SuppressWarnings("PMD.CyclomaticComplexity")
-    public static ServiceResult parse(Map<String, Object> row) {
-        if (row.size() < MIN_COL_NUM) {
-            throw new IllegalStateException("Invalid number of columns in result row: " + row.size());
-        }
+    return new ArrayList<>(resultServices.values());
+  }
 
-        ZonedDateTime date = null;
-        Object msgId = null;
-        String channelType = null;
-        Integer patientId = null;
-        Integer actorId = null;
-        ServiceStatus status = ServiceStatus.FUTURE;
-        Map<String, Object> params = new HashMap<String, Object>();
+  /**
+   * If the {@code status} represents planned service execution, then a {@code date} is adjusted in
+   * following way: the Local Time is retained and the Time Zone is changed to the default user time
+   * zone. Otherwise, the {@code date} is returned as-is.
+   *
+   * @param date the date to adjust, not null
+   * @param status the status
+   * @return the adjusted date, never null
+   * @see DateUtil#getDefaultUserTimeZone()
+   */
+  private static ZonedDateTime adjustLocalTimeIfFuturePlannedEvent(
+      ZonedDateTime date, ServiceStatus status) {
+    requireNonNull(date);
+    return status == null || status == ServiceStatus.FUTURE
+        ? date.withZoneSameLocal(DateUtil.getDefaultUserTimeZone())
+        : date;
+  }
 
-        for (Map.Entry<String, Object> entry : row.entrySet()) {
-            // Skip null values
-            if (entry.getValue() == null) {
-                continue;
-            }
+  /**
+   * Sets fields from {@code patientTemplate} in case they were not provided by the result of
+   * service query.
+   *
+   * @param serviceResult the service result to update, not null
+   * @param patientTemplate the template to read values from, not null
+   */
+  private static void setFieldsFromPatientTemplate(
+      final ServiceResult serviceResult, final PatientTemplate patientTemplate) {
+    serviceResult.patientTemplateId = patientTemplate.getId();
+    serviceResult.actorId =
+        serviceResult.actorId == null ? patientTemplate.getActor().getId() : serviceResult.actorId;
+    serviceResult.patientId =
+        serviceResult.patientId == null
+            ? patientTemplate.getPatient().getId()
+            : serviceResult.patientId;
+  }
 
-            if (EXEC_DATE_ALIAS.equals(entry.getKey())) {
-                date = DateUtil.convertOpenMRSDatabaseDate((Date) entry.getValue());
-            } else if (MSG_ID_ALIAS.equals(entry.getKey())) {
-                msgId = entry.getValue();
-            } else if (CHANNEL_NAME_ALIAS.equals(entry.getKey())) {
-                channelType = String.valueOf(entry.getValue());
-            } else if (STATUS_COL_ALIAS.equals(entry.getKey())) {
-                status = parseStatus((String) entry.getValue());
-            } else if (PATIENT_ID_ALIAS.equals(entry.getKey())) {
-                patientId = Integer.parseInt(entry.getValue().toString());
-            } else if (ACTOR_ID_ALIAS.equals(entry.getKey())) {
-                actorId = Integer.parseInt(entry.getValue().toString());
-            } else {
-                params.put(entry.getKey(), entry.getValue());
-            }
-        }
-        return new ServiceResult(date, msgId, channelType, patientId, actorId, status, params);
+  private static ServiceStatus parseStatus(String statusString) {
+    if (StringUtils.isNotBlank(statusString)) {
+      return ServiceStatus.valueOf(statusString);
+    } else {
+      return ServiceStatus.FUTURE;
     }
+  }
 
-    public static List<ServiceResult> parseList(List<Map<String, Object>> list, PatientTemplate patientTemplate) {
-        Map<String, ServiceResult> resultServices = new LinkedHashMap<String, ServiceResult>();
+  @Override
+  @JsonIgnore
+  public Integer getId() {
+    throw new NotImplementedException("not implemented yet");
+  }
 
-        for (Map<String, Object> row : list) {
-            final ServiceResult result = ServiceResult.parse(row);
+  public ZonedDateTime getExecutionDate() {
+    return executionDate;
+  }
 
-            setFieldsFromPatientTemplate(result, patientTemplate);
+  public void setExecutionDate(ZonedDateTime executionDate) {
+    this.executionDate = executionDate;
+  }
 
-            result.setExecutionDate(
-                    adjustLocalTimeIfFuturePlannedEvent(result.getExecutionDate(), result.getServiceStatus()));
+  public Object getMessageId() {
+    return messageId;
+  }
 
-            final String key =
-                    DateUtil.formatToServerSideDateTime(result.getExecutionDate()) + result.getChannelType();
+  public void setMessageId(Object messageId) {
+    this.messageId = messageId;
+  }
 
-            if (resultServices.containsKey(key)) {
-                if (result.getServiceStatus() != null && !ServiceStatus.FUTURE.equals(result.getServiceStatus())) {
-                    resultServices.put(key, result);
-                }
-            } else {
-                resultServices.put(key, result);
-            }
-        }
+  public String getChannelType() {
+    return channelType;
+  }
 
-        return new ArrayList<>(resultServices.values());
-    }
+  public void setChannelType(String channelType) {
+    this.channelType = channelType;
+  }
 
-    /**
-     * If the {@code status} represents planned service execution, then a {@code date} is adjusted in following way: the
-     * Local Time is retained and the Time Zone is changed to the default user time zone. Otherwise, the {@code date} is
-     * returned as-is.
-     *
-     * @param date   the date to adjust, not null
-     * @param status the status
-     * @return the adjusted date, never null
-     * @see DateUtil#getDefaultUserTimeZone()
-     */
-    private static ZonedDateTime adjustLocalTimeIfFuturePlannedEvent(ZonedDateTime date, ServiceStatus status) {
-        requireNonNull(date);
-        return status == null || status == ServiceStatus.FUTURE ? date.withZoneSameLocal(DateUtil.getDefaultUserTimeZone()) :
-                date;
-    }
+  public ServiceStatus getServiceStatus() {
+    return serviceStatus;
+  }
 
-    /**
-     * Sets fields from {@code patientTemplate} in case they were not provided by the result of service query.
-     *
-     * @param serviceResult   the service result to update, not null
-     * @param patientTemplate the template to read values from, not null
-     */
-    private static void setFieldsFromPatientTemplate(final ServiceResult serviceResult,
-                                                     final PatientTemplate patientTemplate) {
-        serviceResult.patientTemplateId = patientTemplate.getId();
-        serviceResult.actorId = serviceResult.actorId == null ? patientTemplate.getActor().getId() : serviceResult.actorId;
-        serviceResult.patientId =
-                serviceResult.patientId == null ? patientTemplate.getPatient().getId() : serviceResult.patientId;
-    }
+  public void setServiceStatus(ServiceStatus serviceStatus) {
+    this.serviceStatus = serviceStatus;
+  }
 
-    private static ServiceStatus parseStatus(String statusString) {
-        if (StringUtils.isNotBlank(statusString)) {
-            return ServiceStatus.valueOf(statusString);
-        } else {
-            return ServiceStatus.FUTURE;
-        }
-    }
+  public Map<String, Object> getAdditionalParams() {
+    return additionalParams;
+  }
 
-    @Override
-    @JsonIgnore
-    public Integer getId() {
-        throw new NotImplementedException("not implemented yet");
-    }
+  public void setAdditionalParams(Map<String, Object> additionalParams) {
+    this.additionalParams = additionalParams;
+  }
 
-    public ZonedDateTime getExecutionDate() {
-        return executionDate;
-    }
+  public Integer getPatientTemplateId() {
+    return patientTemplateId;
+  }
 
-    public void setExecutionDate(ZonedDateTime executionDate) {
-        this.executionDate = executionDate;
-    }
+  public void setPatientTemplateId(Integer patientTemplateId) {
+    this.patientTemplateId = patientTemplateId;
+  }
 
-    public Object getMessageId() {
-        return messageId;
-    }
+  public Integer getPatientId() {
+    return patientId;
+  }
 
-    public void setMessageId(Object messageId) {
-        this.messageId = messageId;
-    }
+  public void setPatientId(Integer patientId) {
+    this.patientId = patientId;
+  }
 
-    public String getChannelType() {
-        return channelType;
-    }
+  public Integer getActorId() {
+    return actorId == null ? getPatientId() : actorId;
+  }
 
-    public void setChannelType(String channelType) {
-        this.channelType = channelType;
-    }
-
-    public ServiceStatus getServiceStatus() {
-        return serviceStatus;
-    }
-
-    public void setServiceStatus(ServiceStatus serviceStatus) {
-        this.serviceStatus = serviceStatus;
-    }
-
-    public Map<String, Object> getAdditionalParams() {
-        return additionalParams;
-    }
-
-    public void setAdditionalParams(Map<String, Object> additionalParams) {
-        this.additionalParams = additionalParams;
-    }
-
-    public Integer getPatientTemplateId() {
-        return patientTemplateId;
-    }
-
-    public void setPatientTemplateId(Integer patientTemplateId) {
-        this.patientTemplateId = patientTemplateId;
-    }
-
-    public Integer getPatientId() {
-        return patientId;
-    }
-
-    public void setPatientId(Integer patientId) {
-        this.patientId = patientId;
-    }
-
-    public Integer getActorId() {
-        return actorId == null ? getPatientId() : actorId;
-    }
-
-    public void setActorId(Integer actorId) {
-        this.actorId = actorId;
-    }
+  public void setActorId(Integer actorId) {
+    this.actorId = actorId;
+  }
 }
