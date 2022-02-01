@@ -157,11 +157,6 @@ public class PatientTemplate extends AbstractBaseOpenmrsData {
     }
 
     @Transient
-    public Integer getServiceId() {
-        return 0; // TODO
-    }
-
-    @Transient
     public ZonedDateTime getStartOfMessages() {
         return FieldDateUtil.getStartDate(getTemplateFieldValues());
     }
