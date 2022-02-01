@@ -41,13 +41,11 @@ public class ServiceResultList implements Serializable {
   private static final long serialVersionUID = 6075952817494895177L;
   private static final Log LOGGER = LogFactory.getLog(ServiceResultList.class);
   private static final int CLEARING_CACHE_STEP = 1000;
-  private static final String BEST_CONTACT_TIME_ALIAS = "bestContactTime";
 
   private String channelType;
   private Integer patientId;
   private Integer actorId;
   private String actorType;
-  private Integer serviceId;
   private String serviceName;
   private ZonedDateTime startDate;
   private ZonedDateTime endDate;
@@ -60,7 +58,6 @@ public class ServiceResultList implements Serializable {
     result.patientId = other.getPatientId();
     result.actorId = other.getActorId();
     result.actorType = other.getActorType();
-    result.serviceId = other.getServiceId();
     result.serviceName = other.getServiceName();
     result.startDate = other.getStartDate();
     result.endDate = other.getEndDate();
@@ -76,20 +73,18 @@ public class ServiceResultList implements Serializable {
     List<ServiceResultList> serviceResultsLists = new ArrayList<>();
     for (int i = 0; i < rowList.size(); i++) {
       ServiceResult serviceResult = ServiceResult.parse(rowList.get(i));
-
-      String bestContactTime = getBestContactTimeFromQueryResult(serviceResult);
-      setBestContactTimeFromQueryResultIfExists(serviceResult, bestContactTime);
+      setExecutionDateWithBestContactTimeFromQueryResult(serviceResult);
 
       ServiceResultListBuilder serviceResultListBuilder = new ServiceResultListBuilder();
+      serviceResultListBuilder.withActorType(MessagesConstants.PATIENT_DEFAULT_ACTOR_TYPE);
 
       PatientTemplate patientTemplate = getRelatedPatientTemplate(serviceResult, template);
       if (patientTemplate != null) {
         setChannelTypeFromPatientTemplate(serviceResult, patientTemplate);
-        setBestContactTimeFromPatientTemplate(bestContactTime, serviceResult, patientTemplate);
+        setExecutionDateWithBestContactTimeFromPatientTemplate(serviceResult, patientTemplate);
         serviceResult.setPatientTemplateId(patientTemplate.getId());
 
         serviceResultListBuilder.withActorType(patientTemplate.getActorTypeAsString());
-        serviceResultListBuilder.withServiceId(patientTemplate.getServiceId());
       } else {
         LOGGER.trace(
             String.format(
@@ -132,11 +127,8 @@ public class ServiceResultList implements Serializable {
     resultList.setPatientId(patientTemplate.getPatient().getPatientId());
     resultList.setActorId(patientTemplate.getActor().getPersonId());
     resultList.setActorType(patientTemplate.getActorTypeAsString());
-    // TODO: at this moment is is always set to 0 - it should not be in ServiceResultList
-    resultList.setServiceId(patientTemplate.getServiceId());
     resultList.setStartDate(dateRange.getStart());
     resultList.setEndDate(dateRange.getEnd());
-    // TODO: most probably it does point to incorrect value - it should not be in ServiceResultList
     resultList.setServiceName(patientTemplate.getTemplate().getName());
 
     return resultList;
@@ -207,16 +199,9 @@ public class ServiceResultList implements Serializable {
         MessagesConstants.MESSAGING_GROUP_SERVICE, MessagingGroupService.class);
   }
 
-  private static String getBestContactTimeFromQueryResult(ServiceResult serviceResult) {
-    Object bestContactTimeParam = serviceResult.getAdditionalParams().get(BEST_CONTACT_TIME_ALIAS);
-    if (bestContactTimeParam != null) {
-      return bestContactTimeParam.toString();
-    }
-    return null;
-  }
-
-  private static void setBestContactTimeFromQueryResultIfExists(
-      ServiceResult serviceResult, String bestContactTime) {
+  private static void setExecutionDateWithBestContactTimeFromQueryResult(
+      ServiceResult serviceResult) {
+    String bestContactTime = serviceResult.getBestContactTime();
     if (bestContactTime != null) {
       serviceResult.setExecutionDate(
           getDateWithLocalTimeAndDefaultUserTimeZone(
@@ -231,9 +216,9 @@ public class ServiceResultList implements Serializable {
     }
   }
 
-  private static void setBestContactTimeFromPatientTemplate(
-      String bestContactTime, ServiceResult serviceResult, PatientTemplate patientTemplate) {
-    if (bestContactTime == null) {
+  private static void setExecutionDateWithBestContactTimeFromPatientTemplate(
+      ServiceResult serviceResult, PatientTemplate patientTemplate) {
+    if (serviceResult.getBestContactTime() == null) {
       serviceResult.setExecutionDate(
           adjustExecutionDateToBestContactTime(serviceResult, patientTemplate));
     }
@@ -269,14 +254,6 @@ public class ServiceResultList implements Serializable {
 
   public void setActorType(String actorType) {
     this.actorType = actorType;
-  }
-
-  public Integer getServiceId() {
-    return serviceId;
-  }
-
-  public void setServiceId(Integer serviceId) {
-    this.serviceId = serviceId;
   }
 
   public ZonedDateTime getStartDate() {

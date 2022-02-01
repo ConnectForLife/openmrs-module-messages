@@ -966,10 +966,6 @@
         "actorType" : {
           "type" : "string"
         },
-        "serviceId" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "serviceName" : {
           "type" : "string"
         },

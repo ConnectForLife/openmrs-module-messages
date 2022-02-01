@@ -14,7 +14,6 @@ public class ServiceResultListDTO {
     private Integer patientId;
     private Integer actorId;
     private String actorType;
-    private Integer serviceId;
     private String serviceName;
     private Long startDate;
     private Long endDate;
@@ -28,7 +27,6 @@ public class ServiceResultListDTO {
         this.patientId = serviceResultList.getPatientId();
         this.actorId = serviceResultList.getActorId();
         this.actorType = serviceResultList.getActorType();
-        this.serviceId = serviceResultList.getServiceId();
         this.serviceName = serviceResultList.getServiceName();
         this.startDate = serviceResultList.getStartDate().toInstant().toEpochMilli();
         this.endDate = serviceResultList.getEndDate().toInstant().toEpochMilli();
@@ -66,14 +64,6 @@ public class ServiceResultListDTO {
 
     public void setActorType(String actorType) {
         this.actorType = actorType;
-    }
-
-    public Integer getServiceId() {
-        return serviceId;
-    }
-
-    public void setServiceId(Integer serviceId) {
-        this.serviceId = serviceId;
     }
 
     public String getServiceName() {

@@ -36,17 +36,18 @@ public class ServiceResult implements Serializable, DTO {
   public static final String STATUS_COL_ALIAS = "STATUS_ID";
   public static final String PATIENT_ID_ALIAS = "PATIENT_ID";
   public static final String ACTOR_ID_ALIAS = "ACTOR_ID";
+  public static final String BEST_CONTACT_TIME_ALIAS = "BEST_CONTACT_TIME";
   public static final int MIN_COL_NUM = 3;
   private static final long serialVersionUID = 2598236499107927781L;
+
   private ZonedDateTime executionDate;
   private Object messageId;
   private String channelType;
-
   private Integer patientId;
   private Integer actorId;
-
   private ServiceStatus serviceStatus = ServiceStatus.FUTURE;
   private Map<String, Object> additionalParams = new HashMap<>();
+  private String bestContactTime;
   private Integer patientTemplateId;
 
   public ServiceResult() {}
@@ -58,7 +59,8 @@ public class ServiceResult implements Serializable, DTO {
       Integer patientId,
       Integer actorId,
       ServiceStatus serviceStatus,
-      Map<String, Object> additionalParams) {
+      Map<String, Object> additionalParams,
+      String bestContactTime) {
     if (executionDate == null) {
       throw new IllegalArgumentException("Execution date is mandatory");
     }
@@ -73,6 +75,7 @@ public class ServiceResult implements Serializable, DTO {
     this.actorId = actorId;
     this.serviceStatus = serviceStatus;
     this.additionalParams = additionalParams == null ? new HashMap<>() : additionalParams;
+    this.bestContactTime = bestContactTime;
   }
 
   @SuppressWarnings("PMD.CyclomaticComplexity")
@@ -88,6 +91,7 @@ public class ServiceResult implements Serializable, DTO {
     Integer actorId = null;
     ServiceStatus status = ServiceStatus.FUTURE;
     Map<String, Object> params = new HashMap<String, Object>();
+    String bestContactTime = null;
 
     for (Map.Entry<String, Object> entry : row.entrySet()) {
       // Skip null values
@@ -107,11 +111,13 @@ public class ServiceResult implements Serializable, DTO {
         patientId = Integer.parseInt(entry.getValue().toString());
       } else if (ACTOR_ID_ALIAS.equals(entry.getKey())) {
         actorId = Integer.parseInt(entry.getValue().toString());
+      } else if (BEST_CONTACT_TIME_ALIAS.equals(entry.getKey())) {
+        bestContactTime = String.valueOf(entry.getValue());
       } else {
         params.put(entry.getKey(), entry.getValue());
       }
     }
-    return new ServiceResult(date, msgId, channelType, patientId, actorId, status, params);
+    return new ServiceResult(date, msgId, channelType, patientId, actorId, status, params, bestContactTime);
   }
 
   public static List<ServiceResult> parseList(
@@ -255,5 +261,13 @@ public class ServiceResult implements Serializable, DTO {
 
   public void setActorId(Integer actorId) {
     this.actorId = actorId;
+  }
+
+  public String getBestContactTime() {
+    return bestContactTime;
+  }
+
+  public void setBestContactTime(String bestContactTime) {
+    this.bestContactTime = bestContactTime;
   }
 }
