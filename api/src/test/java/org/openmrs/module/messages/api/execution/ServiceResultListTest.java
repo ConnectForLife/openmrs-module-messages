@@ -8,6 +8,7 @@ import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.PatientService;
+import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.api.constants.ConfigConstants;
 import org.openmrs.module.messages.api.constants.MessagesConstants;
@@ -44,7 +45,6 @@ public class ServiceResultListTest {
     private static final int PATIENT_ID = 1;
     private static final int ACTOR_ID = 2;
     private static final String ACTOR_TYPE = "Caregiver";
-    private static final int SERVICE_ID = 11;
     private static final ZonedDateTime START_DATE =
             ZonedDateTime.ofInstant(Instant.ofEpochSecond(1625756392L), ZoneId.of("UTC"));
     private static final ZonedDateTime END_DATE = START_DATE.plusMonths(2);
@@ -78,6 +78,9 @@ public class ServiceResultListTest {
     private Patient patient;
 
     @Mock
+    private Person person;
+
+    @Mock
     private PatientTemplateService patientTemplateService;
 
     @Mock
@@ -89,6 +92,9 @@ public class ServiceResultListTest {
     @Mock
     private MessagingGroupService messagingGroupService;
 
+    @Mock
+    private PersonService personService;
+
     @Before
     public void setUp() throws IllegalAccessException {
         mockStatic(Context.class);
@@ -97,6 +103,7 @@ public class ServiceResultListTest {
         when(Context.getAdministrationService()).thenReturn(administrationService);
         when(Context.getRegisteredComponent(MessagesConstants.MESSAGING_GROUP_SERVICE,
                 MessagingGroupService.class)).thenReturn(messagingGroupService);
+        when(Context.getPersonService()).thenReturn(personService);
 
         // Sets DateUtil's clock to predefined and fixed point in time
         PowerMockito.field(DateUtil.class, "clock").set(null, Clock.fixed(START_DATE.toInstant(), START_DATE.getZone()));
@@ -113,7 +120,6 @@ public class ServiceResultListTest {
         when(patientTemplate.getActorTypeAsString()).thenReturn(ACTOR_TYPE);
         when(patient.getPatientId()).thenReturn(PATIENT_ID);
         when(actor.getPersonId()).thenReturn(ACTOR_ID);
-        when(patientTemplate.getServiceId()).thenReturn(SERVICE_ID);
         dateRange = new Range<>(START_DATE, END_DATE);
 
         ServiceResultList resultList = ServiceResultList.createList(buildRows(), patientTemplate, dateRange);
@@ -121,7 +127,6 @@ public class ServiceResultListTest {
         assertEquals(PATIENT_ID, resultList.getPatientId().intValue());
         assertEquals(ACTOR_ID, resultList.getActorId().intValue());
         assertEquals(ACTOR_TYPE, resultList.getActorType());
-        assertEquals(SERVICE_ID, resultList.getServiceId().intValue());
         assertEquals(START_DATE, resultList.getStartDate());
         assertEquals(END_DATE, resultList.getEndDate());
 
@@ -134,10 +139,9 @@ public class ServiceResultListTest {
     @Test
     public void shouldParseServiceResultListFromTemplateQuery() {
         when(patientTemplateService.findOneByCriteria(any())).thenReturn(patientTemplate);
-        when(patientService.getPatient(any())).thenReturn(patient);
+        when(personService.getPerson(any())).thenReturn(person);
         when(administrationService.getGlobalProperty(ConfigConstants.BEST_CONTACT_TIME_KEY)).thenReturn("10:00");
         when(patientTemplate.getActorTypeAsString()).thenReturn(ACTOR_TYPE);
-        when(patientTemplate.getServiceId()).thenReturn(SERVICE_ID);
 
         List<ServiceResultList> serviceResultLists = ServiceResultList.createList(buildRows(), template, dateRange);
 
@@ -151,7 +155,6 @@ public class ServiceResultListTest {
             assertEquals(i, serviceResultLists.get(i).getPatientId().intValue());
             assertEquals(i, serviceResultLists.get(i).getActorId().intValue());
             assertEquals(ACTOR_TYPE, serviceResultLists.get(i).getActorType());
-            assertEquals(SERVICE_ID, serviceResultLists.get(i).getServiceId().intValue());
             assertEquals(START_DATE, serviceResultLists.get(i).getStartDate());
             assertEquals(END_DATE, serviceResultLists.get(i).getEndDate());
         }

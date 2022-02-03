@@ -12,7 +12,6 @@ public class ServiceResultListBuilder implements Builder<ServiceResultList> {
     private Integer patientId;
     private Integer actorId;
     private String actorType;
-    private Integer serviceId;
     private String serviceName;
     private ZonedDateTime startDate;
     private ZonedDateTime endDate;
@@ -25,7 +24,6 @@ public class ServiceResultListBuilder implements Builder<ServiceResultList> {
         serviceResultList.setPatientId(patientId);
         serviceResultList.setActorId(actorId);
         serviceResultList.setActorType(actorType);
-        serviceResultList.setServiceId(serviceId);
         serviceResultList.setServiceName(serviceName);
         serviceResultList.setStartDate(startDate);
         serviceResultList.setEndDate(endDate);
@@ -50,11 +48,6 @@ public class ServiceResultListBuilder implements Builder<ServiceResultList> {
 
     public ServiceResultListBuilder withActorType(String actorType) {
         this.actorType = actorType;
-        return this;
-    }
-
-    public ServiceResultListBuilder withServiceId(Integer serviceId) {
-        this.serviceId = serviceId;
         return this;
     }
 
