@@ -9,6 +9,8 @@
   "tags" : [ {
     "name" : "REST API for Actor Details"
   }, {
+    "name" : "REST API for Country Property Actions"
+  }, {
     "name" : "REST API for Default patient template Details"
   }, {
     "name" : "REST API for managing patient templates"
@@ -281,6 +283,33 @@
           },
           "500" : {
             "description" : "Contact time for the person not fetched"
+          }
+        }
+      }
+    },
+    "/messages/countryProperty/setValues" : {
+      "post" : {
+        "tags" : [ "REST API for Country Property Actions" ],
+        "summary" : "None",
+        "description" : "Set the values for Country Property. Creates properties if needed.",
+        "operationId" : "setValue",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/CountryPropertyValueList"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Country Property Values have been set.",
+            "schema" : {
+              "$ref" : "#/definitions/PatientTemplatesWrapper"
+            }
+          },
+          "500" : {
+            "description" : "Failed to set Country Property value."
           }
         }
       }
@@ -759,6 +788,31 @@
         },
         "time" : {
           "type" : "string"
+        }
+      }
+    },
+    "CountryPropertyValueDTO" : {
+      "type" : "object",
+      "properties" : {
+        "country" : {
+          "type" : "string"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "value" : {
+          "type" : "string"
+        }
+      }
+    },
+    "CountryPropertyValueList" : {
+      "type" : "object",
+      "properties" : {
+        "values" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/CountryPropertyValueDTO"
+          }
         }
       }
     },

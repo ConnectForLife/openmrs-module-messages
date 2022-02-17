@@ -72,6 +72,7 @@ public final class ConfigConstants {
 
     public static final String GLOBAL_BEST_CONTACT_TIME_KEY = "global";
     public static final String GLOBAL_BEST_CONTACT_TIME_VALUE = "10:00";
+
     public static final String BEST_CONTACT_TIME_KEY = "message.bestContactTime.default";
     public static final String BEST_CONTACT_TIME_DEFAULT_VALUE =
             "{\n"
