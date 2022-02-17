@@ -80,7 +80,7 @@
     <rule ref="category/java/codestyle.xml/AvoidDollarSigns" />
     <rule ref="category/java/codestyle.xml/ClassNamingConventions">
         <properties>
-            <property name="utilityClassPattern" value="([A-Z][a-zA-Z0-9]+)?(Utils?|Helper|Constants|Builder)"/>
+            <property name="utilityClassPattern" value="([A-Z][a-zA-Z0-9]+)?(Utils?|Helper|Constants|Builder|Factory)"/>
         </properties>
     </rule>
     <rule ref="category/java/codestyle.xml/GenericsNaming" />

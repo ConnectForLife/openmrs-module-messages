@@ -27,6 +27,19 @@
 
     <bean id="messages.configService" class="org.openmrs.module.messages.api.service.impl.ConfigServiceImpl"/>
 
+    <bean id="messages.countryPropertyService"
+          class="org.openmrs.module.messages.api.service.impl.CountryPropertyServiceImpl">
+        <constructor-arg name="countryPropertyDAO" ref="messages.CountryPropertyDAO"/>
+    </bean>
+    <bean parent="serviceContext">
+        <property name="moduleService">
+            <list merge="true">
+                <value>org.openmrs.module.messages.api.service.CountryPropertyService</value>
+                <ref local="messages.countryPropertyService"/>
+            </list>
+        </property>
+    </bean>
+
     <bean id="messages.actorService" class="org.openmrs.module.messages.api.service.impl.ActorServiceImpl">
         <property name="configService">
             <ref local="messages.configService"/>
@@ -74,6 +87,8 @@
             <ref bean="dbSessionFactory"/>
         </property>
     </bean>
+
+    <bean id="messages.CountryPropertyDAO" class="org.openmrs.module.messages.api.dao.impl.CountryPropertyDAOImpl" />
 
     <bean id="messages.PatientAdvancedDao" class="org.openmrs.module.messages.api.dao.impl.PatientAdvancedDaoImpl">
         <property name="dbSessionFactory">
@@ -656,4 +671,6 @@
     <bean id="messages.ITRConceptClassesBundle" class="org.openmrs.module.messages.bundle.ITRConceptClassesBundle"/>
     <bean id="emessages.ITRConceptAttributeTypesBundle"
           class="org.openmrs.module.messages.bundle.ITRConceptAttributeTypesBundle"/>
+
+    <bean id="countryPropertyValidator" class="org.openmrs.module.messages.validator.CountryPropertyValidator" />
 </beans>
