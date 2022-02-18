@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.openmrs.module</groupId>
         <artifactId>messages</artifactId>
-        <version>1.4.2-SNAPSHOT</version>
+        <version>1.4.2</version>
     </parent>
 
     <artifactId>messages-api</artifactId>
