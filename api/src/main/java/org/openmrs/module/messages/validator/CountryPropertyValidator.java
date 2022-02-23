@@ -47,11 +47,11 @@ public class CountryPropertyValidator implements Validator {
           resolveErrorCode(
               "CountryProperty.error.notUnique",
               countryProperty.getName(),
-              getSafeCountryName(countryProperty.getCountry())));
+              getCountryNameForErrorMessage(countryProperty.getCountry())));
     }
   }
 
-  private String getSafeCountryName(Concept countryConcept) {
+  private String getCountryNameForErrorMessage(Concept countryConcept) {
     return countryConcept == null ? "<null>" : countryConcept.getName().getName();
   }
 }

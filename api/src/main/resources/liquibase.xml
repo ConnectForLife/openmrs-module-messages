@@ -1092,7 +1092,7 @@
                               columnDataType="varchar(255)"/>
     </changeSet>
 
-    <changeSet id="messages-95-CountryProperty-table" author="SolDevelo">
+    <changeSet id="messages-95-CountryProperty-table" author="CfL">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="messages_country_property" />

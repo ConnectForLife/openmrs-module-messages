@@ -22,7 +22,7 @@ public class CountryPropertyDAOImpl extends HibernateOpenmrsMetadataDAO<CountryP
 
   @Override
   public Optional<CountryProperty> getCountryProperty(Concept country, String name) {
-    final CountryProperty countryProperty = readOneNotRetired(country, name);
+    final CountryProperty countryProperty = getPropertyByCountryAndName(country, name);
     return Optional.ofNullable(countryProperty);
   }
 
@@ -55,7 +55,7 @@ public class CountryPropertyDAOImpl extends HibernateOpenmrsMetadataDAO<CountryP
     return executeCountCriteria(getCountCriteria(includeRetired));
   }
 
-  private CountryProperty readOneNotRetired(Concept country, String name) {
+  private CountryProperty getPropertyByCountryAndName(Concept country, String name) {
     final Criteria criteria =
         sessionFactory
             .getCurrentSession()
