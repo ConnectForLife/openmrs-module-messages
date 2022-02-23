@@ -101,7 +101,7 @@ public class CountryPropertyResource extends DelegatingCrudResource<CountryPrope
     final CountryPropertyService countryPropertyService =
         Context.getService(CountryPropertyService.class);
 
-    return countryPropertyService.getCountryPropertyByUuid(uuid);
+    return countryPropertyService.getCountryPropertyByUuid(uuid).orElse(null);
   }
 
   @Override

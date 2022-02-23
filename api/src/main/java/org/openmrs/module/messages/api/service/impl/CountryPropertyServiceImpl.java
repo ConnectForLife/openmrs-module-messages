@@ -2,6 +2,7 @@ package org.openmrs.module.messages.api.service.impl;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Concept;
+import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.api.dao.CountryPropertyDAO;
 import org.openmrs.module.messages.api.dto.CountryPropertyValueDTO;
@@ -11,7 +12,9 @@ import org.openmrs.validator.ValidateUtil;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class CountryPropertyServiceImpl implements CountryPropertyService {
@@ -24,8 +27,8 @@ public class CountryPropertyServiceImpl implements CountryPropertyService {
 
   @Override
   @Transactional(readOnly = true)
-  public CountryProperty getCountryPropertyByUuid(String uuid) {
-    return countryPropertyDAO.getByUuid(uuid);
+  public Optional<CountryProperty> getCountryPropertyByUuid(String uuid) {
+    return Optional.of(countryPropertyDAO.getByUuid(uuid));
   }
 
   @Override
@@ -92,8 +95,16 @@ public class CountryPropertyServiceImpl implements CountryPropertyService {
   @Override
   @Transactional
   public void setCountryPropertyValues(Collection<CountryPropertyValueDTO> values) {
+    final ConceptService conceptService = Context.getConceptService();
+    final Map<String, Concept> countryCache = new HashMap<>();
+
     for (CountryPropertyValueDTO value : values) {
-      setCountryPropertyValue(value);
+      final Concept country =
+          StringUtils.isBlank(value.getCountry())
+              ? null
+              : countryCache.computeIfAbsent(value.getCountry(), conceptService::getConceptByName);
+
+      setCountryPropertyValue(country, value.getName(), value.getValue());
     }
   }
 
