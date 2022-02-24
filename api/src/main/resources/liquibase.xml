@@ -1091,4 +1091,51 @@
         <addNotNullConstraint tableName="messages_scheduled_service_group" columnName="channel_type"
                               columnDataType="varchar(255)"/>
     </changeSet>
+
+    <changeSet id="messages-95-CountryProperty-table" author="CfL">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="messages_country_property" />
+            </not>
+        </preConditions>
+        <comment>Create table for CountryProperty entity.</comment>
+        <createTable tableName="messages_country_property">
+            <column name="country_property_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="varchar(255)" />
+            <column name="country_concept_id" type="int" />
+            <column name="country_property_value" type="TEXT" />
+            <column name="uuid" type="char(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="creator" type="int"/>
+            <column name="changed_by" type="int"/>
+            <column name="date_changed" type="datetime"/>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_retired" type="datetime"/>
+            <column name="retire_reason" type="varchar(255)"/>
+            <column name="retired" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="retired_by" type="int"/>
+        </createTable>
+        <addForeignKeyConstraint constraintName="messages_country_property_creator_fk"
+                                 baseTableName="messages_country_property" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_country_property_changed_by_fk"
+                                 baseTableName="messages_country_property" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_country_property_retired_by_fk"
+                                 baseTableName="messages_country_property" baseColumnNames="retired_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="messages_country_property_country_fk"
+                                 baseTableName="messages_country_property" baseColumnNames="country_concept_id"
+                                 referencedTableName="concept" referencedColumnNames="concept_id"/>
+    </changeSet>
 </databaseChangeLog>

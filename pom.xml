@@ -52,6 +52,7 @@
         <serializationXstream>0.2.12</serializationXstream>
         <metadatasharingVersion>1.2.2</metadatasharingVersion>
         <metadatadeployVersion>1.7</metadatadeployVersion>
+        <webservicesRestVersion>2.29.0</webservicesRestVersion>
         <!-- Test dependencies -->
         <jtsCoreVersion>1.14.0</jtsCoreVersion>
         <legacyUiVersion>1.6.0</legacyUiVersion>
@@ -163,6 +164,12 @@
                 <groupId>org.openmrs.module</groupId>
                 <artifactId>legacyui-omod</artifactId>
                 <version>${legacyUiVersion}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.openmrs.module</groupId>
+                <artifactId>webservices.rest-omod-common</artifactId>
+                <version>${webservicesRestVersion}</version>
                 <scope>provided</scope>
             </dependency>
         </dependencies>
