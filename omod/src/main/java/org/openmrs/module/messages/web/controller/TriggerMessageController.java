@@ -66,7 +66,10 @@ public class TriggerMessageController extends BaseRestController {
       @PathVariable(value = "channelType") String channelType) {
 
     final Patient patient = patientService.getPatientByUuid(personUuid);
-    LOGGER.info("Message triggering started");
+    LOGGER.info(
+        String.format(
+            "Message triggering started with parameters: personUuid - %s, templateNames - %s, channelType - %s",
+            personUuid, templateNames, channelType));
     final ScheduledServiceGroup scheduledServiceGroup =
         createScheduledServiceGroupWithScheduledServices(patient, templateNames, channelType);
 
