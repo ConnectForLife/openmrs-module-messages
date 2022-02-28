@@ -8,7 +8,12 @@ import org.apache.commons.lang.StringUtils;
 import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.PersonAttribute;
+import org.openmrs.Visit;
+import org.openmrs.VisitAttribute;
+import org.openmrs.VisitAttributeType;
+import org.openmrs.VisitType;
 import org.openmrs.api.PatientService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.api.constants.MessagesConstants;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
@@ -18,6 +23,7 @@ import org.openmrs.module.messages.api.model.types.ServiceStatus;
 import org.openmrs.module.messages.api.service.MessagesDeliveryService;
 import org.openmrs.module.messages.api.service.MessagingGroupService;
 import org.openmrs.module.messages.api.service.PatientTemplateService;
+import org.openmrs.module.messages.api.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +36,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.Optional;
 
 import static org.openmrs.module.messages.api.constants.ConfigConstants.PERSON_PHONE_ATTR;
 
@@ -39,6 +46,8 @@ import static org.openmrs.module.messages.api.constants.ConfigConstants.PERSON_P
 public class TriggerMessageController extends BaseRestController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TriggerMessageController.class);
+
+  private static final String VISIT_REMINDER_TEMPLATE_NAME = "Visit reminder";
 
   @Autowired private MessagingGroupService messagingGroupService;
 
@@ -96,8 +105,14 @@ public class TriggerMessageController extends BaseRestController {
     final ScheduledServiceGroup scheduledServiceGroup = new ScheduledServiceGroup();
 
     for (String templateName : templateNames.split(",")) {
+      if (templateName.startsWith(VISIT_REMINDER_TEMPLATE_NAME)) {
+        handleVisitReminder(patient, templateName);
+        templateName = VISIT_REMINDER_TEMPLATE_NAME;
+      }
+
       final PatientTemplate patientTemplate =
           patientTemplateService.getOrCreatePatientTemplate(patient, templateName);
+
       final ScheduledService scheduledService = new ScheduledService();
       scheduledService.setStatus(ServiceStatus.PENDING);
       scheduledService.setPatientTemplate(patientTemplate);
@@ -124,5 +139,68 @@ public class TriggerMessageController extends BaseRestController {
     } else {
       return phoneAttribute.getValue();
     }
+  }
+
+  private void handleVisitReminder(Patient patient, String templateName) {
+    Visit visit = createVisit(patient, templateName);
+    Context.getVisitService().saveVisit(visit);
+  }
+
+  private Visit createVisit(Patient patient, String templateName) {
+    Visit visit = new Visit();
+    visit.setPatient(patient);
+    visit.setStartDatetime(DateUtil.addDaysToDate(now(), 1));
+    visit.setLocation(Context.getLocationService().getDefaultLocation());
+    visit.setVisitType(findVisitTypeByName(StringUtils.substringBetween(templateName, "(", ")")));
+    setVisitAttributes(visit);
+
+    return visit;
+  }
+
+  private VisitType findVisitTypeByName(String name) {
+    VisitType visitType = null;
+    Optional<VisitType> type =
+        Context.getVisitService().getAllVisitTypes().stream()
+            .filter(vt -> StringUtils.equalsIgnoreCase(vt.getName(), name))
+            .findFirst();
+    if (type.isPresent()) {
+      visitType = type.get();
+    } else {
+      LOGGER.warn(String.format("Visit type with name %s not found", name));
+    }
+
+    return visitType;
+  }
+
+  private void setVisitAttributes(Visit visit) {
+    visit.setAttribute(createAttribute("Visit Status", "SCHEDULED"));
+    visit.setAttribute(createAttribute("Visit Time", "Morning"));
+  }
+
+  private VisitAttribute createAttribute(String attributeTypeName, String value) {
+    VisitAttribute visitAttribute = new VisitAttribute();
+    visitAttribute.setAttributeType(findVisitAttributeTypeByName(attributeTypeName));
+    visitAttribute.setValueReferenceInternal(value);
+
+    return visitAttribute;
+  }
+
+  private VisitAttributeType findVisitAttributeTypeByName(String name) {
+    VisitAttributeType visitAttributeType = null;
+    Optional<VisitAttributeType> attributeType =
+        Context.getVisitService().getAllVisitAttributeTypes().stream()
+            .filter(attr -> StringUtils.equalsIgnoreCase(attr.getName(), name))
+            .findFirst();
+    if (attributeType.isPresent()) {
+      visitAttributeType = attributeType.get();
+    } else {
+      LOGGER.warn(String.format("Visit attribute type with name %s not found", name));
+    }
+
+    return visitAttributeType;
+  }
+
+  private Date now() {
+    return Date.from(DateUtil.now().toInstant());
   }
 }
