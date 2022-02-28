@@ -1,0 +1,443 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <concept_datatype concept_datatype_id="100"
+                      name="Numeric"
+                      hl7_abbreviation="NM"
+                      creator="1"
+                      date_created="2022-02-28 10:00:00.0"
+                      retired="false"
+                      uuid="07bf387f-9877-11ec-9b8e-0242ac120007"/>
+
+    <concept_class concept_class_id="100"
+                   name="Test"
+                   creator="1"
+                   date_created="2022-02-28 10:00:00.0"
+                   retired="false"
+                   uuid="07bf387f-9877-11ec-9b8e-0242ac120008"/>
+
+    <!-- Concept for HT_PREVENTION category -->
+    <concept concept_id="100"
+             retired="false"
+             datatype_id="100"
+             class_id="100"
+             is_set="true"
+             creator="1"
+             date_created="2022-02-28 10:00:00.0"
+             uuid="07bf387f-9877-11ec-9b8e-0242ac120009"/>
+
+    <concept_name concept_name_id="100"
+                  concept_id="100"
+                  name="HT_PREVENTION"
+                  locale="en"
+                  creator="1"
+                  date_created="2022-02-28 10:00:00.0"
+                  voided="false"
+                  uuid="07bf387f-9877-11ec-9b8e-0242ac120010"
+                  locale_preferred="true"/>
+
+    <!-- Concept for HT_SIDE_EFFECTS category -->
+    <concept concept_id="200"
+             retired="false"
+             datatype_id="100"
+             class_id="100"
+             is_set="true"
+             creator="1"
+             date_created="2022-02-28 10:00:00.0"
+             uuid="07bf387f-9877-11ec-9b8e-0242ac120011"/>
+
+    <concept_name concept_name_id="200"
+                  concept_id="200"
+                  name="HT_SIDE_EFFECTS"
+                  locale="en"
+                  creator="1"
+                  date_created="2022-02-28 10:00:00.0"
+                  voided="false"
+                  uuid="07bf387f-9877-11ec-9b8e-0242ac120012"
+                  locale_preferred="true"/>
+
+    <!-- Concept for HT_TREATMENT category -->
+    <concept concept_id="300"
+             retired="false"
+             datatype_id="100"
+             class_id="100"
+             is_set="true"
+             creator="1"
+             date_created="2022-02-28 10:00:00.0"
+             uuid="07bf387f-9877-11ec-9b8e-0242ac120013"/>
+
+    <concept_name concept_name_id="300"
+                  concept_id="300"
+                  name="HT_TREATMENT"
+                  locale="en"
+                  creator="1"
+                  date_created="2022-02-28 10:00:00.0"
+                  voided="false"
+                  uuid="07bf387f-9877-11ec-9b8e-0242ac120014"
+                  locale_preferred="true"/>
+
+    <!-- HT_PREVENTION Health tips concepts -->
+
+    <!-- tb_prevention_001 -->
+    <concept concept_id="101"
+             retired="false"
+             datatype_id="100"
+             class_id="100"
+             is_set="false"
+             creator="1"
+             date_created="2022-02-28 10:00:00.0"
+             uuid="07bf387f-9877-11ec-9b8e-0242ac120015"/>
+
+    <concept_name concept_name_id="101"
+                  concept_id="101"
+                  name="tb_prevention_001"
+                  locale="en"
+                  creator="1"
+                  date_created="2022-02-28 10:00:00.0"
+                  voided="false"
+                  uuid="07bf387f-9877-11ec-9b8e-0242ac120016"
+                  locale_preferred="true"/>
+
+    <!-- tb_prevention_002 -->
+    <concept concept_id="102"
+             retired="false"
+             datatype_id="100"
+             class_id="100"
+             is_set="false"
+             creator="1"
+             date_created="2022-02-28 10:00:00.0"
+             uuid="07bf387f-9877-11ec-9b8e-0242ac120017"/>
+
+    <concept_name concept_name_id="102"
+                  concept_id="102"
+                  name="tb_prevention_002"
+                  locale="en"
+                  creator="1"
+                  date_created="2022-02-28 10:00:00.0"
+                  voided="false"
+                  uuid="07bf387f-9877-11ec-9b8e-0242ac120018"
+                  locale_preferred="true"/>
+
+    <!-- tb_prevention_003 -->
+    <concept concept_id="103"
+             retired="false"
+             datatype_id="100"
+             class_id="100"
+             is_set="false"
+             creator="1"
+             date_created="2022-02-28 10:00:00.0"
+             uuid="07bf387f-9877-11ec-9b8e-0242ac120019"/>
+
+    <concept_name concept_name_id="103"
+                  concept_id="103"
+                  name="tb_prevention_003"
+                  locale="en"
+                  creator="1"
+                  date_created="2022-02-28 10:00:00.0"
+                  voided="false"
+                  uuid="07bf387f-9877-11ec-9b8e-0242ac120020"
+                  locale_preferred="true"/>
+
+    <!-- HT_SIDE_EFFECTS Health tips concepts -->
+
+    <!-- tb_sideeffects_001 -->
+    <concept concept_id="201"
+             retired="false"
+             datatype_id="100"
+             class_id="100"
+             is_set="false"
+             creator="1"
+             date_created="2022-02-28 10:00:00.0"
+             uuid="07bf387f-9877-11ec-9b8e-0242ac120021"/>
+
+    <concept_name concept_name_id="201"
+                  concept_id="201"
+                  name="tb_sideeffects_001"
+                  locale="en"
+                  creator="1"
+                  date_created="2022-02-28 10:00:00.0"
+                  voided="false"
+                  uuid="07bf387f-9877-11ec-9b8e-0242ac120022"
+                  locale_preferred="true"/>
+
+    <!-- tb_sideeffects_002 -->
+    <concept concept_id="202"
+             retired="false"
+             datatype_id="100"
+             class_id="100"
+             is_set="false"
+             creator="1"
+             date_created="2022-02-28 10:00:00.0"
+             uuid="07bf387f-9877-11ec-9b8e-0242ac120023"/>
+
+    <concept_name concept_name_id="202"
+                  concept_id="202"
+                  name="tb_sideeffects_002"
+                  locale="en"
+                  creator="1"
+                  date_created="2022-02-28 10:00:00.0"
+                  voided="false"
+                  uuid="07bf387f-9877-11ec-9b8e-0242ac120024"
+                  locale_preferred="true"/>
+
+    <!-- tb_sideeffects_003 -->
+    <concept concept_id="203"
+             retired="false"
+             datatype_id="100"
+             class_id="100"
+             is_set="false"
+             creator="1"
+             date_created="2022-02-28 10:00:00.0"
+             uuid="07bf387f-9877-11ec-9b8e-0242ac120025"/>
+
+    <concept_name concept_name_id="203"
+                  concept_id="203"
+                  name="tb_sideeffects_003"
+                  locale="en"
+                  creator="1"
+                  date_created="2022-02-28 10:00:00.0"
+                  voided="false"
+                  uuid="07bf387f-9877-11ec-9b8e-0242ac120026"
+                  locale_preferred="true"/>
+
+    <!-- tb_sideeffects_004 -->
+    <concept concept_id="204"
+             retired="false"
+             datatype_id="100"
+             class_id="100"
+             is_set="false"
+             creator="1"
+             date_created="2022-02-28 10:00:00.0"
+             uuid="07bf387f-9877-11ec-9b8e-0242ac120027"/>
+
+    <concept_name concept_name_id="204"
+                  concept_id="204"
+                  name="tb_sideeffects_004"
+                  locale="en"
+                  creator="1"
+                  date_created="2022-02-28 10:00:00.0"
+                  voided="false"
+                  uuid="07bf387f-9877-11ec-9b8e-0242ac120028"
+                  locale_preferred="true"/>
+
+
+    <!-- HT_TREATMENT Health tips concepts -->
+
+    <!-- tb_treatment_001 -->
+    <concept concept_id="301"
+             retired="false"
+             datatype_id="100"
+             class_id="100"
+             is_set="false"
+             creator="1"
+             date_created="2022-02-28 10:00:00.0"
+             uuid="07bf387f-9877-11ec-9b8e-0242ac120029"/>
+
+    <concept_name concept_name_id="301"
+                  concept_id="301"
+                  name="tb_treatment_001"
+                  locale="en"
+                  creator="1"
+                  date_created="2022-02-28 10:00:00.0"
+                  voided="false"
+                  uuid="07bf387f-9877-11ec-9b8e-0242ac120030"
+                  locale_preferred="true"/>
+
+    <!-- tb_treatment_002 -->
+    <concept concept_id="302"
+             retired="false"
+             datatype_id="100"
+             class_id="100"
+             is_set="false"
+             creator="1"
+             date_created="2022-02-28 10:00:00.0"
+             uuid="07bf387f-9877-11ec-9b8e-0242ac120031"/>
+
+    <concept_name concept_name_id="302"
+                  concept_id="302"
+                  name="tb_treatment_002"
+                  locale="en"
+                  creator="1"
+                  date_created="2022-02-28 10:00:00.0"
+                  voided="false"
+                  uuid="07bf387f-9877-11ec-9b8e-0242ac120032"
+                  locale_preferred="true"/>
+
+    <!-- tb_treatment_003 -->
+    <concept concept_id="303"
+             retired="false"
+             datatype_id="100"
+             class_id="100"
+             is_set="false"
+             creator="1"
+             date_created="2022-02-28 10:00:00.0"
+             uuid="07bf387f-9877-11ec-9b8e-0242ac120033"/>
+
+    <concept_name concept_name_id="303"
+                  concept_id="303"
+                  name="tb_treatment_003"
+                  locale="en"
+                  creator="1"
+                  date_created="2022-02-28 10:00:00.0"
+                  voided="false"
+                  uuid="07bf387f-9877-11ec-9b8e-0242ac120034"
+                  locale_preferred="true"/>
+
+    <!-- tb_treatment_004 -->
+    <concept concept_id="304"
+             retired="false"
+             datatype_id="100"
+             class_id="100"
+             is_set="false"
+             creator="1"
+             date_created="2022-02-28 10:00:00.0"
+             uuid="07bf387f-9877-11ec-9b8e-0242ac120035"/>
+
+    <concept_name concept_name_id="304"
+                  concept_id="304"
+                  name="tb_treatment_004"
+                  locale="en"
+                  creator="1"
+                  date_created="2022-02-28 10:00:00.0"
+                  voided="false"
+                  uuid="07bf387f-9877-11ec-9b8e-0242ac120036"
+                  locale_preferred="true"/>
+
+    <!-- tb_treatment_005 -->
+    <concept concept_id="305"
+             retired="false"
+             datatype_id="100"
+             class_id="100"
+             is_set="false"
+             creator="1"
+             date_created="2022-02-28 10:00:00.0"
+             uuid="07bf387f-9877-11ec-9b8e-0242ac120037"/>
+
+    <concept_name concept_name_id="305"
+                  concept_id="305"
+                  name="tb_treatment_005"
+                  locale="en"
+                  creator="1"
+                  date_created="2022-02-28 10:00:00.0"
+                  voided="false"
+                  uuid="07bf387f-9877-11ec-9b8e-0242ac120038"
+                  locale_preferred="true"/>
+
+    <!-- Concept sets for HT_PREVENTION category -->
+    <concept_set concept_set_id ="400"
+                 concept_id="101"
+                 concept_set="100"
+                 sort_weight="1000"
+                 creator="1"
+                 date_created="2022-02-28 10:00:00.0"
+                 uuid="07bf387f-9877-11ec-9b8e-0242ac120039"/>
+
+    <concept_set concept_set_id ="401"
+                 concept_id="102"
+                 concept_set="100"
+                 sort_weight="1010"
+                 creator="1"
+                 date_created="2022-02-28 10:00:00.0"
+                 uuid="07bf387f-9877-11ec-9b8e-0242ac120040"/>
+
+    <concept_set concept_set_id ="402"
+                 concept_id="103"
+                 concept_set="100"
+                 sort_weight="1020"
+                 creator="1"
+                 date_created="2022-02-28 10:00:00.0"
+                 uuid="07bf387f-9877-11ec-9b8e-0242ac120041"/>
+
+    <!-- Concept sets for HT_SIDE_EFFECTS category -->
+    <concept_set concept_set_id ="500"
+                 concept_id="201"
+                 concept_set="200"
+                 sort_weight="1"
+                 creator="1"
+                 date_created="2022-02-28 10:00:00.0"
+                 uuid="07bf387f-9877-11ec-9b8e-0242ac120042"/>
+
+    <concept_set concept_set_id ="501"
+                 concept_id="202"
+                 concept_set="200"
+                 sort_weight="2"
+                 creator="1"
+                 date_created="2022-02-28 10:00:00.0"
+                 uuid="07bf387f-9877-11ec-9b8e-0242ac120043"/>
+
+    <concept_set concept_set_id ="502"
+                 concept_id="203"
+                 concept_set="200"
+                 sort_weight="3"
+                 creator="1"
+                 date_created="2022-02-28 10:00:00.0"
+                 uuid="07bf387f-9877-11ec-9b8e-0242ac120044"/>
+
+    <concept_set concept_set_id ="503"
+                 concept_id="204"
+                 concept_set="200"
+                 sort_weight="4"
+                 creator="1"
+                 date_created="2022-02-28 10:00:00.0"
+                 uuid="07bf387f-9877-11ec-9b8e-0242ac120045"/>
+
+    <!-- Concept sets for HT_TREATMENT category -->
+    <concept_set concept_set_id ="600"
+                 concept_id="301"
+                 concept_set="300"
+                 sort_weight="1"
+                 creator="1"
+                 date_created="2022-02-28 10:00:00.0"
+                 uuid="07bf387f-9877-11ec-9b8e-0242ac120046"/>
+
+    <concept_set concept_set_id ="601"
+                 concept_id="302"
+                 concept_set="300"
+                 sort_weight="2"
+                 creator="1"
+                 date_created="2022-02-28 10:00:00.0"
+                 uuid="07bf387f-9877-11ec-9b8e-0242ac120047"/>
+
+    <concept_set concept_set_id ="602"
+                 concept_id="303"
+                 concept_set="300"
+                 sort_weight="3"
+                 creator="1"
+                 date_created="2022-02-28 10:00:00.0"
+                 uuid="07bf387f-9877-11ec-9b8e-0242ac120048"/>
+
+    <concept_set concept_set_id ="603"
+                 concept_id="304"
+                 concept_set="300"
+                 sort_weight="4"
+                 creator="1"
+                 date_created="2022-02-28 10:00:00.0"
+                 uuid="07bf387f-9877-11ec-9b8e-0242ac120049"/>
+
+    <concept_set concept_set_id ="604"
+                 concept_id="305"
+                 concept_set="300"
+                 sort_weight="4"
+                 creator="1"
+                 date_created="2022-02-28 10:00:00.0"
+                 uuid="07bf387f-9877-11ec-9b8e-0242ac120050"/>
+
+    <!-- Concept for Health tip question -->
+    <concept concept_id="700"
+             retired="false"
+             datatype_id="100"
+             class_id="100"
+             is_set="false"
+             creator="1"
+             date_created="2022-02-28 10:00:00.0"
+             uuid="e7541654-c327-4fee-8e48-f729946c7791"/>
+
+    <concept_name concept_name_id="700"
+                  concept_id="700"
+                  name="Which health tip was played?"
+                  locale="en"
+                  creator="1"
+                  date_created="2022-02-28 10:00:00.0"
+                  voided="false"
+                  uuid="e7541654-c327-4fee-8e48-f729946c7792"
+                  locale_preferred="true"/>
+</dataset>

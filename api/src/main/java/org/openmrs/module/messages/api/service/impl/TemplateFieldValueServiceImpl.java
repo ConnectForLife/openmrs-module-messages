@@ -7,6 +7,7 @@ import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.TemplateFieldValue;
 import org.openmrs.module.messages.api.service.TemplateFieldValueService;
 import org.openmrs.module.messages.api.service.PatientTemplateService;
+import org.openmrs.module.messages.domain.criteria.TemplateFieldValueCriteria;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -14,47 +15,61 @@ import java.util.List;
 @Transactional
 public class TemplateFieldValueServiceImpl implements TemplateFieldValueService {
 
-    private static final String TEMPLATE_FIELD_VALUE_DAO_BEAN_NAME = "messages.templateFieldValueDao";
+  private static final String TEMPLATE_FIELD_VALUE_DAO_BEAN_NAME = "messages.templateFieldValueDao";
 
-    private PatientTemplateService patientTemplateService;
+  private PatientTemplateService patientTemplateService;
 
-    private TemplateFieldValueDao templateFieldValueDao;
+  private TemplateFieldValueDao templateFieldValueDao;
 
-    @Override
-    public void updateTemplateFieldValue(Integer patientTemplateId, String fieldName, String newValue) {
-        PatientTemplate patientTemplate = patientTemplateService.getById(patientTemplateId);
-        List<TemplateFieldValue> fieldValues = patientTemplate.getTemplateFieldValues();
-        TemplateFieldValue fieldValueToUpdate = getFieldValueToUpdate(fieldValues, fieldName);
-        if (fieldValueToUpdate != null) {
-            fieldValueToUpdate.setValue(newValue);
-            getTemplateFieldValueDao().saveOrUpdate(fieldValueToUpdate);
-        }
+  @Override
+  public void updateTemplateFieldValue(
+      Integer patientTemplateId, String fieldName, String newValue) {
+    PatientTemplate patientTemplate = patientTemplateService.getById(patientTemplateId);
+    List<TemplateFieldValue> fieldValues = patientTemplate.getTemplateFieldValues();
+    TemplateFieldValue fieldValueToUpdate = getFieldValueToUpdate(fieldValues, fieldName);
+    if (fieldValueToUpdate != null) {
+      fieldValueToUpdate.setValue(newValue);
+      getTemplateFieldValueDao().saveOrUpdate(fieldValueToUpdate);
     }
+  }
 
-    public void setPatientTemplateService(PatientTemplateService patientTemplateService) {
-        this.patientTemplateService = patientTemplateService;
-    }
+  @Override
+  @Transactional(readOnly = true)
+  public TemplateFieldValue getTemplateFieldByPatientTemplateAndFieldType(
+      PatientTemplate patientTemplate, String fieldTypeName) {
+    TemplateFieldValueCriteria criteria =
+        new TemplateFieldValueCriteria()
+            .setPatientTemplate(patientTemplate)
+            .setFieldTypeName(fieldTypeName);
+    return getTemplateFieldValueDao().findOneByCriteria(criteria);
+  }
 
-    public void setTemplateFieldValueDao(TemplateFieldValueDao templateFieldValueDao) {
-        this.templateFieldValueDao = templateFieldValueDao;
-    }
+  public void setPatientTemplateService(PatientTemplateService patientTemplateService) {
+    this.patientTemplateService = patientTemplateService;
+  }
 
-    private TemplateFieldValue getFieldValueToUpdate(List<TemplateFieldValue> fieldValues, String fieldName) {
-        TemplateFieldValue fieldValueToUpdate = null;
-        for (TemplateFieldValue tfv : fieldValues) {
-            if (StringUtils.equalsIgnoreCase(tfv.getTemplateField().getName(), fieldName)) {
-                fieldValueToUpdate = tfv;
-                break;
-            }
-        }
-        return fieldValueToUpdate;
-    }
+  public void setTemplateFieldValueDao(TemplateFieldValueDao templateFieldValueDao) {
+    this.templateFieldValueDao = templateFieldValueDao;
+  }
 
-    private TemplateFieldValueDao getTemplateFieldValueDao() {
-        if (templateFieldValueDao == null) {
-            templateFieldValueDao = Context.getRegisteredComponent(TEMPLATE_FIELD_VALUE_DAO_BEAN_NAME,
-                    TemplateFieldValueDao.class);
-        }
-        return templateFieldValueDao;
+  private TemplateFieldValue getFieldValueToUpdate(
+      List<TemplateFieldValue> fieldValues, String fieldName) {
+    TemplateFieldValue fieldValueToUpdate = null;
+    for (TemplateFieldValue tfv : fieldValues) {
+      if (StringUtils.equalsIgnoreCase(tfv.getTemplateField().getName(), fieldName)) {
+        fieldValueToUpdate = tfv;
+        break;
+      }
     }
+    return fieldValueToUpdate;
+  }
+
+  private TemplateFieldValueDao getTemplateFieldValueDao() {
+    if (templateFieldValueDao == null) {
+      templateFieldValueDao =
+          Context.getRegisteredComponent(
+              TEMPLATE_FIELD_VALUE_DAO_BEAN_NAME, TemplateFieldValueDao.class);
+    }
+    return templateFieldValueDao;
+  }
 }

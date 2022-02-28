@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <person
+            person_id="100"
+            gender="M"
+            dead="false"
+            creator="1"
+            date_created="2022-02-28 10:00:00.0"
+            voided="false"
+            uuid="07bf387f-9877-11ec-9b8e-0242ac120002"/>
+
+    <patient
+            patient_id="100"
+            creator="1"
+            date_created="2022-02-28 10:00:00.0"
+            voided="false"/>
+
+    <messages_template
+            messages_template_id="100"
+            service_query="select 1;"
+            service_query_type="SQL"
+            name="Health tip"
+            should_use_optimized_query="true"
+            creator="1"
+            date_created="2022-02-28 10:00:00.0"
+            retired="false"
+            uuid="07bf387f-9877-11ec-9b8e-0242ac120003"/>
+
+    <messages_template_field
+            messages_template_field_id="100"
+            name="Categories of the message"
+            mandatory="false"
+            default_value="HT_PREVENTION"
+            template_field_type="CATEGORY_OF_MESSAGE"
+            template_id="100"
+            creator="1"
+            date_created="2022-02-28 10:00:00.0"
+            voided="false"
+            uuid="07bf387f-9877-11ec-9b8e-0242ac120004"/>
+
+    <messages_template_field
+            messages_template_field_id="101"
+            name="Service type"
+            mandatory="true"
+            default_value="Call"
+            template_field_type="SERVICE_TYPE"
+            template_id="100"
+            creator="1"
+            date_created="2022-02-28 10:00:00.0"
+            voided="false"
+            uuid="07bf387f-9877-11ec-9b8e-0242ac120005"/>
+
+    <messages_patient_template
+            messages_patient_template_id="100"
+            actor_id="100"
+            template_id="100"
+            patient_id="100"
+            service_query=""
+            calendar_service_query=""
+            creator="1"
+            date_created="2022-02-28 10:00:00.0"
+            voided="false"
+            uuid="07bf387f-9877-11ec-9b8e-0242ac120006"/>
+
+    <messages_template_field_value
+            messages_template_field_value_id="100"
+            value="HT_PREVENTION,HT_SIDE_EFFECTS,HT_TREATMENT"
+            patient_template_id="100"
+            template_field_id="100"
+            creator="1"
+            date_created="2022-02-28 10:00:00.0"
+            voided="false"
+            uuid="7279b710-9889-11ec-9b8e-0242ac1200021"/>
+
+    <messages_actor_response_type name="SCHEDULED_SERVICE_GROUP"/>
+</dataset>
