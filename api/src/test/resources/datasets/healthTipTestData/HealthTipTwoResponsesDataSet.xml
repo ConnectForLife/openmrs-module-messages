@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+
+    <messages_actor_response
+            messages_actor_response_id="200"
+            patient_id="100"
+            actor_id="100"
+            answered_time="2022-02-28 11:00:00.0"
+            question="700"
+            response="101"
+            text_question=""
+            text_response=""
+            source_type="SCHEDULED_SERVICE_GROUP"
+            creator="1"
+            date_created="2022-02-28 10:00:00.0"
+            voided="false"
+            uuid="07bf387f-9877-11ec-9b8e-0242ac120052"/>
+
+    <messages_actor_response
+            messages_actor_response_id="201"
+            patient_id="100"
+            actor_id="100"
+            answered_time="2022-02-28 11:00:00.0"
+            question="700"
+            response="201"
+            text_question=""
+            text_response=""
+            source_type="SCHEDULED_SERVICE_GROUP"
+            creator="1"
+            date_created="2022-02-28 10:00:00.0"
+            voided="false"
+            uuid="07bf387f-9877-11ec-9b8e-0242ac120053"/>
+
+</dataset>
