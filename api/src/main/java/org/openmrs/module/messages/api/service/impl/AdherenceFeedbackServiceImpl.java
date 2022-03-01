@@ -15,18 +15,18 @@ import static java.util.stream.Collectors.toMap;
 public class AdherenceFeedbackServiceImpl implements AdherenceFeedbackService {
 
   @Override
-  public Map<String, AdherenceFeedback> getAdherenceFeedback(Integer actorId, Integer patientId) {
-    requireNonNull(actorId, "The actorId must not be null!");
+  public Map<String, AdherenceFeedback> getAdherenceFeedback(Integer patientId, Integer actorId) {
     requireNonNull(patientId, "The patientId must not be null!");
+    requireNonNull(actorId, "The actorId must not be null!");
 
-    final Person actor = getActor(actorId);
     final Patient patient = getPatient(patientId);
+    final Person actor = getActor(actorId);
 
     return Context.getRegisteredComponents(AdherenceFeedbackCalculationHandler.class).stream()
         .collect(
             toMap(
                 AdherenceFeedbackCalculationHandler::getServiceName,
-                handler -> handler.getAdherenceFeedback(actor, patient)));
+                handler -> handler.getAdherenceFeedback(patient, actor)));
   }
 
   private Person getActor(Integer actorId) {

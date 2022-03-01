@@ -28,6 +28,7 @@ public class LastResponseCriteria extends ActorResponseCriteria {
     loadOrderBy(hibernateCriteria);
   }
 
+  @SuppressWarnings("PMD.NPathComplexity")
   @Override
   protected void loadWhereStatements(Criteria hibernateCriteria) {
     if (patientId != null) {

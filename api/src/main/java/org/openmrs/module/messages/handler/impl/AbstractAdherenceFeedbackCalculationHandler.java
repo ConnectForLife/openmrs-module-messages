@@ -58,9 +58,9 @@ public abstract class AbstractAdherenceFeedbackCalculationHandler
   }
 
   @Override
-  public AdherenceFeedback getAdherenceFeedback(Person actor, Patient patient) {
+  public AdherenceFeedback getAdherenceFeedback(Patient patient, Person actor) {
     final ActorIntermediateAdherence actorIntermediateAdherence =
-        getActorIntermediateAdherence(actor, patient);
+        getActorIntermediateAdherence(patient, actor);
 
     return new AdherenceFeedbackBuilder()
         .withServiceName(serviceName)
@@ -76,12 +76,12 @@ public abstract class AbstractAdherenceFeedbackCalculationHandler
         .build();
   }
 
-  private ActorIntermediateAdherence getActorIntermediateAdherence(Person actor, Patient patient) {
+  private ActorIntermediateAdherence getActorIntermediateAdherence(Patient patient, Person actor) {
     final Concept questionConcept = getQuestionConcept();
 
     return new ActorIntermediateAdherence(
-        getAdherenceForCurrentWeek(questionConcept, actor, patient),
-        getAdherenceForBenchmark(questionConcept, actor, patient));
+        getAdherenceForCurrentWeek(questionConcept, patient, actor),
+        getAdherenceForBenchmark(questionConcept, patient, actor));
   }
 
   private Concept getQuestionConcept() {
@@ -131,7 +131,7 @@ public abstract class AbstractAdherenceFeedbackCalculationHandler
   }
 
   private AdherenceIntermediateResult getAdherenceForCurrentWeek(
-      Concept questionConcept, Person actor, Patient patient) {
+      Concept questionConcept, Patient patient, Person actor) {
     final ZonedDateTime currentAdherenceStart = DateUtil.now().minus(1, WEEKS);
 
     final List<ActorResponse> currentWeekResponses =
@@ -149,7 +149,7 @@ public abstract class AbstractAdherenceFeedbackCalculationHandler
   }
 
   private AdherenceIntermediateResult getAdherenceForBenchmark(
-      Concept questionConcept, Person actor, Patient patient) {
+      Concept questionConcept, Patient patient, Person actor) {
     final int benchmarkPeriod =
         parseInt(Context.getAdministrationService().getGlobalProperty(BENCHMARK_PERIOD_KEY));
     final ZonedDateTime benchmarkPeriodEnd = DateUtil.now().minus(1, WEEKS);

@@ -7,5 +7,5 @@ import org.openmrs.module.messages.api.model.AdherenceFeedback;
 public interface AdherenceFeedbackCalculationHandler {
   String getServiceName();
 
-  AdherenceFeedback getAdherenceFeedback(Person actor, Patient patient);
+  AdherenceFeedback getAdherenceFeedback(Patient patient, Person actor);
 }
