@@ -203,6 +203,14 @@
             <ref bean="transactionAttributeSource"/>
         </property>
     </bean>
+    <bean parent="serviceContext">
+        <property name="moduleService">
+            <list merge="true">
+                <value>org.openmrs.module.messages.api.service.MessagingService</value>
+                <ref local="messages.messagingService"/>
+            </list>
+        </property>
+    </bean>
 
 
     <bean id="messages.defaultPatientTemplateService"
@@ -581,17 +589,21 @@
     </bean>
 
     <bean id="messages.healthTipService" class="org.openmrs.module.messages.api.service.impl.HealthTipServiceImpl">
-        <property name="patientTemplateService">
-            <ref local="messages.patientTemplateService"/>
-        </property>
         <property name="conceptService" ref="conceptService"/>
-        <property name="messagingService">
-            <ref local="messages.messagingService"/>
+    </bean>
+    <bean parent="serviceContext">
+        <property name="moduleService">
+            <list merge="true">
+                <value>org.openmrs.module.messages.api.service.HealthTipService</value>
+                <ref local="messages.healthTipService"/>
+            </list>
         </property>
     </bean>
 
-    <bean id="messages.templateFieldValueDao"
-          class="org.openmrs.module.messages.api.dao.impl.TemplateFieldValueDaoImpl">
+    <bean id="messages.templateFieldValueDao" class="org.openmrs.module.messages.api.dao.impl.TemplateFieldValueDaoImpl">
+        <property name="dbSessionFactory">
+            <ref bean="dbSessionFactory"/>
+        </property>
     </bean>
 
     <bean id="messages.templateFieldValueServiceImpl"
@@ -673,4 +685,21 @@
           class="org.openmrs.module.messages.bundle.ITRConceptAttributeTypesBundle"/>
 
     <bean id="countryPropertyValidator" class="org.openmrs.module.messages.validator.CountryPropertyValidator" />
+
+    <bean id="messages.templateFieldValueService" class="org.openmrs.module.messages.api.service.impl.TemplateFieldValueServiceImpl">
+        <property name="patientTemplateService">
+            <ref local="messages.patientTemplateService"/>
+        </property>
+        <property name="templateFieldValueDao">
+            <ref local="messages.templateFieldValueDao"/>
+        </property>
+    </bean>
+    <bean parent="serviceContext">
+        <property name="moduleService">
+            <list merge="true">
+                <value>org.openmrs.module.messages.api.service.TemplateFieldValueService</value>
+                <ref local="messages.templateFieldValueService"/>
+            </list>
+        </property>
+    </bean>
 </beans>
