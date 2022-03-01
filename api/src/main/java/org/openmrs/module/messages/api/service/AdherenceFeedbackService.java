@@ -11,5 +11,5 @@ import java.util.Map;
  *     scripts.
  */
 public interface AdherenceFeedbackService {
-  Map<String, AdherenceFeedback> getAdherenceFeedback(Integer actorId, Integer patientId);
+  Map<String, AdherenceFeedback> getAdherenceFeedback(Integer patientId, Integer actorId);
 }
