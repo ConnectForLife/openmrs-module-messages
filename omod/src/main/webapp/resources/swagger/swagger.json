@@ -20,6 +20,8 @@
     "name" : "REST API for managing scheduled messaging services"
   }, {
     "name" : "REST API for managing template resources"
+  }, {
+    "name" : "REST API for message trigger actions"
   } ],
   "paths" : {
     "/messages" : {
@@ -702,6 +704,38 @@
           },
           "500" : {
             "description" : "Template with Id not updated"
+          }
+        }
+      }
+    },
+    "/messages/triggerMessage/{personUuid}/{templateNames}/{channelType}" : {
+      "post" : {
+        "tags" : [ "REST API for message trigger actions" ],
+        "summary" : "None",
+        "description" : "Triggers sending of an instant message. Creates required message entities.",
+        "operationId" : "triggerSendMessage",
+        "parameters" : [ {
+          "name" : "personUuid",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "templateNames",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "channelType",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Message has been triggered"
+          },
+          "500" : {
+            "description" : "Failed to trigger message"
           }
         }
       }
