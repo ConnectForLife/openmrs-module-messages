@@ -172,9 +172,24 @@
             source_id="300"
             uuid="07bf387f-9877-11ec-9b8e-0242ac120062"/>
 
-    <!-- Benchmark week 2022-02-14 - 2022-02-20 -->
+    <!-- Invalid record -->
     <messages_actor_response
             messages_actor_response_id="406"
+            patient_id="100"
+            actor_id="100"
+            answered_time="2022-02-27 11:00:00.0"
+            question="200"
+            text_response="123"
+            source_type="SCHEDULED_SERVICE_GROUP"
+            creator="1"
+            date_created="2022-02-28 10:00:00.0"
+            voided="false"
+            source_id="300"
+            uuid="07bf387f-9877-11ec-9b8e-0242ac120063"/>
+
+    <!-- Benchmark week 2022-02-14 - 2022-02-20 -->
+    <messages_actor_response
+            messages_actor_response_id="407"
             patient_id="100"
             actor_id="100"
             answered_time="2022-02-14 11:00:00.0"
@@ -185,9 +200,9 @@
             date_created="2022-02-28 10:00:00.0"
             voided="false"
             source_id="300"
-            uuid="07bf387f-9877-11ec-9b8e-0242ac120063"/>
+            uuid="07bf387f-9877-11ec-9b8e-0242ac120064"/>
     <messages_actor_response
-            messages_actor_response_id="407"
+            messages_actor_response_id="408"
             patient_id="100"
             actor_id="100"
             answered_time="2022-02-15 11:00:00.0"
@@ -198,5 +213,5 @@
             date_created="2022-02-28 10:00:00.0"
             voided="false"
             source_id="300"
-            uuid="07bf387f-9877-11ec-9b8e-0242ac120064"/>
+            uuid="07bf387f-9877-11ec-9b8e-0242ac120065"/>
 </dataset>
