@@ -8,7 +8,6 @@ import org.openmrs.module.messages.ContextSensitiveTest;
 import org.openmrs.module.messages.api.dao.ActorResponseDao;
 import org.openmrs.module.messages.api.model.AdherenceFeedback;
 import org.openmrs.module.messages.api.util.DateUtil;
-import org.openmrs.module.messages.handler.impl.DailyBasedFeedbackCalculationHandlerImpl;
 import org.openmrs.module.messages.handler.impl.WeeklyBasedFeedbackCalculationHandlerImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -47,6 +46,7 @@ public class WeeklyBasedFeedbackCalculationHandlerImplITTest extends ContextSens
     assertNotNull(weeklyFeedback);
     assertEquals("Adherence report weekly", weeklyFeedback.getServiceName());
     assertEquals(71, weeklyFeedback.getCurrentAdherence());
+    assertEquals(57, weeklyFeedback.getBenchmarkAdherence());
     assertEquals(7, weeklyFeedback.getNumberOfDays());
     assertEquals(5, weeklyFeedback.getNumberOfDaysWithPositiveAnswer());
     assertEquals("rising", weeklyFeedback.getAdherenceTrend());

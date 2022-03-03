@@ -67,7 +67,7 @@
              creator="1"
              date_created="2022-02-28 10:00:00.0"
              retired="false"
-             uuid="e387f386-15fd-4ddd-8460-effa47cd4a11" />
+             uuid="e1b9b42d-5901-4f34-b1c7-af53e238cba2" />
 
     <!-- For test convenience there is one ScheduledServiceGroup -->
     <messages_scheduled_service_group
@@ -106,6 +106,21 @@
             voided="false"
             source_id="300"
             uuid="07bf387f-9877-11ec-9b8e-0242ac120057"/>
+
+    <!-- Invalid record -->
+    <messages_actor_response
+            messages_actor_response_id="401"
+            patient_id="100"
+            actor_id="100"
+            answered_time="2022-02-26 11:00:00.0"
+            question="200"
+            text_response="Some text"
+            source_type="SCHEDULED_SERVICE_GROUP"
+            creator="1"
+            date_created="2022-02-28 10:00:00.0"
+            voided="false"
+            source_id="300"
+            uuid="07bf387f-9877-11ec-9b8e-0242ac120058"/>
 
     <!-- Benchmark week 2022-02-14 - 2022-02-20 -->
     <messages_actor_response

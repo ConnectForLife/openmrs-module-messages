@@ -47,6 +47,7 @@ public class DailyBasedFeedbackCalculationHandlerImplITTest extends ContextSensi
     assertNotNull(dailyFeedback);
     assertEquals("Adherence report daily", dailyFeedback.getServiceName());
     assertEquals(67, dailyFeedback.getCurrentAdherence());
+    assertEquals(100, dailyFeedback.getBenchmarkAdherence());
     assertEquals(6, dailyFeedback.getNumberOfDays());
     assertEquals(4, dailyFeedback.getNumberOfDaysWithPositiveAnswer());
     assertEquals("falling", dailyFeedback.getAdherenceTrend());
