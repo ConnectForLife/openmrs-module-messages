@@ -23,7 +23,9 @@ import org.openmrs.module.messages.domain.criteria.TemplateCriteria;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -187,10 +189,11 @@ public class HealthTipServiceImpl implements HealthTipService {
 
   private List<ConceptSet> getHealthTipIdsInCorrectOrder(
       List<ConceptSet> allHealthTipSets, List<String> healthTipCategories) {
+    Map<String, Concept> htCategoriesMap = buildHTCategoriesMap(healthTipCategories);
     List<ConceptSet> resultConceptSets = new ArrayList<>();
     int index = 0;
     while (CollectionUtils.isNotEmpty(allHealthTipSets)) {
-      Concept healthTipCategory = conceptService.getConceptByName(healthTipCategories.get(index));
+      Concept healthTipCategory = htCategoriesMap.get(healthTipCategories.get(index));
       Optional<ConceptSet> foundHealthTipSet =
           allHealthTipSets.stream()
               .filter(htSet -> htSet.getConceptSet().equals(healthTipCategory))
@@ -208,5 +211,13 @@ public class HealthTipServiceImpl implements HealthTipService {
     }
 
     return resultConceptSets;
+  }
+
+  private Map<String, Concept> buildHTCategoriesMap(List<String> healthTipCategories) {
+    Map<String, Concept> htCategoriesMap = new HashMap<>();
+    healthTipCategories.forEach(
+        htCategory -> htCategoriesMap.put(htCategory, conceptService.getConceptByName(htCategory)));
+
+    return htCategoriesMap;
   }
 }
