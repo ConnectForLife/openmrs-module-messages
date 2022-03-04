@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.apache.commons.lang.StringUtils;
+import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.PersonAttribute;
@@ -48,6 +49,10 @@ public class TriggerMessageController extends BaseRestController {
   private static final Logger LOGGER = LoggerFactory.getLogger(TriggerMessageController.class);
 
   private static final String VISIT_REMINDER_TEMPLATE_NAME = "Visit reminder";
+
+  private static final String DEFAULT_INITIAL_VISIT_STATUS = "SCHEDULED";
+
+  private static final String VISIT_STATUSES_GP_KEY = "visits.visit-statuses";
 
   @Autowired private MessagingGroupService messagingGroupService;
 
@@ -147,12 +152,14 @@ public class TriggerMessageController extends BaseRestController {
   }
 
   private Visit createVisit(Patient patient, String templateName) {
+    String[] visitParams = StringUtils.substringBetween(templateName, "(", ")").split("-");
+
     Visit visit = new Visit();
     visit.setPatient(patient);
     visit.setStartDatetime(DateUtil.addDaysToDate(now(), 1));
-    visit.setLocation(Context.getLocationService().getDefaultLocation());
-    visit.setVisitType(findVisitTypeByName(StringUtils.substringBetween(templateName, "(", ")")));
-    setVisitAttributes(visit);
+    visit.setVisitType(findVisitTypeByName(visitParams[0]));
+    visit.setLocation(getLocationByName(visitParams[2]));
+    setVisitAttributes(visit, visitParams);
 
     return visit;
   }
@@ -172,9 +179,9 @@ public class TriggerMessageController extends BaseRestController {
     return visitType;
   }
 
-  private void setVisitAttributes(Visit visit) {
-    visit.setAttribute(createAttribute("Visit Status", "SCHEDULED"));
-    visit.setAttribute(createAttribute("Visit Time", "Morning"));
+  private void setVisitAttributes(Visit visit, String[] visitParams) {
+    visit.setAttribute(createAttribute("Visit Status", getInitialVisitStatus()));
+    visit.setAttribute(createAttribute("Visit Time", visitParams[1]));
   }
 
   private VisitAttribute createAttribute(String attributeTypeName, String value) {
@@ -183,6 +190,16 @@ public class TriggerMessageController extends BaseRestController {
     visitAttribute.setValueReferenceInternal(value);
 
     return visitAttribute;
+  }
+
+  private String getInitialVisitStatus() {
+    String visitStatus =
+        Context.getAdministrationService().getGlobalProperty(VISIT_STATUSES_GP_KEY);
+    if (StringUtils.isNotBlank(visitStatus)) {
+      return visitStatus.split(",")[0];
+    }
+
+    return DEFAULT_INITIAL_VISIT_STATUS;
   }
 
   private VisitAttributeType findVisitAttributeTypeByName(String name) {
@@ -198,6 +215,15 @@ public class TriggerMessageController extends BaseRestController {
     }
 
     return visitAttributeType;
+  }
+
+  private Location getLocationByName(String name) {
+    Optional<Location> location =
+        Context.getLocationService().getAllLocations(false).stream()
+            .filter(loc -> StringUtils.equalsIgnoreCase(name, loc.getName()))
+            .findFirst();
+
+    return location.orElse(null);
   }
 
   private Date now() {
