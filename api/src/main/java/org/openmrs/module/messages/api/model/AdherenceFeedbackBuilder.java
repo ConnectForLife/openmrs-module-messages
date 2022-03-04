@@ -13,19 +13,27 @@ public class AdherenceFeedbackBuilder {
 
   private String serviceName;
   private int currentAdherence;
+  private int benchmarkAdherence;
   private int numberOfDays;
   private int numberOfDaysWithPositiveAnswer;
   private String adherenceTrend;
   private String adherenceLevel;
 
+  public static AdherenceFeedback createFailed(String serviceName, String errorText) {
+    return new CommonAdherenceFeedback(serviceName, 0, 0, 0, 0, "", "", true, errorText);
+  }
+
   public AdherenceFeedback build() {
     return new CommonAdherenceFeedback(
         serviceName,
         currentAdherence,
+        benchmarkAdherence,
         numberOfDays,
         numberOfDaysWithPositiveAnswer,
         adherenceTrend,
-        adherenceLevel);
+        adherenceLevel,
+        false,
+        null);
   }
 
   public AdherenceFeedbackBuilder withServiceName(String serviceName) {
@@ -35,6 +43,11 @@ public class AdherenceFeedbackBuilder {
 
   public AdherenceFeedbackBuilder withCurrentAdherence(int currentAdherence) {
     this.currentAdherence = currentAdherence;
+    return this;
+  }
+
+  public AdherenceFeedbackBuilder withBenchmarkAdherence(int benchmarkAdherence) {
+    this.benchmarkAdherence = benchmarkAdherence;
     return this;
   }
 

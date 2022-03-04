@@ -16,6 +16,9 @@ public interface AdherenceFeedback {
   /** @return the current adherence in percents. */
   int getCurrentAdherence();
 
+  /** @return the benchmark adherence in percents. */
+  int getBenchmarkAdherence();
+
   /** @return the number of days that there was a data provided. */
   int getNumberOfDays();
 
@@ -36,4 +39,10 @@ public interface AdherenceFeedback {
    * @return the calculated Adherence Level
    */
   String getAdherenceLevel();
+
+  /** @return true if the calculation failed, false otherwise */
+  boolean isCalculationFailed();
+
+  /** @return an error message only if isCalculationFailed is true, null otherwise */
+  String getErrorText();
 }

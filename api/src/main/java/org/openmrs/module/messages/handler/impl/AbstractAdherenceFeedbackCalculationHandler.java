@@ -34,11 +34,6 @@ import static org.openmrs.module.messages.api.model.AdherenceFeedbackBuilder.ADH
 public abstract class AbstractAdherenceFeedbackCalculationHandler
     implements AdherenceFeedbackCalculationHandler {
 
-  private static final String ADHERENCE_QUESTION_CONCEPT_UUID =
-      "e387f386-15fd-4ddd-8460-effa47cd4a11";
-
-  static final String POSITIVE_ANSWER_TEXT = "YES";
-
   private final Supplier<ResponseStatistics> responseStatisticsSupplier;
   private final String serviceName;
   private final ActorResponseDao actorResponseDao;
@@ -59,6 +54,16 @@ public abstract class AbstractAdherenceFeedbackCalculationHandler
 
   @Override
   public AdherenceFeedback getAdherenceFeedback(Patient patient, Person actor) {
+    try {
+      return calculateAdherenceFeedback(patient, actor);
+    } catch (Exception e) {
+      return AdherenceFeedbackBuilder.createFailed(serviceName, e.toString());
+    }
+  }
+
+  protected abstract String getAdherenceFeedbackQuestionUuid();
+
+  private AdherenceFeedback calculateAdherenceFeedback(Patient patient, Person actor) {
     final ActorIntermediateAdherence actorIntermediateAdherence =
         getActorIntermediateAdherence(patient, actor);
 
@@ -68,6 +73,7 @@ public abstract class AbstractAdherenceFeedbackCalculationHandler
         .withNumberOfDaysWithPositiveAnswer(
             actorIntermediateAdherence.currentAdherence.positiveAnswers)
         .withCurrentAdherence(actorIntermediateAdherence.currentAdherence.adherence)
+        .withBenchmarkAdherence(actorIntermediateAdherence.benchmarkAdherence.adherence)
         .withAdherenceTrend(
             calculateTrend(
                 actorIntermediateAdherence.benchmarkAdherence.adherence,
@@ -85,12 +91,13 @@ public abstract class AbstractAdherenceFeedbackCalculationHandler
   }
 
   private Concept getQuestionConcept() {
+    final String adherenceFeedbackQuestionUuid = getAdherenceFeedbackQuestionUuid();
     final Concept questionConcept =
-        Context.getConceptService().getConceptByUuid(ADHERENCE_QUESTION_CONCEPT_UUID);
+        Context.getConceptService().getConceptByUuid(adherenceFeedbackQuestionUuid);
 
     if (questionConcept == null) {
       throw new IllegalStateException(
-          "Could not find Adherence Question Concept, UUID: " + ADHERENCE_QUESTION_CONCEPT_UUID);
+          "Could not find Adherence Question Concept, UUID: " + adherenceFeedbackQuestionUuid);
     }
 
     return questionConcept;
@@ -139,7 +146,6 @@ public abstract class AbstractAdherenceFeedbackCalculationHandler
             new LastResponseCriteria()
                 .setActorId(actor.getId())
                 .setPatientId(patient.getPatientId())
-                .setServiceType(serviceName)
                 .setAnsweredTimeFrom(currentAdherenceStart)
                 .setConceptQuestionId(questionConcept.getId()),
             null);
@@ -160,7 +166,6 @@ public abstract class AbstractAdherenceFeedbackCalculationHandler
             new LastResponseCriteria()
                 .setActorId(actor.getId())
                 .setPatientId(patient.getPatientId())
-                .setServiceType(serviceName)
                 .setAnsweredTimeFrom(benchmarkPeriodStart)
                 .setAnsweredTimeTo(benchmarkPeriodEnd)
                 .setConceptQuestionId(questionConcept.getId()),
