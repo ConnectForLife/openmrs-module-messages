@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.openmrs.module</groupId>
 		<artifactId>messages</artifactId>
-		<version>1.5.1-SNAPSHOT</version>
+		<version>1.5.1</version>
 	</parent>
 
 	<artifactId>messages-omod</artifactId>
@@ -15,12 +15,12 @@
         <dependency>
             <groupId>org.openmrs.module</groupId>
             <artifactId>messages-api</artifactId>
-            <version>1.5.1-SNAPSHOT</version>
+            <version>1.5.1</version>
         </dependency>
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>messages-api</artifactId>
-			<version>1.5.1-SNAPSHOT</version>
+			<version>1.5.1</version>
 			<classifier>tests</classifier>
 			<scope>test</scope>
 		</dependency>
