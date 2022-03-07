@@ -56,7 +56,7 @@ var getConfig = function () {
 var config = getConfig();
 
 var resolveBrowserSyncTarget = function () {
-	if (targetPort != null && targetPort != 'null') {
+	if (targetPort != null && targetPort !== 'null') {
 		return config.APP_ENTRY_POINT.substr(0, 'http://localhost:'.length)
 			+ targetPort
 			+ config.APP_ENTRY_POINT.substr('http://localhost:'.length + targetPort.toString().length, config.APP_ENTRY_POINT.length);
@@ -111,7 +111,7 @@ if (env === "production") {
 		new WebpackOnBuildPlugin(function (stats) {
 			//create zip file
 			var archiver = require("archiver");
-			var output = fs.createWriteStream(THIS_APP_ID + ".zip");
+			var output = fs.createWriteStream(THIS_APP_ID + ".owa");
 			var archive = archiver("zip");
 
 			output.on("close", function () {
@@ -136,7 +136,7 @@ if (env === "deploy") {
 	outputFile = `${outputFile}.js`;
 	vendorOutputFile = "vendor.bundle.js";
 	outputPath = `${config.LOCAL_OWA_FOLDER}${
-		config.LOCAL_OWA_FOLDER.slice(-1) != "/" ? "/" : ""
+		config.LOCAL_OWA_FOLDER.slice(-1) !== "/" ? "/" : ""
 		}${THIS_APP_ID}`;
 	devtool = "source-map";
 }
@@ -213,13 +213,12 @@ var webpackConfig = {
 			"regenerator-runtime"
 		]
 	},
-	devtool: devtool,
 	target,
+	devtool: devtool,
 	output: {
 		path: outputPath,
 		filename: "[name]" + outputFile
 	},
-	target: "web",
 	module: {
 		rules
 	},
@@ -229,7 +228,6 @@ var webpackConfig = {
 	},
 	plugins,
 	externals: nodeModules,
-	devtool: "source-map",
 	optimization: {
 	  splitChunks: {
 		minSize: 10000,
