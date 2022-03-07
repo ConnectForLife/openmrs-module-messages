@@ -93,7 +93,6 @@
     "copy-webpack-plugin": "^5.0.5",
     "cross-env": "^7.0.3",
     "css-loader": "3.2.0",
-    "cypress": "^3.6.1",
     "eslint": "^6.6.0",
     "eslint-config-airbnb": "^18.0.1",
     "eslint-plugin-import": "^2.18.2",
@@ -139,10 +138,7 @@
     "watch": "cross-env NODE_ENV=\"deploy\" webpack --mode=development --progress --colors --watch --cache=false",
     "test": "npm run lint && jest -u --coverage --maxWorkers=4",
     "lint": "./node_modules/.bin/eslint app/js/**",
-    "lint:fix": "./node_modules/.bin/eslint --fix  app/js/**",
-    "cypress:open": "./node_modules/.bin/cypress open",
-    "cy:run": "./node_modules/.bin/cypress run",
-    "test-cypress": "start-server-and-test start http://localhost:3000/ cy:run"
+    "lint:fix": "./node_modules/.bin/eslint --fix  app/js/**"
   },
   "keywords": [
     "OpenMRS",
