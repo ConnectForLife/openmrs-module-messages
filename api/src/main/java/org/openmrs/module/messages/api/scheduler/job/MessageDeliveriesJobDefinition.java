@@ -85,7 +85,7 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
     PERFORMANCE_LOGGER.info(
         MessageFormat.format(
             "All MessageDeliveriesJobDefinition.scheduleTaskForActivePerson took {0}ms",
-            executeStopwatch.restart().toMillis()));
+            executeStopwatch.stop().toMillis()));
   }
 
   @Override
