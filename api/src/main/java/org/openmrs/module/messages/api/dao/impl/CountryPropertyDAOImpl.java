@@ -33,7 +33,7 @@ public class CountryPropertyDAOImpl extends HibernateOpenmrsMetadataDAO<CountryP
         this.sessionFactory.getCurrentSession().createCriteria(CountryProperty.class);
 
     if (!includeRetired) {
-      criteria.add(Restrictions.eq(CountryProperty.RETIRED, false));
+      criteria.add(Restrictions.eq(CountryProperty.RETIRED, Boolean.FALSE));
     }
 
     criteria.add(Restrictions.like(CountryProperty.NAME, namePrefix, MatchMode.START));
@@ -60,7 +60,7 @@ public class CountryPropertyDAOImpl extends HibernateOpenmrsMetadataDAO<CountryP
         sessionFactory
             .getCurrentSession()
             .createCriteria(CountryProperty.class)
-            .add(Restrictions.eq(CountryProperty.RETIRED, false))
+            .add(Restrictions.eq(CountryProperty.RETIRED, Boolean.FALSE))
             .add(getCountryFieldEqExpression(country))
             .add(Restrictions.eq(CountryProperty.NAME, name));
     return (CountryProperty) criteria.uniqueResult();
@@ -80,7 +80,7 @@ public class CountryPropertyDAOImpl extends HibernateOpenmrsMetadataDAO<CountryP
     countCriteria.setProjection(Projections.rowCount());
 
     if (!includeRetired) {
-      countCriteria.add(Restrictions.eq(CountryProperty.RETIRED, false));
+      countCriteria.add(Restrictions.eq(CountryProperty.RETIRED, Boolean.FALSE));
     }
 
     return countCriteria;

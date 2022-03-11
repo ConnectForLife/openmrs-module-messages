@@ -138,7 +138,7 @@ public class ServiceResult implements Serializable, DTO {
 
       if (resultServices.containsKey(key)) {
         if (result.getServiceStatus() != null
-            && !ServiceStatus.FUTURE.equals(result.getServiceStatus())) {
+            && !(ServiceStatus.FUTURE == result.getServiceStatus())) {
           resultServices.put(key, result);
         }
       } else {

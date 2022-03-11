@@ -52,6 +52,6 @@ public class CountryPropertySearchHandler implements SearchHandler {
         Context.getService(CountryPropertyService.class).getCountryProperty(countryConcept, name);
 
     return new AlreadyPaged<>(
-        requestContext, countryProperty.map(Collections::singletonList).orElse(emptyList()), false);
+        requestContext, countryProperty.map(Collections::singletonList).orElseGet(Collections::emptyList), false);
   }
 }
