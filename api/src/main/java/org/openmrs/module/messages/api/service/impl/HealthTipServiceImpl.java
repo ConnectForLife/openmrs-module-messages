@@ -19,6 +19,7 @@ import org.openmrs.module.messages.api.service.TemplateFieldValueService;
 import org.openmrs.module.messages.api.service.TemplateService;
 import org.openmrs.module.messages.domain.criteria.PatientTemplateCriteria;
 import org.openmrs.module.messages.domain.criteria.TemplateCriteria;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,6 +46,7 @@ public class HealthTipServiceImpl implements HealthTipService {
   private ConceptService conceptService;
 
   @Override
+  @Transactional(readOnly = true)
   public Concept getNextHealthTipToPlay(Integer patientId, Integer actorId, String category) {
     requireNonNull(patientId, "The getNextHealthTipToPlay.patientId must not be null!");
     requireNonNull(patientId, "The getNextHealthTipToPlay.actorId must not be null!");
