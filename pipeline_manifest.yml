@@ -122,6 +122,7 @@ environments:
       enabled: true
       shortLivedAnalysis: false
       longLivedAnalysis: true
+      destinationBranch: development
     package:
       enabled: true
     publish:
