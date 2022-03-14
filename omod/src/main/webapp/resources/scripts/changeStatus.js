@@ -1,4 +1,7 @@
-var changeStatus = changeStatus || {};
+changeStatus = changeStatus || {};
+emr = emr || {};
+jq = jq || {};
+OPENMRS_CONTEXT_PATH = OPENMRS_CONTEXT_PATH || '/openmrs';
 
 changeStatus.updatePersonStatusDialog = null;
 
@@ -9,7 +12,7 @@ changeStatus.handelChangedStatus = function(selectObject) {
     } else {
         jq('.person-status-reason').hide();
     }
-}
+};
 
 changeStatus.createPersonStatusUpdateDialog = function() {
     changeStatus.updatePersonStatusDialog = emr.setupConfirmationDialog({

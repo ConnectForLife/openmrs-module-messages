@@ -1,3 +1,5 @@
+jq = jq || {};
+
 function escapeSpaces(index) {
   var result = index;
   if (typeof index === 'string') {

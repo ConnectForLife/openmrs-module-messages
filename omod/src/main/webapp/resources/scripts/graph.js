@@ -1,4 +1,7 @@
-var responseGraph = responseGraph || {};
+responseGraph = responseGraph || {};
+jq = jq || {};
+OPENMRS_CONTEXT_PATH = OPENMRS_CONTEXT_PATH || '/openmrs';
+groupBarChart = groupBarChart || function(c) {};
 
 responseGraph.load = function(mainDiv, config) {
 
