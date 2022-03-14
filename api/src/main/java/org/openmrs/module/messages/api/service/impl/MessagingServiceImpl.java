@@ -424,7 +424,7 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
   }
 
   private void checkIfStatusIsNotPendingOrFuture(ServiceStatus status) {
-    if (ServiceStatus.PENDING.equals(status) || ServiceStatus.FUTURE.equals(status)) {
+    if (ServiceStatus.PENDING == status || ServiceStatus.FUTURE == status) {
       throw new IllegalArgumentException(
           String.format("%s status cannot be registered", status.name()));
     }

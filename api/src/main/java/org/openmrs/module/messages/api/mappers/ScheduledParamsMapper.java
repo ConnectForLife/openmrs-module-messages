@@ -32,7 +32,7 @@ public class ScheduledParamsMapper implements ListMapper<ServiceResult, Schedule
 
     @Override
     public List<ScheduledServiceParameter> fromDto(ServiceResult dao) {
-        List<ScheduledServiceParameter> result = new ArrayList<>();
+        List<ScheduledServiceParameter> result = new ArrayList<>(dao.getAdditionalParams().size());
 
         for (String key : dao.getAdditionalParams().keySet()) {
             Object value = dao.getAdditionalParams().get(key);

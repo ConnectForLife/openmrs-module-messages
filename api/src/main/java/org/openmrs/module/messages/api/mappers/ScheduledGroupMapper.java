@@ -44,7 +44,7 @@ public class ScheduledGroupMapper extends AbstractOpenMrsDataMapper<GroupedServi
     }
 
     private List<ScheduledService> getScheduledServices(List<GroupedServiceResult> serviceResults) {
-        final List<ScheduledService> result = new ArrayList<ScheduledService>();
+        final List<ScheduledService> result = new ArrayList<>(serviceResults.size());
 
         for (GroupedServiceResult groupedServiceResult : serviceResults) {
             final ScheduledService scheduledService = serviceMapper.fromDto(groupedServiceResult.getServiceResult());

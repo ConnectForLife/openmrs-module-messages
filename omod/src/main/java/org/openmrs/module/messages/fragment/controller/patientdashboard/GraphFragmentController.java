@@ -91,7 +91,7 @@ public class GraphFragmentController {
     }
 
     private List<GraphResultDTO> handleWhenGroupByAliasIsBlank(Map<String, Object> map) {
-        List<GraphResultDTO> graphResultDTOList = new ArrayList<>();
+        List<GraphResultDTO> graphResultDTOList = new ArrayList<>(map.size());
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             graphResultDTOList.add(new GraphResultDTO()
                     .setAlias(entry.getKey())

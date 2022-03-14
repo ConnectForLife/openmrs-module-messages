@@ -22,8 +22,8 @@ public class MessagesEventServiceImpl extends BaseOpenmrsService implements Mess
     private EventMessage convertParamsToEventMessage(Map<String, Object> params) {
         EventMessage eventMessage = new EventMessage();
 
-        for (String key : params.keySet()) {
-            eventMessage.put(key, (Serializable) params.get(key));
+        for (Map.Entry<String, Object> param : params.entrySet()) {
+            eventMessage.put(param.getKey(), (Serializable) param.getValue());
         }
 
         return eventMessage;

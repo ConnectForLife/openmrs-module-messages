@@ -42,7 +42,7 @@ public final class ServiceResultGroupHelper {
     }
 
     private static List<ServiceResultList> filterOnlyFuture(List<ServiceResultList> input) {
-        List<ServiceResultList> result = new ArrayList<ServiceResultList>();
+        List<ServiceResultList> result = new ArrayList<>(input.size());
 
         for (ServiceResultList srl : input) {
             result.add(ServiceResultList.withEmptyResults(srl).withResults(filterOnlyFutureResults(srl.getResults())));
@@ -54,7 +54,7 @@ public final class ServiceResultGroupHelper {
     private static List<ServiceResult> filterOnlyFutureResults(List<ServiceResult> serviceResults) {
         List<ServiceResult> result = new ArrayList<ServiceResult>();
         for (ServiceResult sr : serviceResults) {
-            if (ServiceStatus.FUTURE.equals(sr.getServiceStatus())) {
+            if (ServiceStatus.FUTURE == sr.getServiceStatus()) {
                 result.add(sr);
             }
         }

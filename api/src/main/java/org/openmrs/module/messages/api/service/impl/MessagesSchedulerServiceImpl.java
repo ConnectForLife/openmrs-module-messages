@@ -243,12 +243,12 @@ public class MessagesSchedulerServiceImpl extends BaseOpenmrsDataService<Schedul
     }
 
     private void startTaskDefinition(TaskDefinition taskDefinition) {
-        taskDefinition.setStarted(true);
+        taskDefinition.setStarted(Boolean.TRUE);
         schedulerService.saveTaskDefinition(taskDefinition);
     }
 
     private void stopTaskDefinition(TaskDefinition taskDefinition) {
-        taskDefinition.setStarted(false);
+        taskDefinition.setStarted(Boolean.FALSE);
         schedulerService.saveTaskDefinition(taskDefinition);
     }
 

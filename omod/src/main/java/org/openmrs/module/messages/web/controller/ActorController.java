@@ -100,7 +100,7 @@ public class ActorController extends BaseRestController {
             @ApiParam(name = "isPatient", value = "isPatient", defaultValue = "true")
             @RequestParam(value = "isPatient", defaultValue = "true") boolean isPatient) {
         validateId(personId);
-        Person person = personService.getPerson(Integer.parseInt(personId));
+        Person person = personService.getPerson(Integer.valueOf(personId));
         if (person == null) {
             throw new ValidationException(String.format("Person with %s id doesn't exist.", personId));
         }
@@ -142,7 +142,7 @@ public class ActorController extends BaseRestController {
         @ApiParam(name = "personId", value = "personId", required = true)
         @PathVariable String personId) {
         validateId(personId);
-        return actorService.getContactTime(Integer.parseInt(personId));
+        return actorService.getContactTime(Integer.valueOf(personId));
     }
 
     /**

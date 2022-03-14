@@ -35,7 +35,8 @@ public class PersonAddressCondition extends BaseJoinHibernateCondition {
 
         final Criterion joinOnClause =
                 and(new EntityFieldExpression(getAlias() + "." + addressPropertyName, getOperator(), value),
-                        eq(getAlias() + VOIDED_FIELD_SUFFIX, false), eq(getAlias() + PREFERRED_FIELD_SUFFIX, true));
+                        eq(getAlias() + VOIDED_FIELD_SUFFIX, Boolean.FALSE), eq(getAlias() + PREFERRED_FIELD_SUFFIX,
+                        Boolean.TRUE));
         conditionQuery.add(joinOnClause);
 
         hibernateCriteria.add(Property.forName(ID_PROP).in(conditionQuery));

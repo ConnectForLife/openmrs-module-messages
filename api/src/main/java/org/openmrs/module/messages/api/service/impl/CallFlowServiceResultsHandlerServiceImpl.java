@@ -84,7 +84,7 @@ public class CallFlowServiceResultsHandlerServiceImpl extends AbstractServiceRes
     }
 
     private List<Message> getMessages(List<ScheduledService> callServices) {
-        List<Message> messages = new ArrayList<>();
+        List<Message> messages = new ArrayList<>(callServices.size());
         for (ScheduledService service : callServices) {
             String serviceName = service.getPatientTemplate().getTemplate().getName();
             messages.add(new Message(serviceName, service.getId(), service.getParameters()));
@@ -93,7 +93,7 @@ public class CallFlowServiceResultsHandlerServiceImpl extends AbstractServiceRes
     }
 
     private List<Map<String, Object>> toPrimitivesList(List<Message> messages) {
-        List<Map<String, Object>> result = new ArrayList<>();
+        List<Map<String, Object>> result = new ArrayList<>(messages.size());
         for (Message message : messages) {
             result.add(message.toPrimitivesMap());
         }

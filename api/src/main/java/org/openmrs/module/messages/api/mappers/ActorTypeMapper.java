@@ -19,7 +19,7 @@ import java.util.List;
 public class ActorTypeMapper {
 
     public List<ActorTypeDTO> toDtos(List<ActorType> daos) {
-        List<ActorTypeDTO> dtos = new ArrayList<ActorTypeDTO>();
+        List<ActorTypeDTO> dtos = new ArrayList<>(daos.size());
         for (ActorType dao : daos) {
             dtos.add(toDto(dao));
         }

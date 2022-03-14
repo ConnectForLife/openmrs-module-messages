@@ -9,6 +9,6 @@ public abstract class BaseOpenmrsDataCriteria extends BaseCriteria {
 
     @Override
     public void initHibernateCriteria(Criteria hibernateCriteria) {
-        hibernateCriteria.add(Restrictions.eq("voided", false));
+        hibernateCriteria.add(Restrictions.eq("voided", Boolean.FALSE));
     }
 }

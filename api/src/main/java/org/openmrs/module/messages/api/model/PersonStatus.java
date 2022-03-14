@@ -21,6 +21,6 @@ public enum PersonStatus {
     }
 
     public static boolean isActive(Person person) {
-        return ACTIVATED.equals(getPersonStatus(person));
+        return ACTIVATED == getPersonStatus(person);
     }
 }

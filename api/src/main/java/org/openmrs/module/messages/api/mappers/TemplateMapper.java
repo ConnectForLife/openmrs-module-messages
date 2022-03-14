@@ -62,7 +62,7 @@ public class TemplateMapper extends AbstractMapper<TemplateDTO, Template> implem
 
     @Override
     protected void doSafeDelete(Template target) {
-        target.setRetired(true);
+        target.setRetired(Boolean.TRUE);
     }
 
     private void mapTemplateFieldsFromDto(TemplateDTO dto, Template template) {

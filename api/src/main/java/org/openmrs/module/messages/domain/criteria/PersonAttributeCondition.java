@@ -33,7 +33,7 @@ public class PersonAttributeCondition extends BaseJoinHibernateCondition {
 
         final Criterion joinOnClause =
                 and(new EntityFieldExpression(getAlias() + VALUE_FIELD_SUFFIX, getOperator(), valueAsString),
-                        eq(getAlias() + VOIDED_FIELD_SUFFIX, false));
+                        eq(getAlias() + VOIDED_FIELD_SUFFIX, Boolean.FALSE));
         conditionQuery.add(joinOnClause);
 
         hibernateCriteria.add(Property.forName(ID_PROP).in(conditionQuery));

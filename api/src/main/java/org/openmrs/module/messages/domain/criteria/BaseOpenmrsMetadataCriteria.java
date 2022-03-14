@@ -9,6 +9,6 @@ public abstract class BaseOpenmrsMetadataCriteria extends BaseCriteria {
 
     @Override
     public void initHibernateCriteria(Criteria hibernateCriteria) {
-        hibernateCriteria.add(Restrictions.eq("retired", false));
+        hibernateCriteria.add(Restrictions.eq("retired", Boolean.FALSE));
     }
 }

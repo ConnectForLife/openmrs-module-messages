@@ -71,7 +71,7 @@ public abstract class NotificationTemplateServiceImpl extends BaseOpenmrsService
         final GlobalProperty globalProperty = Context.getAdministrationService().getGlobalPropertyObject(globalPropertyName);
         final NotificationTemplate template = notificationTemplateDao.convertToNotificationTemplate(globalProperty);
 
-        final Map<String, String> safeServiceParameters = new HashMap<>();
+        final Map<String, String> safeServiceParameters = new HashMap<>(param.size());
         for (Map.Entry<String, Object> paramEntry : param.entrySet()) {
             safeServiceParameters.put(paramEntry.getKey(), Objects.toString(paramEntry.getValue()));
         }
