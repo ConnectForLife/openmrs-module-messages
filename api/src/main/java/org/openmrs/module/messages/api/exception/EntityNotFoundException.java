@@ -11,7 +11,7 @@ package org.openmrs.module.messages.api.exception;
 
 public class EntityNotFoundException extends MessagesRuntimeException {
 
-    private static final long serialVersionUID = -1434211964543042192L;
+    private static final long serialVersionUID = -865278927515996575L;
 
     public EntityNotFoundException(String message) {
         super(message);

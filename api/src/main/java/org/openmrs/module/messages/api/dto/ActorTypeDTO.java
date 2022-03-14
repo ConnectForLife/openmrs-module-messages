@@ -16,7 +16,7 @@ import org.openmrs.module.messages.api.model.RelationshipTypeDirection;
  */
 public class ActorTypeDTO extends BaseDTO {
 
-    private static final long serialVersionUID = -5236428829247063915L;
+    private static final long serialVersionUID = -6029047922656126583L;
 
     private String uuid;
 

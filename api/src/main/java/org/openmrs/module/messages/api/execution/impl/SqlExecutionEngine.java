@@ -62,7 +62,7 @@ public class SqlExecutionEngine implements ExecutionEngine {
                 ? executionContext.getTemplate().getName()
                 : "<no template set>",
             result.size(),
-            queryStopwatch.restart().toMillis()));
+            queryStopwatch.stop().toMillis()));
 
     return ServiceResultList.createList(
         result, executionContext.getTemplate(), executionContext.getDateRange());

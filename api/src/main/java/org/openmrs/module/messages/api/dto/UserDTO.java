@@ -5,7 +5,7 @@ package org.openmrs.module.messages.api.dto;
  */
 public class UserDTO extends BaseDTO {
 
-    private static final long serialVersionUID = 4206072853290921989L;
+    private static final long serialVersionUID = -341881254828879744L;
 
     private String username;
 

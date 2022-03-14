@@ -5,7 +5,7 @@ package org.openmrs.module.messages.api.execution;
  */
 public class ExecutionException extends Exception {
 
-    private static final long serialVersionUID = -1152215227994789621L;
+    private static final long serialVersionUID = -2018565932697119526L;
 
     public ExecutionException(String message) {
         super(message);

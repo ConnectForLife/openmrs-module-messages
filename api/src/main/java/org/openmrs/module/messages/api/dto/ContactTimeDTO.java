@@ -5,7 +5,7 @@ package org.openmrs.module.messages.api.dto;
  */
 public class ContactTimeDTO extends BaseDTO {
 
-    private static final long serialVersionUID = -2593240814911309883L;
+    private static final long serialVersionUID = 7391388329457186931L;
 
     private Integer personId;
 

@@ -70,12 +70,13 @@ public class ServiceResultList implements Serializable {
       @NotNull List<Map<String, Object>> rowList,
       Template template,
       Range<ZonedDateTime> dateTimeRange) {
-    List<ServiceResultList> serviceResultsLists = new ArrayList<>();
+    List<ServiceResultList> serviceResultsLists = new ArrayList<>(rowList.size());
+    ServiceResultListBuilder serviceResultListBuilder = new ServiceResultListBuilder();
+
     for (int i = 0; i < rowList.size(); i++) {
       ServiceResult serviceResult = ServiceResult.parse(rowList.get(i));
       setExecutionDateWithBestContactTimeFromQueryResult(serviceResult);
 
-      ServiceResultListBuilder serviceResultListBuilder = new ServiceResultListBuilder();
       serviceResultListBuilder.withActorType(MessagesConstants.PATIENT_DEFAULT_ACTOR_TYPE);
 
       PatientTemplate patientTemplate = getRelatedPatientTemplate(serviceResult, template);

@@ -346,7 +346,7 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
     PERFORMANCE_LOGGER.info(
         MessageFormat.format(
             "MessagingServiceImpl.retrieveAllServiceExecutions for all took {0}ms",
-            retrieveExecutionsStopwatch.restart().toMillis()));
+            retrieveExecutionsStopwatch.stop().toMillis()));
 
     return results;
   }

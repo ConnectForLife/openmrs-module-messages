@@ -48,7 +48,7 @@ public class CountryPropertyServiceImpl implements CountryPropertyService {
   @Transactional
   public CountryProperty retireCountryProperty(CountryProperty property, String reason) {
     ValidateUtil.validate(property);
-    property.setRetired(true);
+    property.setRetired(Boolean.TRUE);
     property.setRetireReason(reason);
     return countryPropertyDAO.saveOrUpdate(property);
   }

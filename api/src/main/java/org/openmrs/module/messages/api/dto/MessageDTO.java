@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class MessageDTO extends BaseDTO {
 
-    private static final long serialVersionUID = -9075579854016883182L;
+    private static final long serialVersionUID = 2608456352851663522L;
 
     private String type;
 

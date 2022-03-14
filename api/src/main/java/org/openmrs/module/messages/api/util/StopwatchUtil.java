@@ -33,6 +33,15 @@ public final class StopwatchUtil {
     return lapDuration;
   }
 
+  public Duration stop() {
+    final Instant now = Instant.now();
+    final Duration previousDuration = getDurationOf(startTime, now);
+    startTime.remove();
+    lapStartTime.remove();
+    return previousDuration;
+  }
+
+
   private void startStopwatch(Instant now) {
     startTime.set(now);
   }

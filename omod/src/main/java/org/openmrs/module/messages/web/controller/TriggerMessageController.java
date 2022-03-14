@@ -81,9 +81,10 @@ public class TriggerMessageController extends BaseRestController {
 
     final Patient patient = patientService.getPatientByUuid(personUuid);
     LOGGER.info(
-        String.format(
-            "Message triggering started with parameters: personUuid - %s, templateNames - %s, channelType - %s",
-            personUuid, templateNames, channelType));
+        "Message triggering started with parameters: personUuid - {}, templateNames - {}, channelType - {}",
+        personUuid,
+        templateNames,
+        channelType);
     final ScheduledServiceGroup scheduledServiceGroup =
         createScheduledServiceGroupWithScheduledServices(patient, templateNames, channelType);
 
@@ -173,7 +174,7 @@ public class TriggerMessageController extends BaseRestController {
     if (type.isPresent()) {
       visitType = type.get();
     } else {
-      LOGGER.warn(String.format("Visit type with name %s not found", name));
+      LOGGER.warn("Visit type with name {} not found", name);
     }
 
     return visitType;
@@ -211,7 +212,7 @@ public class TriggerMessageController extends BaseRestController {
     if (attributeType.isPresent()) {
       visitAttributeType = attributeType.get();
     } else {
-      LOGGER.warn(String.format("Visit attribute type with name %s not found", name));
+      LOGGER.warn("Visit attribute type with name {} not found", name);
     }
 
     return visitAttributeType;

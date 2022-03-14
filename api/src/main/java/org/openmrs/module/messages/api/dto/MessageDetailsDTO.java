@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class MessageDetailsDTO extends BaseDTO {
 
-    private static final long serialVersionUID = 8491509272261320704L;
+    private static final long serialVersionUID = 280222211128011218L;
 
     private Integer personId;
 

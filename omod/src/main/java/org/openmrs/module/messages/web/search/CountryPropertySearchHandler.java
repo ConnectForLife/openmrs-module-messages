@@ -17,7 +17,6 @@ import java.util.Collections;
 import java.util.Optional;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
 /** Finds CountryProperty by country name and property name. */
@@ -52,6 +51,6 @@ public class CountryPropertySearchHandler implements SearchHandler {
         Context.getService(CountryPropertyService.class).getCountryProperty(countryConcept, name);
 
     return new AlreadyPaged<>(
-        requestContext, countryProperty.map(Collections::singletonList).orElse(emptyList()), false);
+        requestContext, countryProperty.map(Collections::singletonList).orElseGet(Collections::emptyList), false);
   }
 }
