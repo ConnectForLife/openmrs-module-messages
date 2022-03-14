@@ -589,6 +589,7 @@
     </bean>
 
     <bean id="messages.healthTipService" class="org.openmrs.module.messages.api.service.impl.HealthTipServiceImpl">
+        <property name="dbSessionFactory" ref="dbSessionFactory"/>
         <property name="conceptService" ref="conceptService"/>
     </bean>
     <bean parent="serviceContext">
