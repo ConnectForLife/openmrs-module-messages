@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class DefaultPatientTemplateStateDTO extends BaseDTO {
 
-    private static final long serialVersionUID = -2593240814951309883L;
+    private static final long serialVersionUID = -2795995672353929494L;
 
     private boolean defaultValuesUsed = true;
 

@@ -59,7 +59,7 @@ public abstract class RelationshipActionListener extends BaseActionListener {
     }
 
     private Relationship getRelationship(String relationshipUuid) {
-        LOGGER.debug(String.format("Handle getRelationship for '%s' uuid", relationshipUuid));
+        LOGGER.debug("Handle getRelationship for {} uuid", relationshipUuid);
         Relationship relationship = personService.getRelationshipByUuid(relationshipUuid);
         if (relationship == null) {
             throw new MessagesRuntimeException(

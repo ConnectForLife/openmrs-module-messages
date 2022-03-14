@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class TemplateFieldDTO extends BaseDTO implements DTO {
 
-    private static final long serialVersionUID = 6046924905037907609L;
+    private static final long serialVersionUID = -6117000433536115231L;
     private Integer id;
 
     @NotBlank

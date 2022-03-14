@@ -71,7 +71,7 @@ public abstract class BaseActionListener implements SubscribableEventListener, D
     }
 
     protected String getMessagePropertyValue(Message message, String propertyName) {
-        LOGGER.debug(String.format("Handle getMessagePropertyValue for '%s' property", propertyName));
+        LOGGER.debug("Handle getMessagePropertyValue for {} property", propertyName);
         try {
             validateMessage(message);
             return ((MapMessage) message).getString(propertyName);

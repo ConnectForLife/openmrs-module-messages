@@ -14,7 +14,7 @@ package org.openmrs.module.messages.api.dto;
  */
 public class PersonStatusDTO extends BaseDTO {
 
-    private static final long serialVersionUID = 449432652231507555L;
+    private static final long serialVersionUID = 6372003167420924058L;
 
     private String title;
 

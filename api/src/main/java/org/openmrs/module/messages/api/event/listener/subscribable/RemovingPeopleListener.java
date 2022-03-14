@@ -34,7 +34,7 @@ public class RemovingPeopleListener extends PeopleActionListener {
     public void performAction(Message message) {
         Person person = extractPerson(message);
         if (person != null && person.getVoided()) {
-            LOGGER.debug(String.format("Voiding patient templates for %s person", person.toString()));
+            LOGGER.debug("Voiding patient templates for {} person", person.toString());
             Integer personId = person.getPersonId();
             patientTemplateService.voidForPerson(personId, person.getVoidReason());
         }

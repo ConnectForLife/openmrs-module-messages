@@ -30,6 +30,8 @@ import static java.util.Objects.requireNonNull;
 
 /** Represents a single execution for a service/message. */
 public class ServiceResult implements Serializable, DTO {
+  private static final long serialVersionUID = -6530545764742463034L;
+
   public static final String EXEC_DATE_ALIAS = "EXECUTION_DATE";
   public static final String MSG_ID_ALIAS = "MESSAGE_ID";
   public static final String CHANNEL_NAME_ALIAS = "CHANNEL_ID";
@@ -38,7 +40,6 @@ public class ServiceResult implements Serializable, DTO {
   public static final String ACTOR_ID_ALIAS = "ACTOR_ID";
   public static final String BEST_CONTACT_TIME_ALIAS = "BEST_CONTACT_TIME";
   public static final int MIN_COL_NUM = 3;
-  private static final long serialVersionUID = 2598236499107927781L;
 
   private ZonedDateTime executionDate;
   private Object messageId;
@@ -90,7 +91,7 @@ public class ServiceResult implements Serializable, DTO {
     Integer patientId = null;
     Integer actorId = null;
     ServiceStatus status = ServiceStatus.FUTURE;
-    Map<String, Object> params = new HashMap<String, Object>();
+    Map<String, Object> params = new HashMap<>();
     String bestContactTime = null;
 
     for (Map.Entry<String, Object> entry : row.entrySet()) {
@@ -108,9 +109,9 @@ public class ServiceResult implements Serializable, DTO {
       } else if (STATUS_COL_ALIAS.equals(entry.getKey())) {
         status = parseStatus((String) entry.getValue());
       } else if (PATIENT_ID_ALIAS.equals(entry.getKey())) {
-        patientId = Integer.parseInt(entry.getValue().toString());
+        patientId = Integer.valueOf(entry.getValue().toString());
       } else if (ACTOR_ID_ALIAS.equals(entry.getKey())) {
-        actorId = Integer.parseInt(entry.getValue().toString());
+        actorId = Integer.valueOf(entry.getValue().toString());
       } else if (BEST_CONTACT_TIME_ALIAS.equals(entry.getKey())) {
         bestContactTime = String.valueOf(entry.getValue());
       } else {

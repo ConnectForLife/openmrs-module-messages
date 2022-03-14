@@ -30,13 +30,10 @@ public abstract class AbstractMessagesEventListener implements EventListener, Da
     @Override
     public void onMessage(Message message) {
         try {
-            Properties properties = getProperties(message);
-            Daemon.runInDaemonThread(new Runnable() {
-                @Override
-                public void run() {
-                    handleEvent(properties);
-                }
-            }, daemonToken);
+            // OpenMRS event module uses underneath MapMessage to construct Message. For some reason retrieving properties
+            // from Message interface doesn't work and we have to map object to MapMessage.
+            Properties properties = getProperties((MapMessage) message);
+            Daemon.runInDaemonThread(() -> handleEvent(properties), daemonToken);
         } catch (JMSException ex) {
             throw new MessagesRuntimeException("Error during handling Messages event", ex);
         }
@@ -55,14 +52,10 @@ public abstract class AbstractMessagesEventListener implements EventListener, Da
         return Context.getRegisteredComponent(beanName, type);
     }
 
-    private Properties getProperties(Message message) throws JMSException {
-        Map<String, Object> properties = new HashMap<>();
-
-        // OpenMRS event module uses underneath MapMessage to construct Message. For some reason retrieving properties
-        // from Message interface doesn't work and we have to map object to MapMessage.
-        MapMessage mapMessage = (MapMessage) message;
+    private Properties getProperties(MapMessage mapMessage) throws JMSException {
         Enumeration<String> propertiesKey = (Enumeration<String>) mapMessage.getMapNames();
 
+        Map<String, Object> properties = new HashMap<>();
         while (propertiesKey.hasMoreElements()) {
             String key = propertiesKey.nextElement();
             properties.put(key, mapMessage.getObject(key));

@@ -61,7 +61,7 @@ public abstract class PeopleActionListener extends BaseActionListener {
     }
 
     private Person getPerson(String personUuid) {
-        LOGGER.debug(String.format("Handle getPerson for '%s' uuid", personUuid));
+        LOGGER.debug("Handle getPerson for {} uuid", personUuid);
         Person person = personService.getPersonByUuid(personUuid);
         if (person == null) {
             throw new MessagesRuntimeException(String.format("Unable to retrieve person by uuid: %s", personUuid));

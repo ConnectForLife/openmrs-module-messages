@@ -41,7 +41,7 @@ public class PatientTemplateBuilder implements Builder<PatientTemplate> {
     }
 
     private PatientTemplate buildForPatient() {
-        List<TemplateFieldValue> tfvList = new ArrayList<>();
+        List<TemplateFieldValue> tfvList = new ArrayList<>(template.getTemplateFields().size());
         PatientTemplate patientTemplate = new PatientTemplate(patient.getPerson(), null, patient, tfvList, template);
         for (TemplateField tf : template.getTemplateFields()) {
             tfvList.add(new TemplateFieldValue(getDefaultValue(tf), tf, patientTemplate));
@@ -51,7 +51,7 @@ public class PatientTemplateBuilder implements Builder<PatientTemplate> {
 
     private String getDefaultValue(TemplateField tf) {
         String defaultValue = tf.getDefaultValue();
-        if (TemplateFieldType.START_OF_MESSAGES.equals(tf.getTemplateFieldType()) && StringUtils.isBlank(defaultValue)) {
+        if (TemplateFieldType.START_OF_MESSAGES == tf.getTemplateFieldType() && StringUtils.isBlank(defaultValue)) {
             defaultValue = DateUtil.formatToServerSideDateTime(DateUtil.now());
         }
         return defaultValue;
@@ -72,10 +72,10 @@ public class PatientTemplateBuilder implements Builder<PatientTemplate> {
     private String getDefaultValueForActor(TemplateField tf, Actor actor) {
         final String defaultValue;
 
-        if (TemplateFieldType.START_OF_MESSAGES.equals(tf.getTemplateFieldType())) {
+        if (TemplateFieldType.START_OF_MESSAGES == tf.getTemplateFieldType()) {
             defaultValue = DateUtil.formatToServerSideDateTime(DateUtil.now());
         } else {
-            defaultValue = ofNullable(tf.getDefaultValue(actor)).orElse(tf.getDefaultValue());
+            defaultValue = ofNullable(tf.getDefaultValue(actor)).orElseGet(tf::getDefaultValue);
         }
 
         return defaultValue;
