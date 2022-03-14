@@ -32,7 +32,7 @@ public class MessageDetailsMapper implements ListMapper<MessageDetailsDTO, Patie
     }
 
     private List<MessageDTO> mapToMessages(Map<Template, List<PatientTemplate>> map) {
-        List<MessageDTO> result = new ArrayList<>();
+        List<MessageDTO> result = new ArrayList<>(map.size());
 
         for (List<PatientTemplate> list : map.values()) {
             result.add(messageMapper.toDto(list));
@@ -46,12 +46,8 @@ public class MessageDetailsMapper implements ListMapper<MessageDetailsDTO, Patie
 
         for (PatientTemplate patientTemplate : daos) {
             Template template = patientTemplate.getTemplate();
-            if (map.containsKey(template)) {
-                map.get(template).add(patientTemplate);
-            } else {
-                map.put(template, new ArrayList<>());
-                map.get(template).add(patientTemplate);
-            }
+            final List<PatientTemplate> patientTemplatesOfTemplate = map.computeIfAbsent(template, k -> new ArrayList<>());
+            patientTemplatesOfTemplate.add(patientTemplate);
         }
 
         return map;

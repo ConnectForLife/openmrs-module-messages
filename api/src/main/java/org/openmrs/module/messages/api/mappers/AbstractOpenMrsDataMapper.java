@@ -10,6 +10,6 @@ public abstract class AbstractOpenMrsDataMapper<T extends DTO, R extends BaseOpe
 
     @Override
     protected void doSafeDelete(R target) {
-        target.setVoided(true);
+        target.setVoided(Boolean.TRUE);
     }
 }

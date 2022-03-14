@@ -93,7 +93,7 @@ public class TemplateFieldDefaultValue extends AbstractBaseOpenmrsData {
             ActorUtil.getRelationShipTypeDirection(actor);
         String actorRelationshipName = actor.getRelationship().getRelationshipType().getaIsToB();
 
-        boolean isDirectionsMatches = this.getDirection().equals(actorDirection);
+        boolean isDirectionsMatches = this.getDirection() == actorDirection;
 
         return isDirectionsMatches ?
             this.getRelationshipType().getaIsToB().equals(actorRelationshipName) :

@@ -120,10 +120,10 @@ public class DefaultPatientTemplateServiceImpl extends BaseOpenmrsService implem
     }
 
     private List<PatientTemplate> getPatientTemplatesWithDefaultValues(Patient patient) {
-        List<PatientTemplate> patientTemplates = new ArrayList<>();
         List<Template> templates = templateService.getAll(false);
         List<Actor> actors = actorService.getAllActorsForPatientId(patient.getId());
 
+        List<PatientTemplate> patientTemplates = new ArrayList<>(templates.size() + templates.size() * actors.size());
         for (Template template : templates) {
             patientTemplates.add(new PatientTemplateBuilder(template, patient).build());
             for (Actor actor : actors) {

@@ -48,7 +48,7 @@ public class InitialPersonAttributeListener extends PeopleActionListener {
     @Override
     public void performAction(Message message) {
         Person person = extractPerson(message);
-        LOGGER.debug("Creating attribute for {} person", person.toString());
+        LOGGER.debug("Creating attribute for {} person", person);
         person.addAttribute(createStatusAttribute());
         getPersonService().savePerson(person);
     }
