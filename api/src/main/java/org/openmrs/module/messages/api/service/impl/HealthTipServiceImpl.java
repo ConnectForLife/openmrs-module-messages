@@ -2,46 +2,31 @@ package org.openmrs.module.messages.api.service.impl;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
-import org.openmrs.ConceptSet;
 import org.openmrs.api.ConceptService;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.messages.api.model.ActorResponse;
-import org.openmrs.module.messages.api.model.PatientTemplate;
-import org.openmrs.module.messages.api.model.Template;
-import org.openmrs.module.messages.api.model.TemplateFieldValue;
+import org.openmrs.api.db.hibernate.DbSessionFactory;
+import org.openmrs.module.messages.api.dto.HealthTipDTO;
 import org.openmrs.module.messages.api.service.HealthTipService;
-import org.openmrs.module.messages.api.service.MessagingService;
-import org.openmrs.module.messages.api.service.PatientTemplateService;
-import org.openmrs.module.messages.api.service.TemplateFieldValueService;
-import org.openmrs.module.messages.api.service.TemplateService;
-import org.openmrs.module.messages.domain.criteria.PatientTemplateCriteria;
-import org.openmrs.module.messages.domain.criteria.TemplateCriteria;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
 public class HealthTipServiceImpl implements HealthTipService {
 
-  private static final String HEALTH_TIP_SERVICE_NAME = "Health tip";
+  private static final String PATIENT_ID_PARAM_NAME = "patientId";
+
+  private static final String ACTOR_ID_PARAM_NAME = "actorId";
+
+  private static final String HEALTH_TIP_QUESTION_CONCEPT_UUID =
+          "e7541654-c327-4fee-8e48-f729946c7791";
 
   private static final String CATEGORIES_OF_THE_MESSAGE_FIELD_NAME = "Categories of the message";
 
-  private static final String HEALTH_TIP_QUESTION_CONCEPT_UUID =
-      "e7541654-c327-4fee-8e48-f729946c7791";
-
-  private static final Log LOGGER = LogFactory.getLog(HealthTipServiceImpl.class);
+  private DbSessionFactory dbSessionFactory;
 
   private ConceptService conceptService;
 
@@ -51,175 +36,165 @@ public class HealthTipServiceImpl implements HealthTipService {
     requireNonNull(patientId, "The getNextHealthTipToPlay.patientId must not be null!");
     requireNonNull(patientId, "The getNextHealthTipToPlay.actorId must not be null!");
 
-    Integer nextHealthTipIdToPlay = findNextHealthTipId(patientId, actorId, category);
-    return nextHealthTipIdToPlay != null ? conceptService.getConcept(nextHealthTipIdToPlay) : null;
+    HealthTipDTO healthTipDTO = getNextHealthTipDTO(patientId, actorId, category);
+    if (healthTipDTO != null) {
+      return conceptService.getConcept(healthTipDTO.getHealthTipId());
+    }
+
+    return null;
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public String getNextHealthTipText(Integer patientId, Integer actorId, String category) {
+    HealthTipDTO healthTipDTO = getNextHealthTipDTO(patientId, actorId, category);
+    if (healthTipDTO != null) {
+      return healthTipDTO.getHealthTipText();
+    }
+
+    return null;
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public HealthTipDTO getNextHealthTipDTO(Integer patientId, Integer actorId, String category) {
+    List<HealthTipDTO> healthTipDTOS = getHealthTipDTOs(patientId, actorId, category);
+    if (CollectionUtils.isNotEmpty(healthTipDTOS)) {
+      return healthTipDTOS.get(0);
+    }
+    return null;
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public List<HealthTipDTO> getHealthTipDTOs(Integer patientId, Integer actorId, String category) {
+    String categoriesToSearch =
+            StringUtils.isNotBlank(category) ? category : getHealthTipCategories(patientId, actorId);
+    String query =
+            "SELECT healthTipCategoryId, healthTipCategoryName, healthTipId, healthTipText from\n"
+                    + "(\n"
+                    + "SELECT cs.concept_set AS healthTipCategoryId, cn.name AS healthTipCategoryName, cs.concept_id AS healthTipId, cd.description AS healthTipText\n"
+                    + "FROM concept_set cs\n"
+                    + "INNER JOIN concept c ON cs.concept_set = c.concept_id\n"
+                    + "INNER JOIN concept_name cn ON c.concept_id = cn.concept_id\n"
+                    + "INNER JOIN concept_description cd ON cd.concept_id = cs.concept_id\n"
+                    + "WHERE cn.name IN ("
+                    + getHtCategoriesAsMultipleValuesInOneString(categoriesToSearch)
+                    + ")\n"
+                    + "GROUP BY cs.concept_id\n"
+                    + "ORDER BY cs.sort_weight, FIND_IN_SET(cn.name, '"
+                    + categoriesToSearch
+                    + "')"
+                    + ") htConcepts";
+
+    String currentActorResponsesIds =
+            getActorResponsesIdsSeparatedByComma(patientId, actorId, category);
+    if (StringUtils.isNotBlank(currentActorResponsesIds)) {
+      query = query.concat(" WHERE healthTipId NOT IN (" + currentActorResponsesIds + ");");
+    }
+
+    List<Object[]> queryResult = dbSessionFactory.getCurrentSession().createSQLQuery(query).list();
+
+    return queryResult.stream().map(HealthTipDTO::new).collect(Collectors.toList());
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public String getHealthTipCategories(Integer patientId, Integer actorId) {
+    String query =
+            "SELECT mtfv.value FROM messages_template_field_value mtfv\n"
+                    + "INNER JOIN messages_patient_template mpt ON mtfv.patient_template_id = mpt.messages_patient_template_id\n"
+                    + "INNER JOIN messages_template_field mtf ON mtfv.template_field_id = mtf.messages_template_field_id\n"
+                    + "WHERE mpt.patient_id = :patientId\n"
+                    + "AND mpt.actor_id = :actorId\n"
+                    + "AND mtf.name = '"
+                    + CATEGORIES_OF_THE_MESSAGE_FIELD_NAME
+                    + "';";
+
+    return (String)
+            dbSessionFactory
+                    .getCurrentSession()
+                    .createSQLQuery(query)
+                    .setParameter(PATIENT_ID_PARAM_NAME, patientId)
+                    .setParameter(ACTOR_ID_PARAM_NAME, actorId)
+                    .uniqueResult();
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public List<Integer> getHealthTipIdsAlreadyPlayed(
+          Integer patientId, Integer actorId, String category) {
+    String query =
+            "SELECT mar.response FROM messages_actor_response mar\n"
+                    + "JOIN concept c ON c.concept_id = mar.question\n"
+                    + "WHERE c.uuid = '"
+                    + HEALTH_TIP_QUESTION_CONCEPT_UUID
+                    + "'\n"
+                    + "AND mar.patient_id = :patientId\n"
+                    + "AND mar.actor_id = :actorId\n"
+                    + "AND mar.response IN ("
+                    + getAllPossibleHealthTipIdsSeparatedByComma(patientId, actorId, category)
+                    + ")\n"
+                    + "ORDER BY mar.answered_time DESC\n"
+                    + "LIMIT "
+                    + getNumberOfPossibleHealthTipIds(patientId, actorId, category);
+
+    return dbSessionFactory
+            .getCurrentSession()
+            .createSQLQuery(query)
+            .setParameter(PATIENT_ID_PARAM_NAME, patientId)
+            .setParameter(ACTOR_ID_PARAM_NAME, actorId)
+            .list();
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public List<Integer> getAllPossibleHealthTipIds(
+          Integer patientId, Integer actorId, String category) {
+    String categoriesToSearch =
+            StringUtils.isNotBlank(category) ? category : getHealthTipCategories(patientId, actorId);
+    String query =
+            "SELECT cs.concept_id FROM concept_set cs\n"
+                    + "JOIN concept c ON cs.concept_set = c.concept_id\n"
+                    + "JOIN concept_name cn ON c.concept_id = cn.concept_id\n"
+                    + "WHERE cn.name IN ("
+                    + getHtCategoriesAsMultipleValuesInOneString(categoriesToSearch)
+                    + ");\n";
+
+    return dbSessionFactory.getCurrentSession().createSQLQuery(query).list();
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public Integer getNumberOfPossibleHealthTipIds(
+          Integer patientId, Integer actorId, String category) {
+    return getAllPossibleHealthTipIds(patientId, actorId, category).size();
+  }
+
+  // Output format e.g. 'Category1', 'Category2', 'Category3', 'Category4', 'Category5'
+  private String getHtCategoriesAsMultipleValuesInOneString(String categories) {
+    return Arrays.stream(categories.split(",")).collect(Collectors.joining("','", "'", "'"));
+  }
+
+  private String getActorResponsesIdsSeparatedByComma(
+          Integer patientId, Integer actorId, String category) {
+    List<Integer> actorResponsesIds = getHealthTipIdsAlreadyPlayed(patientId, actorId, category);
+
+    return actorResponsesIds.stream().map(String::valueOf).collect(Collectors.joining(","));
+  }
+
+  private String getAllPossibleHealthTipIdsSeparatedByComma(
+          Integer patientId, Integer actorId, String category) {
+    return getAllPossibleHealthTipIds(patientId, actorId, category).stream()
+            .map(String::valueOf)
+            .collect(Collectors.joining(","));
+  }
+
+  public void setDbSessionFactory(DbSessionFactory dbSessionFactory) {
+    this.dbSessionFactory = dbSessionFactory;
   }
 
   public void setConceptService(ConceptService conceptService) {
     this.conceptService = conceptService;
-  }
-
-  private Integer findNextHealthTipId(Integer patientId, Integer actorId, String category) {
-    PatientTemplate healthTipPatientTemplate =
-        getHealthTipPatientTemplate(patientId, actorId, HEALTH_TIP_SERVICE_NAME);
-    Integer nextHealthTipIdToPlay = null;
-    if (healthTipPatientTemplate != null) {
-      if (StringUtils.isNotBlank(category)) {
-        nextHealthTipIdToPlay =
-            getNextHealthTipIdFromParticularCategory(patientId, actorId, category);
-      } else {
-        nextHealthTipIdToPlay =
-            getNextHealthTipIdFromAllCategories(
-                patientId, actorId, getPatientHealthTipCategories(healthTipPatientTemplate));
-      }
-    } else {
-      LOGGER.warn(
-          String.format(
-              "Patient template for patient id: %d, actor id: %d and service name: %s not found",
-              patientId, actorId, HEALTH_TIP_SERVICE_NAME));
-    }
-    return nextHealthTipIdToPlay;
-  }
-
-  private PatientTemplate getHealthTipPatientTemplate(
-      Integer patientId, Integer actorId, String serviceName) {
-    Template template =
-        Context.getService(TemplateService.class)
-            .findOneByCriteria(TemplateCriteria.forName(serviceName));
-    PatientTemplateCriteria criteria =
-        PatientTemplateCriteria.forPatientAndActorAndTemplate(patientId, actorId, template.getId());
-
-    return Context.getService(PatientTemplateService.class).findOneByCriteria(criteria);
-  }
-
-  private Integer getNextHealthTipIdFromParticularCategory(
-      Integer patientId, Integer actorId, String category) {
-    Integer nextHealthTipId = null;
-    Concept categoryConcept = conceptService.getConceptByName(category);
-    if (categoryConcept != null) {
-      List<Integer> possibleHealthTipIds =
-          conceptService.getConceptSetsByConcept(categoryConcept).stream()
-              .map(cs -> cs.getConcept().getConceptId())
-              .collect(Collectors.toList());
-      List<Integer> healthTipsIdsAlreadyHeard =
-          getHealthTipsIdsAlreadyHeard(patientId, actorId, possibleHealthTipIds);
-      nextHealthTipId = getNextHealthTipIdToPlay(possibleHealthTipIds, healthTipsIdsAlreadyHeard);
-    } else {
-      LOGGER.debug(String.format("Health tip category with name %s not found", category));
-    }
-
-    return nextHealthTipId;
-  }
-
-  private Integer getNextHealthTipIdFromAllCategories(
-      Integer patientId, Integer actorId, List<String> healthTipCategories) {
-    Integer nextHealthTipId = null;
-    if (CollectionUtils.isNotEmpty(healthTipCategories)) {
-      List<Integer> possibleHealthTipIds = getAllHealthTipIds(healthTipCategories);
-      List<Integer> healthTipsIdsAlreadyHeard =
-          getHealthTipsIdsAlreadyHeard(patientId, actorId, possibleHealthTipIds);
-      nextHealthTipId = getNextHealthTipIdToPlay(possibleHealthTipIds, healthTipsIdsAlreadyHeard);
-    } else {
-      LOGGER.debug("No health tip category found");
-    }
-
-    return nextHealthTipId;
-  }
-
-  private List<String> getPatientHealthTipCategories(PatientTemplate healthTipPatientTemplate) {
-    List<String> healthTipCategories = new ArrayList<>();
-    TemplateFieldValue templateFieldValue =
-        Context.getService(TemplateFieldValueService.class)
-            .getTemplateFieldByPatientTemplateAndFieldType(
-                healthTipPatientTemplate, CATEGORIES_OF_THE_MESSAGE_FIELD_NAME);
-    if (templateFieldValue != null) {
-      healthTipCategories = Arrays.asList(templateFieldValue.getValue().split(","));
-    }
-    return healthTipCategories;
-  }
-
-  private Integer getNextHealthTipIdToPlay(
-      List<Integer> possibleHealthTipIds, List<Integer> healthTipsIdsAlreadyHeard) {
-    return possibleHealthTipIds.stream()
-        .filter(htId -> !healthTipsIdsAlreadyHeard.contains(htId))
-        .findFirst()
-        .orElse(null);
-  }
-
-  private List<Integer> getHealthTipsIdsAlreadyHeard(
-      Integer patientId, Integer actorId, List<Integer> possibleHealthTipIds) {
-    List<Integer> healthTipsIdsAlreadyHeard = new ArrayList<>();
-    int responseCount = 0;
-    if (CollectionUtils.isNotEmpty(possibleHealthTipIds)) {
-      responseCount = possibleHealthTipIds.size() - 1;
-    }
-
-    Concept healthTipQuestion = conceptService.getConceptByUuid(HEALTH_TIP_QUESTION_CONCEPT_UUID);
-    if (healthTipQuestion != null) {
-      List<ActorResponse> healthTipActorResponses =
-          Context.getService(MessagingService.class)
-              .getLastActorResponsesForConceptQuestion(
-                  patientId, actorId, healthTipQuestion.getConceptId(), responseCount);
-      healthTipActorResponses.forEach(
-          actorResponse ->
-              healthTipsIdsAlreadyHeard.add(actorResponse.getResponse().getConceptId()));
-    }
-
-    return healthTipsIdsAlreadyHeard;
-  }
-
-  private List<Integer> getAllHealthTipIds(List<String> healthTipCategories) {
-    List<ConceptSet> allHealthTipSets = getAllHealthTipSets(healthTipCategories);
-    List<ConceptSet> resultConceptSets =
-        getHealthTipIdsInCorrectOrder(allHealthTipSets, healthTipCategories);
-
-    return resultConceptSets.stream()
-        .map(cs -> cs.getConcept().getConceptId())
-        .collect(Collectors.toList());
-  }
-
-  private List<ConceptSet> getAllHealthTipSets(List<String> healthTipCategories) {
-    List<ConceptSet> allHealthTipSets = new ArrayList<>();
-    for (String categoryName : healthTipCategories) {
-      Concept categoryConcept = conceptService.getConceptByName(categoryName);
-      if (categoryConcept != null) {
-        allHealthTipSets.addAll(categoryConcept.getConceptSets());
-      }
-    }
-    return allHealthTipSets;
-  }
-
-  private List<ConceptSet> getHealthTipIdsInCorrectOrder(
-      List<ConceptSet> allHealthTipSets, List<String> healthTipCategories) {
-    Map<String, Concept> htCategoriesMap = buildHTCategoriesMap(healthTipCategories);
-    List<ConceptSet> resultConceptSets = new ArrayList<>();
-    int index = 0;
-    while (CollectionUtils.isNotEmpty(allHealthTipSets)) {
-      Concept healthTipCategory = htCategoriesMap.get(healthTipCategories.get(index));
-      Optional<ConceptSet> foundHealthTipSet =
-          allHealthTipSets.stream()
-              .filter(htSet -> htSet.getConceptSet().equals(healthTipCategory))
-              .min(Comparator.comparing(ConceptSet::getSortWeight));
-      if (foundHealthTipSet.isPresent()) {
-        ConceptSet healthTipSet = foundHealthTipSet.get();
-        resultConceptSets.add(healthTipSet);
-        allHealthTipSets.remove(healthTipSet);
-      }
-
-      index++;
-      if (index >= healthTipCategories.size()) {
-        index = 0;
-      }
-    }
-
-    return resultConceptSets;
-  }
-
-  private Map<String, Concept> buildHTCategoriesMap(List<String> healthTipCategories) {
-    Map<String, Concept> htCategoriesMap = new HashMap<>();
-    healthTipCategories.forEach(
-        htCategory -> htCategoriesMap.put(htCategory, conceptService.getConceptByName(htCategory)));
-
-    return htCategoriesMap;
   }
 }

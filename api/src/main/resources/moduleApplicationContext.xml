@@ -589,6 +589,7 @@
     </bean>
 
     <bean id="messages.healthTipService" class="org.openmrs.module.messages.api.service.impl.HealthTipServiceImpl">
+        <property name="dbSessionFactory" ref="dbSessionFactory"/>
         <property name="conceptService" ref="conceptService"/>
     </bean>
     <bean parent="serviceContext">
@@ -722,18 +723,5 @@
     <bean id="messages.weeklyBasedFeedbackCalculationHandler"
           class="org.openmrs.module.messages.handler.impl.WeeklyBasedFeedbackCalculationHandlerImpl">
         <constructor-arg name="actorResponseDao" ref="messages.ActorResponseDao" />
-    </bean>
-
-    <bean id="messages.healthTipService2" class="org.openmrs.module.messages.api.service.impl.HealthTipServiceImpl2">
-        <property name="dbSessionFactory" ref="dbSessionFactory"/>
-        <property name="conceptService" ref="conceptService"/>
-    </bean>
-    <bean parent="serviceContext">
-        <property name="moduleService">
-            <list merge="true">
-                <value>org.openmrs.module.messages.api.service.HealthTipService2</value>
-                <ref local="messages.healthTipService2"/>
-            </list>
-        </property>
     </bean>
 </beans>
