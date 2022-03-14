@@ -14,7 +14,7 @@ public class ExtendedConceptDAOImpl extends HibernateOpenmrsObjectDAO<Concept> i
     return this.sessionFactory
         .getCurrentSession()
         .createCriteria(ConceptAttribute.class)
-        .add(Restrictions.eq("voided", false))
+        .add(Restrictions.eq("voided", Boolean.FALSE))
         .createCriteria("attributeType", "at")
         .add(Restrictions.eq("uuid", uuid))
         .list();

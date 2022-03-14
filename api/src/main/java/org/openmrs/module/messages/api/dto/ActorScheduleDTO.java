@@ -9,7 +9,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
  */
 public class ActorScheduleDTO extends BaseDTO implements Comparable<ActorScheduleDTO>, DTO {
 
-    private static final long serialVersionUID = -8612064108251395707L;
+    private static final long serialVersionUID = -7315030726149122509L;
     private Integer actorId;
     private String actorType;
     private String schedule;

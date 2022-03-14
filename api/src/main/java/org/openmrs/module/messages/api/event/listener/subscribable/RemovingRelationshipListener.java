@@ -31,7 +31,7 @@ public class RemovingRelationshipListener extends RelationshipActionListener {
     public void performAction(Message message) {
         Relationship relationship = extractRelationship(message);
         if (relationship != null && relationship.getVoided()) {
-            LOGGER.debug(String.format("Voiding patient templates for %s relationship", relationship.toString()));
+            LOGGER.debug("Voiding patient templates for {} relationship", relationship.toString());
             Integer relationshipId = relationship.getRelationshipId();
             patientTemplateService.voidForRelationship(relationshipId, relationship.getVoidReason());
         }

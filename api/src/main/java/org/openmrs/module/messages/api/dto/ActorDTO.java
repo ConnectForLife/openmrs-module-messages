@@ -4,8 +4,7 @@ package org.openmrs.module.messages.api.dto;
  * Represents an actor DTO
  */
 public class ActorDTO extends BaseDTO {
-
-    private static final long serialVersionUID = -6289921466905123913L;
+    private static final long serialVersionUID = 4702818718878938436L;
 
     private Integer actorId;
 

@@ -14,7 +14,7 @@ package org.openmrs.module.messages.api.dto;
  */
 public class DefaultContactTimeDTO extends BaseDTO {
 
-    private static final long serialVersionUID = -4291847840418724090L;
+    private static final long serialVersionUID = 6793419256280543903L;
 
     private String actor;
 
