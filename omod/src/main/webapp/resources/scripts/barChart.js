@@ -1,4 +1,4 @@
-jq = jq || {};
+jq = window.jq || {};
 
 function escapeSpaces(index) {
   var result = index;
