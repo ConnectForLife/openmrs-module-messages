@@ -1,7 +1,8 @@
-changeStatus = changeStatus || {};
-emr = emr || {};
-jq = jq || {};
-OPENMRS_CONTEXT_PATH = OPENMRS_CONTEXT_PATH || '/openmrs';
+emr = window.emr || {};
+jq = window.jq || {};
+
+OPENMRS_CONTEXT_PATH = window.OPENMRS_CONTEXT_PATH || '/openmrs';
+changeStatus = window.changeStatus || {};
 
 changeStatus.updatePersonStatusDialog = null;
 

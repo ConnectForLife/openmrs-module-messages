@@ -1,7 +1,8 @@
-triggerMessage = triggerMessage || {};
-emr = emr || {};
-jq = jq || {};
-OPENMRS_CONTEXT_PATH = OPENMRS_CONTEXT_PATH || '/openmrs';
+emr = window.emr || {};
+jq = window.jq || {};
+
+OPENMRS_CONTEXT_PATH = window.OPENMRS_CONTEXT_PATH || '/openmrs';
+triggerMessage = window.triggerMessage || {};
 
 triggerMessage.triggerMessageCreationDialog = null;
 
