@@ -9,6 +9,7 @@
 
 package org.openmrs.module.messages.api.service.impl;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.PropertyValueException;
@@ -48,6 +49,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static org.openmrs.module.messages.api.constants.MessagesConstants.PERFORMANCE_LOGGER;
 
@@ -125,16 +127,26 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
               service.getId(), status.name(), timestamp, executionId));
     }
 
-    DeliveryAttempt deliveryAttempt = new DeliveryAttempt();
-    deliveryAttempt.setServiceExecution(executionId);
-    deliveryAttempt.setAttemptNumber(service.getNumberOfAttempts() + 1);
-    deliveryAttempt.setStatus(status);
-    deliveryAttempt.setTimestamp(timestamp);
-    deliveryAttempt.setScheduledService(service);
+    Optional<DeliveryAttempt> optionalDeliveryAttempt =
+        getDeliveryAttemptByServiceAndExecutionId(service, executionId);
+    DeliveryAttempt deliveryAttempt;
+    if (!optionalDeliveryAttempt.isPresent()) {
+      deliveryAttempt = new DeliveryAttempt();
+      deliveryAttempt.setServiceExecution(executionId);
+      deliveryAttempt.setAttemptNumber(service.getNumberOfAttempts() + 1);
+      deliveryAttempt.setStatus(status);
+      deliveryAttempt.setTimestamp(timestamp);
+      deliveryAttempt.setScheduledService(service);
+
+      service.getDeliveryAttempts().add(deliveryAttempt);
+    } else {
+      deliveryAttempt = optionalDeliveryAttempt.get();
+      deliveryAttempt.setStatus(status);
+      deliveryAttempt.setTimestamp(timestamp);
+    }
 
     service.setStatus(status);
     service.setLastServiceExecution(executionId);
-    service.getDeliveryAttempts().add(deliveryAttempt);
 
     return saveOrUpdate(service);
   }
@@ -479,5 +491,12 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
 
   private boolean isTemplateSupportsOptimizedQuery(Template template) {
     return template.isShouldUseOptimizedQuery();
+  }
+
+  private Optional<DeliveryAttempt> getDeliveryAttemptByServiceAndExecutionId(
+      ScheduledService service, String executionId) {
+    return service.getDeliveryAttempts().stream()
+        .filter(attempt -> StringUtils.equalsIgnoreCase(attempt.getServiceExecution(), executionId))
+        .findFirst();
   }
 }
