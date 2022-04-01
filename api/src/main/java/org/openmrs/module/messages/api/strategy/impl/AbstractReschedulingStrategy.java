@@ -9,6 +9,8 @@
 
 package org.openmrs.module.messages.api.strategy.impl;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
@@ -19,24 +21,31 @@ import org.openmrs.module.messages.api.model.ScheduledServiceGroup;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
 import org.openmrs.module.messages.api.service.ConfigService;
 import org.openmrs.module.messages.api.service.MessagesDeliveryService;
+import org.openmrs.module.messages.api.service.MessagesSchedulerService;
 import org.openmrs.module.messages.api.strategy.ReschedulingStrategy;
 import org.openmrs.module.messages.api.util.DateUtil;
+import org.openmrs.module.messages.api.util.ScheduledExecutionContextUtil;
 import org.openmrs.scheduler.SchedulerService;
 import org.openmrs.scheduler.TaskDefinition;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public abstract class AbstractReschedulingStrategy implements ReschedulingStrategy {
 
   private final Log logger = LogFactory.getLog(getClass());
-  private static final String SHORT_DATE_FORMAT = "yyyyMMddHHmmz";
+
+  private static final String EXECUTION_CONTEXT_PROP_NAME = "EXECUTION_CONTEXT";
 
   private ConfigService configService;
   private MessagesDeliveryService deliveryService;
 
   @Override
   public void execute(ScheduledServiceGroup group) {
+    cancelRecallIfCallIsDelivered(group);
+
     List<ScheduledService> servicesToExecute = extractServiceListToExecute(group);
     if (servicesToExecute.isEmpty()) {
       logger.debug(
@@ -48,14 +57,6 @@ public abstract class AbstractReschedulingStrategy implements ReschedulingStrate
 
     ScheduledService service = validateAndGetFirstServiceToRetry(servicesToExecute, group);
     if (!shouldReschedule(service)) {
-      return;
-    }
-
-    SchedulerService schedulerService = Context.getSchedulerService();
-    TaskDefinition task = schedulerService.getTaskByName(getTaskNameByGroup(group));
-    if (service.getStatus() == ServiceStatus.DELIVERED && task != null) {
-      task.setStarted(false);
-      schedulerService.deleteTask(task.getId());
       return;
     }
 
@@ -137,14 +138,40 @@ public abstract class AbstractReschedulingStrategy implements ReschedulingStrate
     return configService.getTimeIntervalToNextReschedule();
   }
 
-  private String getTaskNameByGroup(ScheduledServiceGroup group) {
+  private void cancelRecallIfCallIsDelivered(ScheduledServiceGroup group) {
+    if (group.getStatus() == ServiceStatus.DELIVERED) {
+      SchedulerService schedulerService = Context.getSchedulerService();
+      List<TaskDefinition> taskDefinitions =
+          schedulerService.getRegisteredTasks().stream()
+              .filter(task -> StringUtils.startsWith(task.getName(), getTaskPrefix(group)))
+              .filter(task -> task.getStartTime().toInstant().isAfter(DateUtil.now().toInstant()))
+              .collect(Collectors.toList());
+
+      if (CollectionUtils.isEmpty(taskDefinitions)) {
+        return;
+      }
+
+      Optional<TaskDefinition> taskToRemove =
+          taskDefinitions.stream()
+              .filter(
+                  task ->
+                      ScheduledExecutionContextUtil.fromJson(
+                                  task.getProperties().get(EXECUTION_CONTEXT_PROP_NAME))
+                              .getGroupId()
+                          == group.getId())
+              .findFirst();
+
+      if (taskToRemove.isPresent()) {
+        TaskDefinition task = taskToRemove.get();
+        Context.getService(MessagesSchedulerService.class).shutdownTask(task);
+        schedulerService.deleteTask(task.getId());
+      }
+    }
+  }
+
+  private String getTaskPrefix(ScheduledServiceGroup group) {
     return String.format(
-            "a:%s:%dp:%dd:%s",
-            group.getChannelType(),
-            group.getActor().getId(),
-            group.getPatient().getPatientId(),
-            DateUtil.formatDateTime(
-                    getRescheduleDate().toInstant().atZone(DateUtil.getDefaultSystemTimeZone()),
-                    SHORT_DATE_FORMAT));
+        "a:%s:%dp:%d",
+        group.getChannelType(), group.getActor().getId(), group.getPatient().getPatientId());
   }
 }
