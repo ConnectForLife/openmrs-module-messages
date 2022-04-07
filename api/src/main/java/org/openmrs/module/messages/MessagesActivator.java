@@ -255,6 +255,11 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
         ConfigConstants.MESSAGE_DELIVERY_JOB_INTERVAL,
         ConfigConstants.MESSAGE_DELIVERY_JOB_INTERVAL_DEFAULT_VALUE,
         ConfigConstants.MESSAGE_DELIVERY_JOB_INTERVAL_DESCRIPTION);
+
+    createGlobalSettingIfNotExists(
+        ConfigConstants.MESSAGE_DELIVERY_JOB_START_TIME_GP_KEY,
+        ConfigConstants.MESSAGE_DELIVERY_JOB_START_TIME_DEFAULT_VALUE,
+        ConfigConstants.MESSAGE_DELIVERY_JOB_START_TIME_DESCRIPTION);
   }
 
   private void createITRConfiguration() {
