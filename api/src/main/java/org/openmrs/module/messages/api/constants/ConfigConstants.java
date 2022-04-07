@@ -312,6 +312,15 @@ public final class ConfigConstants {
           + "interval (in second) of launching the job which will schedule tasks for the upcoming messages. "
           + "A server reboot is required to effect changes.";
 
+  public static final String MESSAGE_DELIVERY_JOB_START_TIME_GP_KEY =
+      "messages.messageDeliveryJobStartTime";
+  public static final String MESSAGE_DELIVERY_JOB_START_TIME_DEFAULT_VALUE = "00:15";
+  public static final String MESSAGE_DELIVERY_JOB_START_TIME_DESCRIPTION =
+      "Time in format HH:mm (24-hour format, system timezone) that determines start time of Message Delivery job. "
+          + "If there is no value configured then default value will be used: "
+          + MESSAGE_DELIVERY_JOB_START_TIME_DEFAULT_VALUE
+          + ". To apply the changes server restart is required.";
+
   public static final String SMS_CONFIG = "messages.smsConfig";
   public static final String SMS_CONFIG_DEFAULT_VALUE = "";
   public static final String SMS_CONFIG_DESCRIPTION =

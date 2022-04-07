@@ -14,6 +14,8 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.api.constants.ConfigConstants;
 import org.openmrs.module.messages.api.constants.MessagesConstants;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -21,13 +23,19 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 
 public final class DateUtil {
+
   public static final int DAY_IN_SECONDS = 24 * 60 * 60;
+
+  /** The date-time pattern which contains only hour of day and minute of hour fields. */
+  public static final String HOUR_AND_MINUTE_PATTERN = "HH:mm";
 
   /**
    * The main Clock used by all methods of this class. This facilitates unit tests which needs
@@ -244,5 +252,59 @@ public final class DateUtil {
    */
   public static Date addDaysToDate(Date date, int days) {
     return DateUtils.addDays(date, days);
+  }
+
+  /**
+   * Gets a Date object representing an instant of time where the date-part is equal to the
+   * date-part of {@code date} and time-part is equal to time parsed from {@code timeOfDay}, the
+   * seconds and milliseconds are both 0.
+   *
+   * <p>The {@code timeOfDay} has to fit {@link #HOUR_AND_MINUTE_PATTERN} pattern.
+   *
+   * <p>Example: <br>
+   * For a {@code date} of `2001-07-04T12:08:56.235` and {@code timeOfDay} equal to `14:11`, the
+   * result of this method will be equal to `2001-07-04T14:11:00.000`.
+   *
+   * @param date the source of date-part, not null
+   * @param timeOfDay the source of time-part, not null
+   * @param timeZone the time zone of the {@code date} and {@code timeOfDay}, not null
+   * @return the Date object with date-time part from {{@code date} and time-part from {@code
+   *     timeOfDay}, never null
+   * @throws IllegalArgumentException if {@code timeOfDay} has illegal value
+   */
+  public static Date getDateWithTimeOfDay(Date date, String timeOfDay, TimeZone timeZone) {
+    final SimpleDateFormat timeFormat = new SimpleDateFormat(HOUR_AND_MINUTE_PATTERN);
+    timeFormat.setTimeZone(timeZone);
+
+    try {
+      final Calendar timePart =
+          org.apache.commons.lang3.time.DateUtils.toCalendar(timeFormat.parse(timeOfDay));
+      timePart.setTimeZone(timeZone);
+
+      final Calendar result = org.apache.commons.lang3.time.DateUtils.toCalendar(date);
+      result.setTimeZone(timeZone);
+      result.set(Calendar.HOUR_OF_DAY, timePart.get(Calendar.HOUR_OF_DAY));
+      result.set(Calendar.MINUTE, timePart.get(Calendar.MINUTE));
+      result.set(Calendar.SECOND, 0);
+      result.set(Calendar.MILLISECOND, 0);
+      return result.getTime();
+    } catch (ParseException pe) {
+      throw new IllegalArgumentException(
+          "Illegal value of timeOfDay="
+              + timeOfDay
+              + "; expected pattern: "
+              + HOUR_AND_MINUTE_PATTERN,
+          pe);
+    }
+  }
+
+  /**
+   * Converts ZoneId object into TimeZone object.
+   *
+   * @param zoneId object of ZoneId type
+   * @return TimeZone object
+   */
+  public static TimeZone convertZoneIdToTimeZone(ZoneId zoneId) {
+    return TimeZone.getTimeZone(zoneId);
   }
 }
