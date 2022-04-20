@@ -62,7 +62,6 @@ common:
     enabled: true
     type: maven
     dockerImage: jnj.artifactrepo.jnj.com/jpm/maven:3.6.3-jdk-8
-    mvnCommand: mvn clean install -Pcode-coverage
     executeOnError: false
     ignoreError: false
   versionCalculation:
