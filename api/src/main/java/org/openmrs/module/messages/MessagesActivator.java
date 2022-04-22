@@ -27,20 +27,18 @@ import org.openmrs.module.messages.api.event.listener.MessagesEventListenerFacto
 import org.openmrs.module.messages.api.event.listener.subscribable.PeopleActionListener;
 import org.openmrs.module.messages.api.event.listener.subscribable.RelationshipActionListener;
 import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
-import org.openmrs.module.messages.api.model.CountryProperty;
 import org.openmrs.module.messages.api.scheduler.job.JobRepeatInterval;
 import org.openmrs.module.messages.api.scheduler.job.MessageDeliveriesJobDefinition;
-import org.openmrs.module.messages.api.service.CountryPropertyService;
 import org.openmrs.module.messages.api.service.MessagesSchedulerService;
 import org.openmrs.module.messages.api.util.GlobalPropertyUtil;
 import org.openmrs.module.metadatadeploy.api.MetadataDeployService;
 import org.openmrs.module.metadatadeploy.bundle.MetadataBundle;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.openmrs.api.context.Context.getRegisteredComponent;
+import static org.openmrs.module.messages.api.util.CountryPropertyUtils.createDefaultCountrySettingIfNotExists;
 
 /**
  * This class contains the logic that is run every time this module is either started or shutdown
@@ -333,20 +331,6 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
             String.format(
                 "Message Module created '%s' global property with value - %s", key, value));
       }
-    }
-  }
-
-  private void createDefaultCountrySettingIfNotExists(
-      String name, String value, String description) {
-    final CountryPropertyService propertyService = Context.getService(CountryPropertyService.class);
-    final Optional<String> existingProperty = propertyService.getCountryPropertyValue(null, name);
-
-    if (!existingProperty.isPresent()) {
-      final CountryProperty newCountryProperty = new CountryProperty();
-      newCountryProperty.setName(name);
-      newCountryProperty.setDescription(description);
-      newCountryProperty.setValue(value);
-      propertyService.saveCountryProperty(newCountryProperty);
     }
   }
 
