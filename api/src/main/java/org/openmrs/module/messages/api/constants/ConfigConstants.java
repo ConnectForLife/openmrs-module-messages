@@ -157,20 +157,8 @@ public final class ConfigConstants {
 
   public static final String CUT_OFF_SCORE_FOR_ADHERENCE_TREND_KEY =
       "messages.cutOffScoreForAdherenceTrend";
-  public static final String CUT_OFF_SCORE_FOR_ADHERENCE_TREND_DEFAULT_VALUE = "5";
-  public static final String CUT_OFF_SCORE_FOR_ADHERENCE_TREND_DESCRIPTION =
-      "Used to specify a percentage cut-off score for adherence trend";
 
   public static final String BENCHMARK_PERIOD_KEY = "messages.benchmarkPeriod";
-  public static final String BENCHMARK_PERIOD_DEFAULT_VALUE = "7";
-  public static final String BENCHMARK_PERIOD_DESCRIPTION =
-      "Used to specify the number of days from which adherence trend is calculated";
-
-  public static final String NUMBER_OF_HEALTH_TIPS_PLAYED_PER_CALL_KEY =
-      "messages.numberOfHealthTipsPlayedPerOneCall";
-  public static final String NUMBER_OF_HEALTH_TIPS_PLAYED_PER_CALL_DEFAULT_VALUE = "3";
-  public static final String NUMBER_OF_HEALTH_TIPS_PLAYED_PER_CALL_DESCRIPTION =
-      "Used to specify a number of health tips that should be played per one call";
 
   public static final String STATUSES_ENDING_CALLFLOW = "messages.statusesEndingCallflow";
   public static final String STATUSES_ENDING_CALLFLOW_DEFAULT_VALUE =
@@ -190,104 +178,6 @@ public final class ConfigConstants {
       "Comma-separated values which represent the map of services which should be injected into "
           + "the messaging notification template.";
 
-  public static final String NOTIFICATION_TEMPLATE_ADHERENCE_DAILY =
-      "messages.notificationTemplate.adherence-report-daily";
-  public static final String NOTIFICATION_TEMPLATE_ADHERENCE_DAILY_DEFAULT_VALUE =
-      "#set($textToRead = \"\")\n"
-          + "#if($patient.getId().equals($actor.getId()))\n"
-          + " #set($textToRead = \"Hello $patient.getPersonName().toString(), "
-          + "Your dosage is scheduled to be taken now. Please take your dosage.\")\n"
-          + "#else\n"
-          + " #set($textToRead = \"Hello $actor.getPersonName().toString(), "
-          + "Your patient's dosage is scheduled to be taken now. \")\n"
-          + "#end\n"
-          + "{ message:\"$textToRead\" }";
-  public static final String NOTIFICATION_TEMPLATE_ADHERENCE_DAILY_DESCRIPTION =
-      "The notification template for adherence report daily message type.";
-
-  public static final String NOTIFICATION_TEMPLATE_VISIT_REMINDER =
-      "messages.notificationTemplate.visit-reminder";
-  public static final String NOTIFICATION_TEMPLATE_VISIT_REMINDER_DEFAULT_VALUE =
-      "#set ($integerClazz = $openmrsContext.loadClass('java.lang.Integer'))\n"
-          + "#set ($stringClazz = $openmrsContext.loadClass('java.lang.String'))\n"
-          + "#set ($simpleDateFormat = $openmrsContext.loadClass('java.text.SimpleDateFormat')"
-          + ".getDeclaredConstructor($stringClazz).newInstance('yyyy-MM-dd'))\n"
-          + "#set ($visitTypeIdInteger = $integerClazz.parseInt($visitTypeId))\n"
-          + "#set ($visitPurpose = $openmrsContext.getVisitService()"
-          + ".getVisitType($visitTypeIdInteger).getName())\n"
-          + "#set($textToRead1 = \"\")\n"
-          + "#if($patient.getId().equals($actor.getId()))\n"
-          + " #set($textToRead1 = \"Hello $patient.getPersonName().toString(), You have a\")\n"
-          + "#else\n"
-          + " #set($textToRead1 = \"Hello $actor.getPersonName().toString(), Your patient has a\")\n"
-          + "#end\n"
-          + "#set($textToRead2 = \"visit scheduled for $simpleDateFormat.format($simpleDateFormat"
-          + ".parse($dateStarted)) for the purpose of $visitPurpose.\")\n"
-          + "{ message:\"$textToRead1 $textToRead2\" }";
-  public static final String NOTIFICATION_TEMPLATE_VISIT_REMINDER_DESCRIPTION =
-      "The notification template for visit reminder message type.";
-
-  public static final String NOTIFICATION_TEMPLATE_HEALTH_TIP =
-      "messages.notificationTemplate.health-tip";
-  public static final String NOTIFICATION_TEMPLATE_HEALTH_TIP_DEFAULT_VALUE =
-      "#set ($healthTipId = $HEALTH_TIP_ID.split(',').get(0))\n"
-          + "#set ($healthTipId = $Integer.parseInt($healthTipId)) \n"
-          + "#set ($healthTip = $conceptDAO.getConcept($healthTipId))\n"
-          + "#set ($localeClass = $conceptDAO.getClass().forName(\"java.util.Locale\"))\n"
-          + "#set ($healthTipText = $healthTip.getDescription().getDescription())\n"
-          + "{ message:\"$healthTipText\"\n }"
-          + "#set ($dummy = $messagesService.registerResponse($personId, $personId, $message_group_id, "
-          + "'SCHEDULED_SERVICE_GROUP', $healthTipId, '', 165270, '', $DateUtil.now()))";
-  public static final String NOTIFICATION_TEMPLATE_HEALTH_TIP_DESCRIPTION =
-      "The notification template for health tip message type.";
-
-  public static final String NOTIFICATION_TEMPLATE_ADHERENCE_FEEDBACK =
-      "messages.notificationTemplate.adherence-feedback";
-  public static final String NOTIFICATION_TEMPLATE_ADHERENCE_FEEDBACK_DEFAULT_VALUE =
-      "#set($adfLevel = $ADHERENCE_LEVEL)\n"
-          + "#set($adfTrend = $ADHERENCE_TREND)\n"
-          + "#set($textToRead = \"\")\n"
-          + "#if($patient.getId().equals($actor.getId()))\n"
-          + " #set($textToRead = \"Your adherence for past week is $adfLevel "
-          + "and compare to last week your adherence trend is $adfTrend\")\n"
-          + "#else\n"
-          + " #set($textToRead = \"Your patient's adherence for past week is $adfLevel "
-          + "and compare to last week your patient's adherence trend is $adfTrend\")\n"
-          + "#end\n"
-          + "{ message:\"$textToRead\" }";
-  public static final String NOTIFICATION_TEMPLATE_ADHERENCE_FEEDBACK_DESCRIPTION =
-      "The notification template for adherence feedback message type.";
-
-  public static final String NOTIFICATION_TEMPLATE_ADHERENCE_WEEKLY =
-      "messages.notificationTemplate.adherence-report-weekly";
-  public static final String NOTIFICATION_TEMPLATE_ADHERENCE_WEEKLY_DEFAULT_VALUE =
-      "#set($textToRead = \"\")\n"
-          + "#if($patient.getId().equals($actor.getId()))\n"
-          + " #set($textToRead = \"Hello $patient.getPersonName().toString(), "
-          + "Your dosage is scheduled to be taken. Please take your dosage as prescribed.\")\n"
-          + "#else\n"
-          + " #set($textToRead = \"Hello $actor.getPersonName().toString(), "
-          + "Your patient's dosage is scheduled to be taken.\")\n"
-          + "#end\n"
-          + "{ message:\"$textToRead\" }";
-  public static final String NOTIFICATION_TEMPLATE_ADHERENCE_WEEKLY_DESCRIPTION =
-      "The notification template for adherence report weekly message type.";
-
-  public static final String NOTIFICATION_TEMPLATE_VIRTUAL_FOLLOW_UP =
-      "messages.notificationTemplate.virtual-follow-up";
-  public static final String NOTIFICATION_TEMPLATE_VIRTUAL_FOLLOW_UP_DEFAULT_VALUE =
-      "#set($textToRead = \"\")\n"
-          + "#if($patient.getId().equals($actor.getId()))\n"
-          + " #set($textToRead = \"Hello $patient.getPersonName().toString(), "
-          + "It has been $DAYS_AFTER_VISIT days after your last dosing visit.\")\n"
-          + "#else\n"
-          + " #set($textToRead = \"Hello $actor.getPersonName().toString(), "
-          + "Your patient's last dosing visit has been $DAYS_AFTER_VISIT days ago.\")\n"
-          + "#end\n"
-          + "{ message:\"$textToRead\" }";
-  public static final String NOTIFICATION_TEMPLATE_VIRTUAL_FOLLOW_UP_DESCRIPTION =
-      "The notification template for Virtual Follow Up message type.";
-
   public static final String DEFAULT_USER_TIMEZONE = "messages.defaultUserTimezone";
   public static final String DEFAULT_USER_TIMEZONE_DEFAULT_VALUE = "Europe/Brussels";
   public static final String DEFAULT_USER_TIMEZONE_DESCRIPTION =
@@ -303,7 +193,7 @@ public final class ConfigConstants {
   public static final String CALL_DEFAULT_FLOW = "messages.defaultFlow";
   public static final String CALL_DEFAULT_FLOW_DEFAULT_VALUE = "";
   public static final String CALL_DEFAULT_FLOW_DESCRIPTION =
-      "The string value representing the default value of " + " call flow used to make calls.";
+      "The string value representing the default value of call flow used to make calls.";
 
   public static final String MESSAGE_DELIVERY_JOB_INTERVAL = "messages.messageDeliveryJobInterval";
   public static final String MESSAGE_DELIVERY_JOB_INTERVAL_DEFAULT_VALUE = "86400";
@@ -330,7 +220,7 @@ public final class ConfigConstants {
   public static final String ITR_ANSWER_REGEX_CONCEPT_ATTR_TYPE_UUID =
       "messages.concept.attributeType.answerRegex.uuid";
   public static final String ITR_ANSWER_REGEX_CONCEPT_ATTR_TYPE_UUID_DESC =
-      "The UUID of Concept Attribute Type with " + "Answer Regex.";
+      "The UUID of Concept Attribute Type with Answer Regex.";
 
   public static final String ITR_PROVIDER_TEMPLATE_NAME_CONCEPT_ATTR_TYPE_UUID =
       "messages.concept.attributeType" + ".providerTemplateName.uuid";

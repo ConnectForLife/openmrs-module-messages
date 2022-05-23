@@ -1,7 +1,5 @@
-jq = window.jq || {};
-
 function escapeSpaces(index) {
-  var result = index;
+  let result = index;
   if (typeof index === 'string') {
     result = index.split(" ").join("_");
   }
@@ -10,10 +8,8 @@ function escapeSpaces(index) {
 
 function groupBarChart(config) {
       function setReSizeEvent(data) {
-        var resizeTimer;
-        var interval = 500;
-        window.removeEventListener('resize', function () {
-        });
+        let resizeTimer;
+        let interval = 500;
         window.addEventListener('resize', function (event) {
 
           if (resizeTimer !== false) {
@@ -31,14 +27,14 @@ function groupBarChart(config) {
       setReSizeEvent(config);
     }
     function creategroupBarChartLegend(mainDiv, columnsInfo, colorRange) {
-      var z = d3.scaleOrdinal()
+      let z = d3.scaleOrdinal()
         .range(colorRange);
-      var mainDivName = mainDiv.substr(1, mainDiv.length);
+      const mainDivName = mainDiv.substr(1, mainDiv.length);
       jq(mainDiv).before("<div id='Legend_" + mainDivName + "' class='pmd-card-body'\
         style='margin: 0;'></div>");
-      var keys = Object.keys(columnsInfo);
+      const keys = Object.keys(columnsInfo);
       keys.forEach(function (d) {
-        var cloloCode = z(d);
+        const cloloCode = z(d);
         jq("#Legend_" + mainDivName).append("<span class='team-graph team1' style='display: inline-block; margin-right:10px;'>\
   			<span style='background:" + cloloCode + ";width: 10px;height: 10px;display: inline-block;vertical-align: middle;'>&nbsp;</span>\
   			<span style='padding-top: 0;font-family:Source Sans Pro, sans-serif;font-size: 13px;display: inline;'>" + columnsInfo[d] + " </span>\
@@ -49,7 +45,7 @@ function groupBarChart(config) {
 
 function getNumberOfTicks(data, keys) {
     const maxNumberOfTicks = 4;
-    var ticksNumber = d3.max(data, function (d) {
+    let ticksNumber = d3.max(data, function (d) {
         return d3.max(keys, function (key) {
           return d[key];
         });
@@ -61,44 +57,44 @@ function getNumberOfTicks(data, keys) {
 }
 
 function drawgroupBarChartChart(config) {
-      var fragmentId = config.fragmentId;
-      var data = config.data;
-      var columnsInfo = config.columnsInfo;
-      var xAxis = config.xAxis;
-      var yAxis = config.yAxis;
-      var colorRange = config.colorRange;
-      var mainDiv = config.mainDiv;
-      var mainDivName = mainDiv.substr(1, mainDiv.length);
-      var label = config.label;
-      var requireLegend = config.requireLegend;
+      let fragmentId = config.fragmentId;
+      let data = config.data;
+      let columnsInfo = config.columnsInfo;
+      let xAxis = config.xAxis;
+      let yAxis = config.yAxis;
+      let colorRange = config.colorRange;
+      let mainDiv = config.mainDiv;
+      let mainDivName = mainDiv.substr(1, mainDiv.length);
+      let label = config.label;
+      let requireLegend = config.requireLegend;
       d3.select(mainDiv).append("svg").attr("width", jq(mainDiv).width()).attr("height", jq(mainDiv).height()*0.9);
 
-      var svg = d3.select(mainDiv + " svg"),
+      let svg = d3.select(mainDiv + " svg"),
         margin = { top: 20, right: 20, bottom: 45, left: 40 },
         width = +svg.attr("width") - margin.left - margin.right,
         height = +svg.attr("height") - margin.top - margin.bottom;
 
-      var g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      let g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
       if (requireLegend != null && requireLegend != undefined && requireLegend != false) {
         jq("#Legend_" + mainDivName).remove();
         creategroupBarChartLegend(mainDiv, columnsInfo, colorRange);
 
       }
-      var x0 = d3.scaleBand()
+      let x0 = d3.scaleBand()
         .rangeRound([0, width])
         .paddingInner(0.1);
 
-      var x1 = d3.scaleBand()
+      let x1 = d3.scaleBand()
         .padding(0.05);
 
-      var y = d3.scaleLinear()
+      let y = d3.scaleLinear()
         .rangeRound([height, 0]);
 
-      var z = d3.scaleOrdinal()
+      let z = d3.scaleOrdinal()
         .range(colorRange);
 
-      var keys = Object.keys(columnsInfo);
+      let keys = Object.keys(columnsInfo);
       x0.domain(data.map(function (d) {
         return d[xAxis];
       }));
@@ -108,8 +104,8 @@ function drawgroupBarChartChart(config) {
           return d[key];
         });
       })]).nice();
-      var ticksNumber = getNumberOfTicks(data, keys);
-      var element = g.append("g")
+      let ticksNumber = getNumberOfTicks(data, keys);
+      let element = g.append("g")
         .selectAll("g")
         .data(data)
         .enter().append("g")
@@ -117,7 +113,7 @@ function drawgroupBarChartChart(config) {
           return "translate(" + x0(d[xAxis]) + ",0)";
         });
 
-      var rect = element.selectAll("rect")
+      let rect = element.selectAll("rect")
         .data(function (d, i) {
           return keys.map(function (key) {
             return { key: key, value: d[key], index: key + "_" + i + "_" + d[xAxis] };
@@ -147,7 +143,7 @@ function drawgroupBarChartChart(config) {
           return z(d.key);
         });
       //CBT:add tooltips
-      var self = {};
+      let self = {};
       self.svg = svg;
       self.cssPrefix = "groupBar0_";
       self.data = data;
@@ -160,14 +156,14 @@ function drawgroupBarChartChart(config) {
       barTooltip.addTooltips(self, fragmentId);
 
       rect.on("mouseover", function () {
-        var currentEl = d3.select(this);
-        var index = currentEl.attr("data-index");
+        let currentEl = d3.select(this);
+        let index = currentEl.attr("data-index");
         barTooltip.showTooltip(self, index, fragmentId);
       });
 
       rect.on("mouseout", function () {
-        var currentEl = d3.select(this);
-        var index = currentEl.attr("data-index");
+        let currentEl = d3.select(this);
+        let index = currentEl.attr("data-index");
         barTooltip.hideTooltip(self, index, fragmentId);
       });
 
@@ -182,7 +178,7 @@ function drawgroupBarChartChart(config) {
         .selectAll("text")
         .style("text-anchor", "end")
         .attr("transform", "rotate(-15)");
-      
+
       g.selectAll(".x.axis")
         .append("text")
         .style("text-anchor", "middle")
@@ -206,25 +202,23 @@ function drawgroupBarChartChart(config) {
         .attr("font-weight", "bold")
         .text(label.yAxis);
     }
-    var helpers = {
+    let helpers = {
       getDimensions: function (id) {
-        var el = document.getElementById(id);
-        var w = 0, h = 0;
+        let el = document.getElementById(id);
+        let w = 0, h = 0;
         if (el) {
-          var dimensions = el.getBBox();
+          let dimensions = el.getBBox();
           w = dimensions.width;
           h = dimensions.height;
-        } else {
-          console.log("error: getDimensions() " + id + " not found.");
         }
         return { w: w, h: h };
       }
     }
-    var barTooltip = {
+    let barTooltip = {
       addTooltips: function (pie, fragmentId) {
-        var keys = pie.keys;
+        let keys = pie.keys;
         // group the label groups (label, percentage, value) into a single element for simpler positioning
-        var element = pie.svg.append("g")
+        let element = pie.svg.append("g")
           .selectAll("g")
           .data(pie.data)
           .enter().append("g")
@@ -232,7 +226,7 @@ function drawgroupBarChartChart(config) {
             return pie.cssPrefix + "tooltips" + "_" + i + "-" + fragmentId
           });
 
-        tooltips = element.selectAll("g")
+        const tooltips = element.selectAll("g")
           .data(function (d, i) {
             return keys.map(function (key) {
               return { key: key, value: d[key], index: key + "_" + i + "_" + d[pie.xAxis] };
@@ -269,7 +263,7 @@ function drawgroupBarChartChart(config) {
             return "arial";
           })
           .text(function (d, i) {
-            var caption = "Count:{runs}";
+            let caption = "Count:{runs}";
             return barTooltip.replacePlaceholders(pie, caption, i, {
               runs: d.value,
             });
@@ -277,21 +271,21 @@ function drawgroupBarChartChart(config) {
 
         element.selectAll("g rect")
           .attr("width", function (d, i) {
-            var dims = helpers.getDimensions(pie.cssPrefix + "tooltip" + escapeSpaces(d.index) + "-" + fragmentId);
+            let dims = helpers.getDimensions(pie.cssPrefix + "tooltip" + escapeSpaces(d.index) + "-" + fragmentId);
             return dims.w + (2 * 4);
           })
           .attr("height", function (d, i) {
-            var dims = helpers.getDimensions(pie.cssPrefix + "tooltip" + escapeSpaces(d.index) + "-" + fragmentId);
+            let dims = helpers.getDimensions(pie.cssPrefix + "tooltip" + escapeSpaces(d.index) + "-" + fragmentId);
             return dims.h + (2 * 4);
           })
           .attr("y", function (d, i) {
-            var dims = helpers.getDimensions(pie.cssPrefix + "tooltip" + escapeSpaces(d.index) + "-" + fragmentId);
+            let dims = helpers.getDimensions(pie.cssPrefix + "tooltip" + escapeSpaces(d.index) + "-" + fragmentId);
             return -(dims.h / 2) + 1;
           });
       },
 
       showTooltip: function (pie, index, fragmentId) {
-        var fadeInSpeed = 250;
+        let fadeInSpeed = 250;
         if (barTooltip.currentTooltip === index + "-" + fragmentId) {
           fadeInSpeed = 1;
         }
@@ -310,9 +304,9 @@ function drawgroupBarChartChart(config) {
       moveTooltip: function (pie, fragmentId) {
         d3.selectAll("#" + pie.cssPrefix + "tooltip" + escapeSpaces(barTooltip.currentTooltip))
           .attr("transform", function (d) {
-            var mouseCoords = d3.mouse(this.parentNode);
-            var x = mouseCoords[0] + 4 + 2;
-            var y = mouseCoords[1] - (2 * 4) - 2;
+            let mouseCoords = d3.mouse(this.parentNode);
+            let x = mouseCoords[0] + 4 + 2;
+            let y = mouseCoords[1] - (2 * 4) - 2;
             return "translate(" + x + "," + y + ")";
           });
       },
@@ -328,16 +322,16 @@ function drawgroupBarChartChart(config) {
         d3.select("#" + pie.cssPrefix + "tooltip" + escapeSpaces(barTooltip.currentTooltip))
           .attr("transform", function (d, i) {
             // klutzy, but it accounts for tooltip padding which could push it onscreen
-            var x = pie.width + 1000;
-            var y = pie.height + 1000;
+            let x = pie.width + 1000;
+            let y = pie.height + 1000;
             return "translate(" + x + "," + y + ")";
           });
       },
 
       replacePlaceholders: function (pie, str, index, replacements) {
-        var replacer = function () {
+        let replacer = function () {
           return function (match) {
-            var placeholder = arguments[1];
+            let placeholder = arguments[1];
             if (replacements.hasOwnProperty(placeholder)) {
               return replacements[arguments[1]];
             } else {

@@ -10,7 +10,7 @@ public class GraphResultDTO extends BaseDTO {
 
     private String alias;
 
-    private Map<String, Object> configMap;
+    private transient Map<String, Object> configMap;
 
     public Integer getResult() {
         return result;

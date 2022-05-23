@@ -10,7 +10,7 @@ public class TemplateFieldValueCriteria extends BaseOpenmrsDataCriteria implemen
 
   private static final long serialVersionUID = 1L;
 
-  private PatientTemplate patientTemplate;
+  private transient PatientTemplate patientTemplate;
 
   private String fieldTypeName;
 

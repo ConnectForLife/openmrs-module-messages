@@ -39,7 +39,7 @@ public class CountryPropertyValidatorTest extends BaseContextMockTest {
 
     new CountryPropertyValidator().validate(countryProperty, errorsMock);
 
-    verify(errorsMock).rejectValue(eq(CountryProperty.NAME), any(), any(), any());
+    verify(errorsMock).rejectValue(eq(CountryProperty.NAME_PROP_NAME), any(), any(), any());
   }
 
   @Test
@@ -50,7 +50,7 @@ public class CountryPropertyValidatorTest extends BaseContextMockTest {
 
     new CountryPropertyValidator().validate(countryProperty, errorsMock);
 
-    verify(errorsMock).rejectValue(eq(CountryProperty.VALUE), any(), any(), any());
+    verify(errorsMock).rejectValue(eq(CountryProperty.VALUE_PROP_NAME), any(), any(), any());
   }
 
   @Test

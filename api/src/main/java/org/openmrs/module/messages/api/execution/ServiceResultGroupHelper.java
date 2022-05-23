@@ -29,7 +29,7 @@ public final class ServiceResultGroupHelper {
         final Map<GroupedServiceResultListKey, List<GroupedServiceResult>> groupedLists =
                 groupByResultListKey(serviceResultLists);
 
-        final List<GroupedServiceResultList> result = new ArrayList<GroupedServiceResultList>();
+        final List<GroupedServiceResultList> result = new ArrayList<>();
 
         for (Map.Entry<GroupedServiceResultListKey, List<GroupedServiceResult>> serviceResultGroup :
                 groupedLists.entrySet()) {
@@ -88,7 +88,7 @@ public final class ServiceResultGroupHelper {
                 List<GroupedServiceResult> serviceResultGroup = groupedLists.get(currentServiceResultListKey);
 
                 if (serviceResultGroup == null) {
-                    serviceResultGroup = new ArrayList<GroupedServiceResult>();
+                    serviceResultGroup = new ArrayList<>();
                     groupedLists.put(currentServiceResultListKey, serviceResultGroup);
                 }
 

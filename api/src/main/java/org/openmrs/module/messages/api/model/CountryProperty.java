@@ -21,15 +21,14 @@ import javax.persistence.Table;
 @Entity(name = "messages.CountryProperty")
 @Table(name = "messages_country_property")
 public class CountryProperty extends BaseOpenmrsMetadata {
-  private static final long serialVersionUID = 7121389677014252086L;
 
-  public static final String ID = "id";
-  public static final String UUID = "uuid";
-  public static final String NAME = "name";
-  public static final String DESCRIPTION = "description";
-  public static final String COUNTRY = "country";
-  public static final String VALUE = "value";
-  public static final String RETIRED = "retired";
+  private static final long serialVersionUID = 7121389677014252086L;
+  public static final String UUID_PROP_NAME = "uuid";
+  public static final String NAME_PROP_NAME = "name";
+  public static final String DESCRIPTION_PROP_NAME = "description";
+  public static final String COUNTRY_PROP_NAME = "country";
+  public static final String VALUE_PROP_NAME = "value";
+  public static final String RETIRED_PROP_NAME = "retired";
 
   @Id
   @GeneratedValue

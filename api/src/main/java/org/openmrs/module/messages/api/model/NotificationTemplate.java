@@ -16,7 +16,7 @@ import java.io.Serializable;
 
 public class NotificationTemplate implements Serializable {
 
-    private static final long serialVersionUID = -2642488686624987463L;
+    private static final long serialVersionUID = -2515041330316320560L;
 
     private String templateName;
 

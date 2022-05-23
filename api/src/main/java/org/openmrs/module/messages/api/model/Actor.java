@@ -10,7 +10,7 @@ import java.io.Serializable;
 
 public class Actor implements Comparable<Actor>, Serializable {
 
-    private static final long serialVersionUID = -8622732985364281175L;
+    private static final long serialVersionUID = 7591031916726299702L;
 
     private Person target;
 

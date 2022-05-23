@@ -38,7 +38,7 @@ import java.util.Map;
 /** Represents a list of execution for a service/message. */
 public class ServiceResultList implements Serializable {
 
-  private static final long serialVersionUID = 6075952817494895177L;
+  private static final long serialVersionUID = -6883448088210184888L;
   private static final Log LOGGER = LogFactory.getLog(ServiceResultList.class);
   private static final int CLEARING_CACHE_STEP = 1000;
 

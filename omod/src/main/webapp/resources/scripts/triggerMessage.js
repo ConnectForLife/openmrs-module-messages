@@ -1,8 +1,4 @@
-emr = window.emr || {};
-jq = window.jq || {};
-
-OPENMRS_CONTEXT_PATH = window.OPENMRS_CONTEXT_PATH || '/openmrs';
-triggerMessage = window.triggerMessage || {};
+let triggerMessage = window.triggerMessage || {};
 
 triggerMessage.triggerMessageCreationDialog = null;
 

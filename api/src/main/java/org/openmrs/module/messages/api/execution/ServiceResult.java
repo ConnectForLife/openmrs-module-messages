@@ -42,12 +42,12 @@ public class ServiceResult implements Serializable, DTO {
   public static final int MIN_COL_NUM = 3;
 
   private ZonedDateTime executionDate;
-  private Object messageId;
+  private transient Object messageId;
   private String channelType;
   private Integer patientId;
   private Integer actorId;
   private ServiceStatus serviceStatus = ServiceStatus.FUTURE;
-  private Map<String, Object> additionalParams = new HashMap<>();
+  private transient Map<String, Object> additionalParams = new HashMap<>();
   private String bestContactTime;
   private Integer patientTemplateId;
 

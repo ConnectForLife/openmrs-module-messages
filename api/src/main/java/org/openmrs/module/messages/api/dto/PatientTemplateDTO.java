@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class PatientTemplateDTO extends BaseDTO implements DTO {
 
-    private static final long serialVersionUID = 2028476859103808366L;
+    private static final long serialVersionUID = -2254698048130974286L;
 
     private Integer id;
 

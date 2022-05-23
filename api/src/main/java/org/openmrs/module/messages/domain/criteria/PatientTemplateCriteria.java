@@ -22,13 +22,15 @@ public class PatientTemplateCriteria extends BaseOpenmrsDataCriteria implements 
 
     private static final long serialVersionUID = -486120008842837370L;
 
+    private static final String ACTOR_TYPE_PROP_NAME = "actorType";
+
     private Patient patient;
 
     private Person actor;
 
     private Relationship actorType;
 
-    private Template template;
+    private transient Template template;
 
     public PatientTemplateCriteria(Patient patient) {
         this.patient = patient;
@@ -147,10 +149,10 @@ public class PatientTemplateCriteria extends BaseOpenmrsDataCriteria implements 
             // filtering PTs for a patient and the related actors - based on the allowed relationships (defined in GP)
             hibernateCriteria
                     .add(Restrictions.eq("patient", patient))
-                    .createAlias("actorType", "a", JoinType.LEFT_OUTER_JOIN)
+                    .createAlias(ACTOR_TYPE_PROP_NAME, "a", JoinType.LEFT_OUTER_JOIN)
                     .add(
                             Restrictions.or(
-                                    Restrictions.isNull("actorType"), // directly related to a patient
+                                    Restrictions.isNull(ACTOR_TYPE_PROP_NAME), // directly related to a patient
                                     Restrictions.in("a.relationshipType", getActorTypeRelationshipTypes(patient))
                             )
                     );
@@ -164,7 +166,7 @@ public class PatientTemplateCriteria extends BaseOpenmrsDataCriteria implements 
 
         if (actorType != null) {
             hibernateCriteria
-                    .add(Restrictions.eq("actorType", actorType));
+                    .add(Restrictions.eq(ACTOR_TYPE_PROP_NAME, actorType));
         }
 
         if (template != null) {

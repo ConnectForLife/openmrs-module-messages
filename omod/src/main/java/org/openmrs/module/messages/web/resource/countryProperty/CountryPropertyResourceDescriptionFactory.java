@@ -9,35 +9,35 @@ public class CountryPropertyResourceDescriptionFactory {
 
   public static DelegatingResourceDescription newRefRepresentation() {
     final DelegatingResourceDescription description = new DelegatingResourceDescription();
-    description.addProperty(CountryProperty.UUID);
-    description.addProperty(CountryProperty.VALUE);
+    description.addProperty(CountryProperty.UUID_PROP_NAME);
+    description.addProperty(CountryProperty.VALUE_PROP_NAME);
     description.addSelfLink();
     return description;
   }
 
   public static DelegatingResourceDescription newDefaultRepresentation() {
     final DelegatingResourceDescription description = new DelegatingResourceDescription();
-    description.addProperty(CountryProperty.UUID);
-    description.addProperty(CountryProperty.NAME);
-    description.addProperty(CountryProperty.COUNTRY, Representation.REF);
-    description.addProperty(CountryProperty.VALUE);
-    description.addProperty(CountryProperty.DESCRIPTION);
+    description.addProperty(CountryProperty.UUID_PROP_NAME);
+    description.addProperty(CountryProperty.NAME_PROP_NAME);
+    description.addProperty(CountryProperty.COUNTRY_PROP_NAME, Representation.REF);
+    description.addProperty(CountryProperty.VALUE_PROP_NAME);
+    description.addProperty(CountryProperty.DESCRIPTION_PROP_NAME);
     description.addSelfLink();
     return description;
   }
 
   public static DelegatingResourceDescription newCreatableProperties() {
     final DelegatingResourceDescription creatableProperties = new DelegatingResourceDescription();
-    creatableProperties.addProperty(CountryProperty.NAME);
-    creatableProperties.addProperty(CountryProperty.DESCRIPTION);
-    creatableProperties.addProperty(CountryProperty.COUNTRY);
-    creatableProperties.addProperty(CountryProperty.VALUE);
+    creatableProperties.addProperty(CountryProperty.NAME_PROP_NAME);
+    creatableProperties.addProperty(CountryProperty.DESCRIPTION_PROP_NAME);
+    creatableProperties.addProperty(CountryProperty.COUNTRY_PROP_NAME);
+    creatableProperties.addProperty(CountryProperty.VALUE_PROP_NAME);
     return creatableProperties;
   }
 
   public static DelegatingResourceDescription newUpdatableProperties() {
     final DelegatingResourceDescription updatableProperties = new DelegatingResourceDescription();
-    updatableProperties.addProperty(CountryProperty.VALUE);
+    updatableProperties.addProperty(CountryProperty.VALUE_PROP_NAME);
     return updatableProperties;
   }
 }

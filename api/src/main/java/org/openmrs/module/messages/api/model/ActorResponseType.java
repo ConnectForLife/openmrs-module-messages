@@ -13,7 +13,7 @@ import java.io.Serializable;
 @Table(name = "messages_actor_response_type")
 public class ActorResponseType implements Serializable {
 
-    private static final long serialVersionUID = 634303808051948004L;
+    private static final long serialVersionUID = 8521432405404466075L;
 
     @Id
     @Column(name = "name")

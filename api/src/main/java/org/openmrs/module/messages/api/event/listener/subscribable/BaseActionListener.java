@@ -48,12 +48,7 @@ public abstract class BaseActionListener implements SubscribableEventListener, D
     @Override
     public void onMessage(Message message) {
         LOGGER.trace("Handle onMessage");
-        Daemon.runInDaemonThread(new Runnable() {
-            @Override
-            public void run() {
-                performAction(message);
-            }
-        }, daemonToken);
+        Daemon.runInDaemonThread(() -> performAction(message), daemonToken);
     }
 
     public void init() {
