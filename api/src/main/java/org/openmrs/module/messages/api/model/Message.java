@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class Message implements Serializable {
 
-    private static final long serialVersionUID = -8316289727827489159L;
+    private static final long serialVersionUID = -6672369644680287938L;
 
     private final String name;
     private final int messageId;

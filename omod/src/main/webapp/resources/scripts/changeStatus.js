@@ -1,13 +1,9 @@
-emr = window.emr || {};
-jq = window.jq || {};
-
-OPENMRS_CONTEXT_PATH = window.OPENMRS_CONTEXT_PATH || '/openmrs';
-changeStatus = window.changeStatus || {};
+let changeStatus = window.changeStatus || {};
 
 changeStatus.updatePersonStatusDialog = null;
 
 changeStatus.handelChangedStatus = function(selectObject) {
-    var value = selectObject.value;
+    let value = selectObject.value;
     if (value === 'DEACTIVATED') {
         jq('.person-status-reason').show();
     } else {
@@ -33,8 +29,8 @@ changeStatus.submit = function() {
         "person.status.update.successful",
         "person.status.update.unsuccessful"
     ]);
-    var statusValue = document.getElementById("person-status-select").value;
-    var changeReason = document.getElementById("person-status-reason-select").value.trim();
+    let statusValue = document.getElementById("person-status-select").value;
+    let changeReason = document.getElementById("person-status-reason-select").value.trim();
 
     if (!statusValue) {
         jq('#person-status-select-empty').css({'color' : 'red', display : 'inline'}).show();
@@ -42,7 +38,7 @@ changeStatus.submit = function() {
         jq('#person-status-reason-select-empty').css({'color' : 'red', display : 'inline'}).show();
     } else {
         jq('#person-status-update-dialog' + ' .icon-spin').css('display', 'inline-block').parent().addClass('disabled');
-        var url = '/' + OPENMRS_CONTEXT_PATH + '/messages/patientdashboard/changeStatus/update.action';
+        let url = '/' + OPENMRS_CONTEXT_PATH + '/messages/patientdashboard/changeStatus/update.action';
         jq.ajax({
             url: url,
             type: 'POST',

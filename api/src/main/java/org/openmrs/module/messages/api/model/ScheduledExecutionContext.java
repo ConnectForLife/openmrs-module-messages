@@ -23,7 +23,7 @@ import java.util.Map;
 
 public class ScheduledExecutionContext implements Serializable {
 
-    private static final long serialVersionUID = 7043667008864304408L;
+    private static final long serialVersionUID = 7130097358348208474L;
 
     private List<Integer> serviceIdsToExecute;
     private String channelType;

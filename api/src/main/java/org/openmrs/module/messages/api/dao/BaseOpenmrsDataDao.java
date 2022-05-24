@@ -17,7 +17,7 @@ public abstract class BaseOpenmrsDataDao<T extends BaseOpenmrsData> extends Hibe
 
     private DbSessionFactory dbSessionFactory;
 
-    public BaseOpenmrsDataDao(Class<T> mappedClass) {
+    protected BaseOpenmrsDataDao(Class<T> mappedClass) {
         super(mappedClass);
     }
 

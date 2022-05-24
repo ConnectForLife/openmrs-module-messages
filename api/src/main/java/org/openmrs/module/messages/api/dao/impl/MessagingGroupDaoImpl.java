@@ -6,8 +6,8 @@ import org.openmrs.module.messages.api.dao.BaseOpenmrsDataDao;
 import org.openmrs.module.messages.api.dao.MessagingGroupDao;
 import org.openmrs.module.messages.api.model.ScheduledServiceGroup;
 
-import java.sql.Date;
 import java.time.Instant;
+import java.util.Date;
 
 public class MessagingGroupDaoImpl extends BaseOpenmrsDataDao<ScheduledServiceGroup> implements MessagingGroupDao {
 

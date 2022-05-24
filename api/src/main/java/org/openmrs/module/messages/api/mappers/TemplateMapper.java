@@ -49,9 +49,6 @@ public class TemplateMapper extends AbstractMapper<TemplateDTO, Template> implem
     @Override
     public void updateFromDto(TemplateDTO newTemplate, Template existingTemplate) {
         existingTemplate.setName(newTemplate.getName());
-        // TODO: at this moment, it is safer to not update these fields by DTO
-        // existingTemplate.setServiceQuery(newTemplate.getServiceQuery());
-        // existingTemplate.setServiceQueryType(newTemplate.getServiceQueryType());
         templateFieldMapper.updateFromDtos(newTemplate.getTemplateFields(), existingTemplate.getTemplateFields());
     }
 

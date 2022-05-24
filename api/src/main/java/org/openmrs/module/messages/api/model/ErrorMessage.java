@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class ErrorMessage implements Serializable {
 
-    private static final long serialVersionUID = -3517536555095950206L;
+    private static final long serialVersionUID = 5227514623273315149L;
 
     private String code;
 

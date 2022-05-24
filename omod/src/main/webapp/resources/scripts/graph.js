@@ -1,14 +1,11 @@
-jq = window.jq || {};
-
-OPENMRS_CONTEXT_PATH = window.OPENMRS_CONTEXT_PATH || '/openmrs';
-responseGraph = window.responseGraph || {};
-groupBarChart = window.groupBarChart || function(c) {};
+var responseGraph = window.responseGraph || {};
+var groupBarChart = window.groupBarChart;
 
 responseGraph.load = function(mainDiv, config) {
 
   jq(mainDiv).empty();
   jq(config.loadingMessage).show();
-  var url = '/' + OPENMRS_CONTEXT_PATH + '/messages/patientdashboard/graph/getData.action';
+  const url = '/' + OPENMRS_CONTEXT_PATH + '/messages/patientdashboard/graph/getData.action';
   jq.ajax({
     url: url,
     type: 'POST',
@@ -16,7 +13,7 @@ responseGraph.load = function(mainDiv, config) {
     data: {graphConfig: JSON.stringify(config.requestConfig)},
     success: function(data) {
         if (responseGraph.checkIfNotEmpty(data, config)) {
-          var barChartConfig = {
+          const barChartConfig = {
             fragmentId: config.fragmentId,
             mainDiv: mainDiv,
             colorRange: config.colorRange,
@@ -41,7 +38,7 @@ responseGraph.load = function(mainDiv, config) {
 };
 
 responseGraph.prepareLabels = function(config) {
-  var labels = {};
+  let labels = {};
   if (config.xAxisLabel) {
     labels.xAxis = config.xAxisLabel;
   }
@@ -52,21 +49,21 @@ responseGraph.prepareLabels = function(config) {
 };
 
 responseGraph.extractChartData = function(resultGraphDTOList, config) {
-      var output = [];
+      let output = [];
        if (config.groupByAlias == "null") {
             resultGraphDTOList.forEach((item) => {
-                var chartItem = {};
+                let chartItem = {};
                 chartItem[item.alias] = item.result;
                 output.push(chartItem);
             });
        } else {
           resultGraphDTOList.forEach((item) => {
-                var configMap = item.configMap;
-                var numberOfResponses = configMap[config.countResultAlias];
-                var responseAlias = configMap[config.responseAlias];
-                var groupByAlias = configMap[config.groupByAlias];
+                let configMap = item.configMap;
+                let numberOfResponses = configMap[config.countResultAlias];
+                let responseAlias = configMap[config.responseAlias];
+                let groupByAlias = configMap[config.groupByAlias];
 
-                var chartItem = {};
+                let chartItem = {};
                 chartItem[config.groupByAlias] = groupByAlias;
                 chartItem[responseAlias] = numberOfResponses;
                 output.push(chartItem);
@@ -77,14 +74,14 @@ responseGraph.extractChartData = function(resultGraphDTOList, config) {
 };
 
 responseGraph.checkIfNotEmpty = function(results, config) {
-    var counter = 0;
+    let counter = 0;
     if (config.groupByAlias == "null") {
         results.forEach((item) => {
             counter = counter + item.result;
        });
     } else {
         results.forEach((item) => {
-            var configMap = item.configMap;
+            let configMap = item.configMap;
             counter = counter + configMap[config.countResultAlias];
        });
     }
