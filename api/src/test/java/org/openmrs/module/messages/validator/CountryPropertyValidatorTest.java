@@ -25,7 +25,7 @@ public class CountryPropertyValidatorTest extends BaseContextMockTest {
   @Before
   public void setup() {
     contextMockHelper.setService(CountryPropertyService.class, countryPropertyServiceMock);
-    when(countryPropertyServiceMock.getCountryPropertyValue(any(), any())).thenReturn(empty());
+    when(countryPropertyServiceMock.getCountryProperty(any(), any())).thenReturn(empty());
 
     contextMockHelper.setService(MessageSourceService.class, messageSourceService);
     when(messageSourceService.getMessage(any())).then(invocation -> invocation.getArguments()[0]);
@@ -60,8 +60,8 @@ public class CountryPropertyValidatorTest extends BaseContextMockTest {
     countryProperty.setValue("some value");
     final Errors errorsMock = mock(Errors.class);
 
-    when(countryPropertyServiceMock.getCountryPropertyValue(null, countryProperty.getName()))
-        .thenReturn(of("some other value"));
+    when(countryPropertyServiceMock.getCountryProperty(null, countryProperty.getName()))
+        .thenReturn(of(new CountryProperty()));
 
     new CountryPropertyValidator().validate(countryProperty, errorsMock);
 

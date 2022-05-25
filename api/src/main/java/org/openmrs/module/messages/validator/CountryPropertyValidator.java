@@ -8,6 +8,7 @@ import org.openmrs.module.messages.api.service.CountryPropertyService;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.openmrs.module.messages.api.util.ValidationUtil.resolveErrorCode;
@@ -37,11 +38,12 @@ public class CountryPropertyValidator implements Validator {
   }
 
   private void validateUniqueness(CountryProperty countryProperty, Errors errors) {
-    final Optional<String> existingProperty =
+    final Optional<CountryProperty> existingProperty =
         Context.getService(CountryPropertyService.class)
-            .getCountryPropertyValue(countryProperty.getCountry(), countryProperty.getName());
+            .getCountryProperty(countryProperty.getCountry(), countryProperty.getName());
 
-    if (existingProperty.isPresent()) {
+    if (existingProperty.isPresent()
+        && Objects.equals(existingProperty.get().getCountry(), countryProperty.getCountry())) {
       // The error code must be resolved here, the OpenMRS doesn't add arguments to the message
       errors.reject(
           resolveErrorCode(
