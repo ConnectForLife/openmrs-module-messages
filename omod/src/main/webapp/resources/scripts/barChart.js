@@ -1,3 +1,5 @@
+const jqQuery = window.jq || {};
+
 function escapeSpaces(index) {
   let result = index;
   if (typeof index === 'string') {
@@ -16,7 +18,7 @@ function groupBarChart(config) {
             clearTimeout(resizeTimer);
           }
           resizeTimer = setTimeout(function () {
-            jq(data.mainDiv).empty();
+            jqQuery(data.mainDiv).empty();
             drawgroupBarChartChart(data);
             clearTimeout(resizeTimer);
           }, interval);
@@ -30,12 +32,12 @@ function groupBarChart(config) {
       let z = d3.scaleOrdinal()
         .range(colorRange);
       const mainDivName = mainDiv.substr(1, mainDiv.length);
-      jq(mainDiv).before("<div id='Legend_" + mainDivName + "' class='pmd-card-body'\
+      jqQuery(mainDiv).before("<div id='Legend_" + mainDivName + "' class='pmd-card-body'\
         style='margin: 0;'></div>");
       const keys = Object.keys(columnsInfo);
       keys.forEach(function (d) {
         const cloloCode = z(d);
-        jq("#Legend_" + mainDivName).append("<span class='team-graph team1' style='display: inline-block; margin-right:10px;'>\
+        jqQuery("#Legend_" + mainDivName).append("<span class='team-graph team1' style='display: inline-block; margin-right:10px;'>\
   			<span style='background:" + cloloCode + ";width: 10px;height: 10px;display: inline-block;vertical-align: middle;'>&nbsp;</span>\
   			<span style='padding-top: 0;font-family:Source Sans Pro, sans-serif;font-size: 13px;display: inline;'>" + columnsInfo[d] + " </span>\
   		</span>");
@@ -67,7 +69,7 @@ function drawgroupBarChartChart(config) {
       let mainDivName = mainDiv.substr(1, mainDiv.length);
       let label = config.label;
       let requireLegend = config.requireLegend;
-      d3.select(mainDiv).append("svg").attr("width", jq(mainDiv).width()).attr("height", jq(mainDiv).height()*0.9);
+      d3.select(mainDiv).append("svg").attr("width", jqQuery(mainDiv).width()).attr("height", jqQuery(mainDiv).height()*0.9);
 
       let svg = d3.select(mainDiv + " svg"),
         margin = { top: 20, right: 20, bottom: 45, left: 40 },
@@ -77,7 +79,7 @@ function drawgroupBarChartChart(config) {
       let g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
       if (requireLegend != null && requireLegend != undefined && requireLegend != false) {
-        jq("#Legend_" + mainDivName).remove();
+        jqQuery("#Legend_" + mainDivName).remove();
         creategroupBarChartLegend(mainDiv, columnsInfo, colorRange);
 
       }

@@ -1,12 +1,14 @@
+const jqQueryVar = window.jq || {};
+
 var responseGraph = window.responseGraph || {};
 var groupBarChart = window.groupBarChart;
 
 responseGraph.load = function(mainDiv, config) {
 
-  jq(mainDiv).empty();
-  jq(config.loadingMessage).show();
-  const url = '/' + OPENMRS_CONTEXT_PATH + '/messages/patientdashboard/graph/getData.action';
-  jq.ajax({
+  jqQueryVar(mainDiv).empty();
+  jqQueryVar(config.loadingMessage).show();
+  const url = '/openmrs/messages/patientdashboard/graph/getData.action';
+  jqQueryVar.ajax({
     url: url,
     type: 'POST',
     dataType: "json",
@@ -25,14 +27,14 @@ responseGraph.load = function(mainDiv, config) {
           };
           new groupBarChart(barChartConfig);
         } else {
-          jq(config.noContentMessage).show();
+          jqQueryVar(config.noContentMessage).show();
         }
     },
     error: function() {
-      jq(config.noContentMessage).show();
+      jqQueryVar(config.noContentMessage).show();
     },
     complete: function() {
-      jq(config.loadingMessage).hide();
+      jqQueryVar(config.loadingMessage).hide();
     }
   });
 };
