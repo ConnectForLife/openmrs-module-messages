@@ -1,29 +1,32 @@
+const emrVar = window.emr || {};
+const jqVar = window.jq || {};
+
 let triggerMessage = window.triggerMessage || {};
 
 triggerMessage.triggerMessageCreationDialog = null;
 
 triggerMessage.createTriggerMessageCreationDialog = function() {
-    emr.loadMessages([
+    emrVar.loadMessages([
         "messages.triggerMessage.success",
         "messages.triggerMessage.failed"
     ]);
 
-    triggerMessage.triggerMessageCreationDialog = emr.setupConfirmationDialog({
+    triggerMessage.triggerMessageCreationDialog = emrVar.setupConfirmationDialog({
         selector: '#trigger-message-dialog',
         actions: {
             confirm: function() {
-                jq.ajax({
-                    url: `/${OPENMRS_CONTEXT_PATH}/ws/messages/triggerMessage/${triggerMessage.personUuid}/${triggerMessage.templateNames}/${triggerMessage.channelType}`,
+                jqVar.ajax({
+                    url: `/openmrs/ws/messages/triggerMessage/${triggerMessage.personUuid}/${triggerMessage.templateNames}/${triggerMessage.channelType}`,
                     type: 'POST',
                     success: function() {
-                        emr.successMessage("messages.triggerMessage.success");
+                        emrVar.successMessage("messages.triggerMessage.success");
                         triggerMessage.triggerMessageCreationDialog.close();
                     },
                     error: function(data) {
-                        emr.errorMessage("messages.triggerMessage.failed");
+                        emrVar.errorMessage("messages.triggerMessage.failed");
                         triggerMessage.triggerMessageCreationDialog.close();
                         if (data.status == 403) {
-                            window.location.href = `/${OPENMRS_CONTEXT_PATH}/login.htm`;
+                            window.location.href = `/openmrs/login.htm`;
                         }
                     },
                     final: function() {
@@ -49,9 +52,9 @@ triggerMessage.showTriggerMessageCreationDialog = function(personUuid, templateN
 };
 
 triggerMessage.goToReturnUrl = function() {
-    emr.navigateTo({ applicationUrl: emr.applyContextModel(triggerMessage.returnUrl)});
+    emrVar.navigateTo({ applicationUrl: emrVar.applyContextModel(triggerMessage.returnUrl)});
 };
 
 triggerMessage.enableConfirmButton = function() {
-    jq('#trigger-message-dialog' + ' .icon-spin').css('display', 'inline-block').parent().addClass('enabled');
+    jqVar('#trigger-message-dialog' + ' .icon-spin').css('display', 'inline-block').parent().addClass('enabled');
 };
