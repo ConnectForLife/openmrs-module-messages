@@ -39,7 +39,7 @@ public class ActorMapperTest {
     }
 
     @Test
-    public void shouldMapToDtoSuccessfully() {
+    public void shouldMapFromDAOToDTO() {
         ActorDTO actorDTO = actorMapper.toDto(dao);
 
         assertThat(actorDTO, is(notNullValue()));
@@ -51,7 +51,7 @@ public class ActorMapperTest {
     }
 
     @Test
-    public void shouldMapToDtosSuccessfully() {
+    public void shouldMapFromDAOsToDTOs() {
         List<ActorDTO> actorDTOs = actorMapper.toDtos(daos);
 
         assertThat(actorDTOs, is(notNullValue()));

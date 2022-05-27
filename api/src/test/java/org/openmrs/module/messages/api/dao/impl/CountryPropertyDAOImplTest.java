@@ -8,9 +8,11 @@ import org.openmrs.module.messages.ContextSensitiveTest;
 import org.openmrs.module.messages.api.model.CountryProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -50,5 +52,38 @@ public class CountryPropertyDAOImplTest extends ContextSensitiveTest {
     assertEquals(PROPERTY_NAME, countryProperty.get().getName());
     assertEquals(PROPERTY_WITHOUT_COUNTRY_UUID, countryProperty.get().getUuid());
     assertNull("The country must be null.", countryProperty.get().getCountry());
+  }
+
+  @Test
+  public void shouldGetSpainCountryProperty() {
+    Concept spainCountryConcept = Context.getConceptService().getConcept(3);
+
+    Optional<CountryProperty> actual = dao.getCountryProperty(spainCountryConcept, PROPERTY_NAME);
+
+    assertTrue(actual.isPresent());
+    assertEquals(PROPERTY_NAME, actual.get().getName());
+    assertEquals("1a9859c3-6e86-446c-9511-db9e0dc15c09", actual.get().getUuid());
+  }
+
+  @Test
+  public void shouldGetAllCountryProperties() {
+    List<CountryProperty> actual = dao.getAll("test", false, 0, 100);
+
+    assertNotNull(actual);
+    assertEquals(3, actual.size());
+  }
+
+  @Test
+  public void shouldGetAllCountByPrefixAndRetired() {
+    int actual = dao.getAllCount("test", false);
+
+    assertEquals(3, actual);
+  }
+
+  @Test
+  public void shouldGetAllCountByPrefix() {
+    int actual = dao.getAllCount(false);
+
+    assertEquals(3, actual);
   }
 }

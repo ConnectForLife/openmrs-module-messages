@@ -87,5 +87,4 @@ public class TemplateDaoITTest extends ContextSensitiveTest {
         template1.setCalendarServiceQuery("");
         Assert.assertEquals(Constant.EXAMPLE_TEMPLATE_SERVICE_QUERY, template1.getCalendarServiceQuery());
     }
-
 }

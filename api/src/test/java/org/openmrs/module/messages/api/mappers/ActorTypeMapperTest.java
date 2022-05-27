@@ -9,7 +9,11 @@ import org.openmrs.module.messages.api.util.StaticMappersProvider;
 import org.openmrs.module.messages.builder.ActorTypeBuilder;
 import org.openmrs.module.messages.builder.RelationshipTypeBuilder;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.openmrs.module.messages.Constant.CAREGIVER_RELATIONSHIP;
 import static org.openmrs.module.messages.Constant.CARETAKER_RELATIONSHIP;
 
@@ -17,7 +21,7 @@ public class ActorTypeMapperTest {
 
     private static final String TYPE_UUID = "511cc270-2541-4a9b-b08e-d70b058f86ab";
 
-    private ActorTypeMapper actorTypeMapper = StaticMappersProvider.getActorTypeMapper();
+    private final ActorTypeMapper actorTypeMapper = StaticMappersProvider.getActorTypeMapper();
 
     @Test
     public void shouldMapToActorTypeForDirectionA() {
@@ -45,5 +49,17 @@ public class ActorTypeMapperTest {
 
         assertEquals(TYPE_UUID, result.getUuid());
         assertEquals(CARETAKER_RELATIONSHIP, result.getDisplay());
+    }
+
+    @Test
+    public void shouldMapDAOsToDTOs() {
+        RelationshipType relationshipType = new RelationshipTypeBuilder().withUuid(TYPE_UUID).build();
+        List<ActorType> actorTypes = Arrays.asList(new ActorTypeBuilder().withDirection(RelationshipTypeDirection.A).withType(relationshipType).build(),
+                new ActorTypeBuilder().withDirection(RelationshipTypeDirection.B).withType(relationshipType).build());
+
+        List<ActorTypeDTO> result = actorTypeMapper.toDtos(actorTypes);
+
+        assertNotNull(result);
+        assertEquals(2, result.size());
     }
 }

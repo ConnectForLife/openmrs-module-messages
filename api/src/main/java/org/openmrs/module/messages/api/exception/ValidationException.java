@@ -9,7 +9,7 @@ public class ValidationException extends RuntimeException {
 
     private static final long serialVersionUID = -3263502000030640366L;
 
-    private ErrorResponseDTO errorResponse;
+    private final ErrorResponseDTO errorResponse;
 
     public ValidationException(String error) {
         this.errorResponse = new ErrorResponseDTO(error);

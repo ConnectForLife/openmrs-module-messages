@@ -63,7 +63,7 @@ public class PatientTemplateITTest extends ContextSensitiveTest {
     @Test
     public void shouldReturnAllSavedPatientTemplates() {
         List<PatientTemplate> patientTemplates = patientTemplateDao.getAll(true);
-        
+
         Assert.assertEquals(TestConstants.GET_ALL_EXPECTED_LIST_SIZE, patientTemplates.size());
     }
     
@@ -92,7 +92,7 @@ public class PatientTemplateITTest extends ContextSensitiveTest {
         patientTemplate.setCalendarServiceQuery(Constant.EXAMPLE_PATIENT_TEMPLATE_CALENDAR_SERVICE_QUERY);
         Assert.assertEquals(Constant.EXAMPLE_PATIENT_TEMPLATE_CALENDAR_SERVICE_QUERY, patientTemplate.getCalendarServiceQuery());
     }
-    
+
     private void createTestInstance() {
         Template template = TemplateHelper.createTestInstance();
         templateDao.saveOrUpdate(template);

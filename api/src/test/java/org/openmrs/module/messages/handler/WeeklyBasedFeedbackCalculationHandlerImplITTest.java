@@ -37,10 +37,9 @@ public class WeeklyBasedFeedbackCalculationHandlerImplITTest extends ContextSens
   }
 
   @Test
-  public void getAdherenceFeedback_shouldCalculateAdherence() {
+  public void shouldCalculateWeeklyAdherence() {
     final WeeklyBasedFeedbackCalculationHandlerImpl handler =
-        new WeeklyBasedFeedbackCalculationHandlerImpl(actorResponseDao);
-
+            new WeeklyBasedFeedbackCalculationHandlerImpl(actorResponseDao);
     final AdherenceFeedback weeklyFeedback = handler.getAdherenceFeedback(patient, patient);
 
     assertNotNull(weeklyFeedback);
@@ -52,6 +51,7 @@ public class WeeklyBasedFeedbackCalculationHandlerImplITTest extends ContextSens
     assertEquals("rising", weeklyFeedback.getAdherenceTrend());
     assertEquals("medium", weeklyFeedback.getAdherenceLevel());
   }
+
 
   private void mockDateUtilClock() throws NoSuchFieldException, IllegalAccessException {
     Field clockField = DateUtil.class.getDeclaredField("clock");

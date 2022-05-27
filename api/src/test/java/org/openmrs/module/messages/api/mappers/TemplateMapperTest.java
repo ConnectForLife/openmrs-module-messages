@@ -18,6 +18,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class TemplateMapperTest {
 
@@ -78,5 +80,15 @@ public class TemplateMapperTest {
                 .withTemplate(template).build();
         assertEquals(dtoField.getName(), expectedField.getName());
         assertEquals(template, expectedField.getTemplate());
+    }
+
+    @Test
+    public void shouldSafelyDeleteTemplate() {
+        final Template template = templateMapper.fromDto(dto);
+
+        assertFalse(template.getRetired());
+        templateMapper.doSafeDelete(template);
+
+        assertTrue(template.getRetired());
     }
 }

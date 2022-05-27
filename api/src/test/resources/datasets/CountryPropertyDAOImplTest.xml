@@ -19,6 +19,25 @@
                   uuid="936372a1-1fa0-486f-8c3b-c6860ee00203"
                   locale_preferred="true"/>
 
+    <concept concept_id="2"
+             retired="0"
+             datatype_id="4"
+             class_id="11"
+             is_set="1"
+             creator="1"
+             date_created="2021-02-15 00:00:00"
+             uuid="936372a1-1fa0-486f-8c3b-c6860ee00204"/>
+
+    <concept_name concept_id="2"
+                  name="Spain"
+                  locale="en"
+                  creator="1"
+                  date_created="2021-02-15 00:00:00"
+                  concept_name_id="2"
+                  voided="false"
+                  uuid="936372a1-1fa0-486f-8c3b-c6860ee00205"
+                  locale_preferred="true"/>
+
     <messages_country_property
             country_property_id="1"
             name="test.messages.prop"
@@ -34,6 +53,16 @@
             name="test.messages.prop"
             country_property_value="This is the value."
             uuid="1a9859c3-6e86-446c-9511-db9e0dc15c08"
+            creator="1"
+            date_created="2021-02-15 00:00:00"
+            retired="0"/>
+
+    <messages_country_property
+            country_property_id="3"
+            name="test.messages.prop"
+            country_property_value="This is the value with Spain country."
+            country_concept_id="3"
+            uuid="1a9859c3-6e86-446c-9511-db9e0dc15c09"
             creator="1"
             date_created="2021-02-15 00:00:00"
             retired="0"/>

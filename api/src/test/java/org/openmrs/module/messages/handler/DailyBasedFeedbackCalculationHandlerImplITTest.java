@@ -38,9 +38,9 @@ public class DailyBasedFeedbackCalculationHandlerImplITTest extends ContextSensi
   }
 
   @Test
-  public void getAdherenceFeedback_shouldCalculateAdherence() {
+  public void shouldCalculateDailyAdherence() {
     final DailyBasedFeedbackCalculationHandlerImpl handler =
-        new DailyBasedFeedbackCalculationHandlerImpl(actorResponseDao);
+            new DailyBasedFeedbackCalculationHandlerImpl(actorResponseDao);
 
     final AdherenceFeedback dailyFeedback = handler.getAdherenceFeedback(patient, patient);
 
