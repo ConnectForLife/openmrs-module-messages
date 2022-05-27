@@ -34,7 +34,14 @@ public class CountryPropertyServiceImpl implements CountryPropertyService {
   @Override
   @Transactional(readOnly = true)
   public Optional<CountryProperty> getCountryProperty(Concept country, String name) {
-    return countryPropertyDAO.getCountryProperty(country, name);
+    final Optional<CountryProperty> countryProperty =
+        countryPropertyDAO.getCountryProperty(country, name);
+
+    if (countryProperty.isPresent() || country == null) {
+      return countryProperty;
+    } else {
+      return countryPropertyDAO.getCountryProperty(null, name);
+    }
   }
 
   @Override

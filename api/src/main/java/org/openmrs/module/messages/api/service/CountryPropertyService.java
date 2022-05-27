@@ -27,7 +27,8 @@ public interface CountryPropertyService {
   /**
    * @param country the Concept representing a country
    * @param name the property name, not null
-   * @return the Optional with Country Property with {@code country} and {@code name}
+   * @return the Optional with Country Property with {@code country} and {@code name}, if there is no value for
+   * {@code country} then a value for 'null' country is returned
    */
   Optional<CountryProperty> getCountryProperty(Concept country, String name);
 
@@ -90,7 +91,8 @@ public interface CountryPropertyService {
   /**
    * @param country the Concept representing a country
    * @param name the property name, not null
-   * @return the Optional with Country Property value
+   * @return the Optional with Country Property value, if there is no value for {@code country}
+   *     then a value for 'null' country is returned
    */
   Optional<String> getCountryPropertyValue(Concept country, String name);
 
