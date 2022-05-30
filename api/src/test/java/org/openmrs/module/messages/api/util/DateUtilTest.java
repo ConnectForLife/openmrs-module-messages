@@ -22,7 +22,6 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.sql.Date;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -30,6 +29,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.TimeZone;
 
 import static org.hamcrest.Matchers.is;
@@ -45,7 +45,7 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 public class DateUtilTest extends BaseTest {
 
     private static final ZonedDateTime TEST_NOW =
-            ZonedDateTime.ofInstant(Instant.ofEpochSecond(1625756392L), ZoneId.of("Asia/Kolkata"));
+            ZonedDateTime.ofInstant(Instant.ofEpochSecond(1625756392L), ZoneId.of("Asia/Kolkata")); //2021-07-08T20:29:52+05:00[Asia/Kolkata]
     private static final String DATE_TIME_PATTERN_WITH_MILLISECONDS_PRECISION = "yyyy-MM-dd HH:mm:ss.SSS";
     private static final String DATE_TIME_PATTERN_WITH_SECONDS_PRECISION = "yyyy-MM-dd HH:mm:ss";
 
@@ -174,10 +174,10 @@ public class DateUtilTest extends BaseTest {
 
     @Test
     public void shouldConvertSqlDateToZonedDateTime() {
-        Date sqlDate = new Date(1653429600000L); //Wed 25 May 2022 00:00:00
-        ZonedDateTime expected = ZonedDateTime.parse("2022-05-25T00:00:00+08:00[Asia/Kolkata]");
+        Date date = Date.from(TEST_NOW.toInstant());
+        ZonedDateTime expected = ZonedDateTime.parse("2021-07-08T20:29:52+05:00[Asia/Kolkata]");
 
-        ZonedDateTime actual = DateUtil.convertOpenMRSDatabaseDate(sqlDate);
+        ZonedDateTime actual = DateUtil.convertOpenMRSDatabaseDate(date);
 
         assertNotNull(actual);
         assertEquals(expected, actual);
@@ -212,10 +212,10 @@ public class DateUtilTest extends BaseTest {
 
     @Test
     public void shouldAddDaysToDate() {
-        java.util.Date dateToProcess = new Date(1653429600000L); //25-05-2022 00:00:00;
-        java.util.Date expected = new Date(1653602400000L); //27-05-2022 00:00:00;
+        Date dateToProcess = new Date(1653429600000L); //25-05-2022 00:00:00;
+        Date expected = new Date(1653602400000L); //27-05-2022 00:00:00;
 
-        java.util.Date actual = DateUtil.addDaysToDate(dateToProcess, 2);
+        Date actual = DateUtil.addDaysToDate(dateToProcess, 2);
 
         assertNotNull(actual);
         assertEquals(expected, actual);
@@ -227,15 +227,15 @@ public class DateUtilTest extends BaseTest {
         final Calendar calendar = Calendar.getInstance(testTimeZone);
         calendar.set(2021, Calendar.MAY, 6, 13, 23, 45);
         calendar.set(Calendar.MILLISECOND, 765);
-        final java.util.Date date = calendar.getTime();
+        final Date date = calendar.getTime();
         final String timeStr = "14:11";
 
-        final java.util.Date result = DateUtil.getDateWithTimeOfDay(date, timeStr, testTimeZone);
+        final Date result = DateUtil.getDateWithTimeOfDay(date, timeStr, testTimeZone);
 
         final Calendar expectedCalendar = Calendar.getInstance(testTimeZone);
         expectedCalendar.set(2021, Calendar.MAY, 6, 14, 11, 0);
         expectedCalendar.set(Calendar.MILLISECOND, 0);
-        final java.util.Date expectedDate = expectedCalendar.getTime();
+        final Date expectedDate = expectedCalendar.getTime();
 
         assertNotNull(result);
         assertThat(result, is(expectedDate));
