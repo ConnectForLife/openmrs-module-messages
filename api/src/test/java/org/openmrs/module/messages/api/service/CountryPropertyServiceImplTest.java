@@ -7,15 +7,20 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.openmrs.Concept;
 import org.openmrs.api.AdministrationService;
+import org.openmrs.api.ConceptService;
 import org.openmrs.module.messages.api.dao.CountryPropertyDAO;
+import org.openmrs.module.messages.api.dto.CountryPropertyValueDTO;
 import org.openmrs.module.messages.api.model.CountryProperty;
 import org.openmrs.module.messages.api.service.impl.CountryPropertyServiceImpl;
 import org.openmrs.test.BaseContextMockTest;
 
+import java.util.Collections;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -24,9 +29,16 @@ public class CountryPropertyServiceImplTest extends BaseContextMockTest {
 
   @Mock protected AdministrationService administrationServiceMock;
 
+  @Mock protected ConceptService conceptServiceMock;
+
+  private final CountryPropertyDAO daoMock = mock(CountryPropertyDAO.class);
+
+  private final CountryPropertyServiceImpl service = new CountryPropertyServiceImpl(daoMock);
+
   @Before
   public void setup() {
     contextMockHelper.setService(AdministrationService.class, administrationServiceMock);
+    contextMockHelper.setService(ConceptService.class, conceptServiceMock);
   }
 
   @Test
@@ -76,11 +88,8 @@ public class CountryPropertyServiceImplTest extends BaseContextMockTest {
 
   @Test
   public void retireCountryProperty_shouldSetReason() {
-    final CountryPropertyDAO daoMock = mock(CountryPropertyDAO.class);
     final CountryProperty countryPropertyTest = Mockito.spy(createTestCountryProperty(null));
     final String reason = "This is retire reason.";
-
-    final CountryPropertyServiceImpl service = new CountryPropertyServiceImpl(daoMock);
 
     service.retireCountryProperty(countryPropertyTest, reason);
 
@@ -95,11 +104,9 @@ public class CountryPropertyServiceImplTest extends BaseContextMockTest {
 
   @Test
   public void setCountryPropertyValue_shouldCreateNewPropertyIfNoneExists() {
-    final CountryPropertyDAO daoMock = mock(CountryPropertyDAO.class);
     final Concept country = mock(Concept.class);
     final String propertyName = "test.property.name";
     final String propertyValue = "This is new value.";
-    final CountryPropertyServiceImpl service = new CountryPropertyServiceImpl(daoMock);
 
     when(daoMock.getCountryProperty(country, propertyName)).thenReturn(Optional.empty());
 
@@ -117,11 +124,9 @@ public class CountryPropertyServiceImplTest extends BaseContextMockTest {
 
   @Test
   public void setCountryPropertyValue_shouldUpdateExistingIfAnyExists() {
-    final CountryPropertyDAO daoMock = mock(CountryPropertyDAO.class);
     final CountryProperty countryPropertyTest =
         Mockito.spy(createTestCountryProperty(mock(Concept.class)));
     final String propertyValue = "This is new value.";
-    final CountryPropertyServiceImpl service = new CountryPropertyServiceImpl(daoMock);
 
     when(daoMock.getCountryProperty(
             countryPropertyTest.getCountry(), countryPropertyTest.getName()))
@@ -141,11 +146,149 @@ public class CountryPropertyServiceImplTest extends BaseContextMockTest {
     assertEquals(countryPropertyTest.getUuid(), capturedProperty.getUuid());
   }
 
+  @Test
+  public void shouldGetCountryPropertyByUuid() {
+    String testUuid = "aaaa-bbbb-cccc-dddd";
+    when(daoMock.getByUuid(testUuid)).thenReturn(createTestCountryProperty(new Concept()));
+
+    service.getCountryPropertyByUuid(testUuid);
+
+    verify(daoMock).getByUuid(testUuid);
+  }
+
+  @Test
+  public void shouldGetCountryPropertyByCountryAndName() {
+    when(daoMock.getCountryProperty(any(Concept.class), anyString()))
+            .thenReturn(Optional.of(new CountryProperty()));
+
+    service.getCountryProperty(any(Concept.class), anyString());
+
+    verify(daoMock).getCountryProperty(any(Concept.class), anyString());
+  }
+
+  @Test
+  public void shouldSaveCountryProperty() {
+    service.saveCountryProperty(new CountryProperty());
+
+    verify(daoMock).saveOrUpdate(any(CountryProperty.class));
+  }
+
+  @Test
+  public void shouldRetireCountryProperty() {
+    service.retireCountryProperty(new CountryProperty(), "test reason");
+
+    verify(daoMock).saveOrUpdate(any(CountryProperty.class));
+  }
+
+  @Test
+  public void shouldPurgeCountryProperty() {
+    service.purgeCountryProperty(new CountryProperty());
+
+    verify(daoMock).delete(any(CountryProperty.class));
+  }
+
+  @Test
+  public void shouldGetCountryPropertyValue() {
+    CountryProperty countryProperty = createTestCountryProperty(new Concept());
+    countryProperty.setValue("testValue");
+    when(daoMock.getCountryProperty(any(Concept.class), anyString())).thenReturn(Optional.of(countryProperty));
+
+    Optional<String> actual = service.getCountryPropertyValue(any(Concept.class), anyString());
+
+    assertTrue(actual.isPresent());
+    assertEquals("testValue", actual.get());
+  }
+
+  @Test
+  public void shouldSetCountryPropertyValueByCountryAndNameAndValueWhenValueAndCountryPropertyAreNotBlank() {;
+    when(daoMock.getCountryProperty(any(Concept.class), anyString())).thenReturn(Optional.of(createTestCountryProperty(new Concept())));
+
+    service.setCountryPropertyValue(new Concept(), "testName", "testValue");
+
+    verify(daoMock).saveOrUpdate(any(CountryProperty.class));
+  }
+
+  @Test
+  public void shouldSetCountryPropertyValueByCountryAndNameAndValueWhenCountryPropertyIsBlankAndValueIsNotBlank() {
+    when(daoMock.getCountryProperty(any(Concept.class), anyString())).thenReturn(Optional.empty());
+
+    service.setCountryPropertyValue(new Concept(), "testName", "testValue");
+
+    verify(daoMock).saveOrUpdate(any(CountryProperty.class));
+  }
+
+  @Test
+  public void shouldSetCountryPropertyValueByCountryAndNameAndValueWhenValueIsBlank() {
+    when(daoMock.getCountryProperty(any(Concept.class), anyString())).thenReturn(Optional.of(createTestCountryProperty(new Concept())));
+
+    service.setCountryPropertyValue(new Concept(), "testName", null);
+
+    verify(daoMock).saveOrUpdate(any(CountryProperty.class));
+  }
+
+  @Test
+  public void shouldSetCountryPropertyValueByCountryPropertyValueDTO() {
+    when(daoMock.getCountryProperty(any(Concept.class), anyString())).thenReturn(Optional.of(createTestCountryProperty(new Concept())));
+
+    CountryPropertyValueDTO countryPropertyValueDTO = createTestCountryPropertyValueDTO();
+
+    service.setCountryPropertyValue(countryPropertyValueDTO);
+
+    verify(conceptServiceMock).getConceptByName("Spain");
+  }
+
+  @Test
+  public void shouldSetCountryPropertyValuesByCountryPropertyValueDTOs() {
+    when(daoMock.getCountryProperty(any(Concept.class), anyString())).thenReturn(Optional.of(createTestCountryProperty(new Concept())));
+
+    CountryPropertyValueDTO countryPropertyValueDTO = createTestCountryPropertyValueDTO();
+
+    service.setCountryPropertyValues(Collections.singleton(countryPropertyValueDTO));
+
+    verify(conceptServiceMock).getConceptByName("Spain");
+  }
+
+  @Test
+  public void shouldGetAllNonVoidedCountryProperties() {
+    service.getAllCountryProperties(false, 1, 100);
+
+    verify(daoMock).getAll(false, 1, 100);
+  }
+
+  @Test
+  public void shouldGetAllNonVoidedCountryPropertiesByPrefix() {
+    service.getAllCountryProperties("test", false, 1, 100);
+
+    verify(daoMock).getAll("test", false, 1, 100);
+  }
+
+  @Test
+  public void getCountOfAllNonVoidedCountryProperties() {
+    service.getCountOfCountryProperties(false);
+
+    verify(daoMock).getAllCount(false);
+  }
+
+  @Test
+  public void getCountOfAllNonVoidedCountryPropertiesByPrefix() {
+    service.getCountOfCountryProperties("test", false);
+
+    verify(daoMock).getAllCount("test", false);
+  }
+
   private CountryProperty createTestCountryProperty(Concept country) {
     final CountryProperty countryProperty = new CountryProperty();
     countryProperty.setId(12);
     countryProperty.setName("CountryPropertyServiceImplTest.prop");
     countryProperty.setCountry(country);
     return countryProperty;
+  }
+
+  private CountryPropertyValueDTO createTestCountryPropertyValueDTO() {
+    CountryPropertyValueDTO countryPropertyValueDTO = new CountryPropertyValueDTO();
+    countryPropertyValueDTO.setCountry("Spain");
+    countryPropertyValueDTO.setName("defaultBestContactTime");
+    countryPropertyValueDTO.setValue("11:00");
+    return countryPropertyValueDTO;
   }
 }

@@ -14,6 +14,9 @@ public class HealthTipDTO {
 
   private String healthTipText;
 
+  public HealthTipDTO() {
+  }
+
   public HealthTipDTO(Object[] results) {
     this.healthTipCategoryId = (Integer) results[0];
     this.healthTipCategoryName = (String) results[1];

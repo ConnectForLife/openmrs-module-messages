@@ -79,7 +79,7 @@ public final class PatientTemplateMapper extends AbstractOpenMrsDataMapper<Patie
         return this;
     }
 
-    private List<TemplateFieldValue> fromDtos(PatientTemplate parent, List<TemplateFieldValueDTO> dtos) {
+    public List<TemplateFieldValue> fromDtos(PatientTemplate parent, List<TemplateFieldValueDTO> dtos) {
         List<TemplateFieldValue> daos = new ArrayList<>(dtos.size());
         for (TemplateFieldValueDTO dto : dtos) {
             TemplateFieldValue value = valueMapper.fromDto(dto);

@@ -16,6 +16,8 @@ import java.util.Map;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.openmrs.module.messages.api.service.DatasetConstants.XML_DATA_SET_PATH;
 
 public class VelocityNotificationTemplateServiceTest extends ContextSensitiveTest {
@@ -144,6 +146,18 @@ public class VelocityNotificationTemplateServiceTest extends ContextSensitiveTes
         Map<String, String> serviceParam = buildServiceParams();
         String actual = notificationTemplateService.parseTemplate(patientTemplate, serviceParam);
         assertThat(actual, is(WHATSAPP_SERVICE_EXPECTED_TEMPLATE));
+    }
+
+    @Test
+    public void shouldBuildMessageByGlobalProperty() {
+        Map<String, Object> testParams = new HashMap<>();
+        testParams.put("param1", "value1");
+        testParams.put("param2", "value2");
+
+        String actual = notificationTemplateService.buildMessageByGlobalProperty(testParams, "messages.notificationTemplate.test");
+
+        assertNotNull(actual);
+        assertEquals("message:\"This is test message.\"", actual);
     }
 
     private PatientTemplate buildPatientTemplate(String serviceName) {

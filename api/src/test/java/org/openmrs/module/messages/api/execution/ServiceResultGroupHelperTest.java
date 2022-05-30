@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.openmrs.module.messages.api.execution.ServiceResultGroupHelper.groupByChannelTypePatientActorExecutionDate;
 
 public class ServiceResultGroupHelperTest {
@@ -61,6 +62,16 @@ public class ServiceResultGroupHelperTest {
         List<GroupedServiceResultList> result = groupByChannelTypePatientActorExecutionDate(input, true);
         assertEquals(1, result.size());
         assertEquals(1, getResultsFor(result, ACTOR_1_ID, date).size());
+    }
+
+    @Test
+    public void shouldFilterOnlyFutureServices() {
+        List<ServiceResultList> input = getServiceResultListsOnlyWithFutureStatuses(ACTOR_2_ID);
+
+        List<GroupedServiceResultList> actual = groupByChannelTypePatientActorExecutionDate(input, true);
+
+        assertNotNull(actual);
+        assertEquals(4, actual.get(0).getGroup().size());
     }
 
     @Test
@@ -280,6 +291,22 @@ public class ServiceResultGroupHelperTest {
 
         input.get(0).getResults().get(0).setServiceStatus(ServiceStatus.PENDING);
         input.get(0).getResults().get(1).setServiceStatus(ServiceStatus.FUTURE);
+        return input;
+    }
+
+    private List<ServiceResultList> getServiceResultListsOnlyWithFutureStatuses(int actorId) {
+        List<ServiceResultList> input = new ArrayList<>();
+
+        input.add(new ServiceResultListBuilder()
+                .withChannelType(TEST_CHANNEL_TYPE)
+                .withServiceResults(4, getDate())
+                .withActorId(actorId)
+                .build());
+
+        input.get(0).getResults().get(0).setServiceStatus(ServiceStatus.FUTURE);
+        input.get(0).getResults().get(1).setServiceStatus(ServiceStatus.FUTURE);
+        input.get(0).getResults().get(2).setServiceStatus(ServiceStatus.FUTURE);
+        input.get(0).getResults().get(3).setServiceStatus(ServiceStatus.FUTURE);
         return input;
     }
 

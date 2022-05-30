@@ -5,8 +5,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.ApiConstant;
-import org.openmrs.module.messages.api.dto.ContactTimeDTO;
 import org.openmrs.module.messages.api.constants.ConfigConstants;
+import org.openmrs.module.messages.api.dto.ContactTimeDTO;
 import org.openmrs.module.messages.util.TestUtil;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,8 +98,8 @@ public class ActorControllerITTest extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
-    public void shouldSuccessfullyReturnAllActors() throws Exception {
-        mockMvc.perform(get(BASE_URL + "/" + PATIENT_ID.toString()))
+    public void shouldSuccessfullyReturnAllActorsForPatient() throws Exception {
+        mockMvc.perform(get(BASE_URL + "/" + PATIENT_ID))
                 .andExpect(status().is(HttpStatus.OK.value()))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.length()").value(EXPECTED_NUMBER_OF_VALUES))
@@ -108,8 +108,23 @@ public class ActorControllerITTest extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
+    public void shouldSuccessfullyReturnAllActorsForCaregiver() throws Exception {
+        mockMvc.perform(get(BASE_URL + "/" + CAREGIVER_ID))
+                .andExpect(status().is(HttpStatus.OK.value()))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.length()").value(0));
+    }
+
+    @Test
+    public void shouldReturnPersonBestContactTime() throws Exception {
+        mockMvc.perform(get(BASE_URL + "/" + PATIENT_ID + "/contact-time"))
+                .andExpect(status().is(HttpStatus.OK.value()))
+                .andExpect(content().string("23:38"));
+    }
+
+    @Test
     public void shouldReturnValidationExceptionWhenPatientWithPassedIdNotExist() throws Exception {
-        mockMvc.perform(get(BASE_URL + "/" + NOT_EXISTING_PATIENT_ID.toString())
+        mockMvc.perform(get(BASE_URL + "/" + NOT_EXISTING_PATIENT_ID)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
                 .andExpect(content().contentType(ApiConstant.APPLICATION_JSON_UTF8))
