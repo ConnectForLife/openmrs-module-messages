@@ -16,15 +16,19 @@ import org.openmrs.module.messages.api.model.Template;
 import org.openmrs.module.messages.api.model.TemplateField;
 import org.openmrs.module.messages.api.model.TemplateFieldValue;
 import org.openmrs.module.messages.api.util.TestConstants;
+import org.openmrs.module.messages.domain.PagingInfo;
+import org.openmrs.module.messages.domain.criteria.PatientTemplateCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class PatientTemplateITTest extends ContextSensitiveTest {
-    
+
     @Autowired
     private PatientTemplateDao patientTemplateDao;
     
@@ -91,6 +95,18 @@ public class PatientTemplateITTest extends ContextSensitiveTest {
     public void shouldReturnCalendarQueryFromPatientTemplateIfNotBlank() {
         patientTemplate.setCalendarServiceQuery(Constant.EXAMPLE_PATIENT_TEMPLATE_CALENDAR_SERVICE_QUERY);
         Assert.assertEquals(Constant.EXAMPLE_PATIENT_TEMPLATE_CALENDAR_SERVICE_QUERY, patientTemplate.getCalendarServiceQuery());
+    }
+
+    @Test
+    public void shouldFindPatientTemplatesByCriteriaAndPagination() {
+        Template template = templateDao.getAll(false).get(0);
+        patientTemplateDao.getAll(false).forEach(pt -> pt.setTemplate(template));
+        PatientTemplateCriteria patientTemplateCriteria = PatientTemplateCriteria.forTemplate(template.getId());
+
+        List<PatientTemplate> actual = patientTemplateDao.findAllByCriteria(patientTemplateCriteria, new PagingInfo(1, 2));
+
+        assertNotNull(actual);
+        assertEquals(2, actual.size());
     }
 
     private void createTestInstance() {
