@@ -20,8 +20,8 @@ public class QueryCriteria<E extends OpenmrsObject> extends BaseCriteria {
     private static final long serialVersionUID = 6652974685352147059L;
 
     private final Class<E> resultClass;
-    private final transient List<HibernateCondition> hibernateConditions;
-    private final transient List<InMemoryCondition> inMemoryConditions;
+    private transient List<HibernateCondition> hibernateConditions;
+    private transient List<InMemoryCondition> inMemoryConditions;
 
     QueryCriteria(final Class<E> resultClass, final List<HibernateCondition> hibernateConditions,
                   final List<InMemoryCondition> inMemoryConditions) {

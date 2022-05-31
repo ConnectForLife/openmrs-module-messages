@@ -54,6 +54,12 @@ public class TriggerMessageController extends BaseRestController {
 
   private static final String VISIT_STATUSES_GP_KEY = "visits.visit-statuses";
 
+  private static final Integer VISIT_TYPE_PARAM_INDEX = 0;
+
+  private static final Integer VISIT_TIME_PARAM_INDEX = 1;
+
+  private static final Integer VISIT_LOCATION_PARAM_INDEX = 2;
+
   @Autowired private MessagingGroupService messagingGroupService;
 
   @Autowired private PatientService patientService;
@@ -102,7 +108,8 @@ public class TriggerMessageController extends BaseRestController {
       messagesDeliveryService.scheduleDelivery(executionContext);
       LOGGER.info("Message triggering finished");
     } else {
-      LOGGER.error("Patient %s with id %d does not have an assigned phone number");
+      LOGGER.error("Patient {} with id {} does not have an assigned phone number",
+              patient.getPersonName().getFullName(), patient.getPatientId());
     }
   }
 
@@ -158,8 +165,8 @@ public class TriggerMessageController extends BaseRestController {
     Visit visit = new Visit();
     visit.setPatient(patient);
     visit.setStartDatetime(DateUtil.addDaysToDate(now(), 1));
-    visit.setVisitType(findVisitTypeByName(visitParams[0]));
-    visit.setLocation(getLocationByName(visitParams[2]));
+    visit.setVisitType(findVisitTypeByName(visitParams[VISIT_TYPE_PARAM_INDEX]));
+    visit.setLocation(getLocationByName(visitParams[VISIT_LOCATION_PARAM_INDEX]));
     setVisitAttributes(visit, visitParams);
 
     return visit;
@@ -182,7 +189,7 @@ public class TriggerMessageController extends BaseRestController {
 
   private void setVisitAttributes(Visit visit, String[] visitParams) {
     visit.setAttribute(createAttribute("Visit Status", getInitialVisitStatus()));
-    visit.setAttribute(createAttribute("Visit Time", visitParams[1]));
+    visit.setAttribute(createAttribute("Visit Time", visitParams[VISIT_TIME_PARAM_INDEX]));
   }
 
   private VisitAttribute createAttribute(String attributeTypeName, String value) {

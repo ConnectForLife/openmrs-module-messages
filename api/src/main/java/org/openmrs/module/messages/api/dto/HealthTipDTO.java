@@ -6,6 +6,14 @@ package org.openmrs.module.messages.api.dto;
  */
 public class HealthTipDTO {
 
+  private static final Integer HT_CATEGORY_ID_RESULT_INDEX = 0;
+
+  private static final Integer HT_CATEGORY_NAME_RESULT_INDEX = 1;
+
+  private static final Integer HT_ID_RESULT_INDEX = 2;
+
+  private static final Integer HT_TEXT_RESULT_INDEX = 3;
+
   private Integer healthTipCategoryId;
 
   private String healthTipCategoryName;
@@ -18,10 +26,10 @@ public class HealthTipDTO {
   }
 
   public HealthTipDTO(Object[] results) {
-    this.healthTipCategoryId = (Integer) results[0];
-    this.healthTipCategoryName = (String) results[1];
-    this.healthTipId = (Integer) results[2];
-    this.healthTipText = (String) results[3];
+    this.healthTipCategoryId = (Integer) results[HT_CATEGORY_ID_RESULT_INDEX];
+    this.healthTipCategoryName = (String) results[HT_CATEGORY_NAME_RESULT_INDEX];
+    this.healthTipId = (Integer) results[HT_ID_RESULT_INDEX];
+    this.healthTipText = (String) results[HT_TEXT_RESULT_INDEX];
   }
 
   public Integer getHealthTipCategoryId() {

@@ -5,8 +5,8 @@ import java.time.Instant;
 
 /** Simple stopwatch. */
 public final class StopwatchUtil {
-  private ThreadLocal<Instant> startTime = ThreadLocal.withInitial(Instant::now);
-  private ThreadLocal<Instant> lapStartTime = ThreadLocal.withInitial(Instant::now);
+  private static final ThreadLocal<Instant> startTime = ThreadLocal.withInitial(Instant::now);
+  private static final ThreadLocal<Instant> lapStartTime = ThreadLocal.withInitial(Instant::now);
 
   public StopwatchUtil() {
     start();
