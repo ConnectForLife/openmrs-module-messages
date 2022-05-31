@@ -1,5 +1,6 @@
 package org.openmrs.module.messages.api.service.impl;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
@@ -45,7 +46,7 @@ public class DefaultPatientTemplateServiceImpl extends BaseOpenmrsService
   @Override
   public List<PatientTemplate> generateDefaultPatientTemplates(Patient patient) {
     List<PatientTemplate> lacking = findLackingPatientTemplates(patient);
-    if (lacking.size() == 0) {
+    if (CollectionUtils.isEmpty(lacking)) {
       throw new ValidationException(
           "The given patient has already saved all the patient templates");
     }
