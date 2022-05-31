@@ -4,7 +4,7 @@ import java.util.Map;
 
 public class GraphResultDTO extends BaseDTO {
 
-    private static final long serialVersionUID = -7649166037291062511L;
+    private static final long serialVersionUID = 1L;
 
     private Integer result;
 

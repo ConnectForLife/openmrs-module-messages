@@ -60,11 +60,6 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
         ServiceResultGroupHelper.groupByChannelTypePatientActorExecutionDate(results, true);
     LOGGER.debug(String.format("Converted to %d groups to execute", groupedResults.size()));
 
-    PERFORMANCE_LOGGER.info(
-        MessageFormat.format(
-            "ServiceResultGroupHelper.groupByChannelTypePatientActorExecutionDate took {0}ms",
-            executeStopwatch.restart().toMillis()));
-
     for (GroupedServiceResultList groupedResult : groupedResults) {
       try {
         scheduleTaskForActivePerson(groupedResult);
