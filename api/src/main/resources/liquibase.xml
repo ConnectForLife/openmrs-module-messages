@@ -580,7 +580,7 @@
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="messages_scheduled_service_group"/>
             <not><columnExists tableName="messages_scheduled_service_group" columnName="actor_id" /></not>
-            <foreignKeyConstraintExists foreignKeyName="messages_scheduled_service_group_actor_fk" />
+            <not><foreignKeyConstraintExists foreignKeyName="messages_scheduled_service_group_actor_fk" /></not>
         </preConditions>
         <comment>Adding missing actor_id column</comment>
         <addColumn tableName="messages_scheduled_service_group">
