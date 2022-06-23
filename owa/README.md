@@ -53,7 +53,7 @@ Note: make sure that you have write access to LOCAL_OWA_FOLDER and its content.
 
 1. Adjust variables listed below to your environment, open terminal and run them
 ```bash
-MESSAGES_REPO=/home/user/cfl/omrs-messages
+MESSAGES_REPO=/home/user/cfl/openmrs-module-messages
 MESSAGES_OMOD=messages-1.0.0-SNAPSHOT.omod
 CFL_REPO=/home/user/cfl/cfl-openmrs
 ```

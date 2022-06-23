@@ -6,10 +6,6 @@
   "icons": {
     "48": "/img/omrs-button.png"
   },
-  "developer": {
-    "name": "user",
-    "url": "https://bitbucket.org/soldevelo/omrs-messages"
-  },
   "default_locale": "en",
     "activities": {
       "openmrs": {
