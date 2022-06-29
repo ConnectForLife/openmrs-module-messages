@@ -1,0 +1,378 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+  ~ This Source Code Form is subject to the terms of the Mozilla Public License,
+  ~ v. 2.0. If a copy of the MPL was not distributed with this file, You can
+  ~ obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+  ~ the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+  ~ <p>
+  ~ Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+  ~ graphic logo is a trademark of OpenMRS Inc.
+  -->
+
+<dataset>
+    <patient
+            patient_id="1"
+            creator="1"
+            date_created="2019-11-16 15:57:09.0"
+            voided="false"/>
+
+    <patient
+            patient_id="2"
+            creator="1"
+            date_created="2019-11-16 15:57:09.0"
+            voided="false"/>
+
+    <messages_template
+            messages_template_id="1"
+            service_query="select CAST('2019-12-01' as date) as EXECUTION_DATE, '1' as MESSAGE_ID, 'Call' as CHANNEL_ID, 'FUTURE' as STATUS_ID, '1' as visitTypeId, '1' as locationId
+                UNION select CAST('2019-12-01' as date) as EXECUTION_DATE, '1' as MESSAGE_ID, 'SMS' as CHANNEL_ID, 'FUTURE' as STATUS_ID, '1' as visitTypeId, '1' as locationId;"
+            calendar_service_query="SELECT CALENDAR SERVICE QUERY;"
+            service_query_type="SQL"
+            name="Adherence report daily"
+            should_use_optimized_query="false"
+            creator="1"
+            date_created="2019-11-20 00:00:00.0"
+            retired="false"
+            uuid="dc28e6db-db92-440a-a2db-3d9060d529b1"/>
+
+    <messages_template
+            messages_template_id="2"
+            service_query="select CAST('2019-12-01' as date) as EXECUTION_DATE, '1' as MESSAGE_ID, 'Call' as CHANNEL_ID, 'FUTURE' as STATUS_ID, '1' as visitTypeId, '1' as locationId
+                UNION select CAST('2019-12-01' as date) as EXECUTION_DATE, '1' as MESSAGE_ID, 'SMS' as CHANNEL_ID, 'FUTURE' as STATUS_ID, '1' as visitTypeId, '1' as locationId;"
+            calendar_service_query="SELECT CALENDAR SERVICE QUERY;"
+            service_query_type="SQL"
+            name="Visit reminder"
+            should_use_optimized_query="false"
+            creator="1"
+            date_created="2019-11-20 00:00:00.0"
+            retired="false"
+            uuid="dc28e6db-db92-440a-a2db-3d9060d529b2"/>
+
+    <messages_template
+            messages_template_id="3"
+            service_query="select CAST('2019-12-01' as date) as EXECUTION_DATE, '1' as MESSAGE_ID, 'Call' as CHANNEL_ID, 'FUTURE' as STATUS_ID, '1' as visitTypeId, '1' as locationId
+                UNION select CAST('2019-12-01' as date) as EXECUTION_DATE, '1' as MESSAGE_ID, 'SMS' as CHANNEL_ID, 'FUTURE' as STATUS_ID, '1' as visitTypeId, '1' as locationId;"
+            calendar_service_query="SELECT CALENDAR SERVICE QUERY;"
+            service_query_type="SQL"
+            name="Health tip"
+            should_use_optimized_query="false"
+            creator="1"
+            date_created="2019-11-20 00:00:00.0"
+            retired="false"
+            uuid="dc28e6db-db92-440a-a2db-3d9060d529b3"/>
+
+    <messages_patient_template
+            messages_patient_template_id="1"
+            actor_id="1"
+            template_id="1"
+            patient_id="1"
+            service_query_type=""
+            service_query=""
+            calendar_service_query="SELECT CALENDAR SERVICE QUERY;"
+            creator="1"
+            date_created="2019-11-20 00:00:00.1"
+            voided="false"
+            uuid="e8e2ea41-13ca-403a-b05d-9128d2b085b1"/>
+
+    <messages_patient_template
+            messages_patient_template_id="2"
+            actor_id="1"
+            template_id="2"
+            patient_id="1"
+            service_query_type=""
+            service_query=""
+            calendar_service_query="SELECT CALENDAR SERVICE QUERY;"
+            creator="1"
+            date_created="2019-11-20 00:00:00.1"
+            voided="false"
+            uuid="e8e2ea41-13ca-403a-b05d-9128d2b085b2"/>
+
+    <messages_patient_template
+            messages_patient_template_id="3"
+            actor_id="1"
+            template_id="3"
+            patient_id="1"
+            service_query_type=""
+            service_query=""
+            calendar_service_query="SELECT CALENDAR SERVICE QUERY;"
+            creator="1"
+            date_created="2019-11-20 00:00:00.1"
+            voided="false"
+            uuid="e8e2ea41-13ca-403a-b05d-9128d2b085b3"/>
+
+    <messages_patient_template
+            messages_patient_template_id="4"
+            actor_id="1"
+            template_id="3"
+            patient_id="2"
+            service_query_type=""
+            service_query=""
+            calendar_service_query="SELECT CALENDAR SERVICE QUERY;"
+            creator="1"
+            date_created="2019-11-20 00:00:00.1"
+            voided="false"
+            uuid="e8e2ea41-13ca-403a-b05d-9128d2b085b4"/>
+
+    <messages_patient_template
+            messages_patient_template_id="5"
+            actor_id="1"
+            template_id="3"
+            patient_id="2"
+            service_query_type=""
+            service_query=""
+            calendar_service_query="SELECT CALENDAR SERVICE QUERY;"
+            creator="1"
+            date_created="2019-11-20 00:00:00.1"
+            voided="false"
+            uuid="e8e2ea41-13ca-403a-b05d-9128d2b085b5"/>
+
+    <messages_scheduled_service_group
+            messages_scheduled_service_group_id="1"
+            patient_id="1"
+            actor_id="1"
+            channel_type="Call"
+            creator="1"
+            date_created="2019-11-20 00:00:00.0"
+            voided="false"
+            uuid="3d3a36a6-ff59-4c7e-bf3e-fe3d7a6b47b1"/>
+
+    <messages_scheduled_service_group
+            messages_scheduled_service_group_id="2"
+            patient_id="2"
+            actor_id="1"
+            channel_type="Call"
+            creator="1"
+            date_created="2019-11-20 00:00:00.0"
+            voided="false"
+            uuid="3d3a36a6-ff59-4c7e-bf3e-fe3d7a6b47b2"/>
+
+    <messages_scheduled_service_group
+            messages_scheduled_service_group_id="3"
+            patient_id="1"
+            actor_id="2"
+            channel_type="Call"
+            creator="1"
+            date_created="2019-11-20 00:00:00.0"
+            voided="false"
+            uuid="3d3a36a6-ff59-4c7e-bf3e-fe3d7a6b47b3"/>
+
+    <messages_scheduled_service
+            messages_scheduled_service_id="1"
+            group_id="1"
+            service="1"
+            patient_template_id="1"
+            status="DELIVERED"
+            last_service_execution_id="111111111111"
+            creator="1"
+            date_created="2019-11-20 00:00:00.0"
+            voided="false"
+            uuid="b3de6d76-3e31-41cf-955d-ad14b9db07b1"/>
+
+    <messages_scheduled_service
+            messages_scheduled_service_id="2"
+            group_id="1"
+            service="1"
+            patient_template_id="2"
+            status="DELIVERED"
+            last_service_execution_id="111111111111"
+            creator="1"
+            date_created="2019-11-20 00:00:00.0"
+            voided="false"
+            uuid="b3de6d76-3e31-41cf-955d-ad14b9db07b2"/>
+
+    <messages_scheduled_service
+            messages_scheduled_service_id="3"
+            group_id="2"
+            service="1"
+            patient_template_id="3"
+            status="DELIVERED"
+            last_service_execution_id="111111111111"
+            creator="1"
+            date_created="2019-11-20 00:00:00.0"
+            voided="false"
+            uuid="b3de6d76-3e31-41cf-955d-ad14b9db07b3"/>
+
+    <messages_scheduled_service
+            messages_scheduled_service_id="4"
+            group_id="2"
+            service="1"
+            patient_template_id="4"
+            status="DELIVERED"
+            last_service_execution_id="111111111111"
+            creator="1"
+            date_created="2019-11-20 00:00:00.0"
+            voided="false"
+            uuid="b3de6d76-3e31-41cf-955d-ad14b9db07b4"/>
+
+    <messages_scheduled_service
+            messages_scheduled_service_id="5"
+            group_id="2"
+            service="1"
+            patient_template_id="5"
+            status="DELIVERED"
+            last_service_execution_id="111111111111"
+            creator="1"
+            date_created="2019-11-20 00:00:00.0"
+            voided="false"
+            uuid="b3de6d76-3e31-41cf-955d-ad14b9db07b5"/>
+
+    <messages_actor_response
+            messages_actor_response_id="1"
+            source_type="SCHEDULED_SERVICE_GROUP"
+            source_id="1"
+            patient_id="1"
+            actor_id="1"
+            answered_time="2020-02-01 15:30:00.0"
+            question="1"
+            response="2"
+            text_question="Have you take a medicine?"
+            text_response="Yes"
+            creator="1"
+            date_created="2019-11-20 00:00:00.0"
+            voided="false"
+            uuid="b3de6d76-3e31-41cf-955d-ad14b9db07c1"/>
+
+    <messages_actor_response
+            messages_actor_response_id="2"
+            source_type="SCHEDULED_SERVICE_GROUP"
+            source_id="1"
+            patient_id="1"
+            actor_id="1"
+            answered_time="2020-02-02 15:30:00.0"
+            question="1"
+            response="3"
+            text_question="Do you like health tip?"
+            text_response="No"
+            creator="1"
+            date_created="2019-11-20 00:00:00.0"
+            voided="false"
+            uuid="b3de6d76-3e31-41cf-955d-ad14b9db07c2"/>
+
+    <messages_actor_response
+            messages_actor_response_id="3"
+            source_type="SCHEDULED_SERVICE_GROUP"
+            source_id="1"
+            patient_id="1"
+            actor_id="1"
+            answered_time="2020-02-03 15:30:00.0"
+            question="1"
+            response="4"
+            text_question="Have you take a medicine?"
+            text_response="Yes"
+            creator="1"
+            date_created="2019-11-20 00:00:00.0"
+            voided="false"
+            uuid="b3de6d76-3e31-41cf-955d-ad14b9db07c3"/>
+
+    <messages_actor_response
+            messages_actor_response_id="4"
+            source_type="SCHEDULED_SERVICE_GROUP"
+            source_id="1"
+            patient_id="1"
+            actor_id="1"
+            answered_time="2020-02-04 15:30:00.0"
+            question="1"
+            response="11"
+            text_question="Do you like health tip?"
+            text_response="No"
+            creator="1"
+            date_created="2019-11-20 00:00:00.0"
+            voided="false"
+            uuid="b3de6d76-3e31-41cf-955d-ad14b9db07c4"/>
+
+    <messages_actor_response
+            messages_actor_response_id="5"
+            source_type="SCHEDULED_SERVICE_GROUP"
+            source_id="1"
+            patient_id="1"
+            actor_id="1"
+            answered_time="2020-02-05 15:30:00.0"
+            question="1"
+            response="11"
+            text_question="Have you take a medicine?"
+            text_response="No"
+            creator="1"
+            date_created="2019-11-20 00:00:00.0"
+            voided="false"
+            uuid="b3de6d76-3e31-41cf-955d-ad14b9db07c5"/>
+
+    <messages_actor_response
+            messages_actor_response_id="6"
+            source_type="SCHEDULED_SERVICE_GROUP"
+            source_id="1"
+            patient_id="1"
+            actor_id="1"
+            answered_time="2020-02-06 15:30:00.0"
+            question="1"
+            response="11"
+            text_question="Do you like health tip?"
+            text_response="No"
+            creator="1"
+            date_created="2019-11-20 00:00:00.0"
+            voided="false"
+            uuid="b3de6d76-3e31-41cf-955d-ad14b9db07c6"/>
+
+    <messages_actor_response
+            messages_actor_response_id="7"
+            source_type="SCHEDULED_SERVICE_GROUP"
+            source_id="2"
+            patient_id="1"
+            actor_id="1"
+            answered_time="2020-02-07 15:30:00.0"
+            question="10"
+            response="11"
+            text_question="Have you take a medicine?"
+            text_response="No"
+            creator="1"
+            date_created="2019-11-20 00:00:00.0"
+            voided="false"
+            uuid="b3de6d76-3e31-41cf-955d-ad14b9db07c7"/>
+
+    <messages_actor_response
+            messages_actor_response_id="8"
+            source_type="SCHEDULED_SERVICE_GROUP"
+            source_id="2"
+            patient_id="1"
+            actor_id="1"
+            answered_time="2020-02-08 15:30:00.0"
+            question="10"
+            response="11"
+            text_question="Do you like health tip?"
+            text_response="No"
+            creator="1"
+            date_created="2019-11-20 00:00:00.0"
+            voided="false"
+            uuid="b3de6d76-3e31-41cf-955d-ad14b9db07c8"/>
+
+    <messages_actor_response
+            messages_actor_response_id="9"
+            source_type="SCHEDULED_SERVICE_GROUP"
+            source_id="2"
+            patient_id="1"
+            actor_id="1"
+            answered_time="2020-02-09 15:30:00.0"
+            question="10"
+            response="11"
+            text_question="Have you take a medicine?"
+            text_response="No"
+            creator="1"
+            date_created="2019-11-20 00:00:00.0"
+            voided="false"
+            uuid="b3de6d76-3e31-41cf-955d-ad14b9db07c9"/>
+
+    <messages_actor_response
+            messages_actor_response_id="10"
+            source_type="SCHEDULED_SERVICE_GROUP"
+            source_id="2"
+            patient_id="1"
+            actor_id="1"
+            answered_time="2020-02-10 15:30:00.0"
+            question="10"
+            response="11"
+            text_question="Do you like health tip?"
+            text_response="No"
+            creator="1"
+            date_created="2019-11-20 00:00:00.0"
+            voided="false"
+            uuid="b3de6d76-3e31-41cf-955d-ad14b9db07d1"/>
+</dataset>

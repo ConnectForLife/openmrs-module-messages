@@ -1,0 +1,227 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+  ~ This Source Code Form is subject to the terms of the Mozilla Public License,
+  ~ v. 2.0. If a copy of the MPL was not distributed with this file, You can
+  ~ obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+  ~ the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+  ~ <p>
+  ~ Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+  ~ graphic logo is a trademark of OpenMRS Inc.
+  -->
+
+<dataset>
+    <global_property
+            property="messages.benchmarkPeriod"
+            property_value="7"
+            uuid="e21baffd-ebda-4bf0-8881-78646bfee297"/>
+    <global_property
+            property="messages.cutOffScoreForAdherenceTrend"
+            property_value="5"
+            uuid="e21baffd-ebda-4bf0-8881-78646bfee298"/>
+    <global_property
+            property="messages.cutOffScoreForHighMediumAdherenceLevel"
+            property_value="90"
+            uuid="e21baffd-ebda-4bf0-8881-78646bfee299"/>
+    <global_property
+            property="messages.cutOffScoreForMediumLowAdherenceLevel"
+            property_value="70"
+            uuid="e21baffd-ebda-4bf0-8881-78646bfee300"/>
+
+    <global_property
+            property="messages.benchmarkPeriod"
+            property_value="7"
+            uuid="e21baffd-ebda-4bf0-8881-78646bfee297"/>
+
+    <person
+            person_id="100"
+            gender="M"
+            dead="false"
+            creator="1"
+            date_created="2022-02-28 10:00:00.0"
+            voided="false"
+            uuid="07bf387f-9877-11ec-9b8e-0242ac120002"/>
+
+    <patient
+            patient_id="100"
+            creator="1"
+            date_created="2022-02-28 10:00:00.0"
+            voided="false"/>
+
+    <messages_template
+            messages_template_id="100"
+            service_query="select 1;"
+            service_query_type="SQL"
+            name="Adherence report daily"
+            should_use_optimized_query="true"
+            creator="1"
+            date_created="2022-02-28 10:00:00.0"
+            retired="false"
+            uuid="07bf387f-9877-11ec-9b8e-0242ac120003"/>
+
+    <messages_patient_template
+            messages_patient_template_id="100"
+            actor_id="100"
+            template_id="100"
+            patient_id="100"
+            service_query=""
+            calendar_service_query=""
+            creator="1"
+            date_created="2022-02-28 10:00:00.0"
+            voided="false"
+            uuid="07bf387f-9877-11ec-9b8e-0242ac120006"/>
+
+    <messages_actor_response_type name="SCHEDULED_SERVICE_GROUP"/>
+
+    <concept concept_id="200"
+             is_set="false"
+             creator="1"
+             date_created="2022-02-28 10:00:00.0"
+             retired="false"
+             uuid="e387f386-15fd-4ddd-8460-effa47cd4a11" />
+
+    <!-- For test convenience there is one ScheduledServiceGroup -->
+    <messages_scheduled_service_group
+            messages_scheduled_service_group_id="300"
+            patient_id="100"
+            actor_id="100"
+            channel_type="Call"
+            creator="1"
+            date_created="2022-02-21 11:00:00.0"
+            voided="false"
+            uuid="9b457a07-96c6-4bb8-a3df-c7c3fcc8461f"/>
+
+    <messages_scheduled_service
+            messages_scheduled_service_id="301"
+            group_id="300"
+            service="Adherence report daily"
+            patient_template_id="100"
+            status="DELIVERED"
+            last_service_execution_id="111111111111"
+            creator="1"
+            date_created="2022-02-21 11:00:00.0"
+            voided="false"
+            uuid="b3de6d76-3e31-41cf-955d-ad14b9db07b1"/>
+
+    <!-- current week 2022-02-21 - 2022-02-27 -->
+    <messages_actor_response
+            messages_actor_response_id="400"
+            patient_id="100"
+            actor_id="100"
+            answered_time="2022-02-21 11:00:00.0"
+            question="200"
+            text_response="YES"
+            source_type="SCHEDULED_SERVICE_GROUP"
+            creator="1"
+            date_created="2022-02-28 10:00:00.0"
+            voided="false"
+            source_id="300"
+            uuid="07bf387f-9877-11ec-9b8e-0242ac120057"/>
+    <messages_actor_response
+            messages_actor_response_id="401"
+            patient_id="100"
+            actor_id="100"
+            answered_time="2022-02-23 11:00:00.0"
+            question="200"
+            text_response="YES"
+            source_type="SCHEDULED_SERVICE_GROUP"
+            creator="1"
+            date_created="2022-02-28 10:00:00.0"
+            voided="false"
+            source_id="300"
+            uuid="07bf387f-9877-11ec-9b8e-0242ac120058"/>
+    <messages_actor_response
+            messages_actor_response_id="402"
+            patient_id="100"
+            actor_id="100"
+            answered_time="2022-02-24 11:00:00.0"
+            question="200"
+            text_response="NO"
+            source_type="SCHEDULED_SERVICE_GROUP"
+            creator="1"
+            date_created="2022-02-28 10:00:00.0"
+            voided="false"
+            source_id="300"
+            uuid="07bf387f-9877-11ec-9b8e-0242ac120059"/>
+    <messages_actor_response
+            messages_actor_response_id="403"
+            patient_id="100"
+            actor_id="100"
+            answered_time="2022-02-25 11:00:00.0"
+            question="200"
+            text_response="YES"
+            source_type="SCHEDULED_SERVICE_GROUP"
+            creator="1"
+            date_created="2022-02-28 10:00:00.0"
+            voided="false"
+            source_id="300"
+            uuid="07bf387f-9877-11ec-9b8e-0242ac120060"/>
+    <messages_actor_response
+            messages_actor_response_id="404"
+            patient_id="100"
+            actor_id="100"
+            answered_time="2022-02-26 11:00:00.0"
+            question="200"
+            text_response="NO"
+            source_type="SCHEDULED_SERVICE_GROUP"
+            creator="1"
+            date_created="2022-02-28 10:00:00.0"
+            voided="false"
+            source_id="300"
+            uuid="07bf387f-9877-11ec-9b8e-0242ac120061"/>
+    <messages_actor_response
+            messages_actor_response_id="405"
+            patient_id="100"
+            actor_id="100"
+            answered_time="2022-02-27 11:00:00.0"
+            question="200"
+            text_response="YES"
+            source_type="SCHEDULED_SERVICE_GROUP"
+            creator="1"
+            date_created="2022-02-28 10:00:00.0"
+            voided="false"
+            source_id="300"
+            uuid="07bf387f-9877-11ec-9b8e-0242ac120062"/>
+
+    <!-- Invalid record -->
+    <messages_actor_response
+            messages_actor_response_id="406"
+            patient_id="100"
+            actor_id="100"
+            answered_time="2022-02-27 11:00:00.0"
+            question="200"
+            text_response="123"
+            source_type="SCHEDULED_SERVICE_GROUP"
+            creator="1"
+            date_created="2022-02-28 10:00:00.0"
+            voided="false"
+            source_id="300"
+            uuid="07bf387f-9877-11ec-9b8e-0242ac120063"/>
+
+    <!-- Benchmark week 2022-02-14 - 2022-02-20 -->
+    <messages_actor_response
+            messages_actor_response_id="407"
+            patient_id="100"
+            actor_id="100"
+            answered_time="2022-02-14 11:00:00.0"
+            question="200"
+            text_response="YES"
+            source_type="SCHEDULED_SERVICE_GROUP"
+            creator="1"
+            date_created="2022-02-28 10:00:00.0"
+            voided="false"
+            source_id="300"
+            uuid="07bf387f-9877-11ec-9b8e-0242ac120064"/>
+    <messages_actor_response
+            messages_actor_response_id="408"
+            patient_id="100"
+            actor_id="100"
+            answered_time="2022-02-15 11:00:00.0"
+            question="200"
+            text_response="YES"
+            source_type="SCHEDULED_SERVICE_GROUP"
+            creator="1"
+            date_created="2022-02-28 10:00:00.0"
+            voided="false"
+            source_id="300"
+            uuid="07bf387f-9877-11ec-9b8e-0242ac120065"/>
+</dataset>

@@ -1,0 +1,15 @@
+.person-status {
+    display: inline-block;
+    vertical-align: text-bottom;
+    background: #666666;
+    border: 1px solid #666666;
+    color: white;
+    padding: 2px 4px;
+    margin-top: 4px;
+    font-size: 0.8em;
+    cursor: pointer;
+}
+
+.person-status-reason input {
+    width: 100%;
+}

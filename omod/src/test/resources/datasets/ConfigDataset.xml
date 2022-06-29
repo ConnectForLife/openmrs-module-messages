@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+  ~ This Source Code Form is subject to the terms of the Mozilla Public License,
+  ~ v. 2.0. If a copy of the MPL was not distributed with this file, You can
+  ~ obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+  ~ the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+  ~ <p>
+  ~ Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+  ~ graphic logo is a trademark of OpenMRS Inc.
+  -->
+
+<dataset>
+    <global_property
+            property="messages.actor.types"
+            property_value="2b4e15af-0213-4402-813d-96ac4249c8aa,2a5f4ff4-a179-4b8a-aa4c-40f71956eabc"
+            uuid="03b40777-4c60-483d-8df1-489d22fb6e37"/>
+
+    <global_property
+            property="messages.reschedulingStrategy"
+            property_value="SMS:messages.failedAndPendingMessagesReschedulingStrategy,Call:messages.failedAndPendingMessagesReschedulingStrategy"
+            uuid="13b40777-4c60-483d-8df1-489d22fb6e37"/>
+
+    <global_property
+            property="messages.maxNumberOfAttempts"
+            property_value="3"
+            uuid="23b40777-4c60-483d-8df1-489d22fb6e37"/>
+
+    <global_property
+            property="messages.timeIntervalToNextReschedule"
+            property_value="900"
+            uuid="33b40777-4c60-483d-8df1-489d22fb6e37"/>
+
+    <global_property
+            property="message.consent.validation"
+            property_value="true"
+            uuid="93b40777-4c60-483d-8df1-489d22fb6e37"/>
+
+    <global_property
+            property="message.personStatus.reason.values"
+            property_value="Deceased,Lost to Follow Up,Temporary pause,On vacation,Transferred,Other"
+            uuid="6afb72d9-43e4-4926-9c7d-f3d4810a700d"/>
+
+    <global_property
+            property="messages.statusesEndingCallflow"
+            property_value="ANSWERED,UNANSWERED,MACHINE,BUSY,CANCELLED,FAILED,REJECTED,NO_ANSWER,TIMEOUT,COMPLETED,UNKNOWN"
+            uuid="6bfb72a9-43e4-4926-9c7d-f3d4810a700d"/>
+
+    <global_property
+            property="message.personStatus.configuration"
+            property_value='[
+              {
+                "name": "NO_CONSENT",
+                "style": "background-color: #EEA616; border-color: #EEA616; color: #f5f5f5;"
+              },
+              {
+                "name": "ACTIVATED",
+                "style": "background-color: #51a351; border-color: #51a351; color: #f5f5f5;"
+              },
+              {
+                "name": "MISSING_VALUE",
+                "style": "background-color: #EEA616; border-color: #EEA616; color: #f5f5f5;"
+              }
+            ]'
+            uuid="82fe3664-08d5-429d-bbce-2e738d789b8c"/>
+</dataset>

@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+  ~ This Source Code Form is subject to the terms of the Mozilla Public License,
+  ~ v. 2.0. If a copy of the MPL was not distributed with this file, You can
+  ~ obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+  ~ the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+  ~ <p>
+  ~ Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+  ~ graphic logo is a trademark of OpenMRS Inc.
+  -->
+
+<dataset>
+
+    <messages_template
+            messages_template_id="2231"
+            service_query="SELECT 'test query';"
+            service_query_type="test query type"
+            name="Service1"
+            should_use_optimized_query="false"
+            uuid="7f62432a-96d3-4bef-af4c-b4e0304eb830"
+            creator="1"
+            retired="0"
+            date_created="2010-11-16 00:00:00.0"/>
+
+    <messages_template_field
+            messages_template_field_id="3321"
+            name="testField1"
+            mandatory="1"
+            default_value="test_value"
+            template_field_type="SERVICE_TYPE"
+            template_id="2231"
+            uuid="9d342f25-7303-46c7-b681-c3a4c82e764e"
+            creator="1"
+            voided="0"
+            date_created="2010-11-16 00:00:00.0"/>
+
+    <messages_template_field
+            messages_template_field_id="3322"
+            name="testField2"
+            mandatory="0"
+            default_value="test_value2"
+            template_field_type="MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY"
+            template_id="2231"
+            uuid="afdffb6f-8e54-42e7-97a1-2b759bc543bc"
+            creator="1"
+            voided="0"
+            date_created="2010-11-16 00:00:00.0"/>
+
+    <messages_template
+            messages_template_id="2232"
+            service_query="SELECT 'test2 query';"
+            service_query_type="test2 query type"
+            name="Service2"
+            should_use_optimized_query="false"
+            uuid="37030882-bea6-44ae-930e-786854054199"
+            creator="1"
+            retired="0"
+            date_created="2010-11-16 00:00:00.0"/>
+
+    <messages_template_field
+            messages_template_field_id="3323"
+            name="testField3"
+            mandatory="1"
+            default_value="test_value3"
+            template_field_type="DAY_OF_WEEK"
+            template_id="2232"
+            uuid="381ecee8-9371-4cc3-8e3b-009bfb5d5a94"
+            creator="1"
+            voided="0"
+            date_created="2010-11-16 00:00:00.0"/>
+
+    <messages_template
+            messages_template_id="2233"
+            service_query="SELECT 'retired query';"
+            service_query_type="test2 query type"
+            name="Service3"
+            should_use_optimized_query="false"
+            uuid="2c4d6abd-b1bd-4903-9b98-2a03513be18e"
+            creator="1"
+            retired="1"
+            date_created="2010-11-16 00:00:00.0"/>
+
+    <messages_template_field
+            messages_template_field_id="3324"
+            name="testField4"
+            mandatory="1"
+            default_value="test_value4"
+            template_field_type="DAY_OF_WEEK"
+            template_id="2233"
+            uuid="8becea25-ba1e-46d8-a893-fc7ef3d7c3ed"
+            creator="1"
+            voided="0"
+            date_created="2010-11-16 00:00:00.0"/>
+
+</dataset>

@@ -1,0 +1,208 @@
+/* * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+@import './tab.scss';
+@import '~@fullcalendar/core/main.css';
+@import '~@fullcalendar/daygrid/main.css';
+
+body {
+    font-family: "OpenSans", Arial, sans-serif;
+    -webkit-font-smoothing: subpixel-antialiased;
+    max-width: 1000px;
+    margin: 10px auto;
+    background: #eeeeee;
+    color: #363463;
+    font-size: 16px;
+}
+
+header {
+    position: relative;
+    background-color: #00463f;
+    color: #CCC;
+    line-height: 1em;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -o-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -khtml-border-radius: 5px;
+    border-radius: 5px;
+    display: block;
+    min-height: 48px;
+}
+
+header .logo {
+    float: left;
+    margin: 4px;
+    display: block;
+}
+
+header .logo img {
+    width: 120px;
+}
+
+.body-wrapper {
+    background-color: white;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -o-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -khtml-border-radius: 5px;
+    border-radius: 5px;
+    min-height: 500px;
+    justify-content: center;
+
+    .patient-header {
+        margin: 0;
+        padding: 10px;
+        -moz-border-radius: 5px 5px 0px 0px;
+        -webkit-border-radius: 5px 5px 0px 0px;
+        -o-border-radius: 5px 5px 0px 0px;
+        -ms-border-radius: 5px 5px 0px 0px;
+        -khtml-border-radius: 5px 5px 0px 0px;
+        border-radius: 5px 5px 0px 0px;
+    }
+
+    .content {
+        margin-top: 10px;
+        padding: 10px;
+    }
+}
+
+.app-title {
+    display: block;
+    float: right;
+    color: #eeeeee;
+    font-size: 32px;
+    margin: 4px;
+    height: 100%;
+    padding-top: 12px;
+    padding-right: 5px;
+}
+
+.instructions {
+    align-self: center;
+}
+
+.btn-success {
+    color: #fff;
+    background: #28a745;
+    border-color: #28a745;
+}
+
+.btn-manage-messages {
+    background: -webkit-linear-gradient(bottom, #10708E 15%, #00455C 97%);
+    margin-top: 1em;
+    color: white;
+    font-size: 16px;
+}
+
+.btn-manage-messages:hover {
+    background: -webkit-linear-gradient(bottom, #00455C, #00455C);
+    margin-top: 1em;
+    color: white;
+}
+
+.flex-justify-end {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.u-mt-8 {
+    margin-top: 8px !important;
+}
+
+.u-mt-4_5em {
+    margin-top: 4.5em;
+}
+
+.u-p-0 {
+    padding: 0;
+}
+
+.u-pl-1_5em {
+    padding-left: 1.5em;
+}
+
+.u-mt-1_4em_neg {
+    margin-top: -1.4em;
+}
+
+.u-mr-0 {
+    margin-right: 0;
+}
+
+.u-pl-1em {
+    margin-left: 1em;
+}
+
+.calendar-filters {
+    color: #363463;
+}
+
+.one-column {
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+
+        .radio-inline, .checkbox-inline, .openmrs-date-picker {
+            margin-left: 15px;
+        }
+
+        .radio-wrapper-container {
+            flex-direction: column;
+        }
+    }
+
+    .multiselect.form-group {
+        position: absolute;
+        width: 100%;
+    }
+}
+
+.disable-element {
+    opacity: 0.5;
+    -webkit-transition: opacity 0.5s ease-in-out;
+    -moz-transition: opacity 0.5s ease-in-out;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.enable-element {
+    opacity: 1;
+    -webkit-transition: opacity 0.2s ease-in-out;
+    -moz-transition: opacity 0.2s ease-in-out;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.note-container {
+  .note-content {
+    display: flex;
+  }
+
+  .message {
+    align-items: center;
+    display: flex;
+  }
+
+  .toast-item-image {
+    width: initial;
+    height: initial;
+    position: initial !important;
+    top: initial;
+    margin-top: initial;
+    left: initial;
+  }
+}
+
+.display-header {
+    color: #10708E;
+}
+
+.template-name {
+    color: #10708E;
+}

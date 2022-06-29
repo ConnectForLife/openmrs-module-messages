@@ -1,0 +1,53 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ * <p>
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+
+#best-contact-time {
+
+  .button-section {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  fieldset {
+    border: 1px solid silver;
+    margin: 0 2px;
+    width: fit-content;
+    padding: 0px 20px 10px 20px;
+  }
+
+  legend {
+    width: auto;
+    border: none;
+    margin-bottom: 0px;
+    font-size: 14pt;
+  }
+
+  .sections {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .time-section {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 5px;
+  }
+
+  button {
+    margin: 5px;
+  }
+
+  .ant-time-picker {
+    width: 100%;
+  }
+}
+div.ant-time-picker-panel-select ul {
+  padding: 0;
+}

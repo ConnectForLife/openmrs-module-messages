@@ -1,0 +1,47 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ * <p>
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+
+$TABLE_BORDER: 1px solid rgba(0, 0, 0, 0.06);
+
+.fragment-table {
+  border-left: $TABLE_BORDER;
+  border-collapse: separate;
+  border-spacing: 0;
+
+  display: flex;
+  overflow-x: auto;
+
+  .fragment-column {
+    border-top: $TABLE_BORDER;
+    // Override bootstrap col padding which disrupts borders for cells
+    padding: 0;
+  }
+
+  .fragment-row {
+    border-bottom: $TABLE_BORDER;
+    border-right: $TABLE_BORDER; 
+    padding-top: 10px;
+    padding-left: 10px;
+
+    background-color: white;
+
+    &.even {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+    
+    &.header {
+      border-radius: 0;
+    }
+  }
+}
+
+.u-ta-center {
+  text-align: center;
+}

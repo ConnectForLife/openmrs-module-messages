@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+   <concept_attribute_type
+           concept_attribute_type_id="1"
+           name="Test concept attribute type"
+           min_occurs="1"
+           creator="1"
+           date_created="2022-05-25 12:00:00"
+           retired="0"
+           uuid="236aeedd-dc22-11ec-81c5-0242ac140002"
+   />
+
+   <!-- non-voided concept attributes -->
+   <concept_attribute
+           concept_attribute_id="1"
+           concept_id="1"
+           attribute_type_id="1"
+           value_reference="Value 1"
+           creator="1"
+           date_created="2022-05-25 12:00:00"
+           voided="0"
+           uuid="236aeedd-dc22-11ec-81c5-0242ac140003"
+   />
+
+   <concept_attribute
+           concept_attribute_id="2"
+           concept_id="2"
+           attribute_type_id="1"
+           value_reference="Value 2"
+           creator="1"
+           date_created="2022-05-25 12:00:00"
+           voided="0"
+           uuid="236aeedd-dc22-11ec-81c5-0242ac140004"
+   />
+
+   <concept_attribute
+           concept_attribute_id="3"
+           concept_id="3"
+           attribute_type_id="1"
+           value_reference="Value 3"
+           creator="1"
+           date_created="2022-05-25 12:00:00"
+           voided="0"
+           uuid="236aeedd-dc22-11ec-81c5-0242ac140005"
+   />
+
+   <!-- voided concept attribute -->
+   <concept_attribute
+           concept_attribute_id="4"
+           concept_id="4"
+           attribute_type_id="1"
+           value_reference="Value 4"
+           creator="1"
+           date_created="2022-05-25 12:00:00"
+           voided="1"
+           uuid="236aeedd-dc22-11ec-81c5-0242ac140006"
+   />
+</dataset>
