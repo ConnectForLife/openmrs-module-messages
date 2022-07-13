@@ -10,21 +10,27 @@
 
 package org.openmrs.module.messages.api.model;
 
+import java.util.Comparator;
+
 public class Range<T> {
 
-    private final T start;
-    private final T end;
+  private final T start;
+  private final T end;
 
-    public Range(T start, T end) {
-        this.start = start;
-        this.end = end;
-    }
+  public Range(T start, T end) {
+    this.start = start;
+    this.end = end;
+  }
 
-    public T getStart() {
-        return start;
-    }
+  public T getStart() {
+    return start;
+  }
 
-    public T getEnd() {
-        return end;
-    }
+  public T getEnd() {
+    return end;
+  }
+
+  public boolean contains(T value, Comparator<T> comparator) {
+    return comparator.compare(start, value) <= 0 && comparator.compare(end, value) > 0;
+  }
 }
