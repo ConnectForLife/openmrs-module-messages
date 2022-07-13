@@ -95,16 +95,19 @@ public class ServiceResultList implements Serializable {
                 serviceResult.getPatientId(), template.getName()));
       }
 
-      serviceResultListBuilder
-          .withPatientId(serviceResult.getPatientId())
-          .withActorId(serviceResult.getActorId())
-          .withChannelType(serviceResult.getChannelType())
-          .withServiceName(template.getName())
-          .withStartDate(dateTimeRange.getStart())
-          .withEndDate(dateTimeRange.getEnd())
-          .withResults(Collections.singletonList(serviceResult));
+      // Collect result only if execution date fits the dateTimeRange
+      if(dateTimeRange.contains(serviceResult.getExecutionDate(), ZonedDateTime::compareTo)) {
+        serviceResultListBuilder
+            .withPatientId(serviceResult.getPatientId())
+            .withActorId(serviceResult.getActorId())
+            .withChannelType(serviceResult.getChannelType())
+            .withServiceName(template.getName())
+            .withStartDate(dateTimeRange.getStart())
+            .withEndDate(dateTimeRange.getEnd())
+            .withResults(Collections.singletonList(serviceResult));
 
-      serviceResultsLists.add(serviceResultListBuilder.build());
+        serviceResultsLists.add(serviceResultListBuilder.build());
+      }
 
       // We clear session cache memory periodically because of performance issues
       // Each ServiceResultList object created is stored in memory and in case of large number
