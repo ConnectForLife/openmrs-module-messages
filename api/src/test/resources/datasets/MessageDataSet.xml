@@ -22,6 +22,18 @@
             date_created="2010-11-16"
             uuid="2a8ad9aa-bd0e-48c0-826d-fa628f1db644"/>
 
+    <person_attribute_type
+            person_attribute_type_id="1000"
+            name="Best contact time"
+            description="Person status attribute"
+            format="java.lang.String"
+            creator="1"
+            sort_weight="1"
+            searchable="0"
+            retired="false"
+            date_created="2022-07-18"
+            uuid="64148e01-067d-11ed-88aa-0242ac160002"/>
+
     <relationship_type
             relationship_type_id="2500"
             a_is_to_b="Patient"
@@ -52,6 +64,16 @@
             date_created="2019-11-16 15:57:09.0"
             voided="false"
             uuid="7321f17d-bdef-4571-8f9b-c2ec868dc251"/>
+
+    <person_attribute
+            person_id="997"
+            person_attribute_id="3010"
+            value="11:30"
+            person_attribute_type_id="1000"
+            creator="1"
+            date_created="2022-07-18"
+            voided="false"
+            uuid="80d41a1a-0693-11ed-88aa-0242ac160002"/>
 
     <person_name
             person_name_id="997"
@@ -175,6 +197,16 @@
             date_created="2010-11-16"
             voided="false"
             uuid="a7deb6dd-49da-4568-a24a-e6f0dae4133c"/>
+
+    <person_attribute
+            person_id="999"
+            person_attribute_id="2010"
+            value="11:30"
+            person_attribute_type_id="1000"
+            creator="1"
+            date_created="2022-07-18"
+            voided="false"
+            uuid="92a7ab37-067d-11ed-88aa-0242ac160002"/>
 
     <relationship
             relationship_id="999"
@@ -472,6 +504,16 @@
             voided="false"
             uuid="1b71ba6f-1aa9-405e-b7fc-7375b396ea7d"/>
 
+    <person_attribute
+            person_id="677"
+            person_attribute_id="2013"
+            value="11:30"
+            person_attribute_type_id="1000"
+            creator="1"
+            date_created="2022-07-18"
+            voided="false"
+            uuid="196a0510-0683-11ed-88aa-0242ac160004"/>
+
     <person_name
             person_name_id="677"
             preferred="true"
@@ -521,6 +563,16 @@
             date_created="2010-11-16 15:57:09.0"
             voided="false"
             uuid="4c26ad97-f2a3-4113-b26a-b2720a41ddd3"/>
+
+    <person_attribute
+            person_id="674"
+            person_attribute_id="2011"
+            value="11:30"
+            person_attribute_type_id="1000"
+            creator="1"
+            date_created="2022-07-18"
+            voided="false"
+            uuid="196a0510-0683-11ed-88aa-0242ac160002"/>
 
     <person_name
             person_name_id="674"
@@ -764,6 +816,16 @@
             date_created="2010-11-16 15:57:09.0"
             voided="false"
             uuid="d9932d29-cf24-4352-970a-ded834ee5f62"/>
+
+    <person_attribute
+            person_id="675"
+            person_attribute_id="2012"
+            value="11:30"
+            person_attribute_type_id="1000"
+            creator="1"
+            date_created="2022-07-18"
+            voided="false"
+            uuid="196a0510-0683-11ed-88aa-0242ac160003"/>
 
     <person_name
             person_name_id="675"

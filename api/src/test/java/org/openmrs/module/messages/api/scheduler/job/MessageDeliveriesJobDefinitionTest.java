@@ -39,10 +39,8 @@ import org.springframework.test.context.ContextConfiguration;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_CAREGIVER_ID;
 import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_CAREGIVER_PATIENT_TEMPLATE_ID;
 import static org.openmrs.module.messages.api.service.DatasetConstants.DEFAULT_INACTIVE_PATIENT_ID;

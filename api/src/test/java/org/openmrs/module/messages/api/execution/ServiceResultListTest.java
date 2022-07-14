@@ -14,14 +14,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.openmrs.Concept;
 import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.messages.api.constants.ConfigConstants;
 import org.openmrs.module.messages.api.constants.MessagesConstants;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.Range;
@@ -30,6 +27,7 @@ import org.openmrs.module.messages.api.model.types.ServiceStatus;
 import org.openmrs.module.messages.api.service.CountryPropertyService;
 import org.openmrs.module.messages.api.service.MessagingGroupService;
 import org.openmrs.module.messages.api.service.PatientTemplateService;
+import org.openmrs.module.messages.api.util.BestContactTimeHelper;
 import org.openmrs.module.messages.api.util.DateUtil;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -44,7 +42,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -54,7 +51,7 @@ import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Context.class, DateUtil.class})
+@PrepareForTest({Context.class, DateUtil.class, BestContactTimeHelper.class})
 public class ServiceResultListTest {
 
   private static final int PATIENT_ID = 1;
@@ -95,8 +92,7 @@ public class ServiceResultListTest {
   @Mock
   private Patient patient;
 
-  @Mock
-  private Person person;
+  private final Person person = new Person(10);
 
   @Mock
   private PatientTemplateService patientTemplateService;
@@ -116,6 +112,7 @@ public class ServiceResultListTest {
   @Before
   public void setUp() throws IllegalAccessException {
     mockStatic(Context.class);
+    mockStatic(BestContactTimeHelper.class);
     when(Context.getService(PatientTemplateService.class)).thenReturn(patientTemplateService);
     when(Context.getPatientService()).thenReturn(patientService);
     when(Context.getService(CountryPropertyService.class)).thenReturn(countryPropertyService);
@@ -158,9 +155,9 @@ public class ServiceResultListTest {
   public void shouldParseServiceResultListFromTemplateQuery() {
     when(patientTemplateService.findOneByCriteria(any())).thenReturn(patientTemplate);
     when(personService.getPerson(any())).thenReturn(person);
-    when(countryPropertyService.getCountryPropertyValue(Mockito.any(Concept.class),
-        Mockito.eq(ConfigConstants.BEST_CONTACT_TIME_KEY))).thenReturn(Optional.of("10:00"));
+    when(BestContactTimeHelper.getBestContactTime(any(Person.class))).thenReturn("10:00");
     when(patientTemplate.getActorTypeAsString()).thenReturn(ACTOR_TYPE);
+    when(patientTemplate.getActor()).thenReturn(person);
 
     List<ServiceResultList> serviceResultLists = ServiceResultList.createList(buildRows(), template, dateRange);
 
@@ -177,8 +174,7 @@ public class ServiceResultListTest {
   public void shouldIncludeResultsOnlyIfTheyFitDateTimeRange() {
     when(patientTemplateService.findOneByCriteria(any())).thenReturn(patientTemplate);
     when(personService.getPerson(any())).thenReturn(person);
-    when(countryPropertyService.getCountryPropertyValue(Mockito.any(Concept.class),
-        Mockito.eq(ConfigConstants.BEST_CONTACT_TIME_KEY))).thenReturn(Optional.of("10:00"));
+    when(BestContactTimeHelper.getBestContactTime(any(Person.class))).thenReturn("10:00");
     when(patientTemplate.getActorTypeAsString()).thenReturn(ACTOR_TYPE);
 
     // Moves start date after best contact time

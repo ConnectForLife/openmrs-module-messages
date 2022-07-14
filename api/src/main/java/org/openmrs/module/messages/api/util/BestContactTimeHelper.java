@@ -16,7 +16,6 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
 import org.openmrs.Person;
 import org.openmrs.PersonAttribute;
-import org.openmrs.RelationshipType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.api.constants.ConfigConstants;
 import org.openmrs.module.messages.api.dto.DefaultContactTimeDTO;
@@ -49,29 +48,10 @@ public final class BestContactTimeHelper {
         .collect(toList());
   }
 
-  public static String getBestContactTime(Person person, RelationshipType relationshipType) {
-    final PersonAttribute contactTimeAttribute =
-        PersonAttributeUtil.getBestContactTimeAttribute(person);
+  public static String getBestContactTime(Person person) {
+    final PersonAttribute contactTimeAttribute = PersonAttributeUtil.getBestContactTimeAttribute(person);
 
-    final String contactTime;
-
-    if (contactTimeAttribute == null) {
-      final Optional<Concept> personCountry = PersonAddressUtil.getPersonCountry(person);
-      contactTime = getDefaultBestContactTime(personCountry.orElse(null), relationshipType);
-    } else {
-      contactTime = contactTimeAttribute.getValue();
-    }
-
-    return contactTime;
-  }
-
-  private static String getDefaultBestContactTime(
-      Concept country, RelationshipType relationshipType) {
-    Map<String, String> config = getBestContactTimeConfig(country);
-    if (relationshipType != null && config.containsKey(relationshipType.getUuid())) {
-      return config.get(relationshipType.getUuid());
-    }
-    return getGlobalDefaultBestContactTime(config);
+    return contactTimeAttribute != null ? contactTimeAttribute.getValue() : null;
   }
 
   private static Map<String, String> getBestContactTimeConfig(Concept country) {
@@ -95,10 +75,6 @@ public final class BestContactTimeHelper {
   private static Optional<String> getBestContactTimeProperty(Concept country) {
     return Context.getService(CountryPropertyService.class)
         .getCountryPropertyValue(country, ConfigConstants.BEST_CONTACT_TIME_KEY);
-  }
-
-  private static String getGlobalDefaultBestContactTime(Map<String, String> config) {
-    return config.get(ConfigConstants.GLOBAL_BEST_CONTACT_TIME_KEY);
   }
 
   private static void setDefaultBestContactTimeProperty(String newValue) {
