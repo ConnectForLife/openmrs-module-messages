@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.openmrs.Person;
 import org.openmrs.PersonAttribute;
 import org.openmrs.PersonAttributeType;
+import org.openmrs.RelationshipType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.api.dto.DefaultContactTimeDTO;
 import org.openmrs.module.messages.api.service.CountryPropertyService;
@@ -19,7 +20,6 @@ import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -30,7 +30,8 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 @PrepareForTest({Context.class})
 public class BestContactTimeHelperTest {
 
-  @Mock private CountryPropertyService countryPropertyService;
+  @Mock
+  private CountryPropertyService countryPropertyService;
 
   @Before
   public void setUp() {
@@ -50,7 +51,7 @@ public class BestContactTimeHelperTest {
   @Test
   public void shouldGetBestContactTimes() {
     when(countryPropertyService.getCountryPropertyValue(null, "message.bestContactTime.default"))
-        .thenReturn(Optional.empty());
+            .thenReturn(Optional.empty());
 
     List<DefaultContactTimeDTO> actual = BestContactTimeHelper.getDefaultContactTimes();
 
@@ -62,8 +63,7 @@ public class BestContactTimeHelperTest {
 
   @Test
   public void shouldGetDefaultContactTimesWhenPassedJsonIsInvalid() {
-    String invalidBestContactTimeJsonString =
-        "{\n"
+    String invalidBestContactTimeJsonString = "{\n"
             + "  \""
             + "global"
             + "\" \""
@@ -73,7 +73,7 @@ public class BestContactTimeHelperTest {
             + "}";
 
     when(countryPropertyService.getCountryPropertyValue(null, "message.bestContactTime.default"))
-        .thenReturn(Optional.of(invalidBestContactTimeJsonString));
+            .thenReturn(Optional.of(invalidBestContactTimeJsonString));
 
     List<DefaultContactTimeDTO> actual = BestContactTimeHelper.getDefaultContactTimes();
 
@@ -85,34 +85,36 @@ public class BestContactTimeHelperTest {
 
   @Test
   public void shouldGetBestContactTime() {
-    Person person = createTestPerson(createPersonAttribute("Best contact time", "10:30"));
+    Person person = createTestPerson(createPersonAttribute());
 
-    String actual = BestContactTimeHelper.getBestContactTime(person);
+    String actual = BestContactTimeHelper.getBestContactTime(person, new RelationshipType());
 
     assertEquals("10:30", actual);
   }
 
   @Test
-  public void shouldReturnNullValueWhenBestContactTimeIsEmpty() {
-    Person person = createTestPerson(createPersonAttribute("Best contact time", ""));
+  public void shouldGetBestContactTimeWhenAttributeIsBlank() {
+    String defaultBestContactTimeProperty = "{\n"
+            + "  \""
+            + "global"
+            + "\": \""
+            + "15:00"
+            + "\",\n"
+            + "  \"acec590b-825e-45d2-876a-0028f174903d\": \"10:00\"\n"
+            + "}";
+    when(countryPropertyService.getCountryPropertyValue(null, "message.bestContactTime.default"))
+            .thenReturn(Optional.of(defaultBestContactTimeProperty));
 
-    String actual = BestContactTimeHelper.getBestContactTime(person);
-
-    assertNull(actual);
-  }
-
-  @Test
-  public void shouldReturnNullValueWhenBestContactIsNotDefinedAtAll() {
     Person person = createTestPerson(null);
 
-    String actual = BestContactTimeHelper.getBestContactTime(person);
+    String actual = BestContactTimeHelper.getBestContactTime(person, new RelationshipType());
 
-    assertNull(actual);
+    assertEquals("15:00", actual);
   }
 
   private List<DefaultContactTimeDTO> createDefaultContactTimeDTOs() {
-    return Arrays.asList(
-        new DefaultContactTimeDTO("patient", "10:00"), new DefaultContactTimeDTO("actor", "11:00"));
+    return Arrays.asList(new DefaultContactTimeDTO("patient", "10:00"),
+            new DefaultContactTimeDTO("actor", "11:00"));
   }
 
   private Person createTestPerson(PersonAttribute personAttribute) {
@@ -123,16 +125,16 @@ public class BestContactTimeHelperTest {
     return person;
   }
 
-  private PersonAttribute createPersonAttribute(String personAttributeTypeName, String value) {
+  private PersonAttribute createPersonAttribute() {
     PersonAttribute personAttribute = new PersonAttribute();
-    personAttribute.setAttributeType(createPersonAttributeType(personAttributeTypeName));
-    personAttribute.setValue(value);
+    personAttribute.setAttributeType(createTestPersonAttributeType());
+    personAttribute.setValue("10:30");
     return personAttribute;
   }
 
-  private PersonAttributeType createPersonAttributeType(String name) {
+  private PersonAttributeType createTestPersonAttributeType() {
     PersonAttributeType personAttributeType = new PersonAttributeType();
-    personAttributeType.setName(name);
+    personAttributeType.setName("Best contact time");
     return personAttributeType;
   }
 }

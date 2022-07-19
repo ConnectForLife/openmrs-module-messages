@@ -405,13 +405,18 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
                     DateUtil.formatToServerSideDateTime(endDate)));
           }
         }
+        Person person = patientTemplate.getActor();
         String patientBestContactTime =
-            BestContactTimeHelper.getBestContactTime(patientTemplate.getActor());
+            BestContactTimeHelper.getBestContactTime(
+                person,
+                patientTemplate.getActorType() != null
+                    ? patientTemplate.getActorType().getRelationshipType()
+                    : null);
         if (!BestContactTimeValidatorUtils.isValidTime(patientBestContactTime)) {
           LOGGER.warn(
               String.format(
                   "Best contact time for patient with id: %d is invalid. Fetching/scheduling events for this patient will be skipped",
-                  patientTemplate.getActor().getPersonId()));
+                  person.getPersonId()));
           continue;
         }
         results.add(

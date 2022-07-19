@@ -84,7 +84,12 @@ public class ServiceResultList implements Serializable {
       PatientTemplate patientTemplate = getRelatedPatientTemplate(serviceResult, template);
       if (patientTemplate != null) {
         Person person = patientTemplate.getActor();
-        String patientBestContactTime = BestContactTimeHelper.getBestContactTime(person);
+        String patientBestContactTime =
+            BestContactTimeHelper.getBestContactTime(
+                person,
+                patientTemplate.getActorType() != null
+                    ? patientTemplate.getActorType().getRelationshipType()
+                    : null);
         if (!BestContactTimeValidatorUtils.isValidTime(patientBestContactTime)) {
           LOGGER.warn(
               String.format(
@@ -94,8 +99,7 @@ public class ServiceResultList implements Serializable {
         }
 
         setChannelTypeFromPatientTemplate(serviceResult, patientTemplate);
-        setExecutionDateWithBestContactTimeFromPatientTemplate(
-            serviceResult, patientBestContactTime);
+        setExecutionDateWithBestContactTimeFromPatientTemplate(serviceResult, patientBestContactTime);
         serviceResult.setPatientTemplateId(patientTemplate.getId());
 
         serviceResultListBuilder.withActorType(patientTemplate.getActorTypeAsString());

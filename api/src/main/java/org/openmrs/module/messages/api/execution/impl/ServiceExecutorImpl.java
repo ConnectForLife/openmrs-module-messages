@@ -22,7 +22,6 @@ import org.openmrs.module.messages.api.execution.ServiceResultList;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.Range;
 import org.openmrs.module.messages.api.model.Template;
-import org.openmrs.module.messages.api.util.BestContactTimeHelper;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
@@ -85,7 +84,7 @@ public class ServiceExecutorImpl extends BaseOpenmrsService implements ServiceEx
         new ExecutionContext(
             patientTemplate,
             dateTimeRange,
-            BestContactTimeHelper.getBestContactTime(patientTemplate.getActor()),
+            patientBestContactTime,
             executionStartDateTime);
 
     logExecutingInfo(patientTemplate, executionEngine);

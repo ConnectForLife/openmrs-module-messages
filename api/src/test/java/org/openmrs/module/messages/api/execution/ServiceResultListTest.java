@@ -14,11 +14,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.openmrs.Concept;
 import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.messages.api.constants.ConfigConstants;
 import org.openmrs.module.messages.api.constants.MessagesConstants;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.Range;
@@ -27,7 +30,6 @@ import org.openmrs.module.messages.api.model.types.ServiceStatus;
 import org.openmrs.module.messages.api.service.CountryPropertyService;
 import org.openmrs.module.messages.api.service.MessagingGroupService;
 import org.openmrs.module.messages.api.service.PatientTemplateService;
-import org.openmrs.module.messages.api.util.BestContactTimeHelper;
 import org.openmrs.module.messages.api.util.DateUtil;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -42,6 +44,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -51,7 +54,7 @@ import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Context.class, DateUtil.class, BestContactTimeHelper.class})
+@PrepareForTest({Context.class, DateUtil.class})
 public class ServiceResultListTest {
 
   private static final int PATIENT_ID = 1;
@@ -59,21 +62,21 @@ public class ServiceResultListTest {
   private static final String ACTOR_TYPE = "Caregiver";
   // 2021-07-08T09:59:52UTC
   private static final ZonedDateTime START_DATE =
-      ZonedDateTime.ofInstant(Instant.ofEpochSecond(1625738392L), ZoneId.of("UTC"));
+          ZonedDateTime.ofInstant(Instant.ofEpochSecond(1625738392L), ZoneId.of("UTC"));
   private static final ZonedDateTime END_DATE = START_DATE.plusMonths(2);
   private static final String SERVICE_NAME = "TestName";
 
   private static final List<ZonedDateTime> EXEC_DATES =
-      Arrays.asList(START_DATE, START_DATE.plusDays(1), START_DATE.plusDays(10), START_DATE.plusDays(10),
-          START_DATE.plusDays(16), START_DATE.plusDays(10), START_DATE.plusDays(21));
+          Arrays.asList(START_DATE, START_DATE.plusDays(1), START_DATE.plusDays(10), START_DATE.plusDays(10),
+                  START_DATE.plusDays(16), START_DATE.plusDays(10), START_DATE.plusDays(21));
 
   private static final List<String> MSG_IDS = Arrays.asList("ID_0", "ID_1", "ID 2", "ID 3", "abcdef", "ID_5", "ID 6");
   private static final List<Integer> PATIENT_IDS = Arrays.asList(0, 1, 2, 3, 4, 5, 6);
   private static final List<String> CHANNEL_NAMES =
-      Arrays.asList("Call", "Call", "Call", "Call", "Sms", "Call", "Deactivate service");
+          Arrays.asList("Call", "Call", "Call", "Call", "Sms", "Call", "Deactivate service");
   private static final List<ServiceStatus> SERVICE_STATUSES =
-      Arrays.asList(ServiceStatus.DELIVERED, ServiceStatus.FUTURE, ServiceStatus.FUTURE, ServiceStatus.DELIVERED,
-          ServiceStatus.PENDING, null, ServiceStatus.FAILED);
+          Arrays.asList(ServiceStatus.DELIVERED, ServiceStatus.FUTURE, ServiceStatus.FUTURE, ServiceStatus.DELIVERED,
+                  ServiceStatus.PENDING, null, ServiceStatus.FAILED);
   private static final int EXPECTED_SIZE = 5;
   private static final int EXPECTED_IDENTIFIER_DELIVERED = 3;
   private static final int EXPECTED_IDENTIFIER_PENDING = 4;
@@ -92,7 +95,8 @@ public class ServiceResultListTest {
   @Mock
   private Patient patient;
 
-  private final Person person = new Person(10);
+  @Mock
+  private Person person;
 
   @Mock
   private PatientTemplateService patientTemplateService;
@@ -112,12 +116,11 @@ public class ServiceResultListTest {
   @Before
   public void setUp() throws IllegalAccessException {
     mockStatic(Context.class);
-    mockStatic(BestContactTimeHelper.class);
     when(Context.getService(PatientTemplateService.class)).thenReturn(patientTemplateService);
     when(Context.getPatientService()).thenReturn(patientService);
     when(Context.getService(CountryPropertyService.class)).thenReturn(countryPropertyService);
     when(Context.getRegisteredComponent(MessagesConstants.MESSAGING_GROUP_SERVICE, MessagingGroupService.class)).thenReturn(
-        messagingGroupService);
+            messagingGroupService);
     when(Context.getPersonService()).thenReturn(personService);
 
     // Sets DateUtil's clock to predefined and fixed point in time
@@ -155,7 +158,8 @@ public class ServiceResultListTest {
   public void shouldParseServiceResultListFromTemplateQuery() {
     when(patientTemplateService.findOneByCriteria(any())).thenReturn(patientTemplate);
     when(personService.getPerson(any())).thenReturn(person);
-    when(BestContactTimeHelper.getBestContactTime(any(Person.class))).thenReturn("10:00");
+    when(countryPropertyService.getCountryPropertyValue(Mockito.any(Concept.class),
+            Mockito.eq(ConfigConstants.BEST_CONTACT_TIME_KEY))).thenReturn(Optional.of("10:00"));
     when(patientTemplate.getActorTypeAsString()).thenReturn(ACTOR_TYPE);
     when(patientTemplate.getActor()).thenReturn(person);
 
@@ -174,8 +178,10 @@ public class ServiceResultListTest {
   public void shouldIncludeResultsOnlyIfTheyFitDateTimeRange() {
     when(patientTemplateService.findOneByCriteria(any())).thenReturn(patientTemplate);
     when(personService.getPerson(any())).thenReturn(person);
-    when(BestContactTimeHelper.getBestContactTime(any(Person.class))).thenReturn("10:00");
+    when(countryPropertyService.getCountryPropertyValue(Mockito.any(Concept.class),
+            Mockito.eq(ConfigConstants.BEST_CONTACT_TIME_KEY))).thenReturn(Optional.of("10:00"));
     when(patientTemplate.getActorTypeAsString()).thenReturn(ACTOR_TYPE);
+    when(patientTemplate.getActor()).thenReturn(person);
 
     // Moves start date after best contact time
     final Range<ZonedDateTime> testRange = new Range<>(START_DATE.plusHours(1), END_DATE);
