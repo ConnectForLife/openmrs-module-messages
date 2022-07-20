@@ -30,111 +30,111 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 @PrepareForTest({Context.class})
 public class BestContactTimeHelperTest {
 
-    @Mock
-    private CountryPropertyService countryPropertyService;
+  @Mock
+  private CountryPropertyService countryPropertyService;
 
-    @Before
-    public void setUp() {
-        mockStatic(Context.class);
-        when(Context.getService(CountryPropertyService.class)).thenReturn(countryPropertyService);
+  @Before
+  public void setUp() {
+    mockStatic(Context.class);
+    when(Context.getService(CountryPropertyService.class)).thenReturn(countryPropertyService);
+  }
+
+  @Test
+  public void shouldSetDefaultContactTimes() {
+    List<DefaultContactTimeDTO> dtos = createDefaultContactTimeDTOs();
+
+    BestContactTimeHelper.setDefaultContactTimes(dtos);
+
+    verify(countryPropertyService).setCountryPropertyValue(any(), anyString(), anyString());
+  }
+
+  @Test
+  public void shouldGetBestContactTimes() {
+    when(countryPropertyService.getCountryPropertyValue(null, "message.bestContactTime.default"))
+            .thenReturn(Optional.empty());
+
+    List<DefaultContactTimeDTO> actual = BestContactTimeHelper.getDefaultContactTimes();
+
+    assertNotNull(actual);
+    assertEquals(2, actual.size());
+    assertEquals("global", actual.get(0).getActor());
+    assertEquals("acec590b-825e-45d2-876a-0028f174903d", actual.get(1).getActor());
+  }
+
+  @Test
+  public void shouldGetDefaultContactTimesWhenPassedJsonIsInvalid() {
+    String invalidBestContactTimeJsonString = "{\n"
+            + "  \""
+            + "global"
+            + "\" \""
+            + "10:00"
+            + "\"\n"
+            + "  \"acec590b-825e-45d2-876a-0028f174903d\": \"10:00\"\n"
+            + "}";
+
+    when(countryPropertyService.getCountryPropertyValue(null, "message.bestContactTime.default"))
+            .thenReturn(Optional.of(invalidBestContactTimeJsonString));
+
+    List<DefaultContactTimeDTO> actual = BestContactTimeHelper.getDefaultContactTimes();
+
+    assertNotNull(actual);
+    assertEquals(2, actual.size());
+    assertEquals("global", actual.get(0).getActor());
+    assertEquals("acec590b-825e-45d2-876a-0028f174903d", actual.get(1).getActor());
+  }
+
+  @Test
+  public void shouldGetBestContactTime() {
+    Person person = createTestPerson(createPersonAttribute());
+
+    String actual = BestContactTimeHelper.getBestContactTime(person, new RelationshipType());
+
+    assertEquals("10:30", actual);
+  }
+
+  @Test
+  public void shouldGetBestContactTimeWhenAttributeIsBlank() {
+    String defaultBestContactTimeProperty = "{\n"
+            + "  \""
+            + "global"
+            + "\": \""
+            + "15:00"
+            + "\",\n"
+            + "  \"acec590b-825e-45d2-876a-0028f174903d\": \"10:00\"\n"
+            + "}";
+    when(countryPropertyService.getCountryPropertyValue(null, "message.bestContactTime.default"))
+            .thenReturn(Optional.of(defaultBestContactTimeProperty));
+
+    Person person = createTestPerson(null);
+
+    String actual = BestContactTimeHelper.getBestContactTime(person, new RelationshipType());
+
+    assertEquals("15:00", actual);
+  }
+
+  private List<DefaultContactTimeDTO> createDefaultContactTimeDTOs() {
+    return Arrays.asList(new DefaultContactTimeDTO("patient", "10:00"),
+            new DefaultContactTimeDTO("actor", "11:00"));
+  }
+
+  private Person createTestPerson(PersonAttribute personAttribute) {
+    Person person = new Person();
+    if (personAttribute != null) {
+      person.addAttribute(personAttribute);
     }
+    return person;
+  }
 
-    @Test
-    public void shouldSetDefaultContactTimes() {
-        List<DefaultContactTimeDTO> dtos = createDefaultContactTimeDTOs();
+  private PersonAttribute createPersonAttribute() {
+    PersonAttribute personAttribute = new PersonAttribute();
+    personAttribute.setAttributeType(createTestPersonAttributeType());
+    personAttribute.setValue("10:30");
+    return personAttribute;
+  }
 
-        BestContactTimeHelper.setDefaultContactTimes(dtos);
-
-        verify(countryPropertyService).setCountryPropertyValue(any(), anyString(), anyString());
-    }
-
-    @Test
-    public void shouldGetBestContactTimes() {
-        when(countryPropertyService.getCountryPropertyValue(null, "message.bestContactTime.default"))
-                .thenReturn(Optional.empty());
-
-        List<DefaultContactTimeDTO> actual = BestContactTimeHelper.getDefaultContactTimes();
-
-        assertNotNull(actual);
-        assertEquals(2, actual.size());
-        assertEquals("global", actual.get(0).getActor());
-        assertEquals("acec590b-825e-45d2-876a-0028f174903d", actual.get(1).getActor());
-    }
-
-    @Test
-    public void shouldGetDefaultContactTimesWhenPassedJsonIsInvalid() {
-        String invalidBestContactTimeJsonString = "{\n"
-                + "  \""
-                + "global"
-                + "\" \""
-                + "10:00"
-                + "\"\n"
-                + "  \"acec590b-825e-45d2-876a-0028f174903d\": \"10:00\"\n"
-                + "}";
-
-        when(countryPropertyService.getCountryPropertyValue(null, "message.bestContactTime.default"))
-                .thenReturn(Optional.of(invalidBestContactTimeJsonString));
-
-        List<DefaultContactTimeDTO> actual = BestContactTimeHelper.getDefaultContactTimes();
-
-        assertNotNull(actual);
-        assertEquals(2, actual.size());
-        assertEquals("global", actual.get(0).getActor());
-        assertEquals("acec590b-825e-45d2-876a-0028f174903d", actual.get(1).getActor());
-    }
-
-    @Test
-    public void shouldGetBestContactTime() {
-        Person person = createTestPerson(createPersonAttribute());
-
-        String actual = BestContactTimeHelper.getBestContactTime(person, new RelationshipType());
-
-        assertEquals("10:30", actual);
-    }
-
-    @Test
-    public void shouldGetBestContactTimeWhenAttributeIsBlank() {
-        String defaultBestContactTimeProperty = "{\n"
-                + "  \""
-                + "global"
-                + "\": \""
-                + "15:00"
-                + "\",\n"
-                + "  \"acec590b-825e-45d2-876a-0028f174903d\": \"10:00\"\n"
-                + "}";
-        when(countryPropertyService.getCountryPropertyValue(null, "message.bestContactTime.default"))
-                .thenReturn(Optional.of(defaultBestContactTimeProperty));
-
-        Person person = createTestPerson(null);
-
-        String actual = BestContactTimeHelper.getBestContactTime(person, new RelationshipType());
-
-        assertEquals("15:00", actual);
-    }
-
-    private List<DefaultContactTimeDTO> createDefaultContactTimeDTOs() {
-        return Arrays.asList(new DefaultContactTimeDTO("patient", "10:00"),
-                new DefaultContactTimeDTO("actor", "11:00"));
-    }
-
-    private Person createTestPerson(PersonAttribute personAttribute) {
-        Person person = new Person();
-        if (personAttribute != null) {
-            person.addAttribute(personAttribute);
-        }
-        return person;
-    }
-
-    private PersonAttribute createPersonAttribute() {
-        PersonAttribute personAttribute = new PersonAttribute();
-        personAttribute.setAttributeType(createTestPersonAttributeType());
-        personAttribute.setValue("10:30");
-        return personAttribute;
-    }
-
-    private PersonAttributeType createTestPersonAttributeType() {
-        PersonAttributeType personAttributeType = new PersonAttributeType();
-        personAttributeType.setName("Best contact time");
-        return personAttributeType;
-    }
+  private PersonAttributeType createTestPersonAttributeType() {
+    PersonAttributeType personAttributeType = new PersonAttributeType();
+    personAttributeType.setName("Best contact time");
+    return personAttributeType;
+  }
 }

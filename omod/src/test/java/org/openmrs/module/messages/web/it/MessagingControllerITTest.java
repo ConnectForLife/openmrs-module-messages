@@ -17,6 +17,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Patient;
 import org.openmrs.Person;
+import org.openmrs.PersonAttribute;
+import org.openmrs.PersonAttributeType;
 import org.openmrs.Relationship;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
@@ -254,6 +256,7 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
     @Test
     public void shouldReturnMessages() throws Exception {
         createPatientTemplate(patient1, patient1, null);
+        setBestContactTimeForPatient(patient1, "14:30");
 
         final Instant startDate = DateUtil.now().minusDays(1).toInstant();
         final Instant endDate = DateUtil.now().plusDays(3).toInstant();
@@ -281,6 +284,20 @@ public class MessagingControllerITTest extends BaseModuleWebContextSensitiveTest
         ServiceResultDTO serviceResult = serviceResultList.getResults().get(0);
         assertThat(serviceResult.getMessageId(), is(1));
         assertThat(serviceResult.getChannelType(), is(Constant.CHANNEL_TYPE_CALL));
+    }
+
+    private void setBestContactTimeForPatient(Person person, String value) {
+        PersonAttributeType personAttributeType = new PersonAttributeType();
+        personAttributeType.setName("Best contact time");
+        personAttributeType.setFormat("java.lang.String");
+        personService.savePersonAttributeType(personAttributeType);
+
+        PersonAttribute personAttribute = new PersonAttribute();
+        personAttribute.setAttributeType(personAttributeType);
+        personAttribute.setPerson(person);
+        personAttribute.setValue(value);
+        patient1.addAttribute(personAttribute);
+        personService.savePerson(patient1);
     }
 
     private void assertMessageDetailsDTO(MessageDetailsDTO dto, Integer patientId) {

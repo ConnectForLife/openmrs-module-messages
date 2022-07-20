@@ -37,12 +37,14 @@ import org.openmrs.module.messages.api.model.types.ServiceStatus;
 import org.openmrs.module.messages.api.service.MessagingService;
 import org.openmrs.module.messages.api.service.PatientTemplateService;
 import org.openmrs.module.messages.api.service.TemplateService;
+import org.openmrs.module.messages.api.util.BestContactTimeHelper;
 import org.openmrs.module.messages.api.util.DateUtil;
 import org.openmrs.module.messages.api.util.HibernateUtil;
 import org.openmrs.module.messages.api.util.StopwatchUtil;
 import org.openmrs.module.messages.domain.criteria.LastResponseCriteria;
 import org.openmrs.module.messages.domain.criteria.PatientTemplateCriteria;
 import org.openmrs.module.messages.domain.criteria.ScheduledServiceCriteria;
+import org.openmrs.module.messages.validator.BestContactTimeValidatorUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.MessageFormat;
@@ -403,9 +405,27 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
                     DateUtil.formatToServerSideDateTime(endDate)));
           }
         }
+        Person person = patientTemplate.getActor();
+        String patientBestContactTime =
+            BestContactTimeHelper.getBestContactTime(
+                person,
+                patientTemplate.getActorType() != null
+                    ? patientTemplate.getActorType().getRelationshipType()
+                    : null);
+        if (!BestContactTimeValidatorUtils.isValidTime(patientBestContactTime)) {
+          LOGGER.warn(
+              String.format(
+                  "Best contact time for patient with id: %d is invalid. Fetching/scheduling events for this patient will be skipped",
+                  person.getPersonId()));
+          continue;
+        }
         results.add(
             serviceExecutor.execute(
-                patientTemplate, dateRange, executionStartDateTime, isCalendarQuery));
+                patientTemplate,
+                dateRange,
+                executionStartDateTime,
+                isCalendarQuery,
+                patientBestContactTime));
       } catch (Exception e) {
         logException(patientTemplate, e);
       }
