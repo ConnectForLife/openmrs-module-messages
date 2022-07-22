@@ -1,0 +1,91 @@
+/*
+ *  This Source Code Form is subject to the terms of the Mozilla Public License,
+ *  v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ *  obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ *  the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *  <p>
+ *  Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ *  graphic logo is a trademark of OpenMRS Inc.
+ */
+
+$BLACK: #363463;
+$LIGHT_BLUE: #007fff;
+$LIGHT_GREEN: #28c900;
+$RED: #c90000;
+$WHITE: #eeeeee;
+
+#form-entry {
+  .title.active {
+    background-color: $LIGHT_BLUE;
+  }
+  
+  .nav>li.disabled>a {
+    color: $BLACK;
+  }
+  
+  .nav-stacked>li>a {
+    border-radius: 0;
+    color: $BLACK;
+  }
+  
+  .nav p {
+    margin: 0;
+  }
+  
+  .nav-stacked>li+li {
+    margin-top: 0;
+  }
+  
+  .nav-pills>li.active>a,
+  .nav-pills>li.active>a:focus,
+  .nav-pills>li.active>a:hover {
+    background-color: $LIGHT_BLUE;
+    color: $WHITE;
+   }
+  
+  .nav>li.disabled>a {
+    padding: 3px;
+    font-family: "OpenSansBold";
+    border-top: 1px solid $WHITE;
+  }
+  
+  .nav>li>a:hover {
+    background-color: $WHITE;
+    color: $BLACK;
+  }
+  
+  .nav>li>a:hover .icon-completed {
+    color: $LIGHT_GREEN;
+  }
+  
+  ul {
+    border-bottom: 1px solid $WHITE;
+    border-right: 1px solid $WHITE;
+    border-left: 5px solid $LIGHT_BLUE;
+  }
+  
+  .icon-completed {
+    color: $LIGHT_GREEN;
+    font-size: 28px;
+  }
+  
+  .icon-error {
+    color: $RED;
+    font-size: 28px;
+  }
+  
+  .active .icon-completed {
+    color: $WHITE;
+  }
+  
+  .icon-default {
+    color: transparent;
+    font-size: 28px;
+  }
+  
+  .nav>li>a {
+    padding: 0;
+    display: flex;
+    align-items: center;
+  }
+}

@@ -17,9 +17,9 @@ import actor, { ActorState } from './actor.reducer';
 import patient, { PatientState } from './patient.reducer';
 import person, { PersonState } from './person.reducer';
 import adminSettings, { AdminSettingsState } from './admin-settings.reducer';
-import personStatus, { PersonStatusState } from '@bit/soldevelo-omrs.cfl-components.person-status/person-status/person-status.reducer';
+import personStatus, { PersonStatusState } from '../components/person-status/person-status.reducer';
 import timezone, {TimezoneState} from "./timezone.reducer";
-import customizeReducer, { CustomizeState } from '@bit/soldevelo-cfl.omrs-components.customize/customize.reducer';
+import customizeReducer, { CustomizeState } from '../components/customize/customize.reducer';
 
 export interface IRootState {
   readonly openmrs: any;

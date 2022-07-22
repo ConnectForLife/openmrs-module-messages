@@ -11,7 +11,7 @@
 import React from 'react';
 import { FormGroup } from 'react-bootstrap';
 import _ from 'lodash';
-import FormLabel from '@bit/soldevelo-omrs.cfl-components.form-label';
+import FormLabel from '../../../form-label/form-label';
 
 import RadioWrapper from './radio-wrapper';
 import { parseType } from '../type-factory';

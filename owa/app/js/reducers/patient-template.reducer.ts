@@ -14,7 +14,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { PatientTemplateUI } from '../shared/model/patient-template-ui';
 import { TemplateUI } from '../shared/model/template-ui';
 import { toModel, mergeWithObjectUIs } from '../shared/model/object-ui';
-import { handleRequest } from '@bit/soldevelo-omrs.cfl-components.request-toast-handler';
+import { handleRequest } from '../components/request-toast-handler/request-toast-handler';
 import * as Default from '../shared/utils/messages';
 import { getIntl } from '@openmrs/react-components/lib/components/localization/withLocalization';
 import { history } from '../config/redux-store';

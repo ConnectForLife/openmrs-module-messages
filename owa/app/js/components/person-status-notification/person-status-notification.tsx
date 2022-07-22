@@ -17,7 +17,7 @@ import {
   openModal,
   putPersonStatus,
   getPossibleReasons
-} from '@bit/soldevelo-omrs.cfl-components.person-status/person-status/person-status.reducer';
+} from '../person-status/person-status.reducer';
 import * as Default from '../../shared/utils/messages';
 import { getIntl } from '@openmrs/react-components/lib/components/localization/withLocalization';
 import './person-status-notification.scss';

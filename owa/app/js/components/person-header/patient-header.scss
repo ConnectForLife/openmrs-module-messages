@@ -1,0 +1,125 @@
+/*
+ *  This Source Code Form is subject to the terms of the Mozilla Public License,
+ *  v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ *  obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ *  the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *  <p>
+ *  Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ *  graphic logo is a trademark of OpenMRS Inc.
+ */
+
+.patient-header-container {
+  border-bottom: 2px solid #eee;
+  background: #f9f9f9;
+  margin: 5px 6px 10px 6px;
+  padding: 5px 10px;
+
+  .patient-header {
+    border-bottom: none;
+    padding: 0 !important;
+
+    .demographics {
+      display: inline-block;
+      vertical-align: top;
+
+      .name {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 1.5em;
+        color: #2B3640;
+
+        span {
+          display: inline-block;
+
+          em {
+            font-size: 0.4em;
+            color: #888;
+            border-top: 1px solid #DDD;
+            display: block;
+          }
+        }
+      }
+
+      .details-section {
+        display: flex;
+        flex-direction: column;
+        color: #2B3640;
+
+        .gender-age {
+          font-size: 0.6em;
+          vertical-align: top;
+          margin-top: 10px;
+
+          small {
+            margin-left: 10px;
+          }
+        }
+
+        .telephone {
+          font-size: 0.6em;
+          vertical-align: top;
+          margin-top: 10px;
+
+          small {
+            margin-left: 10px;
+          }
+        }
+      }
+
+      .contact-info-inline {
+        font-size: 0.6em;
+
+        em {
+          font-size: 0.7em;
+        }
+
+        small {
+          position: relative;
+          top: -15px;
+        }
+      }
+    }
+
+    .identifiers {
+      margin-top: 0;
+      display: flex;
+      align-items: flex-start;
+
+      em {
+        max-width: 170px;
+        min-width: 120px;
+        display: inline-block;
+        color: #888;
+        font-style: normal;
+        font-size: 0.9em;
+        border-bottom: 1px solid #ddd !important;
+        margin-top: 3px;
+        margin-right: 5px;
+      }
+
+      em::after {
+        content: none;
+      }
+
+      .identifiers-number {
+        span {
+          background: #666666;
+          color: white;
+          letter-spacing: 1px;
+          margin: 2px;
+          display: inline-block;
+          padding: 2px 8px;
+          font-size: 0.8em;
+          -webkit-border-radius: 50px;
+          -moz-border-radius: 50px;
+          border-radius: 50px;
+        }
+      }
+    }
+  }
+}
