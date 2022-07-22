@@ -1,0 +1,8 @@
+{
+    "app.title": "OpenMRS Electronic Medical Record",
+    "person.header.name.given": "Given",
+    "person.header.name.middle": "Middle",
+    "person.header.name.family": "Family Name",
+    "person.header.phonenumber": "Telephone number:",
+    "person.header.personId": "Caregiver ID"
+}

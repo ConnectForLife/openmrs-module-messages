@@ -12,9 +12,9 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {ControlLabel, Form, FormGroup} from 'react-bootstrap';
 import _ from 'lodash';
-import OpenMrsDatePicker from '@bit/soldevelo-omrs.cfl-components.openmrs-date-picker';
-import FormLabel from '@bit/soldevelo-omrs.cfl-components.form-label';
-import ErrorDesc from '@bit/soldevelo-omrs.cfl-components.error-description';
+import OpenMrsDatePicker from '../openmrs-date-picker/openmrs-date-picker';
+import FormLabel from '../form-label/form-label';
+import ErrorDesc from '../error-description/error-desc';
 
 import {updatePatientTemplate} from '../../reducers/patient-template.reducer';
 import {PatientTemplateUI} from '../../shared/model/patient-template-ui';

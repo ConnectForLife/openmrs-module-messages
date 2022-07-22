@@ -15,8 +15,8 @@ import AppManagement from './components/app-management';
 import PatientTemplate from './components/patient-template/routes';
 import BreadCrumb from './components/bread-crumb';
 import { CalendarWithHeader as Calendar } from './components/hoc/with-patient-header';
-import Customize from '@bit/soldevelo-cfl.omrs-components.customize'
-import { initializeLocalizationWrapper } from '@bit/soldevelo-omrs.cfl-components.localization-wrapper';
+import Customize from './components/customize/customize'
+import { initializeLocalizationWrapper } from './components/localization-wrapper/localization-wrapper';
 import messagesEN from "./translations/en.json";
 
 initializeLocalizationWrapper({

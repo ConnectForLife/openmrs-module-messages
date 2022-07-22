@@ -12,7 +12,7 @@ import _ from 'lodash';
 
 import { REQUEST, SUCCESS, FAILURE } from './action-type.util'
 import 'react-toastify/dist/ReactToastify.css';
-import { handleRequest } from '@bit/soldevelo-omrs.cfl-components.request-toast-handler';
+import { handleRequest } from '../components/request-toast-handler/request-toast-handler';
 import * as Default from '../shared/utils/messages';
 import { getIntl } from '@openmrs/react-components/lib/components/localization/withLocalization';
 import { IBestContactTime } from '../shared/model/best-contact-time.model';

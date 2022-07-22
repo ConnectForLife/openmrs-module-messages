@@ -11,8 +11,8 @@
 import React from 'react';
 import {Form, FormGroup} from 'react-bootstrap';
 import _ from 'lodash';
-import OpenMrsDatePicker from '@bit/soldevelo-omrs.cfl-components.openmrs-date-picker';
-import FormLabel from '@bit/soldevelo-omrs.cfl-components.form-label';
+import OpenMrsDatePicker from '../openmrs-date-picker/openmrs-date-picker';
+import FormLabel from '../form-label/form-label';
 
 import {PATIENT_TEMPLATE_END_DATE, PATIENT_TEMPLATE_START_DATE,} from '../../shared/utils/messages';
 import {

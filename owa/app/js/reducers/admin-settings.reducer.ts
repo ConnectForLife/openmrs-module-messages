@@ -13,7 +13,7 @@ import {
   continueRequestHandling,
   handleRequestFailure,
   initRequestHandling
-} from '@bit/soldevelo-omrs.cfl-components.request-toast-handler';
+} from '../components/request-toast-handler/request-toast-handler';
 import _ from 'lodash';
 
 import 'react-toastify/dist/ReactToastify.css';

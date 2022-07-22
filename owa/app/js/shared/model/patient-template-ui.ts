@@ -15,7 +15,7 @@ import { IPatientTemplate, getDefaultValue } from './patient-template.model';
 import { TemplateFieldValueUI } from './template-field-value-ui';
 import { TemplateUI } from './template-ui';
 import { IForm } from './form';
-import { validateFormSafely } from '@bit/soldevelo-omrs.cfl-components.validation';
+import { validateFormSafely } from '../../components/validation/validation';
 import { IActor } from './actor.model';
 import { prepareFieldValues } from '../utils/end-date-util';
 

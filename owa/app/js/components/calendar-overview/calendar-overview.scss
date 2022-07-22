@@ -1,0 +1,192 @@
+/*
+ *  This Source Code Form is subject to the terms of the Mozilla Public License,
+ *  v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ *  obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ *  the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *  <p>
+ *  Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ *  graphic logo is a trademark of OpenMRS Inc.
+ */
+
+.calendar {
+
+    margin-bottom: 1em;
+    color: black;
+
+    .fc-left {
+        align-items: center;
+        display: inline-flex;
+    }
+
+    .fc-day-top {
+        background: #10708E !important;
+        border-color: #dddddd !important;
+
+        span {
+            display: block;
+            font-weight: bold;
+            line-height: 2em;
+        }
+    }
+
+    .fc-today {
+        background: #10708E;
+    }
+
+    .fc-event, .fc-event:hover {
+        color: black;
+        text-decoration: none;
+    }
+
+    td.fc-today span{
+        background: #10708E !important;
+    }
+
+    .fc-event {
+        background-color: #F7FDFF;
+        border: none;
+        color: black;
+        padding: 5px;
+    }
+
+    .fc-event-disabled {
+        cursor: default;
+        opacity: 0.5;
+        background: #CCC;
+    }
+
+    .fc-content {
+        font-size: 0.9em;
+    }
+
+    .fc-event-container {
+        padding: 3px;
+    }
+
+    .fc-day-number {
+        background-color: #E7F6FB;
+        color: #00455C;
+    }
+
+    .fc-ltr .fc-dayGrid-view .fc-day-top .fc-day-number {
+        text-align: center;
+        float: none;
+    }
+
+    .fc-other-month.fc-day-top {
+        background: #eeeeee !important;
+        opacity: 1;
+
+        span {
+            font-weight: normal;
+        }
+    }
+
+    .fc-prev-button, .fc-next-button {
+        background-color: transparent;
+        border-color: transparent;
+        color: black;
+        padding: 8px 0px;
+
+        span {
+            font-weight: bold;
+        }
+    }
+
+    .fc-button {
+        background: none;
+    }
+
+    .fc-button-primary:focus {
+        box-shadow: none;
+    }
+
+    .fc-toolbar {
+        h2 {
+            display: inline;
+            font-size: 1em;
+            font-weight: bold;
+        }
+
+        margin-top: 0.5em;
+        margin-bottom: 0;
+    }
+
+    .fc-button-group {
+        .fc-button {
+            background-color: #E7F6FB;
+            color: gray;
+            padding: 0.2em 0.4em;
+            font-size: 0.9em;
+        }
+
+        .fc-button-active {
+            background-color: white;
+            color: black;
+        }
+
+        .fc-button-primary.fc-button-active {
+            background-color: #10708E;
+        }
+    }
+
+    .fc-title {
+        white-space: normal;
+    }
+
+    .fc-sub-event {
+        white-space: normal;
+        display: block;
+        background: #E7F6FB;
+        padding: 3px;
+        border: 0px solid;
+        border-radius: 10px;
+        margin: 5px 0px;
+        color: #2B3640;
+    }
+
+    .fc .fc-row .fc-content-skeleton td {
+        background: none;
+        border-top-color: transparent;
+        border-bottom-color: transparent;
+        border-right-color: #dddddd;
+        border-left-color:#dddddd;
+    }
+
+    .fc-day-header {
+        border-bottom: none;
+        background: #E7F6FB;
+        line-height: 2em;
+        color: #00455C;
+    }
+
+    .fc-unthemed td.fc-today {
+        background: none;
+    }
+
+    .fc-row .fc-content-skeleton td, .fc-row .fc-mirror-skeleton td {
+        border-bottom: 1px;
+    }
+
+    .fc-content-skeleton{
+        .td {
+            background: none;
+            border-color: #dddddd !important;
+            border-style: solid !important;
+        }
+    }
+
+    .red {
+        color: red;
+    }
+
+    .green {
+        color: green;
+    }
+
+    .status-icon {
+        position: relative;
+        width: -webkit-fill-available;
+        text-align: right;
+    }
+}

@@ -12,7 +12,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {IRootState} from '../../reducers';
 import './patient-template.scss';
-import Table from '@bit/soldevelo-omrs.cfl-components.table/table';
+import Table from '../table/table';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {getMessages} from '../../reducers/patient-template.reducer';
 import MessageDetails from '../../shared/model/message-details';
