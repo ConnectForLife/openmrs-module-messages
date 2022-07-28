@@ -18,7 +18,7 @@ export interface ICustomizeProps extends DispatchProps, StateProps {}
 export interface ICustomizeState {}
 
 const OPENMRS_ROOT = '/openmrs/';
-const CFL_UI_ROOT = `${OPENMRS_ROOT}/owa/cfl-ui/`;
+const CFL_UI_ROOT = `${OPENMRS_ROOT}/owa/cfl/`;
 const STYLE_HREF = CFL_UI_ROOT + 'overrides.css';
 const SCRIPT_HREF = CFL_UI_ROOT + 'overrides.js';
 
