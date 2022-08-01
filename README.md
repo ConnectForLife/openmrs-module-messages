@@ -1,7 +1,7 @@
 # Connect for Life has moved
 
-The CLF distribution can be found at the Johnson & Johnson GitHub Account.
+The CLF distribution can now be found at the **Johnson & Johnson GitHub Account**.
 
-You can find it here [here](https://github.com/johnsonandjohnson/openmrs-distro-cfl)
+You can find it here: [CFL Distribution](https://github.com/johnsonandjohnson/openmrs-distro-cfl)
 
-All repositories in this organization have now been archived.
+All repositories in this organization have been moved and are now archived.
