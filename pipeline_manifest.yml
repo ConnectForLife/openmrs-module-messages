@@ -5,7 +5,7 @@ common:
       emails:
         type: email             # Supported values: slack, teams, email
         format: buildstate
-        recipients: [ pgevers@its.jnj.com, nanakapa@ITS.JNJ.com, aagrawa4@its.jnj.com, PWargula@ITS.JNJ.com, DRuchni1@ITS.JNJ.com]
+        recipients: [ pgevers@its.jnj.com, aagrawa4@its.jnj.com, PWargula@ITS.JNJ.com, DRuchni1@ITS.JNJ.com]
         startEnabled: false     # announce when build starts, defaults to false
         successEnabled: false   # announce when build succeeds, defaults to false
         unstableEnabled: true   # announce when build completes as unstable, defaults to true
