@@ -42,7 +42,7 @@ axiosInstance.interceptors.response.use(function (response) {
     const isValidFullUrl = isValidUrl(fullUrlAddress);
     if (401 === error.response.status && isValidRedirectUrl && isValidFullUrl) {
       loginActions.logout();
-      window.location.href = fullUrlAddress;
+      window.location.href = DOMPurify.sanitize(fullUrlAddress);
   } else {
       return Promise.reject(error);
   }
