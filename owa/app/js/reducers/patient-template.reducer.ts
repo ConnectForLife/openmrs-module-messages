@@ -148,12 +148,16 @@ export default (state = initialState, action) => {
         ...state,
         patientTemplatesLoading: false
       };
-    case SUCCESS(ACTION_TYPES.PUT_PATIENT_TEMPLATES):
+    case SUCCESS(ACTION_TYPES.PUT_PATIENT_TEMPLATES): {
+      const ACTION_PAYLOAD_STATUS_TEXT = "statusText";
+      const actionPayload = action.payload.statusText ? action.payload : _.omit(action.payload, ACTION_PAYLOAD_STATUS_TEXT);
+
       return {
         ...state,
         patientTemplatesLoading: false,
-        patientTemplates: _.map(action.payload, TemplateUI.fromModel)
+        patientTemplates: _.map(actionPayload, TemplateUI.fromModel)
       };
+    }
     case ACTION_TYPES.RESET:
       return {
         ..._.cloneDeep(initialState)
