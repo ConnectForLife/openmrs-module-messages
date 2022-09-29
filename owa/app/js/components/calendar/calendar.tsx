@@ -11,7 +11,7 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import Calendar from '@bit/soldevelo-omrs.cfl-components.calendar';
+import Calendar from '../calendar-overview/calendar-overview';
 import { Button, Checkbox, Col, Row, Tab, Tabs } from 'react-bootstrap';
 import { IRootState } from '../../reducers';
 import { getServiceResultLists } from '../../reducers/calendar.reducer'
@@ -23,7 +23,7 @@ import { TemplateUI } from '../../shared/model/template-ui';
 import _ from 'lodash';
 import { RouteComponentProps } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { getPersonStatus } from '@bit/soldevelo-omrs.cfl-components.person-status/person-status/person-status.reducer';
+import { getPersonStatus } from '../person-status/person-status.reducer';
 import * as Default from '../../shared/utils/messages';
 import { getIntl } from '@openmrs/react-components/lib/components/localization/withLocalization';
 import { getActorList } from '../../reducers/actor.reducer';

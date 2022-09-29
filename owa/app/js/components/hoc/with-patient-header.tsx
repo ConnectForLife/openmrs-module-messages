@@ -15,8 +15,8 @@ import PatientTemplateEdit from '../patient-template/patient-template-edit';
 import {RouteComponentProps} from 'react-router-dom';
 import ManageMessages from '../patient-template/manage-messages';
 import {DashboardType} from "../../shared/model/dashboard-type";
-import PersonStatus from '@bit/soldevelo-omrs.cfl-components.person-status';
-import Header from '@bit/soldevelo-omrs.cfl-components.person-header';
+import PersonStatus from '../person-status/person-status';
+import Header from '../person-header/person-header';
 
 interface IWrappedComponentProps extends RouteComponentProps<{ patientUuid: string, dashboardType?: DashboardType }> {
   isNew?: boolean;

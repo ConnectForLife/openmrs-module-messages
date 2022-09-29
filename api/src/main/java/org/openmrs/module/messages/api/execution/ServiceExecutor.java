@@ -35,19 +35,27 @@ public interface ServiceExecutor extends OpenmrsService {
      */
     ServiceResultList execute(PatientTemplate patientTemplate, Range<ZonedDateTime> dateTimeRange) throws ExecutionException;
 
-    /**
-     * Executes a patient template {@link PatientTemplate} and result result as a {@link ServiceResultList}.
-     *
-     * @param patientTemplate        - provided patient template
-     * @param dateTimeRange          - date time range for executed query
-     * @param executionStartDateTime - date time of starting execution
-     * @param isCalendarQuery        - determines if calendar or scheduler job service query should be executed
-     * @return - list of results. The result list contains the Service results according to provided dateTime range.
-     * Services which weren't executed should have the status set as FUTURE.
-     * @throws ExecutionException - exception occurred during service execution
-     */
-    ServiceResultList execute(PatientTemplate patientTemplate, Range<ZonedDateTime> dateTimeRange,
-                              ZonedDateTime executionStartDateTime, boolean isCalendarQuery) throws ExecutionException;
+  /**
+   * Executes a patient template {@link PatientTemplate} and result result as a {@link
+   * ServiceResultList}.
+   *
+   * @param patientTemplate - provided patient template
+   * @param dateTimeRange - date time range for executed query
+   * @param executionStartDateTime - date time of starting execution
+   * @param isCalendarQuery - determines if calendar or scheduler job service query should be
+   *     executed
+   * @param patientBestContactTime - patient's best contact time
+   * @return - list of results. The result list contains the Service results according to provided
+   *     dateTime range. Services which weren't executed should have the status set as FUTURE.
+   * @throws ExecutionException - exception occurred during service execution
+   */
+  ServiceResultList execute(
+      PatientTemplate patientTemplate,
+      Range<ZonedDateTime> dateTimeRange,
+      ZonedDateTime executionStartDateTime,
+      boolean isCalendarQuery,
+      String patientBestContactTime)
+      throws ExecutionException;
 
     /**
      * Executes a template {@link Template} if contains and enables optimized query.

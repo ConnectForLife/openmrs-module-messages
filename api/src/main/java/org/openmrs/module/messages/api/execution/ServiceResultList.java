@@ -26,6 +26,7 @@ import org.openmrs.module.messages.api.service.PatientTemplateService;
 import org.openmrs.module.messages.api.util.BestContactTimeHelper;
 import org.openmrs.module.messages.api.util.DateUtil;
 import org.openmrs.module.messages.domain.criteria.PatientTemplateCriteria;
+import org.openmrs.module.messages.validator.BestContactTimeValidatorUtils;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -82,8 +83,23 @@ public class ServiceResultList implements Serializable {
 
       PatientTemplate patientTemplate = getRelatedPatientTemplate(serviceResult, template);
       if (patientTemplate != null) {
+        Person person = patientTemplate.getActor();
+        String patientBestContactTime =
+            BestContactTimeHelper.getBestContactTime(
+                person,
+                patientTemplate.getActorType() != null
+                    ? patientTemplate.getActorType().getRelationshipType()
+                    : null);
+        if (!BestContactTimeValidatorUtils.isValidTime(patientBestContactTime)) {
+          LOGGER.warn(
+              String.format(
+                  "Best contact time for patient with id: %d is invalid. Scheduling events for this patient will be skipped",
+                  person.getPersonId()));
+          continue;
+        }
+
         setChannelTypeFromPatientTemplate(serviceResult, patientTemplate);
-        setExecutionDateWithBestContactTimeFromPatientTemplate(serviceResult, patientTemplate);
+        setExecutionDateWithBestContactTimeFromPatientTemplate(serviceResult, patientBestContactTime);
         serviceResult.setPatientTemplateId(patientTemplate.getId());
 
         serviceResultListBuilder.withActorType(patientTemplate.getActorTypeAsString());
@@ -95,16 +111,19 @@ public class ServiceResultList implements Serializable {
                 serviceResult.getPatientId(), template.getName()));
       }
 
-      serviceResultListBuilder
-          .withPatientId(serviceResult.getPatientId())
-          .withActorId(serviceResult.getActorId())
-          .withChannelType(serviceResult.getChannelType())
-          .withServiceName(template.getName())
-          .withStartDate(dateTimeRange.getStart())
-          .withEndDate(dateTimeRange.getEnd())
-          .withResults(Collections.singletonList(serviceResult));
+      // Collect result only if execution date fits the dateTimeRange
+      if(dateTimeRange.contains(serviceResult.getExecutionDate(), ZonedDateTime::compareTo)) {
+        serviceResultListBuilder
+            .withPatientId(serviceResult.getPatientId())
+            .withActorId(serviceResult.getActorId())
+            .withChannelType(serviceResult.getChannelType())
+            .withServiceName(template.getName())
+            .withStartDate(dateTimeRange.getStart())
+            .withEndDate(dateTimeRange.getEnd())
+            .withResults(Collections.singletonList(serviceResult));
 
-      serviceResultsLists.add(serviceResultListBuilder.build());
+        serviceResultsLists.add(serviceResultListBuilder.build());
+      }
 
       // We clear session cache memory periodically because of performance issues
       // Each ServiceResultList object created is stored in memory and in case of large number
@@ -136,27 +155,11 @@ public class ServiceResultList implements Serializable {
     return resultList;
   }
 
-  /**
-   * Adjusts execution date of {@code serviceResult} in following way: the Local Date part is
-   * retained, the Local Time part is taken from {@code patientTemplate} configuration and the
-   * default user time zone is used.
-   *
-   * @param serviceResult the service result to adjust its execution date, not null
-   * @param patientTemplate the source of local time configuration, not null
-   * @return the adjusted date, never null
-   */
   private static ZonedDateTime adjustExecutionDateToBestContactTime(
-      ServiceResult serviceResult, PatientTemplate patientTemplate) {
-    final Person person = Context.getPersonService().getPerson(serviceResult.getActorId());
-    final String patientBestContactTime =
-        BestContactTimeHelper.getBestContactTime(
-            person,
-            patientTemplate.getActorType() != null
-                ? patientTemplate.getActorType().getRelationshipType()
-                : null);
+          ServiceResult serviceResult, String patientBestContactTime) {
 
     return getDateWithLocalTimeAndDefaultUserTimeZone(
-        serviceResult.getExecutionDate(), patientBestContactTime);
+            serviceResult.getExecutionDate(), patientBestContactTime);
   }
 
   private static PatientTemplate getRelatedPatientTemplate(
@@ -219,10 +222,10 @@ public class ServiceResultList implements Serializable {
   }
 
   private static void setExecutionDateWithBestContactTimeFromPatientTemplate(
-      ServiceResult serviceResult, PatientTemplate patientTemplate) {
+          ServiceResult serviceResult, String patientBestContactTime) {
     if (serviceResult.getBestContactTime() == null) {
       serviceResult.setExecutionDate(
-          adjustExecutionDateToBestContactTime(serviceResult, patientTemplate));
+              adjustExecutionDateToBestContactTime(serviceResult, patientBestContactTime));
     }
   }
 

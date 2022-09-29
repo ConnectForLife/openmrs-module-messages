@@ -22,7 +22,6 @@ import org.openmrs.module.messages.api.execution.ServiceResultList;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.Range;
 import org.openmrs.module.messages.api.model.Template;
-import org.openmrs.module.messages.api.util.BestContactTimeHelper;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
@@ -51,35 +50,46 @@ public class ServiceExecutorImpl extends BaseOpenmrsService implements ServiceEx
     @Override
     public ServiceResultList execute(PatientTemplate patientTemplate, Range<ZonedDateTime> dateTimeRange)
             throws ExecutionException {
-        return execute(patientTemplate, dateTimeRange, null, false);
+        return execute(patientTemplate, dateTimeRange, null, false, null);
     }
 
-    /**
-     * Executes a patient template {@link PatientTemplate} and result result as a {@link ServiceResultList}.
-     *
-     * @param patientTemplate        - provided patient template
-     * @param dateTimeRange          - date time range for executed query
-     * @param executionStartDateTime - date time of starting execution
-     * @param isCalendarQuery        - determines if calendar or scheduler job service query should be executed
-     * @return - list of results. The result list contains the Service results according to provided dateTime range.
-     * Services which weren't executed should have the status set as FUTURE.
-     * @throws ExecutionException - exception occurred during service execution
-     */
-    @Transactional(noRollbackFor = {RuntimeException.class, SQLGrammarException.class}, readOnly = true)
-    @Override
-    public ServiceResultList execute(PatientTemplate patientTemplate, Range<ZonedDateTime> dateTimeRange,
-                                     ZonedDateTime executionStartDateTime, boolean isCalendarQuery)
-            throws ExecutionException {
-        ExecutionEngine executionEngine = getEngine(patientTemplate, null);
+  /**
+   * Executes a patient template {@link PatientTemplate} and result result as a {@link
+   * ServiceResultList}.
+   *
+   * @param patientTemplate - provided patient template
+   * @param dateTimeRange - date time range for executed query
+   * @param executionStartDateTime - date time of starting execution
+   * @param isCalendarQuery - determines if calendar or scheduler job service query should be
+   *     executed
+   * @param patientBestContactTime - patient's best contact time
+   * @return - list of results. The result list contains the Service results according to provided
+   *     dateTime range. Services which weren't executed should have the status set as FUTURE.
+   * @throws ExecutionException - exception occurred during service execution
+   */
+  @Transactional(
+      noRollbackFor = {RuntimeException.class, SQLGrammarException.class},
+      readOnly = true)
+  @Override
+  public ServiceResultList execute(
+      PatientTemplate patientTemplate,
+      Range<ZonedDateTime> dateTimeRange,
+      ZonedDateTime executionStartDateTime,
+      boolean isCalendarQuery,
+      String patientBestContactTime)
+      throws ExecutionException {
+    ExecutionEngine executionEngine = getEngine(patientTemplate, null);
 
-        ExecutionContext executionContext = new ExecutionContext(patientTemplate, dateTimeRange,
-                BestContactTimeHelper.getBestContactTime(patientTemplate.getActor(),
-                        patientTemplate.getActorType() != null ? patientTemplate.getActorType().getRelationshipType() :
-                                null), executionStartDateTime);
+    ExecutionContext executionContext =
+        new ExecutionContext(
+            patientTemplate,
+            dateTimeRange,
+            patientBestContactTime,
+            executionStartDateTime);
 
-        logExecutingInfo(patientTemplate, executionEngine);
-        return executionEngine.execute(executionContext, isCalendarQuery);
-    }
+    logExecutingInfo(patientTemplate, executionEngine);
+    return executionEngine.execute(executionContext, isCalendarQuery);
+  }
 
     @Transactional(noRollbackFor = {RuntimeException.class, SQLGrammarException.class}, readOnly = true)
     @Override

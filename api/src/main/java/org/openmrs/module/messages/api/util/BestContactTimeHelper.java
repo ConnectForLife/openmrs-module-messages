@@ -51,7 +51,7 @@ public final class BestContactTimeHelper {
 
   public static String getBestContactTime(Person person, RelationshipType relationshipType) {
     final PersonAttribute contactTimeAttribute =
-        PersonAttributeUtil.getBestContactTimeAttribute(person);
+            PersonAttributeUtil.getBestContactTimeAttribute(person);
 
     final String contactTime;
 
@@ -66,7 +66,7 @@ public final class BestContactTimeHelper {
   }
 
   private static String getDefaultBestContactTime(
-      Concept country, RelationshipType relationshipType) {
+          Concept country, RelationshipType relationshipType) {
     Map<String, String> config = getBestContactTimeConfig(country);
     if (relationshipType != null && config.containsKey(relationshipType.getUuid())) {
       return config.get(relationshipType.getUuid());

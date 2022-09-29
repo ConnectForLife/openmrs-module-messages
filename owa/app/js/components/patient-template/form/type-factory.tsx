@@ -10,8 +10,8 @@
 
 import React from 'react';
 import { startOfDay, format } from 'date-fns';
-import { ISO_DATE_FORMAT } from '@bit/soldevelo-omrs.cfl-components.date-util/constants';
-import OpenMrsDatePicker from '@bit/soldevelo-omrs.cfl-components.openmrs-date-picker';
+import { ISO_DATE_FORMAT } from '../../date-util/constants';
+import OpenMrsDatePicker from '../../openmrs-date-picker/openmrs-date-picker';
 
 import { ValueType, InputTypeEnum, SEPARATOR, EMPTY } from './radio-wrapper/parsable-input';
 import _ from 'lodash';

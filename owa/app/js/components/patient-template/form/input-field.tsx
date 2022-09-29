@@ -11,7 +11,7 @@
 import React from 'react';
 import { FormGroup, FormControl } from 'react-bootstrap';
 
-import FormLabel from '@bit/soldevelo-omrs.cfl-components.form-label';
+import FormLabel from '../../form-label/form-label';
 
 interface IProps {
   label: string;
