@@ -29,6 +29,7 @@ interface IHeaderProps extends DispatchProps, StateProps {
   dashboardType: string;
   redirectUrl?: string;
   displayTelephone?: boolean;
+  locale?: string;
 };
 
 interface IHeaderState {
@@ -84,7 +85,7 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
   }
 
   private renderDemographics(personDetails) {
-    const intl = getIntl();
+    const intl = getIntl(this.props.locale);
     const maleMsg = intl.formatMessage({ id: "reactcomponents.male", defaultMessage: "Male" });
     const femaleMsg = intl.formatMessage({ id: "reactcomponents.female", defaultMessage: "Female" });
     const givenName = intl.formatMessage({ id: "person.header.name.given", defaultMessage: "Given" });
@@ -150,7 +151,7 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
   }
 
   renderPatientIdentifier(personDetails) {
-    const intl = getIntl();
+    const intl = getIntl(this.props.locale);
     const identifiers = personDetails.identifiers;
     const patientId = personDetails.isPerson ? intl.formatMessage({ id: "person.header.personId", defaultMessage: "Caregiver ID" })
       : intl.formatMessage({ id: "reactcomponents.patient.id", defaultMessage: "Patient ID" });

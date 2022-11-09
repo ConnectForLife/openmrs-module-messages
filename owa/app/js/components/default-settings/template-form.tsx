@@ -40,6 +40,7 @@ interface IProps {
   actorType: IActorType;
   updateTemplate: (template: TemplateUI) => void;
   healthTipCategories: IHealthTipCategory[];
+  locale?: string;
 }
 
 const elements: InitInput[] = [
@@ -121,17 +122,17 @@ export class TemplateForm extends React.Component<IProps> {
 
     switch (fieldType) {
       case TemplateFieldType.SERVICE_TYPE:
-        return this.renderDynamicRadioButton(templateField, getServiceTypeValues(templateField.possibleValues), fieldName, value);
+        return this.renderDynamicRadioButton(templateField, getServiceTypeValues(templateField.possibleValues, this.props.locale), fieldName, value);
       case TemplateFieldType.DAY_OF_WEEK:
-        return this.renderDynamicDayOfWeekButton(templateField, getDayOfWeekValues(), fieldName, value);
+        return this.renderDynamicDayOfWeekButton(templateField, getDayOfWeekValues(this.props.locale), fieldName, value);
       case TemplateFieldType.DAY_OF_WEEK_SINGLE:
-        return this.renderDynamicRadioButton(templateField, getDayOfWeekValues(), fieldName, value);
+        return this.renderDynamicRadioButton(templateField, getDayOfWeekValues(this.props.locale), fieldName, value);
       case TemplateFieldType.MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY:
         return this.renderDynamicRadioButton(templateField,
-          getMessagingFrequencyDailyOrWeeklyOrMonthlyValues(), fieldName, value);
+          getMessagingFrequencyDailyOrWeeklyOrMonthlyValues(this.props.locale), fieldName, value);
       case TemplateFieldType.MESSAGING_FREQUENCY_WEEKLY_OR_MONTHLY:
         return this.renderDynamicRadioButton(templateField,
-          getMessagingFrequencyWeeklyOrMonthlyValues(), fieldName, value);
+          getMessagingFrequencyWeeklyOrMonthlyValues(this.props.locale), fieldName, value);
       case TemplateFieldType.CATEGORY_OF_MESSAGE:
         return this.renderHealthTipCategoryMultiselect(
             templateField,
@@ -260,7 +261,7 @@ export class TemplateForm extends React.Component<IProps> {
       .templateFields
       .find(f => f.type === TemplateFieldType.MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY);
     if (!!dailyWeeklyMonthlyFrequency) {
-      const daily = getMessagingFrequencyDailyOrWeeklyOrMonthlyValues()[0];
+      const daily = getMessagingFrequencyDailyOrWeeklyOrMonthlyValues(this.props.locale)[0];
       return this.getValueForField(dailyWeeklyMonthlyFrequency) === daily;
     }
 
