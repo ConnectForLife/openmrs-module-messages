@@ -22,6 +22,7 @@ import Timezone from '../timezone/timezone';
 import { DashboardType } from '../../shared/model/dashboard-type';
 
 interface IManageMessagesProps extends DispatchProps, StateProps, RouteComponentProps<{ patientId: string, patientUuid: string, dashboardType: DashboardType }> {
+  locale?: string
 };
 
 interface IManageMessagesState {
@@ -38,7 +39,7 @@ class ManageMessages extends React.PureComponent<IManageMessagesProps, IManageMe
 
   handleSave() {
     if (!!this.props.defaultValuesState.defaultValuesUsed) {
-      this.props.generateDefaultPatientTemplates(parseInt(this.props.match.params.patientId, 10));
+      this.props.generateDefaultPatientTemplates(parseInt(this.props.match.params.patientId, 10), this.props.locale);
     }
   }
 
@@ -64,8 +65,8 @@ class ManageMessages extends React.PureComponent<IManageMessagesProps, IManageMe
 
   private getDefaultValuesMessage(): string {
     return this.props.defaultValuesState.allValuesDefault ?
-      getIntl().formatMessage({ id: 'MESSAGES_ALL_DEFAULT_VALUES_USED_MESSAGE', defaultMessage: Default.ALL_DEFAULT_VALUES_USED_MESSAGE }) :
-      getIntl().formatMessage({ id: 'MESSAGES_SOME_DEFAULT_VALUES_USED_MESSAGE', defaultMessage: Default.SOME_DEFAULT_VALUES_USED_MESSAGE });
+      getIntl(this.props.locale).formatMessage({ id: 'MESSAGES_ALL_DEFAULT_VALUES_USED_MESSAGE', defaultMessage: Default.ALL_DEFAULT_VALUES_USED_MESSAGE }) :
+      getIntl(this.props.locale).formatMessage({ id: 'MESSAGES_SOME_DEFAULT_VALUES_USED_MESSAGE', defaultMessage: Default.SOME_DEFAULT_VALUES_USED_MESSAGE });
   }
 
   render() {

@@ -38,7 +38,7 @@ export class PatientTemplateUI extends ObjectUI<IPatientTemplate> implements IPa
     this.errors = {};
   }
 
-  async validate(templates: Array<TemplateUI>, validateNotTouched: boolean): Promise<PatientTemplateUI> {
+  async validate(templates: Array<TemplateUI>, validateNotTouched: boolean, locale: string | undefined): Promise<PatientTemplateUI> {
     const form = _.chain(this.templateFieldValues)
       .keyBy(v => v.templateFieldId)
       .mapValues(v => v)
@@ -46,7 +46,7 @@ export class PatientTemplateUI extends ObjectUI<IPatientTemplate> implements IPa
 
     const schema = _(templates)
       .find(template => template.id === this.templateId)
-      ?.getValidationSchema(validateNotTouched);
+      ?.getValidationSchema(validateNotTouched, locale);
 
     const patientTemplate = _.clone(this);
 

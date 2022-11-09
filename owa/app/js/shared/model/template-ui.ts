@@ -40,7 +40,7 @@ export class TemplateUI extends ObjectUI<ITemplate> implements ITemplate {
     return !this.id;
   }
 
-  getValidationSchema(validateNotTouched: boolean): Yup.ObjectSchema {
+  getValidationSchema(validateNotTouched: boolean, locale: string | undefined): Yup.ObjectSchema {
     const validators = {};
     this.templateFields.forEach((templateField: TemplateFieldUI) => {
       if (!templateField.id) {
@@ -48,7 +48,7 @@ export class TemplateUI extends ObjectUI<ITemplate> implements ITemplate {
       }
       validators[templateField.id] = Yup.mixed()
         .test('mandatory check',
-          getIntl().formatMessage({ id: 'MESSAGES_FIELD_REQUIRED', defaultMessage: Default.FIELD_REQUIRED }),
+          getIntl(locale).formatMessage({ id: 'MESSAGES_FIELD_REQUIRED', defaultMessage: Default.FIELD_REQUIRED }),
           templateFieldValue => {
             if (templateField.mandatory && (templateFieldValue.isTouched || validateNotTouched)) {
               return !!(templateFieldValue.value && templateFieldValue.value.trim());

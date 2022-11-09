@@ -24,7 +24,8 @@ import './person-status-notification.scss';
 import { getPersonStatusConfig } from '../../shared/utils/person-status'
 
 interface IPersonStatusNotificationProps extends DispatchProps, StateProps {
-  patientUuid: string
+  patientUuid: string,
+  locale?: string
 }
 
 interface IPersonStatusNotificationState {
@@ -45,15 +46,15 @@ class PersonStatusNotification extends React.PureComponent<IPersonStatusNotifica
 
   renderDeactivatedStatusNotificationIfNeeded = () => {
     switch (this.props.personStatus.status.value) {
-      case getPersonStatusConfig().DEACTIVATED.value:
+      case getPersonStatusConfig(this.props.locale).DEACTIVATED.value:
         return this.renderNotification(
-          getIntl().formatMessage({ id: 'MESSAGES_DEACTIVATED_STATUS_NOTIFICATION', defaultMessage: Default.DEACTIVATED_STATUS_NOTIFICATION }));
-      case getPersonStatusConfig().NO_CONSENT.value:
+          getIntl(this.props.locale).formatMessage({ id: 'MESSAGES_DEACTIVATED_STATUS_NOTIFICATION', defaultMessage: Default.DEACTIVATED_STATUS_NOTIFICATION }));
+      case getPersonStatusConfig(this.props.locale).NO_CONSENT.value:
         return this.renderNotification(
-          getIntl().formatMessage({ id: 'MESSAGES_NO_CONSENT_STATUS_NOTIFICATION', defaultMessage: Default.NO_CONSENT_STATUS_NOTIFICATION }));
-      case getPersonStatusConfig().MISSING_VALUE.value:
+          getIntl(this.props.locale).formatMessage({ id: 'MESSAGES_NO_CONSENT_STATUS_NOTIFICATION', defaultMessage: Default.NO_CONSENT_STATUS_NOTIFICATION }));
+      case getPersonStatusConfig(this.props.locale).MISSING_VALUE.value:
         return this.renderNotification(
-          getIntl().formatMessage({ id: 'MESSAGES_MISSING_VALUE_STATUS_NOTIFICATION', defaultMessage: Default.MISSING_VALUE_STATUS_NOTIFICATION })
+          getIntl(this.props.locale).formatMessage({ id: 'MESSAGES_MISSING_VALUE_STATUS_NOTIFICATION', defaultMessage: Default.MISSING_VALUE_STATUS_NOTIFICATION })
         );
       default:
         return null;

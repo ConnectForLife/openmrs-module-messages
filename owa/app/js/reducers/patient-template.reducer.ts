@@ -219,15 +219,15 @@ export const checkIfDefaultValuesUsed = (patientId: number) => async (dispatch) 
   });
 };
 
-export const generateDefaultPatientTemplates = (patientId: number) => async (dispatch) => {
+export const generateDefaultPatientTemplates = (patientId: number, locale: string | undefined) => async (dispatch) => {
   const requestUrl = `${messagesUrl}/defaults/${patientId}/generate-and-save`;
   const body = {
     type: ACTION_TYPES.GENERATE_DEFAULT_PATIENT_TEMPLATES,
     payload: axiosInstance.post(requestUrl)
   }
   await handleRequest(dispatch, body,
-    getIntl().formatMessage({ id: 'MESSAGES_DEFAULT_GENERATION_SUCCESS', defaultMessage: Default.DEFAULT_GENERATION_SUCCESS }),
-    getIntl().formatMessage({ id: 'MESSAGES_DEFAULT_GENERATION_FAILURE', defaultMessage: Default.DEFAULT_GENERATION_FAILURE }));
+    getIntl(locale).formatMessage({ id: 'MESSAGES_DEFAULT_GENERATION_SUCCESS', defaultMessage: Default.DEFAULT_GENERATION_SUCCESS }),
+    getIntl(locale).formatMessage({ id: 'MESSAGES_DEFAULT_GENERATION_FAILURE', defaultMessage: Default.DEFAULT_GENERATION_FAILURE }));
 };
 
 export const reset = () => ({
@@ -235,8 +235,8 @@ export const reset = () => ({
 });
 
 export const putPatientTemplates = (patientTemplates: Array<PatientTemplateUI>,
-  templates: Array<TemplateUI>, patientId: number, patientUuid: string, dashboardType: string) => async (dispatch) => {
-    const validated = await validatePatientTemplates(patientTemplates, templates, true);
+  templates: Array<TemplateUI>, patientId: number, patientUuid: string, dashboardType: string, locale: string | undefined) => async (dispatch) => {
+    const validated = await validatePatientTemplates(patientTemplates, templates, true, locale);
     const requestUrl = `${patientTemplatesUrl}/patient/${patientId}`
     if (isValid(validated)) {
       const body = {
@@ -244,8 +244,8 @@ export const putPatientTemplates = (patientTemplates: Array<PatientTemplateUI>,
         payload: axiosInstance.post(requestUrl, { patientTemplates: _.map(validated, toModel) })
       }
       await handleRequest(dispatch, body,
-        getIntl().formatMessage({ id: 'MESSAGES_GENERIC_SUCCESS', defaultMessage: Default.GENERIC_SUCCESS }),
-        getIntl().formatMessage({ id: 'MESSAGES_GENERIC_FAILURE', defaultMessage: Default.GENERIC_FAILURE }));
+        getIntl(locale).formatMessage({ id: 'MESSAGES_GENERIC_SUCCESS', defaultMessage: Default.GENERIC_SUCCESS }),
+        getIntl(locale).formatMessage({ id: 'MESSAGES_GENERIC_FAILURE', defaultMessage: Default.GENERIC_FAILURE }));
       history.push(`/messages/${dashboardType}/${patientId}&patientuuid=${patientUuid}`);
     } else {
       dispatch(updatePatientTemplates(validated));
@@ -253,11 +253,11 @@ export const putPatientTemplates = (patientTemplates: Array<PatientTemplateUI>,
   };
 
 export const updatePatientTemplate = (patientTemplate: PatientTemplateUI,
-  templates: Array<TemplateUI>, persisted: boolean = false) => async (dispatch) => {
+  templates: Array<TemplateUI>, locale: string | undefined, persisted: boolean = false) => async (dispatch) => {
     patientTemplate.isPersisted = !persisted;
     dispatch({
       type: ACTION_TYPES.UPDATE_PATIENT_TEMPLATE,
-      payload: await patientTemplate.validate(templates, false)
+      payload: await patientTemplate.validate(templates, false, locale)
     })
   };
 
@@ -269,10 +269,10 @@ const updatePatientTemplates = (patientTemplates: Array<PatientTemplateUI>) => (
 
 const validatePatientTemplates = (patientTemplates: Array<PatientTemplateUI>,
   templates: Array<TemplateUI>,
-  validateNotTouched: boolean): Promise<Array<PatientTemplateUI>> => {
+  validateNotTouched: boolean, locale: string | undefined): Promise<Array<PatientTemplateUI>> => {
   return Promise.all(_.map(
     patientTemplates,
-    patientTemplate => patientTemplate.validate(templates, validateNotTouched)));
+    patientTemplate => patientTemplate.validate(templates, validateNotTouched, locale)));
 };
 
 const isValid = (patientTemplates: Array<PatientTemplateUI>): boolean => {

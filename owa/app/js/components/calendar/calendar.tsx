@@ -25,16 +25,17 @@ import { RouteComponentProps } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getPersonStatus } from '../person-status/person-status.reducer';
 import * as Default from '../../shared/utils/messages';
-import { getIntl } from '@openmrs/react-components/lib/components/localization/withLocalization';
 import { getActorList } from '../../reducers/actor.reducer';
 import Timezone from '../timezone/timezone';
 import { DashboardType } from '../../shared/model/dashboard-type';
 import { getPersonStatusConfig } from '../../shared/utils/person-status';
 import { MESSAGE_STATUS_FUTURE } from '../../shared/utils/statuses';
+import { LocalizedMessage } from '@openmrs/react-components';
 
 interface ICalendarViewProps extends DispatchProps, StateProps, RouteComponentProps<{ patientId: string }> {
   patientUuid: string;
-  dashboardType: DashboardType
+  dashboardType: DashboardType,
+  locale?: string
 };
 
 interface ICalendarViewState {
@@ -303,7 +304,7 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
       start: entry.executionDate.toISOString(),
       services: entry.services,
       isDisabled: entry.status && entry.status.toString() === MESSAGE_STATUS_FUTURE
-        && this.props.personStatus.value !== getPersonStatusConfig().ACTIVATED.value
+        && this.props.personStatus.value !== getPersonStatusConfig(this.props.locale).ACTIVATED.value
     }))
   };
 
@@ -348,7 +349,7 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
         <Timezone />
         <div className="row">
           <div className="col-md-12 col-xs-12">
-            <h2>{getIntl().formatMessage({ id: 'MESSAGES_CALENDAR_OVERVIEW_LABEL', defaultMessage: Default.CALENDAR_OVERVIEW_LABEL })}</h2>
+            <h2><LocalizedMessage id="MESSAGES_CALENDAR_OVERVIEW_LABEL" defaultMessage={Default.CALENDAR_OVERVIEW_LABEL} /></h2>
             <Tabs activeKey={activeTabKey} onSelect={this.tabSelected}>
               {actorsResults.map((actorWithResults, index) => {
                 const tabName = actorWithResults.actorDisplayName;
@@ -358,7 +359,7 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
                       <Col sm={9}>
                         <a href={`${window.location.href}/patient-template`}>
                           <Button className="btn btn-md pull-right btn-manage-messages">
-                            {getIntl().formatMessage({ id: 'MESSAGES_MANAGE_MESSAGES_LABEL', defaultMessage: Default.MANAGE_MESSAGES_LABEL })}
+                            <LocalizedMessage id="MESSAGES_MANAGE_MESSAGES_LABEL" defaultMessage={Default.MANAGE_MESSAGES_LABEL} />
                           </Button>
                         </a>
                         <div className={this.getClassForCalendarArea()}>
@@ -373,7 +374,7 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
                       <Col sm={3} className="u-p-0 u-mt-4_5em u-mr-0 calendar-filters">
                         <span>
                           <FontAwesomeIcon icon={['fas', 'filter']} />{' '}
-                          <span className="display-header">{getIntl().formatMessage({ id: 'MESSAGES_DISPLAY_HEADER', defaultMessage: Default.DISPLAY_HEADER })}</span>
+                          <span className="display-header"><LocalizedMessage id="MESSAGES_DISPLAY_HEADER" defaultMessage={Default.DISPLAY_HEADER} /></span>
                         </span>
                         {_.uniqBy(this.props.templates, 'name').map((template) => this.renderTemplateFilter(template))}
                       </Col>

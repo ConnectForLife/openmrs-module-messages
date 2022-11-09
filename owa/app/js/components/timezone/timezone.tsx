@@ -15,7 +15,7 @@ import {
   getTimezone,
 } from '../../reducers/timezone.reducer';
 import * as Default from '../../shared/utils/messages';
-import { getIntl } from '@openmrs/react-components/lib/components/localization/withLocalization';
+import { LocalizedMessage } from '@openmrs/react-components';
 
 interface ITimezoneProps extends DispatchProps, StateProps {
 }
@@ -48,7 +48,7 @@ class Timezone extends React.PureComponent<ITimezoneProps, ITimezoneState> {
           <div className="note-content">
             <span className="toast-item-image toast-item-image-alert" />
             <div className="message">
-              {getIntl().formatMessage({ id: 'MESSAGES_DIFFERENT_TIMEZONE', defaultMessage: Default.DIFFERENT_TIMEZONE }) + this.props.timezone}
+              <LocalizedMessage id="MESSAGES_DIFFERENT_TIMEZONE" defaultMessage={Default.DIFFERENT_TIMEZONE} />{this.props.timezone}
             </div>
           </div>
         </div>

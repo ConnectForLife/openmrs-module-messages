@@ -18,7 +18,7 @@ import { TimePicker } from 'antd';
 import _ from 'lodash';
 import moment, { Moment } from 'moment';
 import * as Default from '../../shared/utils/messages';
-import { getIntl } from '@openmrs/react-components/lib/components/localization/withLocalization';
+import { LocalizedMessage } from '@openmrs/react-components';
 import './best-contact-time.scss';
 
 interface IProps extends DispatchProps {
@@ -74,7 +74,7 @@ class BestContactTime extends React.Component<IProps> {
     return (
       <div id="best-contact-time">
         <fieldset>
-          <legend>{getIntl().formatMessage({ id: 'MESSAGES_BEST_CONTACT_TIME_LABEL', defaultMessage: Default.BEST_CONTACT_TIME_LABEL })}</legend>
+          <legend><LocalizedMessage id="MESSAGES_BEST_CONTACT_TIME_LABEL" defaultMessage={Default.BEST_CONTACT_TIME_LABEL} /></legend>
           {!loading && this.renderTimePickers()}
         </fieldset>
       </div>

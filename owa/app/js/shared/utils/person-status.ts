@@ -16,23 +16,23 @@ export const ACTIVATED_KEY = 'ACTIVATED';
 export const MISSING_VALUE_KEY = 'MISSING_VALUE';
 export const NO_CONSENT_KEY = 'NO_CONSENT';
 
-export const getPersonStatusConfig = () => {
+export const getPersonStatusConfig = (locale: string | undefined) => {
     return {
         NO_CONSENT: {
           value: NO_CONSENT_KEY,
-          label: getIntl().formatMessage({ id: 'MESSAGES_PERSON_STATUS_NO_CONSENT', defaultMessage: Default.PERSON_STATUS_NO_CONSENT })
+          label: getIntl(locale).formatMessage({ id: 'MESSAGES_PERSON_STATUS_NO_CONSENT', defaultMessage: Default.PERSON_STATUS_NO_CONSENT })
         },
         ACTIVATED: {
           value: ACTIVATED_KEY,
-          label: getIntl().formatMessage({ id: 'MESSAGES_PERSON_STATUS_ACTIVATED', defaultMessage: Default.PERSON_STATUS_ACTIVATED })
+          label: getIntl(locale).formatMessage({ id: 'MESSAGES_PERSON_STATUS_ACTIVATED', defaultMessage: Default.PERSON_STATUS_ACTIVATED })
         },
         DEACTIVATED: {
           value: DEACTIVATED_KEY,
-          label: getIntl().formatMessage({ id: 'MESSAGES_PERSON_STATUS_DEACTIVATED', defaultMessage: Default.PERSON_STATUS_DEACTIVATED })
+          label: getIntl(locale).formatMessage({ id: 'MESSAGES_PERSON_STATUS_DEACTIVATED', defaultMessage: Default.PERSON_STATUS_DEACTIVATED })
         },
         MISSING_VALUE: {
           value: MISSING_VALUE_KEY,
-          label: getIntl().formatMessage({ id: 'MESSAGES_PERSON_STATUS_MISSING_VALUE', defaultMessage: Default.PERSON_STATUS_MISSING_VALUE })
+          label: getIntl(locale).formatMessage({ id: 'MESSAGES_PERSON_STATUS_MISSING_VALUE', defaultMessage: Default.PERSON_STATUS_MISSING_VALUE })
         }
     };
 };

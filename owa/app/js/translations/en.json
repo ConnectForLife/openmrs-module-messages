@@ -1,4 +1,10 @@
 {
+    "app.title": "OpenMRS Electronic Medical Record",
+    "person.header.name.given": "Given",
+    "person.header.name.middle": "Middle",
+    "person.header.name.family": "Family Name",
+    "person.header.phonenumber": "Telephone number:",
+    "person.header.personId": "Caregiver ID",
     "MESSAGES_MODULE_NAME": "Messages",
     "MESSAGES_FIELD_REQUIRED": "Required",
     "MESSAGES_SAVE_BUTTON_LABEL": "Save",
