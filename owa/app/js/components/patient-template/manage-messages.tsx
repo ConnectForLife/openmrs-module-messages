@@ -22,7 +22,7 @@ import Timezone from '../timezone/timezone';
 import { DashboardType } from '../../shared/model/dashboard-type';
 
 interface IManageMessagesProps extends DispatchProps, StateProps, RouteComponentProps<{ patientId: string, patientUuid: string, dashboardType: DashboardType }> {
-  locale?:string
+  locale?: string
 };
 
 interface IManageMessagesState {

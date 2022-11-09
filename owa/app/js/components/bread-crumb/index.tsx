@@ -35,7 +35,7 @@ const PATIENT_DASHBOARD_ROUTE = (patientUuid: string, dashboardType: string) => 
 const SYSTEM_ADMINISTRATION_ROUTE = `${OMRS_ROUTE}coreapps/systemadministration/systemAdministration.page`;
 
 interface IBreadCrumbProps extends DispatchProps, StateProps, RouteComponentProps {
-  locale?:string
+  locale?: string
 }
 
 interface IBreadCrumbState {

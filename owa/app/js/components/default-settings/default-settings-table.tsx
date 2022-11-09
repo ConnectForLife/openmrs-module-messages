@@ -26,7 +26,7 @@ import { LocalizedMessage } from '@openmrs/react-components';
 interface IProps extends DispatchProps {
   templates: ReadonlyArray<TemplateUI>,
   actorTypes: ReadonlyArray<IActorType>,
-  locale?:string
+  locale?: string
  }
 
 class DefaultSettingsTable extends React.Component<IProps> {

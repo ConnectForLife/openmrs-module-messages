@@ -48,7 +48,7 @@ class Timezone extends React.PureComponent<ITimezoneProps, ITimezoneState> {
           <div className="note-content">
             <span className="toast-item-image toast-item-image-alert" />
             <div className="message">
-              <LocalizedMessage id="MESSAGES_DIFFERENT_TIMEZONE" defaultMessage={Default.DIFFERENT_TIMEZONE} />{" " + this.props.timezone}}
+              <LocalizedMessage id="MESSAGES_DIFFERENT_TIMEZONE" defaultMessage={Default.DIFFERENT_TIMEZONE} />{this.props.timezone}
             </div>
           </div>
         </div>
