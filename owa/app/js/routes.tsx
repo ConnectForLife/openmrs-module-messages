@@ -16,6 +16,9 @@ import PatientTemplate from './components/patient-template/routes';
 import BreadCrumb from './components/bread-crumb';
 import {CalendarWithHeader as Calendar} from './components/hoc/with-patient-header';
 import Customize from './components/customize/customize';
+
+import { addLocaleData } from "react-intl";
+import pt from 'react-intl/locale-data/pt';
 import messagesEN from "./translations/en.json";
 import messagesFR from "./translations/fr.json";
 import messagesPTBR from "./translations/pt_BR.json";
@@ -26,6 +29,8 @@ initializeLocalization({
   fr: messagesFR,
   pt: messagesPTBR
 });
+// Add locale data which is not included in @openmrs/react-components
+addLocaleData([...pt]);
 
 const LocalizedHeader = withLocalization(Header);
 const LocalizedBreadCrumb = withLocalization(BreadCrumb);
