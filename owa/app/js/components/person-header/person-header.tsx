@@ -92,18 +92,19 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
     const maleMsg = intl.formatMessage({ id: "reactcomponents.male", defaultMessage: "Male" });
     const femaleMsg = intl.formatMessage({ id: "reactcomponents.female", defaultMessage: "Female" });
     const otherMsg = intl.formatMessage({ id: "reactcomponents.other", defaultMessage: "Other" });
-    const unknownMsg = intl.formatMessage({ id: "reactcomponents.unknown", defaultMessage: "Unknown" });
+    const unknownGenderMsg = intl.formatMessage({ id: "reactcomponents.unknown", defaultMessage: "Unknown" });
     const givenName = intl.formatMessage({ id: "person.header.name.given", defaultMessage: "Given" });
     const middleName = intl.formatMessage({ id: "person.header.name.middle", defaultMessage: "Middle" });
     const familyName = intl.formatMessage({ id: "person.header.name.family", defaultMessage: "Family Name" });
     const telephoneNumber = intl.formatMessage({ id: "person.header.phonenumber", defaultMessage: "Telephone number:" });
-    let gender = unknownMsg;
-    if (this.props.isShowGenderPersonHeader != null && this.props.isShowGenderPersonHeader!['value'].toUpperCase() === 'TRUE') {
-        gender = (personDetails.gender === 'M' ? maleMsg : (personDetails.gender === 'F' ? femaleMsg : (personDetails.gender === 'O' ? otherMsg : unknownMsg)));
+    const unknownAgeMsg =  intl.formatMessage({ id: "person.header.age.unknown", defaultMessage: "unknown age" });
+    let gender = unknownGenderMsg;
+    if (this.props.isShowGenderPersonHeader && this.props.isShowGenderPersonHeader!['value'].toUpperCase() === 'TRUE') {
+        gender = (personDetails.gender === 'M' ? maleMsg : (personDetails.gender === 'F' ? femaleMsg : (personDetails.gender === 'O' ? otherMsg : unknownGenderMsg)));
     }
-    let age = "unknown age";
-    if (this.props.isShowAgePersonHeader != null && this.props.isShowAgePersonHeader!['value'].toUpperCase() === 'TRUE') {
-       age = (personDetails.birthdate ? formatAge(personDetails.birthdate, intl)!['age'] : "unknown age");
+    let age = unknownAgeMsg;
+    if (this.props.isShowAgePersonHeader && this.props.isShowAgePersonHeader!['value'].toUpperCase() === 'TRUE') {
+        age = (personDetails.birthdate ? formatAge(personDetails.birthdate, intl)!['age'] : unknownAgeMsg);
     }
     return (
       <div className="demographics" onClick={this.handlePatientLink}>
