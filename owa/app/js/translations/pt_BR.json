@@ -72,9 +72,12 @@
   "MESSAGES_MISSING_VALUE_STATUS_NOTIFICATION": "Status da pessoa tem valor em falta. As mensagens programadas não serão enviadas a esta pessoa.",
   "MESSAGES_EDIT_MESSAGES_TITLE": "Criar mensagens",
   "MESSAGES_DIFFERENT_TIMEZONE": "Seu fuso horário local é diferente daquele configurado para este sistema. Favor inserir as informações de agendamento no seguinte fuso horário: ",
-  "MESSAGES_MANAGE_MESSAGES_LABEL": "Gerir mensagens",
+  "MESSAGES_MANAGE_MESSAGES_LABEL": "Gerenciar Mensagens",
   "MESSAGES_DISPLAY_HEADER": "Exibir:",
   "MESSAGES_SERVICE_TYPE_CALL": "Chamada",
   "MESSAGES_SERVICE_TYPE_SMS": "SMS",
-  "MESSAGES_SERVICE_TYPE_DEACTIVATE_SERVICE": "Desactivar Serviço"
+  "MESSAGES_SERVICE_TYPE_DEACTIVATE_SERVICE": "Desactivar Serviço",
+  "MESSAGES_SCHEDULED_MESSAGES_LABEL": "Mensagens programadas",
+  "MESSAGES_MESSAGE_TYPE_LABEL": "Tipo de mensagem",
+  "MESSAGES_ACTIONS_LABEL": "Ações"
 }

@@ -20,6 +20,7 @@ import { getIntl } from '@openmrs/react-components/lib/components/localization/w
 import './patient-template.scss';
 import Timezone from '../timezone/timezone';
 import { DashboardType } from '../../shared/model/dashboard-type';
+import { LocalizedMessage } from '@openmrs/react-components';
 
 interface IManageMessagesProps extends DispatchProps, StateProps, RouteComponentProps<{ patientId: string, patientUuid: string, dashboardType: DashboardType }> {
   locale?: string
@@ -73,7 +74,7 @@ class ManageMessages extends React.PureComponent<IManageMessagesProps, IManageMe
     const { patientId, patientUuid, dashboardType } = this.props.match.params;
     return (
       <>
-        <h2>Manage messages</h2>
+        <h2><LocalizedMessage id="MESSAGES_MANAGE_MESSAGES_LABEL" defaultMessage={Default.MANAGE_MESSAGES_LABEL} /></h2>
         {this.renderDefaultValuesNotificationIfNeeded()}
         <Timezone />
         <div className="panel-body">
