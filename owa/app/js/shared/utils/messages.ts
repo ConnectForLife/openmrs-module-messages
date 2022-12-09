@@ -97,3 +97,6 @@ export const DIFFERENT_TIMEZONE = 'Your local timezone is different than the one
 //Calendar overview
 export const MANAGE_MESSAGES_LABEL = 'Manage messages';
 export const DISPLAY_HEADER = 'Display:';
+export const SCHEDULED_MESSAGES = 'Scheduled Messages';
+export const MESSAGE_TYPE = "Message Type";
+export const ACTIONS = "Actions"
