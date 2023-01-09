@@ -1,39 +1,44 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.openmrs.module</groupId>
-        <artifactId>messages</artifactId>
-        <version>1.5.10-SNAPSHOT</version>
-    </parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.openmrs.module</groupId>
+    <artifactId>messages</artifactId>
+    <version>1.5.10-SNAPSHOT</version>
+  </parent>
 
-    <artifactId>messages-api</artifactId>
-    <packaging>jar</packaging>
-    <name>Messages API</name>
-    <description>API project for Messages</description>
+  <artifactId>messages-api</artifactId>
+  <packaging>jar</packaging>
+  <name>Messages API</name>
+  <description>API project for Messages</description>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.openmrs</groupId>
-            <artifactId>event-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.openmrs.module</groupId>
-            <artifactId>metadatasharing-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.openmrs.module</groupId>
-            <artifactId>metadatadeploy-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.vividsolutions</groupId>
-            <artifactId>jts-core</artifactId>
-        </dependency>
-        <dependency>
-            <!-- DEPRECATED, use Jackson -->
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-        </dependency>
-    </dependencies>
+  <dependencies>
+    <dependency>
+      <groupId>org.openmrs</groupId>
+      <artifactId>event-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.openmrs.module</groupId>
+      <artifactId>metadatasharing-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openmrs.module</groupId>
+      <artifactId>metadatadeploy-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.vividsolutions</groupId>
+      <artifactId>jts-core</artifactId>
+    </dependency>
+    <dependency>
+      <!-- DEPRECATED, use Jackson -->
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.antkorwin</groupId>
+      <artifactId>xsync</artifactId>
+    </dependency>
+  </dependencies>
 </project>
