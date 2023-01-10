@@ -515,6 +515,7 @@
         </property>
     </bean>
 
+    <bean id="messages.scheduledServiceGroupXSync" class="com.antkorwin.xsync.XSync"/>
     <bean id="messages.callflowExecutionCompletionListener"
           class="org.openmrs.module.messages.api.event.listener.CallflowExecutionCompletionListener"/>
 
