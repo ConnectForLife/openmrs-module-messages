@@ -21,10 +21,12 @@ import {IColumn} from '../../shared/model/column.model';
 import {FragmentTable} from './fragment-table';
 import {IFragmentRow} from '../../shared/model/fragment-table-row.model';
 import {IActorType} from '../../shared/model/actor-type.model';
+import { LocalizedMessage } from '@openmrs/react-components';
 
 interface IProps extends DispatchProps {
   templates: ReadonlyArray<TemplateUI>,
-  actorTypes: ReadonlyArray<IActorType>
+  actorTypes: ReadonlyArray<IActorType>,
+  locale?: string
  }
 
 class DefaultSettingsTable extends React.Component<IProps> {
@@ -38,7 +40,7 @@ class DefaultSettingsTable extends React.Component<IProps> {
 
   getColumns = (): ReadonlyArray<IColumn> => this.getActorTypes().map(actorType => ({
       key: actorType.display,
-      label: actorType.display + getIntl().formatMessage({ id: 'MESSAGES_DEFAULT_SETTINGS_POSTFIX', defaultMessage: Default.DEFAULT_SETTINGS_POSTFIX })
+      label: actorType.display + getIntl(locale).formatMessage({ id: 'MESSAGES_DEFAULT_SETTINGS_POSTFIX', defaultMessage: Default.DEFAULT_SETTINGS_POSTFIX })
     }));
 
   getTemplateFragmentRows = (): ReadonlyArray<IFragmentRow> => 
@@ -61,7 +63,7 @@ class DefaultSettingsTable extends React.Component<IProps> {
 
   render = () => (
     <div>
-      <h4>{getIntl().formatMessage({ id: 'MESSAGES_DEFAULT_SETTINGS_TABLE_TITLE', defaultMessage: Default.DEFAULT_SETTINGS_TABLE_TITLE })}</h4>
+      <h4><LocalizedMessage id="MESSAGES_DEFAULT_SETTINGS_TABLE_TITLE" defaultMessage={Default.DEFAULT_SETTINGS_TABLE_TITLE} /></h4>
       <FragmentTable 
         columns={this.getColumns()}
         fragments={this.getTemplateFragmentRows()}

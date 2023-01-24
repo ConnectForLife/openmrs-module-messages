@@ -26,16 +26,18 @@ import { Moment } from 'moment';
 import { IActor } from '../../shared/model/actor.model';
 import { IContactTime } from '../../shared/model/contact-time.model';
 import { DashboardType } from '../../shared/model/dashboard-type';
+import { LocalizedMessage } from '@openmrs/react-components';
 
 interface IBestContactTimeProps extends DispatchProps, StateProps {
   patientId: number,
   patientUuid: string,
   onSaveClickCallback?: Function,
-  dashboardType: DashboardType
-};
+  dashboardType: DashboardType,
+  locale?: string
+}
 
 interface IBestContactTimeState {
-};
+}
 
 class BestContactTime extends React.PureComponent<IBestContactTimeProps, IBestContactTimeState> {
 
@@ -74,7 +76,7 @@ class BestContactTime extends React.PureComponent<IBestContactTimeProps, IBestCo
 
   handleSave = () => {
     if (!!this.props.bestContactTimes && !!this.props.patientId) {
-      this.props.postBestContactTime(this.applyDefaultValuesIfNeeded(this.props.bestContactTimes));
+      this.props.postBestContactTime(this.applyDefaultValuesIfNeeded(this.props.bestContactTimes), this.props.locale);
       if (!!this.props.onSaveClickCallback) {
         this.props.onSaveClickCallback();
       }
@@ -86,7 +88,7 @@ class BestContactTime extends React.PureComponent<IBestContactTimeProps, IBestCo
       <Button
         className="btn btn-secondary btn-md"
         onClick={this.handleCalendarOverview}>
-        {getIntl().formatMessage({ id: 'MESSAGES_CALENDAR_OVERVIEW_LABEL', defaultMessage: Default.CALENDAR_OVERVIEW_LABEL })}
+        <LocalizedMessage id="MESSAGES_CALENDAR_OVERVIEW_LABEL" defaultMessage={Default.CALENDAR_OVERVIEW_LABEL} />
       </Button>
     );
   }
@@ -96,7 +98,7 @@ class BestContactTime extends React.PureComponent<IBestContactTimeProps, IBestCo
       <Button
         className="btn btn-success btn-md confirm"
         onClick={this.handleSave}>
-        {getIntl().formatMessage({ id: 'MESSAGES_SAVE_BUTTON_LABEL', defaultMessage: Default.SAVE_BUTTON_LABEL })}
+        <LocalizedMessage id="MESSAGES_SAVE_BUTTON_LABEL" defaultMessage={Default.SAVE_BUTTON_LABEL} />
       </Button>
     );
   }
@@ -152,9 +154,9 @@ class BestContactTime extends React.PureComponent<IBestContactTimeProps, IBestCo
         {bestContactTimes.map((e, i) => {
           let label: string = `Person ${e.personId}`;
           if (!this.isPatient()) {
-            label = getIntl().formatMessage({ id: 'MESSAGES_CAREGIVER_ROLE', defaultMessage: Default.CAREGIVER_ROLE });
+            label = getIntl(this.props.locale).formatMessage({ id: 'MESSAGES_CAREGIVER_ROLE', defaultMessage: Default.CAREGIVER_ROLE });
           } else if (this.isActorPatient(e)) {
-            label = getIntl().formatMessage({ id: 'MESSAGES_PATIENT_ROLE', defaultMessage: Default.PATIENT_ROLE });
+            label = getIntl(this.props.locale).formatMessage({ id: 'MESSAGES_PATIENT_ROLE', defaultMessage: Default.PATIENT_ROLE });
           } else {
             const actor: IActor | undefined = _.find(this.props.actorResultList, (a) => a.actorId === e.personId);
             if (!!actor) {
@@ -184,7 +186,7 @@ class BestContactTime extends React.PureComponent<IBestContactTimeProps, IBestCo
           {this.renderSaveButton()}
         </div>
         <fieldset>
-          <legend>{getIntl().formatMessage({ id: 'MESSAGES_BEST_CONTACT_TIME_LABEL', defaultMessage: Default.BEST_CONTACT_TIME_LABEL })}</legend>
+          <legend><LocalizedMessage id="MESSAGES_BEST_CONTACT_TIME_LABEL" defaultMessage={Default.BEST_CONTACT_TIME_LABEL} /></legend>
           {!loading && this.renderTimePickers()}
         </fieldset>
       </div>

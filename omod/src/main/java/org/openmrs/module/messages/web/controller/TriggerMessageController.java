@@ -45,6 +45,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Optional;
@@ -108,7 +109,7 @@ public class TriggerMessageController extends BaseRestController {
         new ScheduledExecutionContext(
             scheduledServiceGroup.getScheduledServices(),
             channelType,
-            new Date(),
+            Instant.now(),
             patient,
             patient.getId(),
             MessagesConstants.PATIENT_DEFAULT_ACTOR_TYPE,

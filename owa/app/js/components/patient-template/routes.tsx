@@ -14,21 +14,25 @@ import {
   PatientTemplateEditWithHeader as PatientTemplateEdit,
   ManageMessagesWithHeader as ManageMessages 
 } from '../hoc/with-patient-header';
+import {withLocalization} from '@openmrs/react-components';
+
+const LocalizedPatientTemplateEdit = withLocalization(PatientTemplateEdit);
+const LocalizedManageMessages = withLocalization(ManageMessages);
 
 const Routes = (props) => (
   <>
     <Switch>
       <Route
         path={'/messages/:dashboardType/:patientId&patientuuid=:patientUuid/patient-template/new'}
-        render={(props) => <PatientTemplateEdit {...props} isNew={true} />}
+        render={(props) => <LocalizedPatientTemplateEdit {...props} isNew={true} />}
       />
       <Route
         path={'/messages/:dashboardType/:patientId&patientuuid=:patientUuid/patient-template/edit/:activeSection'}
-        render={(props) => <PatientTemplateEdit {...props} isNew={false} />}
+        render={(props) => <LocalizedPatientTemplateEdit {...props} isNew={false} />}
       />
       <Route
         path={'/messages/:dashboardType/:patientId&patientuuid=:patientUuid/patient-template'}
-        render={(props) => <ManageMessages {...props} />}
+        render={(props) => <LocalizedManageMessages {...props} />}
       />
     </Switch>
   </>

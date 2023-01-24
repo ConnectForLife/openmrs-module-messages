@@ -170,17 +170,17 @@ export const updateBestContactTime = (defaultBestContactTimes: Array<IDefaultBes
     payload: await defaultBestContactTimes
   });
 
-export const saveConfig = (templates: Array<TemplateUI>, contactTimes: Array<IDefaultBestContactTime>) => async (dispatch) => {
+export const saveConfig = (templates: Array<TemplateUI>, contactTimes: Array<IDefaultBestContactTime>, locale: string | undefined) => async (dispatch) => {
   const toastId = initRequestHandling();
   await dispatch(putDefaultContactTimes(contactTimes)).then(
     response => dispatch(putTemplates(templates)).then(
       response => continueRequestHandling(toastId, dispatch, getConfig(),
-        getIntl().formatMessage({ id: 'MESSAGES_SETTINGS_SAVE_SUCCESS', defaultMessage: Default.SETTINGS_SAVE_SUCCESS }),
-        getIntl().formatMessage({ id: 'MESSAGES_GENERIC_FAILURE', defaultMessage: Default.GENERIC_FAILURE })),
+        getIntl(locale).formatMessage({ id: 'MESSAGES_SETTINGS_SAVE_SUCCESS', defaultMessage: Default.SETTINGS_SAVE_SUCCESS }),
+        getIntl(locale).formatMessage({ id: 'MESSAGES_GENERIC_FAILURE', defaultMessage: Default.GENERIC_FAILURE })),
       error => handleRequestFailure(error, toastId,
-        getIntl().formatMessage({ id: 'MESSAGES_GENERIC_FAILURE', defaultMessage: Default.GENERIC_FAILURE }))),
+        getIntl(locale).formatMessage({ id: 'MESSAGES_GENERIC_FAILURE', defaultMessage: Default.GENERIC_FAILURE }))),
     error => handleRequestFailure(error, toastId,
-      getIntl().formatMessage({ id: 'MESSAGES_GENERIC_FAILURE', defaultMessage: Default.GENERIC_FAILURE })))
+      getIntl(locale).formatMessage({ id: 'MESSAGES_GENERIC_FAILURE', defaultMessage: Default.GENERIC_FAILURE })))
 }
 
 export const putDefaultContactTimes = (contactTimes: Array<IDefaultBestContactTime>) => ({

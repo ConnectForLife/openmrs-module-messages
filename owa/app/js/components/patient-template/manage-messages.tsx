@@ -20,8 +20,10 @@ import { getIntl } from '@openmrs/react-components/lib/components/localization/w
 import './patient-template.scss';
 import Timezone from '../timezone/timezone';
 import { DashboardType } from '../../shared/model/dashboard-type';
+import { LocalizedMessage } from '@openmrs/react-components';
 
 interface IManageMessagesProps extends DispatchProps, StateProps, RouteComponentProps<{ patientId: string, patientUuid: string, dashboardType: DashboardType }> {
+  locale?: string
 };
 
 interface IManageMessagesState {
@@ -38,7 +40,7 @@ class ManageMessages extends React.PureComponent<IManageMessagesProps, IManageMe
 
   handleSave() {
     if (!!this.props.defaultValuesState.defaultValuesUsed) {
-      this.props.generateDefaultPatientTemplates(parseInt(this.props.match.params.patientId, 10));
+      this.props.generateDefaultPatientTemplates(parseInt(this.props.match.params.patientId, 10), this.props.locale);
     }
   }
 
@@ -64,15 +66,15 @@ class ManageMessages extends React.PureComponent<IManageMessagesProps, IManageMe
 
   private getDefaultValuesMessage(): string {
     return this.props.defaultValuesState.allValuesDefault ?
-      getIntl().formatMessage({ id: 'MESSAGES_ALL_DEFAULT_VALUES_USED_MESSAGE', defaultMessage: Default.ALL_DEFAULT_VALUES_USED_MESSAGE }) :
-      getIntl().formatMessage({ id: 'MESSAGES_SOME_DEFAULT_VALUES_USED_MESSAGE', defaultMessage: Default.SOME_DEFAULT_VALUES_USED_MESSAGE });
+      getIntl(this.props.locale).formatMessage({ id: 'MESSAGES_ALL_DEFAULT_VALUES_USED_MESSAGE', defaultMessage: Default.ALL_DEFAULT_VALUES_USED_MESSAGE }) :
+      getIntl(this.props.locale).formatMessage({ id: 'MESSAGES_SOME_DEFAULT_VALUES_USED_MESSAGE', defaultMessage: Default.SOME_DEFAULT_VALUES_USED_MESSAGE });
   }
 
   render() {
     const { patientId, patientUuid, dashboardType } = this.props.match.params;
     return (
       <>
-        <h2>Manage messages</h2>
+        <h2><LocalizedMessage id="MESSAGES_MANAGE_MESSAGES_LABEL" defaultMessage={Default.MANAGE_MESSAGES_LABEL} /></h2>
         {this.renderDefaultValuesNotificationIfNeeded()}
         <Timezone />
         <div className="panel-body">

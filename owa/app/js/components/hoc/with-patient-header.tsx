@@ -20,6 +20,7 @@ import Header from '../person-header/person-header';
 
 interface IWrappedComponentProps extends RouteComponentProps<{ patientUuid: string, dashboardType?: DashboardType }> {
   isNew?: boolean;
+  locale?: string;
 }
 
 const withPatientHeader = (WrappedComponent) => {
@@ -35,16 +36,16 @@ const withPatientHeader = (WrappedComponent) => {
         ...this.props,
         patientUuid: this.props.match.params.patientUuid,
         dashboardType: this.props.match.params.dashboardType,
-        redirectUrl: this.getBaseUrl() + "coreapps/clinicianfacing/patient.page?patientId=" 
+        redirectUrl: this.getBaseUrl() + "coreapps/clinicianfacing/patient.page?patientId="
           + this.props.match.params.patientUuid,
         displayTelephone: true
       };
       return (
         <div className="body-wrapper">
           <Header {...newProps}>
-            <PersonStatus patientUuid={newProps.patientUuid}/>
+            <PersonStatus {...newProps}/>
           </Header>
-          <PatientStatusNotification patientUuid={newProps.patientUuid}/>
+          <PatientStatusNotification {...newProps}/>
           <div className="content">
             <WrappedComponent {...newProps}/>
           </div>
@@ -56,4 +57,4 @@ const withPatientHeader = (WrappedComponent) => {
 
 export const CalendarWithHeader = withPatientHeader(CalendarView);
 export const PatientTemplateEditWithHeader = withPatientHeader(PatientTemplateEdit);
-export const ManageMessagesWithHeader = withPatientHeader(ManageMessages); 
+export const ManageMessagesWithHeader = withPatientHeader(ManageMessages);

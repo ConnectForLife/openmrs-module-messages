@@ -1,4 +1,10 @@
 {
+    "app.title": "OpenMRS Electronic Medical Record",
+    "person.header.name.given": "Given",
+    "person.header.name.middle": "Middle",
+    "person.header.name.family": "Family Name",
+    "person.header.phonenumber": "Telephone number:",
+    "person.header.personId": "Caregiver ID",
     "MESSAGES_MODULE_NAME": "Messages",
     "MESSAGES_FIELD_REQUIRED": "Required",
     "MESSAGES_SAVE_BUTTON_LABEL": "Save",
@@ -71,5 +77,8 @@
     "MESSAGES_DISPLAY_HEADER": "Display:",
     "MESSAGES_SERVICE_TYPE_CALL": "Call",
     "MESSAGES_SERVICE_TYPE_SMS": "SMS",
-    "MESSAGES_SERVICE_TYPE_DEACTIVATE_SERVICE": "Deactivate service"
+    "MESSAGES_SERVICE_TYPE_DEACTIVATE_SERVICE": "Deactivate service",
+    "MESSAGES_SCHEDULED_MESSAGES_LABEL": "Scheduled Messages",
+    "MESSAGES_MESSAGE_TYPE_LABEL": "Message Type",
+    "MESSAGES_ACTIONS_LABEL": "Actions"
 }

@@ -13,6 +13,7 @@ import { connect } from 'react-redux';
 import { getPatient } from './patient.reducer';
 import { getPerson } from './person.reducer';
 import './patient-header.scss';
+import { getShowGenderPersonHeader, getShowAgePersonHeader } from "../../reducers/global-property.reducer"
 import { patientUtil } from '@openmrs/react-components';
 import { getIntl } from "@openmrs/react-components/lib/components/localization/withLocalization";
 import { formatAge } from "@openmrs/react-components/lib/features/patient/utils";
@@ -29,6 +30,7 @@ interface IHeaderProps extends DispatchProps, StateProps {
   dashboardType: string;
   redirectUrl?: string;
   displayTelephone?: boolean;
+  locale?: string;
 };
 
 interface IHeaderState {
@@ -41,6 +43,8 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
   }
 
   componentDidMount = () => {
+    this.props.getShowGenderPersonHeader();
+    this.props.getShowAgePersonHeader();
     if (this.isPatient()) {
       this.props.getPatient(this.props.patientUuid);
     } else {
@@ -84,14 +88,24 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
   }
 
   private renderDemographics(personDetails) {
-    const intl = getIntl();
+    const intl = getIntl(this.props.locale);
     const maleMsg = intl.formatMessage({ id: "reactcomponents.male", defaultMessage: "Male" });
     const femaleMsg = intl.formatMessage({ id: "reactcomponents.female", defaultMessage: "Female" });
+    const otherMsg = intl.formatMessage({ id: "reactcomponents.other", defaultMessage: "Other" });
+    const unknownGenderMsg = intl.formatMessage({ id: "reactcomponents.unknown", defaultMessage: "Unknown" });
     const givenName = intl.formatMessage({ id: "person.header.name.given", defaultMessage: "Given" });
     const middleName = intl.formatMessage({ id: "person.header.name.middle", defaultMessage: "Middle" });
     const familyName = intl.formatMessage({ id: "person.header.name.family", defaultMessage: "Family Name" });
     const telephoneNumber = intl.formatMessage({ id: "person.header.phonenumber", defaultMessage: "Telephone number:" });
-    const { age } = formatAge(personDetails.birthdate, intl);
+    const unknownAgeMsg =  intl.formatMessage({ id: "person.header.age.unknown", defaultMessage: "unknown age" });
+    let gender = unknownGenderMsg;
+    if (this.props.isShowGenderPersonHeader && this.props.isShowGenderPersonHeader!['value'].toUpperCase() === 'TRUE') {
+        gender = (personDetails.gender === 'M' ? maleMsg : (personDetails.gender === 'F' ? femaleMsg : (personDetails.gender === 'O' ? otherMsg : unknownGenderMsg)));
+    }
+    let age = unknownAgeMsg;
+    if (this.props.isShowAgePersonHeader && this.props.isShowAgePersonHeader!['value'].toUpperCase() === 'TRUE') {
+        age = (personDetails.birthdate ? formatAge(personDetails.birthdate, intl)!['age'] : unknownAgeMsg);
+    }
     return (
       <div className="demographics" onClick={this.handlePatientLink}>
         <h1 className="name">
@@ -116,11 +130,8 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
           &nbsp;
           <div className="details-section">
             <span className="gender-age">
-              <span className="gender">{personDetails.gender === 'M' ? maleMsg : femaleMsg}</span>
-              <span className="age">
-                {age}
-                {personDetails.birthdate && ('(' + (personDetails.birthdateEstimated ? '~' : '') + dateFns.format(personDetails.birthdate, DATE_FORMAT) + ')')}
-              </span>
+              <span className="gender">{gender}</span>
+              <span className="age">{age}</span>
             </span>
 
             {
@@ -150,7 +161,7 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
   }
 
   renderPatientIdentifier(personDetails) {
-    const intl = getIntl();
+    const intl = getIntl(this.props.locale);
     const identifiers = personDetails.identifiers;
     const patientId = personDetails.isPerson ? intl.formatMessage({ id: "person.header.personId", defaultMessage: "Caregiver ID" })
       : intl.formatMessage({ id: "reactcomponents.patient.id", defaultMessage: "Patient ID" });
@@ -187,15 +198,19 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
   }
 }
 
-const mapStateToProps = ({ patient, person }: any) => ({
+const mapStateToProps = ({ patient, person, globalPropertyReducer }: any) => ({
   loading: patient.patientLoading || person.personLoading,
   patient: patient.patient,
-  person: person.person
+  person: person.person,
+  isShowGenderPersonHeader: globalPropertyReducer.isShowGenderPersonHeader,
+  isShowAgePersonHeader: globalPropertyReducer.isShowAgePersonHeader
 });
 
 const mapDispatchToProps = ({
   getPatient,
-  getPerson
+  getPerson,
+  getShowGenderPersonHeader,
+  getShowAgePersonHeader
 });
 
 type StateProps = ReturnType<typeof mapStateToProps>;
