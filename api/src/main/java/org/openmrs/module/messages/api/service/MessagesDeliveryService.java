@@ -11,6 +11,7 @@
 package org.openmrs.module.messages.api.service;
 
 import org.openmrs.api.OpenmrsService;
+import org.openmrs.module.messages.api.dao.ExtendedSchedulerDao;
 import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
 
 /**
@@ -26,4 +27,6 @@ public interface MessagesDeliveryService extends OpenmrsService {
      * @param executionContext scheduled service context which contains all necessary data to schedule an event
      */
     void scheduleDelivery(ScheduledExecutionContext executionContext);
+
+    ExtendedSchedulerDao getExtendedSchedulerDao();
 }

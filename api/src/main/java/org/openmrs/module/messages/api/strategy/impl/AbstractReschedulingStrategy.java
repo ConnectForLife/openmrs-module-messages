@@ -10,7 +10,6 @@
 
 package org.openmrs.module.messages.api.strategy.impl;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
@@ -135,11 +134,10 @@ public abstract class AbstractReschedulingStrategy implements ReschedulingStrate
     final SchedulerService schedulerService = Context.getSchedulerService();
     final Instant now = DateUtil.now().toInstant();
 
-    schedulerService
-        .getRegisteredTasks()
+    deliveryService
+        .getExtendedSchedulerDao()
+        .getTasksByPrefixAndAfterStartTime(getTaskPrefix(group), now)
         .stream()
-        .filter(task -> StringUtils.startsWith(task.getName(), getTaskPrefix(group)))
-        .filter(task -> task.getStartTime().toInstant().isAfter(now))
         .map(TaskDefinitionWithContext::new)
         .filter(task -> group.getId().equals(task.getContext().getGroupId()))
         .forEach(task -> this.cancelTask(schedulerService, task.getTaskDefinition()));

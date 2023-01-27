@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+  <scheduler_task_config task_config_id="1" name="a:Call:1234p:1234a:202301100000UTC"
+                         description="ExtendedSchedulerDaoImplITTest"
+                         schedulable_class="org.openmrs.module.messages.api.scheduler.job.ServiceGroupDeliveryJobDefinition"
+                         start_time="2023-01-01 00:00:00" repeat_interval="0" start_on_startup="false" started="false"
+                         created_by="1" date_created="2022-12-30 00:15:00.0" uuid="727d5b02-4cd2-4b30-abdd-4d62878a4c57"/>
+
+  <scheduler_task_config task_config_id="2" name="a:Call:1234p:1234a:202301010000UTC"
+                         description="ExtendedSchedulerDaoImplITTest"
+                         schedulable_class="org.openmrs.module.messages.api.scheduler.job.ServiceGroupDeliveryJobDefinition"
+                         start_time="2023-01-10 00:00:00" repeat_interval="0" start_on_startup="false" started="false"
+                         created_by="1" date_created="2022-12-30 00:15:00.0" uuid="fbf2440f-a34f-4c52-9693-d7cc44e25fa2"/>
+
+  <scheduler_task_config task_config_id="3" name="a:SMS:1234p:1234a:202301010000UTC"
+                         description="ExtendedSchedulerDaoImplITTest"
+                         schedulable_class="org.openmrs.module.messages.api.scheduler.job.ServiceGroupDeliveryJobDefinition"
+                         start_time="2023-01-10 00:00:00" repeat_interval="0" start_on_startup="false" started="false"
+                         created_by="1" date_created="2022-12-30 00:15:00.0" uuid="7411e721-4535-4322-a7ba-d076eee4abdb"/>
+</dataset>
