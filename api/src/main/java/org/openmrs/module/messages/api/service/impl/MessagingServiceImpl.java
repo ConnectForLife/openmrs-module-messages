@@ -514,9 +514,14 @@ public class MessagingServiceImpl extends BaseOpenmrsDataService<ScheduledServic
     return template.isShouldUseOptimizedQuery();
   }
 
-  private Optional<DeliveryAttempt> getDeliveryAttemptByServiceAndExecutionId(
-      ScheduledService service, String executionId) {
-    return service.getDeliveryAttempts().stream()
+  private Optional<DeliveryAttempt> getDeliveryAttemptByServiceAndExecutionId(ScheduledService service, String executionId) {
+    if (executionId == null) {
+      return Optional.empty();
+    }
+
+    return service
+        .getDeliveryAttempts()
+        .stream()
         .filter(attempt -> StringUtils.equalsIgnoreCase(attempt.getServiceExecution(), executionId))
         .findFirst();
   }
