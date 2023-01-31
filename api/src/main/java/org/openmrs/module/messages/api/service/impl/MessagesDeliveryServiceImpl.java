@@ -31,37 +31,42 @@ import java.util.List;
 @Transactional
 public class MessagesDeliveryServiceImpl extends BaseOpenmrsService implements MessagesDeliveryService {
 
-    private static final Log LOGGER = LogFactory.getLog(MessagesDeliveryServiceImpl.class);
+  private static final Log LOGGER = LogFactory.getLog(MessagesDeliveryServiceImpl.class);
 
-    private MessagesSchedulerService schedulerService;
-    private ExtendedSchedulerDao extendedSchedulerDao;
+  private MessagesSchedulerService schedulerService;
+  private ExtendedSchedulerDao extendedSchedulerDao;
 
-    @Override
-    public void scheduleDelivery(ScheduledExecutionContext executionContext) {
-        final JobDefinition definition = new ServiceGroupDeliveryJobDefinition(executionContext);
-        schedulerService.createNewTask(definition, executionContext.getExecutionDate(), JobRepeatInterval.NEVER);
-    }
+  @Override
+  public void scheduleDelivery(ScheduledExecutionContext executionContext) {
+    final JobDefinition definition = new ServiceGroupDeliveryJobDefinition(executionContext);
+    schedulerService.createNewTask(definition, executionContext.getExecutionDate(), JobRepeatInterval.NEVER);
+  }
 
-    /**
-     * Warning: During normal OpenMRS startup this method is called twice! Therefore we use 'synchronized' to ensure
-     * only one thread enters this method at the time.
-     */
-    @Override
-    public synchronized void onStartup() {
-        LOGGER.info("Scheduling Message Delivery tasks created during previous runtime...");
+  @Override
+  public ExtendedSchedulerDao getExtendedSchedulerDao() {
+    return extendedSchedulerDao;
+  }
 
-        final List<TaskDefinition> tasksToSchedule =
-                extendedSchedulerDao.getNotExecutedTasksByClassName(ServiceGroupDeliveryJobDefinition.class.getName());
-        schedulerService.scheduleAll(tasksToSchedule);
+  /**
+   * Warning: During normal OpenMRS startup this method is called twice! Therefore we use 'synchronized' to ensure
+   * only one thread enters this method at the time.
+   */
+  @Override
+  public synchronized void onStartup() {
+    LOGGER.info("Scheduling Message Delivery tasks created during previous runtime...");
 
-        LOGGER.info("Scheduling Message Delivery tasks created during previous runtime complete.");
-    }
+    final List<TaskDefinition> tasksToSchedule =
+        extendedSchedulerDao.getNotExecutedTasksByClassName(ServiceGroupDeliveryJobDefinition.class.getName());
+    schedulerService.scheduleAll(tasksToSchedule);
 
-    public void setSchedulerService(MessagesSchedulerService schedulerService) {
-        this.schedulerService = schedulerService;
-    }
+    LOGGER.info("Scheduling Message Delivery tasks created during previous runtime complete.");
+  }
 
-    public void setExtendedSchedulerDao(ExtendedSchedulerDao extendedSchedulerDao) {
-        this.extendedSchedulerDao = extendedSchedulerDao;
-    }
+  public void setSchedulerService(MessagesSchedulerService schedulerService) {
+    this.schedulerService = schedulerService;
+  }
+
+  public void setExtendedSchedulerDao(ExtendedSchedulerDao extendedSchedulerDao) {
+    this.extendedSchedulerDao = extendedSchedulerDao;
+  }
 }
