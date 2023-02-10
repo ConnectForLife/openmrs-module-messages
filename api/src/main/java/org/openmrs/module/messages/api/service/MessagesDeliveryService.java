@@ -11,8 +11,11 @@
 package org.openmrs.module.messages.api.service;
 
 import org.openmrs.api.OpenmrsService;
-import org.openmrs.module.messages.api.dao.ExtendedSchedulerDao;
 import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
+import org.openmrs.scheduler.TaskDefinition;
+
+import java.time.Instant;
+import java.util.List;
 
 /**
  * Provides methods related to messages delivery management
@@ -28,5 +31,5 @@ public interface MessagesDeliveryService extends OpenmrsService {
      */
     void scheduleDelivery(ScheduledExecutionContext executionContext);
 
-    ExtendedSchedulerDao getExtendedSchedulerDao();
+    List<TaskDefinition> getTasksByPrefixAndAfterStartTime(String taskNamePrefix, Instant afterStartTime);
 }
