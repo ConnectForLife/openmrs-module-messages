@@ -24,12 +24,20 @@ import java.util.List;
  * </p>
  */
 public interface MessagesDeliveryService extends OpenmrsService {
-    /**
-     * Schedules a new event delivery
-     *
-     * @param executionContext scheduled service context which contains all necessary data to schedule an event
-     */
-    void scheduleDelivery(ScheduledExecutionContext executionContext);
+  /**
+   * Schedules a new event delivery
+   *
+   * @param executionContext scheduled service context which contains all necessary data to schedule an event
+   */
+  void scheduleDelivery(ScheduledExecutionContext executionContext);
 
-    List<TaskDefinition> getTasksByPrefixAndAfterStartTime(String taskNamePrefix, Instant afterStartTime);
+  /**
+   * Gets all Tasks with name starting with {@code taskNamePrefix} and having start time after {@code afterStartTime}
+   * date time.
+   *
+   * @param taskNamePrefix the name prefix, not null
+   * @param afterStartTime the date time to get tasks after, not null
+   * @return the list of TaskDefinition, never null
+   */
+  List<TaskDefinition> getTasksByPrefixAndAfterStartTime(String taskNamePrefix, Instant afterStartTime);
 }
