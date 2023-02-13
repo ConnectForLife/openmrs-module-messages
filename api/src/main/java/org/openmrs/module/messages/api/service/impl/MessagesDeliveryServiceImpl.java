@@ -23,6 +23,7 @@ import org.openmrs.module.messages.api.service.MessagesSchedulerService;
 import org.openmrs.scheduler.TaskDefinition;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 
 /**
@@ -43,8 +44,9 @@ public class MessagesDeliveryServiceImpl extends BaseOpenmrsService implements M
   }
 
   @Override
-  public ExtendedSchedulerDao getExtendedSchedulerDao() {
-    return extendedSchedulerDao;
+  @Transactional(readOnly = true)
+  public List<TaskDefinition> getTasksByPrefixAndAfterStartTime(String taskNamePrefix, Instant afterStartTime) {
+    return extendedSchedulerDao.getTasksByPrefixAndAfterStartTime(taskNamePrefix, afterStartTime);
   }
 
   /**

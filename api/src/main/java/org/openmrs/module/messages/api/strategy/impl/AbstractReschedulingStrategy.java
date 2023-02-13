@@ -135,7 +135,6 @@ public abstract class AbstractReschedulingStrategy implements ReschedulingStrate
     final Instant now = DateUtil.now().toInstant();
 
     deliveryService
-        .getExtendedSchedulerDao()
         .getTasksByPrefixAndAfterStartTime(getTaskPrefix(group), now)
         .stream()
         .map(TaskDefinitionWithContext::new)
