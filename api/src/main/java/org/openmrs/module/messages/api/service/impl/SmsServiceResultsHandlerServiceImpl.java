@@ -39,122 +39,24 @@ import static org.openmrs.module.messages.api.constants.MessagesConstants.SMS_IN
 /**
  * Implements methods related to the handling of sms service results
  */
-public class SmsServiceResultsHandlerServiceImpl extends AbstractServiceResultsHandlerService {
+public class SmsServiceResultsHandlerServiceImpl extends AbstractTextMessageServiceResultsHandlerService {
+  
+  private static final String SMS_CHANNEL_TYPE = "SMS";
 
-    /**
-     * The name of configuration property with Message template value.
-     */
-    public static final String SMS_CHANNEL_CONF_TEMPLATE_VALUE = "templateValue";
-    /**
-     * The name of sms-channel configuration property with SMS config.
-     */
-    public static final String SMS_CHANNEL_CONFIG_NAME = "config";
-
-    public static final String MESSAGE_KEY = "message";
-
-    private static final Log LOGGER = LogFactory.getLog(SmsServiceResultsHandlerServiceImpl.class);
-    private static final String DEFAULT_MESSAGE = "Not yet specified";
-    private static final String CHANNEL_TYPE = "SMS";
-
-    private NotificationTemplateService notificationTemplateService;
-    private MessagingService messagingService;
-    private MessagesExecutionService messagesExecutionService;
-
-    @Override
-    public void handle(List<ScheduledService> smsServices, ScheduledExecutionContext executionContext) {
-        for (ScheduledService service : smsServices) {
-            try {
-                this.triggerEvent(service, executionContext);
-                this.messagingService.registerAttempt(service, ServiceStatus.DELIVERED, DateUtil.toDate(DateUtil.now()),
-                        null);
-            } catch (Exception ex) {
-                LOGGER.error(String.format("During handling the `%s` service the following exception noticed `%s`",
-                        service.getTemplateName(), ex.getMessage()));
-                if (LOGGER.isTraceEnabled()) {
-                    LOGGER.trace("Error details: ", ex);
-                }
-                this.messagingService.registerAttempt(service, ServiceStatus.FAILED, DateUtil.toDate(DateUtil.now()), null);
-            }
-        }
-        if (CollectionUtils.isNotEmpty(smsServices)) {
-            int groupId = executionContext.getGroupId();
-            this.messagesExecutionService.executionCompleted(groupId, null, CHANNEL_TYPE);
-        }
+  @Override
+  public void handle(List<ScheduledService> smsServices, ScheduledExecutionContext executionContext) {
+    handleServices(smsServices, executionContext);
+    if (CollectionUtils.isNotEmpty(smsServices)) {
+      int groupId = executionContext.getGroupId();
+      messagesExecutionService.executionCompleted(groupId, null, SMS_CHANNEL_TYPE);
     }
+  }
 
-    public void setNotificationTemplateService(NotificationTemplateService notificationTemplateService) {
-        this.notificationTemplateService = notificationTemplateService;
-    }
-
-    public void setMessagingService(MessagingService messagingService) {
-        this.messagingService = messagingService;
-    }
-
-    public void setMessagesExecutionService(MessagesExecutionService messagesExecutionService) {
-        this.messagesExecutionService = messagesExecutionService;
-    }
-
-    private void triggerEvent(ScheduledService smsService, ScheduledExecutionContext executionContext) {
-        MessagesEvent messagesEvent = buildMessage(smsService, executionContext);
-        sendEventMessage(messagesEvent);
-    }
-
-    private MessagesEvent buildMessage(ScheduledService smsService, ScheduledExecutionContext executionContext) {
-        final Map<String, String> templateMap = executeTemplate(smsService, executionContext);
-        final String message = templateMap.getOrDefault(MESSAGE_KEY, DEFAULT_MESSAGE);
-
-        final Map<String, String> smsServiceParameters = smsService.getParameters();
-        for (Map.Entry<String, String> entry : templateMap.entrySet()) {
-            final String key = entry.getKey();
-            if (!key.equals(MESSAGE_KEY) && !smsServiceParameters.containsKey(key)) {
-                smsServiceParameters.put(key, entry.getValue());
-            }
-        }
-
-        final Map<String, Object> params = new HashMap<>();
-        params.put(SmsEventParamConstants.CONFIG, getSMSConfig(executionContext));
-        params.put(SmsEventParamConstants.MESSAGE_ID, smsService.getId());
-        params.put(SmsEventParamConstants.RECIPIENTS,
-                Collections.singletonList(getPersonPhone(executionContext.getActorId())));
-        params.put(SmsEventParamConstants.MESSAGE, message);
-        params.put(SmsEventParamConstants.CUSTOM_PARAMS, smsServiceParameters);
-        return new MessagesEvent(SMS_INITIATE_EVENT, params);
-    }
-
-    private Map<String, String> executeTemplate(ScheduledService smsService, ScheduledExecutionContext executionContext) {
-        final Map<String, String> templateParsingParameters = buildServiceParams(smsService);
-        final String parsedTemplate;
-
-        if (executionContext.getChannelConfiguration().containsKey(SMS_CHANNEL_CONF_TEMPLATE_VALUE)) {
-            final NotificationTemplate template = new NotificationTemplate();
-            template.setTemplateName(smsService.getPatientTemplate().getTemplate().getName());
-            template.setValue(executionContext.getChannelConfiguration().get(SMS_CHANNEL_CONF_TEMPLATE_VALUE));
-
-            parsedTemplate = notificationTemplateService.parseTemplate(smsService.getPatientTemplate(), template,
-                    templateParsingParameters);
-        } else {
-            parsedTemplate =
-                    notificationTemplateService.parseTemplate(smsService.getPatientTemplate(), templateParsingParameters);
-        }
-
-        return StringUtils.isNotBlank(parsedTemplate) ? JsonUtil.toMap(parsedTemplate, JsonUtil.STRING_TO_STRING_MAP) :
-                Collections.emptyMap();
-    }
-
-    private Map<String, String> buildServiceParams(ScheduledService smsService) {
-        final Map<String, String> serviceParams = new HashMap<>(smsService.getParameters());
-        serviceParams.put(SmsEventParamConstants.MESSAGE_ID, smsService.getId().toString());
-        final ScheduledServiceGroup group = smsService.getGroup();
-        if (null != group && null != group.getId()) {
-            serviceParams.put(SmsEventParamConstants.MESSAGE_GROUP_ID, smsService.getGroup().getId().toString());
-        }
-        return serviceParams;
-    }
-
-    private String getSMSConfig(ScheduledExecutionContext executionContext) {
-        return executionContext.getChannelConfiguration()
-                .getOrDefault(SMS_CHANNEL_CONFIG_NAME,
-                        Context.getAdministrationService()
-                                .getGlobalProperty(ConfigConstants.SMS_CONFIG, ConfigConstants.SMS_CONFIG_DEFAULT_VALUE));
-    }
+  @Override
+  protected String getConfigName(ScheduledExecutionContext executionContext) {
+    return executionContext.getChannelConfiguration()
+      .getOrDefault(CONFIG_KEY,
+        Context.getAdministrationService()
+          .getGlobalProperty(ConfigConstants.SMS_CONFIG, ConfigConstants.SMS_CONFIG_DEFAULT_VALUE));
+  }
 }

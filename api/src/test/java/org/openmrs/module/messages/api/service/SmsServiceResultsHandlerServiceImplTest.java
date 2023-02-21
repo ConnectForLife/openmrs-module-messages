@@ -29,6 +29,7 @@ import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
 import org.openmrs.module.messages.api.model.ScheduledService;
 import org.openmrs.module.messages.api.model.ScheduledServiceParameter;
+import org.openmrs.module.messages.api.service.impl.AbstractTextMessageServiceResultsHandlerService;
 import org.openmrs.module.messages.api.service.impl.SmsServiceResultsHandlerServiceImpl;
 import org.openmrs.module.messages.builder.PatientTemplateBuilder;
 import org.openmrs.module.messages.builder.ScheduledExecutionContextBuilder;
@@ -154,8 +155,7 @@ public class SmsServiceResultsHandlerServiceImplTest {
         prepareVisitReminderService();
 
         ScheduledExecutionContext scheduledExecutionContext = new ScheduledExecutionContextBuilder().build();
-        scheduledExecutionContext.getChannelConfiguration().put(
-                SmsServiceResultsHandlerServiceImpl.SMS_CHANNEL_CONFIG_NAME, SMS_CONFIG_CONTEXT_NAME);
+        scheduledExecutionContext.getChannelConfiguration().put(AbstractTextMessageServiceResultsHandlerService.CONFIG_KEY, SMS_CONFIG_CONTEXT_NAME);
         when(personService.getPerson(scheduledExecutionContext.getActorId())).thenReturn(person);
         when(notificationTemplateService.parseTemplate(eq(patientTemplate), anyMap())).thenReturn(WHATSAPP_PARSED_TEMPLATE);
 
