@@ -1,3 +1,13 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ * <p>
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+
 package org.openmrs.module.messages.api.service.impl;
 
 import static org.openmrs.module.messages.api.constants.MessagesConstants.SMS_INITIATE_EVENT;
@@ -6,6 +16,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -36,11 +47,28 @@ public abstract class AbstractTextMessageServiceResultsHandlerService extends Ab
 
   protected MessagesExecutionService messagesExecutionService;
 
+  private final String channelType;
+
   private NotificationTemplateService notificationTemplateService;
 
   private MessagingService messagingService;
 
-  protected void handleServices(List<ScheduledService> services, ScheduledExecutionContext executionContext) {
+  protected AbstractTextMessageServiceResultsHandlerService(String channelType) {
+    this.channelType = channelType;
+  }
+
+  @Override
+  public void handle(List<ScheduledService> services, ScheduledExecutionContext executionContext) {
+    handleServices(services, executionContext);
+    if (CollectionUtils.isNotEmpty(services)) {
+      int groupId = executionContext.getGroupId();
+      messagesExecutionService.executionCompleted(groupId, null, channelType);
+    }
+  }
+
+  protected abstract String getConfigName(ScheduledExecutionContext executionContext);
+
+  private void handleServices(List<ScheduledService> services, ScheduledExecutionContext executionContext) {
     for (ScheduledService service : services) {
       try {
         triggerEvent(service, executionContext);
@@ -57,13 +85,11 @@ public abstract class AbstractTextMessageServiceResultsHandlerService extends Ab
     }
   }
 
-  protected void triggerEvent(
+  private void triggerEvent(
     ScheduledService services, ScheduledExecutionContext executionContext) {
     MessagesEvent messagesEvent = buildMessage(services, executionContext);
     sendEventMessage(messagesEvent);
   }
-
-  protected abstract String getConfigName(ScheduledExecutionContext executionContext);
 
   private MessagesEvent buildMessage(ScheduledService smsService, ScheduledExecutionContext executionContext) {
     final Map<String, String> templateMap = executeTemplate(smsService, executionContext);

@@ -1,3 +1,13 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ * <p>
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+
 package org.openmrs.module.messages.api.service;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -97,8 +107,7 @@ public class WhatsAppServiceResultsHandlerServiceImplTest {
 
     AdministrationService administrationService = mock(AdministrationService.class);
     PowerMockito.when(Context.getAdministrationService()).thenReturn(administrationService);
-    when(administrationService.getGlobalProperty(ConfigConstants.WHATSAPP_CONFIG_GP_KEY,
-      ConfigConstants.WHATSAPP_CONFIG_GP_DEFAULT_VALUE)).thenReturn(WHATSAPP_CONFIG_NAME);
+    when(administrationService.getGlobalProperty(ConfigConstants.WHATSAPP_CONFIG_GP_KEY)).thenReturn(WHATSAPP_CONFIG_NAME);
   }
 
   @Test
