@@ -124,6 +124,7 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
     createDefaultUserTimezone();
     createCallConfiguration();
     createSMSConfiguration();
+    createWhatsAppConfiguration();
     createSchedulerConfiguration();
     createITRConfiguration();
   }
@@ -248,6 +249,13 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
         ConfigConstants.SMS_CONFIG,
         ConfigConstants.SMS_CONFIG_DEFAULT_VALUE,
         ConfigConstants.SMS_CONFIG_DESCRIPTION);
+  }
+
+  private void createWhatsAppConfiguration() {
+    createGlobalSettingIfNotExists(
+        ConfigConstants.WHATSAPP_CONFIG_GP_KEY,
+        ConfigConstants.WHATSAPP_CONFIG_GP_DEFAULT_VALUE,
+        ConfigConstants.WHATSAPP_CONFIG_GP_DESCRIPTION);
   }
 
   private void createSchedulerConfiguration() {

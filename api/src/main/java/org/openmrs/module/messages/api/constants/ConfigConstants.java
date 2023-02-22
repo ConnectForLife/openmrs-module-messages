@@ -120,7 +120,8 @@ public final class ConfigConstants {
   public static final String SERVICE_RESULT_HANDLERS = "messages.serviceResultsHandlers";
   public static final String SERVICE_RESULT_HANDLERS_DEFAULT_VALUE =
       "SMS:messages.smsServiceResultHandlerService,"
-          + "Call:messages.callFlowServiceResultHandlerService";
+          + "Call:messages.callFlowServiceResultHandlerService,"
+          + "WhatsApp:messages.whatsAppServiceResultHandlerService";
   public static final String SERVICE_RESULT_HANDLERS_DESCRIPTION =
       "Used to determine the name of the Spring Bean which should be used to handle the service results. The "
           + "value could represent multiple handlers. Each of them is dedicated to a specific channel type. The "
@@ -217,6 +218,12 @@ public final class ConfigConstants {
   public static final String SMS_CONFIG_DESCRIPTION =
       "The string value representing the default value of "
           + "sms configuration used to send sms. If empty, SMS module will use default config set in this module";
+
+  public static final String WHATSAPP_CONFIG_GP_KEY = "messages.whatsAppConfig";
+  public static final String WHATSAPP_CONFIG_GP_DEFAULT_VALUE = "";
+  public static final String WHATSAPP_CONFIG_GP_DESCRIPTION =
+      "The string value representing the default value of "
+          + "WhatsApp configuration used to send WhatsApp message. If empty, SMS module will use default config set in this module";
 
   public static final String ITR_ANSWER_REGEX_CONCEPT_ATTR_TYPE_UUID =
       "messages.concept.attributeType.answerRegex.uuid";
