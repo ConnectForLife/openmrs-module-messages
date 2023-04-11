@@ -409,17 +409,10 @@
         </property>
     </bean>
 
-    <bean id="messages.defaultServiceResultHandlerService"
-          class="org.openmrs.module.messages.api.service.impl.DefaultServiceResultsHandlerServiceImpl"
-          parent="messages.abstractServiceResultHandlerService"/>
-
-    <bean id="messages.callFlowServiceResultHandlerService"
-          class="org.openmrs.module.messages.api.service.impl.CallFlowServiceResultsHandlerServiceImpl"
-          parent="messages.abstractServiceResultHandlerService"/>
-
-    <bean id="messages.smsServiceResultHandlerService"
-          class="org.openmrs.module.messages.api.service.impl.SmsServiceResultsHandlerServiceImpl"
-          parent="messages.abstractServiceResultHandlerService">
+    <bean id="messages.abstractTextMessageServiceResultHandlerService"
+      class="org.openmrs.module.messages.api.service.impl.AbstractTextMessageServiceResultsHandlerService"
+      abstract="true"
+      parent="messages.abstractServiceResultHandlerService">
         <property name="notificationTemplateService">
             <ref local="messages.velocityNotificationTemplateServiceImpl"/>
         </property>
@@ -429,6 +422,23 @@
         <property name="messagesExecutionService">
             <ref local="messages.messagesExecutionService"/>
         </property>
+    </bean>
+
+    <bean id="messages.defaultServiceResultHandlerService"
+          class="org.openmrs.module.messages.api.service.impl.DefaultServiceResultsHandlerServiceImpl"
+          parent="messages.abstractServiceResultHandlerService"/>
+
+    <bean id="messages.callFlowServiceResultHandlerService"
+          class="org.openmrs.module.messages.api.service.impl.CallFlowServiceResultsHandlerServiceImpl"
+          parent="messages.abstractServiceResultHandlerService"/>
+
+    <bean id="messages.whatsAppServiceResultHandlerService"
+      class="org.openmrs.module.messages.api.service.impl.WhatsAppServiceResultsHandlerServiceImpl"
+      parent="messages.abstractTextMessageServiceResultHandlerService"/>
+
+    <bean id="messages.smsServiceResultHandlerService"
+          class="org.openmrs.module.messages.api.service.impl.SmsServiceResultsHandlerServiceImpl"
+          parent="messages.abstractTextMessageServiceResultHandlerService">
     </bean>
 
     <bean id="messages.scheduledParamsMapper" class="org.openmrs.module.messages.api.mappers.ScheduledParamsMapper"/>

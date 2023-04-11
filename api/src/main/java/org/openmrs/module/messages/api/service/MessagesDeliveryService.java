@@ -12,6 +12,10 @@ package org.openmrs.module.messages.api.service;
 
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
+import org.openmrs.scheduler.TaskDefinition;
+
+import java.time.Instant;
+import java.util.List;
 
 /**
  * Provides methods related to messages delivery management
@@ -20,10 +24,20 @@ import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
  * </p>
  */
 public interface MessagesDeliveryService extends OpenmrsService {
-    /**
-     * Schedules a new event delivery
-     *
-     * @param executionContext scheduled service context which contains all necessary data to schedule an event
-     */
-    void scheduleDelivery(ScheduledExecutionContext executionContext);
+  /**
+   * Schedules a new event delivery
+   *
+   * @param executionContext scheduled service context which contains all necessary data to schedule an event
+   */
+  void scheduleDelivery(ScheduledExecutionContext executionContext);
+
+  /**
+   * Gets all Tasks with name starting with {@code taskNamePrefix} and having start time after {@code afterStartTime}
+   * date time.
+   *
+   * @param taskNamePrefix the name prefix, not null
+   * @param afterStartTime the date time to get tasks after, not null
+   * @return the list of TaskDefinition, never null
+   */
+  List<TaskDefinition> getTasksByPrefixAndAfterStartTime(String taskNamePrefix, Instant afterStartTime);
 }

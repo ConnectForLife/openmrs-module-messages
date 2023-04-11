@@ -15,14 +15,14 @@ import org.openmrs.module.messages.api.constants.ConfigConstants;
 import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
 
 /**
- * Implements methods related to the handling of sms service results
+ * Implements methods related to the handling of WhatsApp service results
  */
-public class SmsServiceResultsHandlerServiceImpl extends AbstractTextMessageServiceResultsHandlerService {
-  
-  private static final String SMS_CHANNEL_TYPE = "SMS";
+public class WhatsAppServiceResultsHandlerServiceImpl extends AbstractTextMessageServiceResultsHandlerService {
 
-  public SmsServiceResultsHandlerServiceImpl() {
-    super(SMS_CHANNEL_TYPE);
+  private static final String WHATSAPP_CHANNEL_TYPE = "WhatsApp";
+
+  public WhatsAppServiceResultsHandlerServiceImpl() {
+    super(WHATSAPP_CHANNEL_TYPE);
   }
 
   @Override
@@ -30,6 +30,6 @@ public class SmsServiceResultsHandlerServiceImpl extends AbstractTextMessageServ
     return executionContext.getChannelConfiguration()
       .getOrDefault(CONFIG_KEY,
         Context.getAdministrationService()
-          .getGlobalProperty(ConfigConstants.SMS_CONFIG));
+          .getGlobalProperty(ConfigConstants.WHATSAPP_CONFIG_GP_KEY));
   }
 }
