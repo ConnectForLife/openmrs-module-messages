@@ -18,22 +18,21 @@ import {
   putPersonStatus,
   getPossibleReasons
 } from '../person-status/person-status.reducer';
-import * as Default from '../../shared/utils/messages';
-import { getIntl } from '@openmrs/react-components/lib/components/localization/withLocalization';
 import './person-status-notification.scss';
 import { getPersonStatusConfig } from '../../shared/utils/person-status'
+import { PropsWithIntl } from '../../components/translation/PropsWithIntl';
+import { injectIntl } from 'react-intl';
 
 interface IPersonStatusNotificationProps extends DispatchProps, StateProps {
-  patientUuid: string,
-  locale?: string
+  patientUuid: string
 }
 
 interface IPersonStatusNotificationState {
 }
 
-class PersonStatusNotification extends React.PureComponent<IPersonStatusNotificationProps, IPersonStatusNotificationState> {
+class PersonStatusNotification extends React.PureComponent<PropsWithIntl<IPersonStatusNotificationProps>, IPersonStatusNotificationState> {
 
-  constructor(props: IPersonStatusNotificationProps) {
+  constructor(props: PropsWithIntl<IPersonStatusNotificationProps>) {
     super(props);
   }
 
@@ -46,15 +45,15 @@ class PersonStatusNotification extends React.PureComponent<IPersonStatusNotifica
 
   renderDeactivatedStatusNotificationIfNeeded = () => {
     switch (this.props.personStatus.status.value) {
-      case getPersonStatusConfig(this.props.locale).DEACTIVATED.value:
+      case getPersonStatusConfig(this.props.intl).DEACTIVATED.value:
         return this.renderNotification(
-          getIntl(this.props.locale).formatMessage({ id: 'MESSAGES_DEACTIVATED_STATUS_NOTIFICATION', defaultMessage: Default.DEACTIVATED_STATUS_NOTIFICATION }));
-      case getPersonStatusConfig(this.props.locale).NO_CONSENT.value:
+          this.props.intl.formatMessage({ id: 'messages.deactivatedStatusNotification' }));
+      case getPersonStatusConfig(this.props.intl).NO_CONSENT.value:
         return this.renderNotification(
-          getIntl(this.props.locale).formatMessage({ id: 'MESSAGES_NO_CONSENT_STATUS_NOTIFICATION', defaultMessage: Default.NO_CONSENT_STATUS_NOTIFICATION }));
-      case getPersonStatusConfig(this.props.locale).MISSING_VALUE.value:
+          this.props.intl.formatMessage({ id: 'messages.noConsentStatusNotification' }));
+      case getPersonStatusConfig(this.props.intl).MISSING_VALUE.value:
         return this.renderNotification(
-          getIntl(this.props.locale).formatMessage({ id: 'MESSAGES_MISSING_VALUE_STATUS_NOTIFICATION', defaultMessage: Default.MISSING_VALUE_STATUS_NOTIFICATION })
+          this.props.intl.formatMessage({ id: 'messages.missingValueStatusNotification' })
         );
       default:
         return null;
@@ -98,7 +97,7 @@ const mapDispatchToProps = ({
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = typeof mapDispatchToProps;
 
-export default connect(
+export default injectIntl(connect(
   mapStateToProps,
   mapDispatchToProps
-)(PersonStatusNotification);
+)(PersonStatusNotification));

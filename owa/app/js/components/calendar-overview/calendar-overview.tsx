@@ -14,6 +14,8 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import momentPlugin from '@fullcalendar/moment'
 import momentTimezonePlugin from '@fullcalendar/moment-timezone'
 import './calendar-overview.scss'
+import { PropsWithIntl } from '../../components/translation/PropsWithIntl';
+import { injectIntl } from 'react-intl';
 
 interface ICalendarProps {
   events: ReadonlyArray<{}>;
@@ -21,7 +23,7 @@ interface ICalendarProps {
   dateRangeChangedCallback(startDate: Date, endDate: Date): void;
 }
 
-class Calendar extends React.Component<ICalendarProps> {
+class Calendar extends React.Component<PropsWithIntl<ICalendarProps>> {
 
   private createIcon = (status: string) => {
     const newElement = document.createElement('i');
@@ -52,6 +54,7 @@ class Calendar extends React.Component<ICalendarProps> {
     return (
       <div className="calendar">
         <FullCalendar
+          locale={this.props.intl.locale}
           defaultTimedEventDuration='00:00:01'
           forceEventDuration={ true }
           defaultView="dayGridMonth"
@@ -72,10 +75,15 @@ class Calendar extends React.Component<ICalendarProps> {
           }}
           height="auto"
           eventTimeFormat="HH:mm"
+          buttonText={{
+            month: this.props.intl.formatMessage({ id: 'cfl.month' }),
+            week: this.props.intl.formatMessage({ id: 'cfl.week' }),
+            day: this.props.intl.formatMessage({ id: 'cfl.day' })
+          }}
         />
       </div>
     );
   };
 }
 
-export default Calendar;
+export default injectIntl(Calendar);

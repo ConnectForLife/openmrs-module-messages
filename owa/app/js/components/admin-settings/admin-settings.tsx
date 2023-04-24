@@ -11,7 +11,6 @@ import React, {ReactFragment} from 'react';
 import {connect} from 'react-redux';
 import {IRootState} from '../../reducers';
 import {Button, SelectCallback} from 'react-bootstrap';
-import * as Default from '../../shared/utils/messages';
 import FormSection from '../form-entry/model/form-section';
 import FormSubSection from '../form-entry/model/form-subsection';
 import FormEntry from '../form-entry/form-entry';
@@ -22,14 +21,15 @@ import {getActorTypes, getHealthTipCategories, updateTemplate} from '../../reduc
 import {IActorType} from '../../shared/model/actor-type.model';
 import {history} from '../../config/redux-store';
 import {IHealthTipCategory} from "../../shared/model/health-tip-category.model";
-import { LocalizedMessage } from '@openmrs/react-components';
+import { injectIntl, FormattedMessage } from 'react-intl';
 
 interface IAdminSettingsProps extends DispatchProps, StateProps {
   templates: Array<TemplateUI>,
   actorTypes: Array<IActorType>,
   activeSection: string,
   onSaveCallback?: Function,
-  healthTipCategories: IHealthTipCategory[]
+  healthTipCategories: IHealthTipCategory[],
+  intl: any
 }
 
 interface IAdminSettingsState {
@@ -94,6 +94,7 @@ class AdminSettings extends React.PureComponent<IAdminSettingsProps, IAdminSetti
       updateTemplate={this.props.updateTemplate}
       healthTipCategories={this.props.healthTipCategories}
       actorType={actorType}
+      intl={this.props.intl}
     />
   );
 
@@ -119,7 +120,7 @@ class AdminSettings extends React.PureComponent<IAdminSettingsProps, IAdminSetti
       subsections.push(new FormSubSection(name, true, false, fragment, onSelectCallback));
     });
 
-    sections.push(new FormSection('Messages', subsections));
+    sections.push(new FormSection(this.props.intl.formatMessage({ id: 'messages.title' }), subsections));
     return sections;
   };
 
@@ -127,26 +128,26 @@ class AdminSettings extends React.PureComponent<IAdminSettingsProps, IAdminSetti
     return (
       <div className="admin-settings">
         <div className="panel-body">
-          <h2><LocalizedMessage id="MESSAGES_MESSAGES_SETTINGS_LABEL" defaultMessage={Default.MESSAGES_SETTINGS_LABEL} /></h2>
+          <h2><FormattedMessage id="messages.messagesSettingsLabel" /></h2>
           {!this.props.loading && this.renderTemplateState()}
         </div>
         <div className="panel-body">
           <Button
             className="btn btn-danger btn-md"
             onClick={this.handleCancel}>
-            <LocalizedMessage id="MESSAGES_CANCEL_BUTTON_LABEL" defaultMessage={Default.CANCEL_BUTTON_LABEL} />
+            <FormattedMessage id="messages.cancelButtonLabel" />
           </Button>
           <div className="pull-right">
             <Button
               className="btn btn-default btn-md sec-btn"
               disabled={!this.getNextSubsection()}
               onClick={this.handleNext}>
-              <LocalizedMessage id="MESSAGES_NEXT_BUTTON_LABEL" defaultMessage={Default.NEXT_BUTTON_LABEL} />
+              <FormattedMessage id="messages.nextButtonLabel" />
             </Button>
             <Button
               className="btn btn-success btn-md confirm"
               onClick={this.handleSave}>
-              <LocalizedMessage id="MESSAGES_SAVE_BUTTON_LABEL" defaultMessage={Default.SAVE_BUTTON_LABEL} />
+              <FormattedMessage id="messages.saveButtonLabel" />
             </Button>
           </div>
         </div>
@@ -170,7 +171,7 @@ const mapDispatchToProps = ({
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = typeof mapDispatchToProps;
 
-export default connect(
+export default injectIntl(connect(
   mapStateToProps,
   mapDispatchToProps
-)(AdminSettings);
+)(AdminSettings));

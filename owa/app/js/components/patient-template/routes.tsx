@@ -14,10 +14,9 @@ import {
   PatientTemplateEditWithHeader as PatientTemplateEdit,
   ManageMessagesWithHeader as ManageMessages 
 } from '../hoc/with-patient-header';
-import {withLocalization} from '@openmrs/react-components';
 
-const LocalizedPatientTemplateEdit = withLocalization(PatientTemplateEdit);
-const LocalizedManageMessages = withLocalization(ManageMessages);
+const LocalizedPatientTemplateEdit = (PatientTemplateEdit);
+const LocalizedManageMessages = (ManageMessages);
 
 const Routes = (props) => (
   <>

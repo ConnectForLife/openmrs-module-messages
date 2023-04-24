@@ -92,14 +92,14 @@ export const getBestContactTime = (personIds: Array<number>) => async (dispatch)
   });
 };
 
-export const postBestContactTime = (bestContactTimes: Array<IBestContactTime>, locale: string | undefined) => async (dispatch) => {
+export const postBestContactTime = (bestContactTimes: Array<IBestContactTime>, intl: any) => async (dispatch) => {
   const body = {
     type: ACTION_TYPES.POST_BEST_CONTACT_TIME,
     payload: axiosInstance.post(contactTimeUrl, _.map(bestContactTimes, mapToRequest))
   };
   await handleRequest(dispatch, body,
-    getIntl(locale).formatMessage({ id: 'MESSAGES_BEST_CONTACT_TIME_SAVE_SUCCESS', defaultMessage: Default.BEST_CONTACT_TIME_SAVE_SUCCESS }),
-    getIntl(locale).formatMessage({ id: 'MESSAGES_BEST_CONTACT_TIME_SAVE_FAILURE', defaultMessage: Default.BEST_CONTACT_TIME_SAVE_FAILURE }));
+    intl.formatMessage({ id: 'messages.bestContactTimeSaveSuccess' }),
+    intl.formatMessage({ id: 'messages.bestContactTimeSaveFailure' }));
 };
 
 export const updateBestConstactTime = (newValue: Array<IBestContactTime>) => async (dispatch) => {

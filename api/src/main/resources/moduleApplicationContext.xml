@@ -255,6 +255,15 @@
         </property>
     </bean>
 
+    <bean parent="serviceContext">
+        <property name="moduleService">
+            <list merge="true">
+                <value>org.openmrs.module.messages.api.service.DefaultPatientTemplateService</value>
+                <ref local="messages.defaultPatientTemplateService"/>
+            </list>
+        </property>
+    </bean>
+
     <bean name="messages.ExecutionEngineManager"
           class="org.openmrs.module.messages.api.execution.impl.ExecutionEngineManager"/>
 

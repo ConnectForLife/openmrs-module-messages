@@ -17,9 +17,9 @@ import { IActorType } from '../../shared/model/actor-type.model';
 import { TimePicker } from 'antd';
 import _ from 'lodash';
 import moment, { Moment } from 'moment';
-import * as Default from '../../shared/utils/messages';
-import { LocalizedMessage } from '@openmrs/react-components';
+import { injectIntl, FormattedMessage } from 'react-intl';
 import './best-contact-time.scss';
+import { PropsWithIntl } from '../../components/translation/PropsWithIntl';
 
 interface IProps extends DispatchProps {
   bestContactTimes: ReadonlyArray<IDefaultBestContactTime>
@@ -27,7 +27,7 @@ interface IProps extends DispatchProps {
   loading: boolean
 }
 
-class BestContactTime extends React.Component<IProps> {
+class BestContactTime extends React.Component<PropsWithIntl<IProps>> {
 
   onTimeChange = (time: Moment, contactTimeId: number, actor: string) => {
     const updated = _.clone(this.props.bestContactTimes) as Array<IDefaultBestContactTime>;
@@ -74,7 +74,7 @@ class BestContactTime extends React.Component<IProps> {
     return (
       <div id="best-contact-time">
         <fieldset>
-          <legend><LocalizedMessage id="MESSAGES_BEST_CONTACT_TIME_LABEL" defaultMessage={Default.BEST_CONTACT_TIME_LABEL} /></legend>
+          <legend><FormattedMessage id="messages.bestContactTimeLabel" /></legend>
           {!loading && this.renderTimePickers()}
         </fieldset>
       </div>
@@ -89,7 +89,7 @@ const mapDispatchToProps = ({
 
 type DispatchProps = typeof mapDispatchToProps;
 
-export default connect(
+export default injectIntl(connect(
   undefined,
   mapDispatchToProps
-)(BestContactTime);
+)(BestContactTime));

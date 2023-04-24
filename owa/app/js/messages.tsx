@@ -18,6 +18,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import '@openmrs/style-referenceapplication/lib/referenceapplication.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import initStore from './config/redux-store';
+import TranslationProvider from "./components/translation/translation-provider";
+import Customize from './components/customize/customize';
 
 import { history } from './config/redux-store';
 import { loadIcons } from './config/icon-loader';
@@ -34,12 +36,17 @@ loadIcons();
 toast.configure();
 const store = initStore();
 
-render((
+render(
   <Provider store={store}>
     <ConnectedRouter history={history}>
-      <HashRouter>
-        {routes(store)}
-      </HashRouter>
+      <>
+        <Customize />
+        <TranslationProvider>
+          <HashRouter>
+          {routes(store)}
+          </HashRouter>
+        </TranslationProvider>
+      </>
     </ConnectedRouter>
   </Provider>
-), document.getElementById('app'));
+, document.getElementById('app'));

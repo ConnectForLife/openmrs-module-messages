@@ -21,6 +21,8 @@ import personStatus, { PersonStatusState } from '../components/person-status/per
 import timezone, {TimezoneState} from "./timezone.reducer";
 import customizeReducer, { CustomizeState } from '../components/customize/customize.reducer';
 import globalPropertyReducer, { GlobalPropertyState } from './global-property.reducer';
+import session from './session';
+import messages from './messages';
 
 export interface IRootState {
   readonly openmrs: any;
@@ -35,6 +37,8 @@ export interface IRootState {
   readonly timezone: TimezoneState;
   readonly customizeReducer: CustomizeState;
   readonly globalPropertyReducer: GlobalPropertyState;
+  readonly session: any;
+  readonly messages: any;
 }
 
 export default combineReducers<IRootState>({
@@ -49,5 +53,7 @@ export default combineReducers<IRootState>({
   timezone,
   person,
   customizeReducer,
-  globalPropertyReducer
+  globalPropertyReducer,
+  session,
+  messages
 });

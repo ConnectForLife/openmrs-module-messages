@@ -13,10 +13,13 @@ import DatePicker from 'react-datepicker';
 import { startOfDay, format, parse } from 'date-fns';
 import 'react-datepicker/dist/react-datepicker.css';
 
-import { DATE_FORMAT, ISO_DATE_FORMAT } from '../date-util/constants';
+import { DATE_FORMAT, ISO_DATE_FORMAT, WEEK_DAYS_KEYS, MONTH_NAMES_KEYS } 
+  from '../date-util/constants';
 import { parseDateOrDefault, ParsableToDate } from '../date-util/date-util';
 import DateDisplay from './date-display';
 import './openmrs-date-picker.scss';
+import { PropsWithIntl } from '../../components/translation/PropsWithIntl';
+import { injectIntl } from 'react-intl';
 
 interface IProps {
   value: ParsableToDate;
@@ -27,7 +30,7 @@ interface IProps {
 interface IState {
 }
 
-class OpenMrsDatePicker extends PureComponent<IProps, IState> {
+class OpenMrsDatePicker extends PureComponent<PropsWithIntl<IProps>, IState> {
 
   getDate = (val: ParsableToDate | null): Date => {
     const defaultDate = parse(Date.now());
@@ -42,6 +45,30 @@ class OpenMrsDatePicker extends PureComponent<IProps, IState> {
     }
   };
 
+  getDayLabelsKey = () => {
+    return WEEK_DAYS_KEYS.map(key => this.props.intl.formatMessage({ id: key }));
+  }
+
+  getMonthLabelsKey = () => {
+    return MONTH_NAMES_KEYS.map(key => this.props.intl.formatMessage({ id: key }));
+  }
+
+  getDatePickerLocaleConfig = () => {
+    const days = this.getDayLabelsKey();
+    const months = this.getMonthLabelsKey();
+
+    const locale = {
+      localize: {
+        day: n => days[n],
+        month: n => months[n]
+      },
+      formatLong: {
+        date: () => DATE_FORMAT
+      }
+    }
+    return locale;
+  }
+
   render() {
     const { value } = this.props;
     const parsed = this.getDate(value);
@@ -54,6 +81,7 @@ class OpenMrsDatePicker extends PureComponent<IProps, IState> {
           dateFormat={DATE_FORMAT}
           onChange={this.handleChange}
           selected={parsed}
+          locale={this.getDatePickerLocaleConfig()}
           {...minDate}
         />
       </span>
@@ -61,4 +89,4 @@ class OpenMrsDatePicker extends PureComponent<IProps, IState> {
   };
 }
 
-export default OpenMrsDatePicker;
+export default injectIntl(OpenMrsDatePicker);

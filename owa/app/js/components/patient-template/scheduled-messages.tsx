@@ -22,8 +22,7 @@ import MessageRowData from '../../shared/model/message-row-data';
 import {getActorList} from '../../reducers/actor.reducer'
 import {DashboardType} from "../../shared/model/dashboard-type";
 import {IActor} from "../../shared/model/actor.model";
-import { LocalizedMessage } from '@openmrs/react-components';
-import * as Default from '../../shared/utils/messages';
+import { injectIntl, FormattedMessage } from 'react-intl';
 
 interface IScheduledMessagesProps extends DispatchProps, StateProps {
   patientId: number,
@@ -115,7 +114,7 @@ class ScheduledMessages extends React.PureComponent<IScheduledMessagesProps, ISc
   };
 
   private getTypeColumnDefinition = () => ({
-    Header: <LocalizedMessage id="MESSAGES_MESSAGE_TYPE_LABEL" defaultMessage={Default.MESSAGE_TYPE} />,
+    Header: <FormattedMessage id="messages.messageTypeLabel" />,
     accessor: 'messageType',
   });
 
@@ -179,7 +178,7 @@ class ScheduledMessages extends React.PureComponent<IScheduledMessagesProps, ISc
   }
 
   private getActionsColumnDefinition = () => ({
-    Header: <LocalizedMessage id="MESSAGES_ACTIONS_LABEL" defaultMessage={Default.ACTIONS} />,
+    Header: <FormattedMessage id="messages.actionsLabel" />,
     accessor: 'messageType',
     getProps: () => {
       return {
@@ -216,7 +215,7 @@ class ScheduledMessages extends React.PureComponent<IScheduledMessagesProps, ISc
   render() {
     return (
       <div className="body-wrapper">
-        <h4><LocalizedMessage id="MESSAGES_SCHEDULED_MESSAGES_LABEL" defaultMessage={Default.SCHEDULED_MESSAGES} /></h4>
+        <h4><FormattedMessage id="messages.scheduledMessagesLabel" /></h4>
         {this.renderMessagesTable()}
       </div>
     );
@@ -238,7 +237,7 @@ const mapDispatchToProps = ({
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = typeof mapDispatchToProps;
 
-export default connect(
+export default injectIntl(connect(
   mapStateToProps,
   mapDispatchToProps
-)(ScheduledMessages);
+)(ScheduledMessages));

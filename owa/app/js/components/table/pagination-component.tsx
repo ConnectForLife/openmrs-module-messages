@@ -11,7 +11,7 @@
 import React from 'react';
 
 import './react-table-pagination.scss';
-import { LocalizedMessage } from '@openmrs/react-components';
+import { FormattedMessage } from 'react-intl';
 
 const paginationButton = props => (
     <button type="button" {...props} className="-btn">
@@ -106,8 +106,8 @@ export class ReactTableCustomPagination extends React.PureComponent<ReactTableCu
             PreviousComponent = paginationButton,
             NextComponent = paginationButton,
             LastComponent = paginationButton,
-            firstText = <LocalizedMessage id="reactcomponents.table.first" defaultMessage="First" />,
-            lastText = <LocalizedMessage id="reactcomponents.table.last" defaultMessage="Last" />
+            firstText = <FormattedMessage id="reactcomponents.table.first" />,
+            lastText = <FormattedMessage id="reactcomponents.table.last" />
         } = this.props;
 
         return (

@@ -14,8 +14,6 @@ import { ObjectUI } from './object-ui';
 import { ITemplate, getDefaultValue } from './template.model';
 import { TemplateFieldUI } from './template-field-ui';
 import * as Yup from 'yup';
-import * as Default from '../../shared/utils/messages';
-import { getIntl } from '@openmrs/react-components/lib/components/localization/withLocalization';
 import { IActorType } from './actor-type.model';
 import { findDefaultValue } from '../utils/end-date-util';
 import { TemplateFieldType } from './template-field-type';
@@ -40,7 +38,7 @@ export class TemplateUI extends ObjectUI<ITemplate> implements ITemplate {
     return !this.id;
   }
 
-  getValidationSchema(validateNotTouched: boolean, locale: string | undefined): Yup.ObjectSchema {
+  getValidationSchema(validateNotTouched: boolean, intl: any): Yup.ObjectSchema {
     const validators = {};
     this.templateFields.forEach((templateField: TemplateFieldUI) => {
       if (!templateField.id) {
@@ -48,7 +46,7 @@ export class TemplateUI extends ObjectUI<ITemplate> implements ITemplate {
       }
       validators[templateField.id] = Yup.mixed()
         .test('mandatory check',
-          getIntl(locale).formatMessage({ id: 'MESSAGES_FIELD_REQUIRED', defaultMessage: Default.FIELD_REQUIRED }),
+          intl.formatMessage({ id: 'messages.fieldRequired' }),
           templateFieldValue => {
             if (templateField.mandatory && (templateFieldValue.isTouched || validateNotTouched)) {
               return !!(templateFieldValue.value && templateFieldValue.value.trim());

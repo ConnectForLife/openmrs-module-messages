@@ -8,30 +8,38 @@
  * graphic logo is a trademark of OpenMRS Inc.
  */
 
-import * as Default from './messages';
-import { getIntl } from '@openmrs/react-components/lib/components/localization/withLocalization';
-
-export const getServiceTypeValues = (possibleValues: Array<string>, locale: string | undefined) => {
-    return possibleValues.map(v => getIntl(locale).formatMessage({ id: 'MESSAGES_SERVICE_TYPE_' + v.toUpperCase().replace(' ', '_'), defaultMessage: v }));
+export const getServiceTypeValues = (possibleValues: Array<string>, intl: any) => {
+    return [
+        'Deactivate service',
+        'SMS',
+        'WhatsApp',
+        'Call'
+    ];
 };
 
-export const getDayOfWeekValues = (locale: string | undefined) => {
-    return [getIntl(locale).formatMessage({ id: 'MESSAGES_MONDAY', defaultMessage: Default.MONDAY }),
-    getIntl(locale).formatMessage({ id: 'MESSAGES_TUESDAY', defaultMessage: Default.TUESDAY }),
-    getIntl(locale).formatMessage({ id: 'MESSAGES_WEDNESDAY', defaultMessage: Default.WEDNESDAY }),
-    getIntl(locale).formatMessage({ id: 'MESSAGES_THURSDAY', defaultMessage: Default.THURSDAY }),
-    getIntl(locale).formatMessage({ id: 'MESSAGES_FRIDAY', defaultMessage: Default.FRIDAY }),
-    getIntl(locale).formatMessage({ id: 'MESSAGES_SATURDAY', defaultMessage: Default.SATURDAY }),
-    getIntl(locale).formatMessage({ id: 'MESSAGES_SUNDAY', defaultMessage: Default.SUNDAY })];
+export const getDayOfWeekValues = (intl: any) => {
+    return [
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+        'Sunday'
+    ];
 };
 
-export const getMessagingFrequencyDailyOrWeeklyOrMonthlyValues = (locale: string | undefined) => {
-    return [getIntl(locale).formatMessage({ id: 'MESSAGES_DAILY', defaultMessage: Default.DAILY }),
-    getIntl(locale).formatMessage({ id: 'MESSAGES_WEEKLY', defaultMessage: Default.WEEKLY }),
-    getIntl(locale).formatMessage({ id: 'MESSAGES_MONTHLY', defaultMessage: Default.MONTHLY })];
+export const getMessagingFrequencyDailyOrWeeklyOrMonthlyValues = (intl: any) => {
+    return [
+        'Daily',
+        'Weekly',
+        'Monthly'
+    ];
 };
 
-export const getMessagingFrequencyWeeklyOrMonthlyValues = (locale: string | undefined) => {
-    return [getIntl(locale).formatMessage({ id: 'MESSAGES_WEEKLY', defaultMessage: Default.WEEKLY }),
-    getIntl(locale).formatMessage({ id: 'MESSAGES_MONTHLY', defaultMessage: Default.MONTHLY })];
+export const getMessagingFrequencyWeeklyOrMonthlyValues = (intl: any) => {
+    return [
+        'Weekly',
+        'Monthly'
+    ];
 };
