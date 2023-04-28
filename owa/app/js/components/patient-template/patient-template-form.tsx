@@ -39,6 +39,8 @@ import {IActor} from '../../shared/model/actor.model';
 import {IRootState} from '../../reducers';
 import {IActorType} from '../../shared/model/actor-type.model';
 import MultiselectOption from '../../shared/model/multiselect-option';
+import { PropsWithIntl } from '../../components/translation/PropsWithIntl';
+import { injectIntl } from 'react-intl';
 
 interface IReactProps {
   patientTemplate: PatientTemplateUI | undefined;
@@ -48,7 +50,7 @@ interface IReactProps {
 }
 
 interface IProps extends IReactProps, DispatchProps, StateProps {
-  locale?: string
+  
 }
 
 interface IState {
@@ -61,9 +63,9 @@ const elements: InitInput[] = [
   factory(InputTypeEnum.AFTER_TIMES)
 ];
 
-class PatientTemplateForm extends React.Component<IProps, IState> {
+class PatientTemplateForm extends React.Component<PropsWithIntl<IProps>, IState> {
 
-  constructor(props: IProps) {
+  constructor(props: PropsWithIntl<IProps>) {
     super(props);
     const actorType: IActorType | undefined = this.getActorType(props.actor && props.actor.relationshipTypeId)
     this.state = {
@@ -78,7 +80,7 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
   }
 
   componentDidMount = () => {
-    this.props.updatePatientTemplate(this.getPatientTemplate(), [this.props.template], this.props.locale, this.isDefaultPatientTemplateLoaded());
+    this.props.updatePatientTemplate(this.getPatientTemplate(), [this.props.template], this.isDefaultPatientTemplateLoaded(), this.props.intl);
   };
 
   getActorType = (relationshipTypeId: number) =>
@@ -93,7 +95,7 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
     const tfvToUpdate = patientTemplate.templateFieldValues.find(tfv => tfv.localId === templateFieldLocalId)!;
     tfvToUpdate.value = value;
     tfvToUpdate.isTouched = true;
-    this.props.updatePatientTemplate(patientTemplate, [this.props.template], this.props.locale);
+    this.props.updatePatientTemplate(patientTemplate, [this.props.template], false, this.props.intl);
   };
 
   renderField = (tfv: TemplateFieldValueUI) => {
@@ -103,16 +105,16 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
     switch (fieldType) {
       case TemplateFieldType.SERVICE_TYPE:
         const possibleValues = tfv.getFieldDefinitions(this.props.template).possibleValues;
-        return this.renderDynamicRadioButton(tfv, getServiceTypeValues(possibleValues, this.props.locale), fieldName, isMandatory);
+        return this.renderDynamicRadioButton(tfv, getServiceTypeValues(possibleValues, this.props.intl), fieldName, isMandatory);
       case TemplateFieldType.DAY_OF_WEEK:
-        return this.renderDynamicDayOfWeekButton(tfv, getDayOfWeekValues(this.props.locale), fieldName, isMandatory);
+        return this.renderDynamicDayOfWeekButton(tfv, getDayOfWeekValues(this.props.intl), fieldName, isMandatory);
       case TemplateFieldType.DAY_OF_WEEK_SINGLE:
-        return this.renderDynamicRadioButton(tfv, getDayOfWeekValues(this.props.locale), fieldName, isMandatory);
+        return this.renderDynamicRadioButton(tfv, getDayOfWeekValues(this.props.intl), fieldName, isMandatory);
       case TemplateFieldType.MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY:
-        return this.renderDynamicRadioButton(tfv, getMessagingFrequencyDailyOrWeeklyOrMonthlyValues(this.props.locale),
+        return this.renderDynamicRadioButton(tfv, getMessagingFrequencyDailyOrWeeklyOrMonthlyValues(this.props.intl),
           fieldName, isMandatory);
       case TemplateFieldType.MESSAGING_FREQUENCY_WEEKLY_OR_MONTHLY:
-        return this.renderDynamicRadioButton(tfv, getMessagingFrequencyWeeklyOrMonthlyValues(this.props.locale),
+        return this.renderDynamicRadioButton(tfv, getMessagingFrequencyWeeklyOrMonthlyValues(this.props.intl),
           fieldName, isMandatory);
       case TemplateFieldType.CATEGORY_OF_MESSAGE:
         return this.renderHealthTipCategoryMultiselect(
@@ -256,7 +258,7 @@ class PatientTemplateForm extends React.Component<IProps, IState> {
       .templateFieldValues
       .find(f => f.getFieldType(this.props.template) === TemplateFieldType.MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY);
     if (!!dailyWeeklyMonthlyFrequency) {
-      const daily = getMessagingFrequencyDailyOrWeeklyOrMonthlyValues(this.props.locale)[0];
+      const daily = getMessagingFrequencyDailyOrWeeklyOrMonthlyValues(this.props.intl)[0];
       return dailyWeeklyMonthlyFrequency.value === daily;
     }
 
@@ -294,7 +296,7 @@ const mapDispatchToProps = ({
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = typeof mapDispatchToProps;
 
-export default connect(
+export default injectIntl(connect(
   mapStateToProps,
   mapDispatchToProps
-)(PatientTemplateForm);
+)(PatientTemplateForm));

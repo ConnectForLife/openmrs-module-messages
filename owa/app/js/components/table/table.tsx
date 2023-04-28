@@ -10,7 +10,6 @@
 
 import React from 'react';
 import ReactTable from 'react-table';
-import { LocalizedMessage } from '@openmrs/react-components';
 import { withFiltersChangedCallback } from './with-filters-changed-callback';
 import {
   DEFAULT_ITEMS_PER_PAGE,
@@ -22,6 +21,7 @@ import {
 } from './constants';
 import _ from 'lodash';
 import {ReactTableCustomPagination} from "./pagination-component";
+import { FormattedMessage } from 'react-intl';
 
 interface IPaginationBaseState {
   itemsPerPage: number;
@@ -100,12 +100,12 @@ export default class Table extends React.PureComponent<ITableProps, IPaginationB
 
   render = () => {
     const NullComponent = () => null;
-    const noDataText = <LocalizedMessage id="reactcomponents.table.noDataText" defaultMessage="No results found" />;
-    const previousText = <LocalizedMessage id="reactcomponents.table.previous" defaultMessage="Previous" />;
-    const nextText = <LocalizedMessage id="reactcomponents.table.next" defaultMessage="Next" />;
-    const loadingText = <LocalizedMessage id="reactcomponents.table.loading" defaultMessage="Loading..." />;
-    const pageText = <LocalizedMessage id="reactcomponents.table.page" defaultMessage="Page" />;
-    const ofText = <LocalizedMessage id="reactcomponents.table.of" defaultMessage="of" />;
+    const noDataText = <FormattedMessage id="reactcomponents.table.noDataText" />;
+    const previousText = <FormattedMessage id="reactcomponents.table.previous" />;
+    const nextText = <FormattedMessage id="reactcomponents.table.next" />;
+    const loadingText = <FormattedMessage id="reactcomponents.table.loading" />;
+    const pageText = <FormattedMessage id="reactcomponents.table.page" />;
+    const ofText = <FormattedMessage id="reactcomponents.table.of" />;
     const rowsText = ROW_RESULTS_COUNT_LABEL;
 
     return (

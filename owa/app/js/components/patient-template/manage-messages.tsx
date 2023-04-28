@@ -16,20 +16,20 @@ import ScheduledMessages from './scheduled-messages';
 import { checkIfDefaultValuesUsed, generateDefaultPatientTemplates } from '../../reducers/patient-template.reducer';
 import { IRootState } from '../../reducers';
 import * as Default from '../../shared/utils/messages';
-import { getIntl } from '@openmrs/react-components/lib/components/localization/withLocalization';
 import './patient-template.scss';
 import Timezone from '../timezone/timezone';
 import { DashboardType } from '../../shared/model/dashboard-type';
-import { LocalizedMessage } from '@openmrs/react-components';
+import { injectIntl, FormattedMessage } from 'react-intl';
+import { PropsWithIntl } from '../../components/translation/PropsWithIntl';
 
 interface IManageMessagesProps extends DispatchProps, StateProps, RouteComponentProps<{ patientId: string, patientUuid: string, dashboardType: DashboardType }> {
-  locale?: string
+  
 };
 
 interface IManageMessagesState {
 };
 
-class ManageMessages extends React.PureComponent<IManageMessagesProps, IManageMessagesState> {
+class ManageMessages extends React.PureComponent<PropsWithIntl<IManageMessagesProps>, IManageMessagesState> {
 
   componentDidMount() {
     if (this.isPatient()) {
@@ -40,7 +40,7 @@ class ManageMessages extends React.PureComponent<IManageMessagesProps, IManageMe
 
   handleSave() {
     if (!!this.props.defaultValuesState.defaultValuesUsed) {
-      this.props.generateDefaultPatientTemplates(parseInt(this.props.match.params.patientId, 10), this.props.locale);
+      this.props.generateDefaultPatientTemplates(parseInt(this.props.match.params.patientId, 10), this.props.intl);
     }
   }
 
@@ -66,15 +66,15 @@ class ManageMessages extends React.PureComponent<IManageMessagesProps, IManageMe
 
   private getDefaultValuesMessage(): string {
     return this.props.defaultValuesState.allValuesDefault ?
-      getIntl(this.props.locale).formatMessage({ id: 'MESSAGES_ALL_DEFAULT_VALUES_USED_MESSAGE', defaultMessage: Default.ALL_DEFAULT_VALUES_USED_MESSAGE }) :
-      getIntl(this.props.locale).formatMessage({ id: 'MESSAGES_SOME_DEFAULT_VALUES_USED_MESSAGE', defaultMessage: Default.SOME_DEFAULT_VALUES_USED_MESSAGE });
+      this.props.intl.formatMessage({ id: 'messages.allDefaultValuesUsedMessage' }) :
+      this.props.intl.formatMessage({ id: 'messages.someDefaultValuesUsedMessage' });
   }
 
   render() {
     const { patientId, patientUuid, dashboardType } = this.props.match.params;
     return (
       <>
-        <h2><LocalizedMessage id="MESSAGES_MANAGE_MESSAGES_LABEL" defaultMessage={Default.MANAGE_MESSAGES_LABEL} /></h2>
+        <h2><FormattedMessage id="messages.manageMessagesLabel" /></h2>
         {this.renderDefaultValuesNotificationIfNeeded()}
         <Timezone />
         <div className="panel-body">
@@ -107,7 +107,7 @@ const mapDispatchToProps = ({
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = typeof mapDispatchToProps;
 
-export default connect(
+export default injectIntl(connect(
   mapStateToProps,
   mapDispatchToProps
-)(ManageMessages);
+)(ManageMessages));

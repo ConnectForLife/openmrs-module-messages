@@ -16,9 +16,10 @@ import UrlPattern from 'url-pattern';
 import './bread-crumb.scss';
 import { UnregisterCallback } from 'history';
 import * as Default from '../../shared/utils/messages';
-import { getIntl } from '@openmrs/react-components/lib/components/localization/withLocalization';
 import { getPerson } from '../../reducers/person.reducer';
 import { IRootState } from '../../reducers';
+import { PropsWithIntl } from '../../components/translation/PropsWithIntl';
+import { injectIntl } from 'react-intl';
 
 const ids = 'patientId&patientuuid=:patientUuid';
 
@@ -35,17 +36,17 @@ const PATIENT_DASHBOARD_ROUTE = (patientUuid: string, dashboardType: string) => 
 const SYSTEM_ADMINISTRATION_ROUTE = `${OMRS_ROUTE}coreapps/systemadministration/systemAdministration.page`;
 
 interface IBreadCrumbProps extends DispatchProps, StateProps, RouteComponentProps {
-  locale?: string
+  
 }
 
 interface IBreadCrumbState {
   current: string
 }
 
-class BreadCrumb extends React.PureComponent<IBreadCrumbProps, IBreadCrumbState>{
+class BreadCrumb extends React.PureComponent<PropsWithIntl<IBreadCrumbProps>, IBreadCrumbState>{
   unlisten: UnregisterCallback;
 
-  constructor(props: IBreadCrumbProps) {
+  constructor(props: PropsWithIntl<IBreadCrumbProps>) {
     super(props);
 
     const { history } = this.props;
@@ -90,14 +91,14 @@ class BreadCrumb extends React.PureComponent<IBreadCrumbProps, IBreadCrumbState>
     } else if (!!BASE_MESSAGES_PATTERN.match(path.toLowerCase())) {
       return this.getBaseMessagesCrumbs(path);
     } else {
-      return [this.renderLastCrumb(getIntl(this.props.locale).formatMessage({ id: 'MESSAGES_GENERAL_MODULE_BREADCRUMB', defaultMessage: Default.GENERAL_MODULE_BREADCRUMB }))];
+      return [this.renderLastCrumb(this.props.intl.formatMessage({ id: 'messages.generalModuleBreadcrumb' }))];
     }
   }
 
   getBaseMessagesCrumbs = (path: string) => {
     return [
       this.getPatientNameCrumb(path),
-      this.renderLastCrumb(getIntl(this.props.locale).formatMessage({ id: 'MESSAGES_GENERAL_MODULE_BREADCRUMB', defaultMessage: Default.GENERAL_MODULE_BREADCRUMB }))
+      this.renderLastCrumb(this.props.intl.formatMessage({ id: 'messages.generalModuleBreadcrumb' }))
     ];
   }
 
@@ -120,8 +121,8 @@ class BreadCrumb extends React.PureComponent<IBreadCrumbProps, IBreadCrumbState>
     return [
       this.getPatientNameCrumb(path),
       this.renderCrumb(CALENDAR_OVERVIEW_ROUTE(match.patientId, match.patientUuid, match.dashboardType),
-        getIntl(this.props.locale).formatMessage({ id: 'MESSAGES_GENERAL_MODULE_BREADCRUMB', defaultMessage: Default.GENERAL_MODULE_BREADCRUMB })),
-      this.renderLastCrumb(getIntl(this.props.locale).formatMessage({ id: 'MESSAGES_MANAGE_PATIENT_TEMPLATE_BREADCRUMB', defaultMessage: Default.MANAGE_PATIENT_TEMPLATE_BREADCRUMB }))
+        this.props.intl.formatMessage({ id: 'messages.generalModuleBreadcrumb' })),
+      this.renderLastCrumb(this.props.intl.formatMessage({ id: 'messages.patientTemplateBreadcrumb' }))
     ];
   }
 
@@ -130,17 +131,17 @@ class BreadCrumb extends React.PureComponent<IBreadCrumbProps, IBreadCrumbState>
     let msg = "";
 
     if (match.newOrEdit === "new") {
-      msg = getIntl(this.props.locale).formatMessage({ id: 'MESSAGES_NEW_PATIENT_TEMPLATE_BREADCRUMB', defaultMessage: Default.NEW_PATIENT_TEMPLATE_BREADCRUMB });
+      msg = this.props.intl.formatMessage({ id: 'messages.newPatientTemplateBreadcrumb' });
     } else if (match.newOrEdit === "edit") {
-      msg = getIntl(this.props.locale).formatMessage({ id: 'MESSAGES_EDIT_PATIENT_TEMPLATE_BREADCRUMB', defaultMessage: Default.EDIT_PATIENT_TEMPLATE_BREADCRUMB });
+      msg = this.props.intl.formatMessage({ id: 'messages.editPatientTemplateBreadcrumb' });
     }
 
     return [
       this.getPatientNameCrumb(path),
       this.renderCrumb(CALENDAR_OVERVIEW_ROUTE(match.patientId, match.patientUuid, match.dashboardType),
-        getIntl(this.props.locale).formatMessage({ id: 'MESSAGES_GENERAL_MODULE_BREADCRUMB', defaultMessage: Default.GENERAL_MODULE_BREADCRUMB })),
+        this.props.intl.formatMessage({ id: 'messages.generalModuleBreadcrumb' })),
       this.renderCrumb(PATIENT_TEMPLATE_ROUTE(match.patientId, match.patientUuid, match.dashboardType),
-        getIntl(this.props.locale).formatMessage({ id: 'MESSAGES_MANAGE_PATIENT_TEMPLATE_BREADCRUMB', defaultMessage: Default.MANAGE_PATIENT_TEMPLATE_BREADCRUMB })),
+        this.props.intl.formatMessage({ id: 'messages.managePatientTemplateBreadcrumb' })),
       this.renderLastCrumb(msg)
     ];
   }
@@ -148,9 +149,9 @@ class BreadCrumb extends React.PureComponent<IBreadCrumbProps, IBreadCrumbState>
   getManageBreadCrumbs = () => {
     return [
       this.renderCrumb(SYSTEM_ADMINISTRATION_ROUTE,
-        getIntl(this.props.locale).formatMessage({ id: 'MESSAGES_SYSTEM_ADMINISTRATION_BREADCRUMB', defaultMessage: Default.SYSTEM_ADMINISTRATION_BREADCRUMB }),
+        this.props.intl.formatMessage({ id: 'messages.systemAdministrationBreadcrumb' }),
         true),
-      this.renderLastCrumb(getIntl(this.props.locale).formatMessage({ id: 'MESSAGES_MANAGE_BREADCRUMB', defaultMessage: Default.MANAGE_BREADCRUMB }))
+      this.renderLastCrumb(this.props.intl.formatMessage({ id: 'messages.manageBreadcrumb' }))
     ];
   }
 
@@ -209,7 +210,7 @@ const mapDispatchToProps = ({
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = typeof mapDispatchToProps;
 
-export default withRouter(connect(
+export default injectIntl(withRouter(connect(
   mapStateToProps,
   mapDispatchToProps
-)(BreadCrumb));
+)(BreadCrumb)));

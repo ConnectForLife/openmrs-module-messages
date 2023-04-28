@@ -16,7 +16,6 @@ import { TemplateUI } from '../shared/model/template-ui';
 import { toModel, mergeWithObjectUIs } from '../shared/model/object-ui';
 import { handleRequest } from '../components/request-toast-handler/request-toast-handler';
 import * as Default from '../shared/utils/messages';
-import { getIntl } from '@openmrs/react-components/lib/components/localization/withLocalization';
 import { history } from '../config/redux-store';
 import axiosInstance, { ALL_RECORDS_PAGE } from '../config/axios';
 import MessageDetails from '../shared/model/message-details';
@@ -219,15 +218,15 @@ export const checkIfDefaultValuesUsed = (patientId: number) => async (dispatch) 
   });
 };
 
-export const generateDefaultPatientTemplates = (patientId: number, locale: string | undefined) => async (dispatch) => {
+export const generateDefaultPatientTemplates = (patientId: number, intl: any) => async (dispatch) => {
   const requestUrl = `${messagesUrl}/defaults/${patientId}/generate-and-save`;
   const body = {
     type: ACTION_TYPES.GENERATE_DEFAULT_PATIENT_TEMPLATES,
     payload: axiosInstance.post(requestUrl)
   }
   await handleRequest(dispatch, body,
-    getIntl(locale).formatMessage({ id: 'MESSAGES_DEFAULT_GENERATION_SUCCESS', defaultMessage: Default.DEFAULT_GENERATION_SUCCESS }),
-    getIntl(locale).formatMessage({ id: 'MESSAGES_DEFAULT_GENERATION_FAILURE', defaultMessage: Default.DEFAULT_GENERATION_FAILURE }));
+    intl.formatMessage({ id: 'messages.default.generationSuccess' }),
+    intl.formatMessage({ id: 'messages.default.generationFailure' }));
 };
 
 export const reset = () => ({
@@ -235,8 +234,8 @@ export const reset = () => ({
 });
 
 export const putPatientTemplates = (patientTemplates: Array<PatientTemplateUI>,
-  templates: Array<TemplateUI>, patientId: number, patientUuid: string, dashboardType: string, locale: string | undefined) => async (dispatch) => {
-    const validated = await validatePatientTemplates(patientTemplates, templates, true, locale);
+  templates: Array<TemplateUI>, patientId: number, patientUuid: string, dashboardType: string, intl: any) => async (dispatch) => {
+    const validated = await validatePatientTemplates(patientTemplates, templates, true, intl);
     const requestUrl = `${patientTemplatesUrl}/patient/${patientId}`
     if (isValid(validated)) {
       const body = {
@@ -244,8 +243,8 @@ export const putPatientTemplates = (patientTemplates: Array<PatientTemplateUI>,
         payload: axiosInstance.post(requestUrl, { patientTemplates: _.map(validated, toModel) })
       }
       await handleRequest(dispatch, body,
-        getIntl(locale).formatMessage({ id: 'MESSAGES_GENERIC_SUCCESS', defaultMessage: Default.GENERIC_SUCCESS }),
-        getIntl(locale).formatMessage({ id: 'MESSAGES_GENERIC_FAILURE', defaultMessage: Default.GENERIC_FAILURE }));
+        intl.formatMessage({ id: 'messages.default.generationSuccess' }),
+        intl.formatMessage({ id: 'messages.default.generationFailure' }));
       history.push(`/messages/${dashboardType}/${patientId}&patientuuid=${patientUuid}`);
     } else {
       dispatch(updatePatientTemplates(validated));
@@ -253,11 +252,11 @@ export const putPatientTemplates = (patientTemplates: Array<PatientTemplateUI>,
   };
 
 export const updatePatientTemplate = (patientTemplate: PatientTemplateUI,
-  templates: Array<TemplateUI>, locale: string | undefined, persisted: boolean = false) => async (dispatch) => {
+  templates: Array<TemplateUI>, persisted: boolean, intl: any) => async (dispatch) => {
     patientTemplate.isPersisted = !persisted;
     dispatch({
       type: ACTION_TYPES.UPDATE_PATIENT_TEMPLATE,
-      payload: await patientTemplate.validate(templates, false, locale)
+      payload: await patientTemplate.validate(templates, false, intl)
     })
   };
 
@@ -269,10 +268,10 @@ const updatePatientTemplates = (patientTemplates: Array<PatientTemplateUI>) => (
 
 const validatePatientTemplates = (patientTemplates: Array<PatientTemplateUI>,
   templates: Array<TemplateUI>,
-  validateNotTouched: boolean, locale: string | undefined): Promise<Array<PatientTemplateUI>> => {
+  validateNotTouched: boolean, intl: any): Promise<Array<PatientTemplateUI>> => {
   return Promise.all(_.map(
     patientTemplates,
-    patientTemplate => patientTemplate.validate(templates, validateNotTouched, locale)));
+    patientTemplate => patientTemplate.validate(templates, validateNotTouched, intl)));
 };
 
 const isValid = (patientTemplates: Array<PatientTemplateUI>): boolean => {

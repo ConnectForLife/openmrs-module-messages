@@ -21,7 +21,6 @@ import {TemplateUI} from '../shared/model/template-ui';
 import axiosInstance from '../config/axios';
 import {mergeWithObjectUIs, toModel} from '../shared/model/object-ui';
 import * as Default from '../shared/utils/messages';
-import {getIntl} from '@openmrs/react-components/lib/components/localization/withLocalization';
 import {IDefaultBestContactTime} from '../shared/model/default-best-contact-time.model';
 import {IActorType} from '../shared/model/actor-type.model';
 import {mapFromRequest, mapToRequest} from '../shared/model/contact-time.model';
@@ -170,17 +169,17 @@ export const updateBestContactTime = (defaultBestContactTimes: Array<IDefaultBes
     payload: await defaultBestContactTimes
   });
 
-export const saveConfig = (templates: Array<TemplateUI>, contactTimes: Array<IDefaultBestContactTime>, locale: string | undefined) => async (dispatch) => {
+export const saveConfig = (templates: Array<TemplateUI>, contactTimes: Array<IDefaultBestContactTime>, intl: any) => async (dispatch) => {
   const toastId = initRequestHandling();
   await dispatch(putDefaultContactTimes(contactTimes)).then(
     response => dispatch(putTemplates(templates)).then(
       response => continueRequestHandling(toastId, dispatch, getConfig(),
-        getIntl(locale).formatMessage({ id: 'MESSAGES_SETTINGS_SAVE_SUCCESS', defaultMessage: Default.SETTINGS_SAVE_SUCCESS }),
-        getIntl(locale).formatMessage({ id: 'MESSAGES_GENERIC_FAILURE', defaultMessage: Default.GENERIC_FAILURE })),
+        intl.formatMessage({ id: 'messages.settingsSaveSusscess' }),
+        intl.formatMessage({ id: 'messages.generic.failure' })),
       error => handleRequestFailure(error, toastId,
-        getIntl(locale).formatMessage({ id: 'MESSAGES_GENERIC_FAILURE', defaultMessage: Default.GENERIC_FAILURE }))),
+        intl.formatMessage({ id: 'messages.generic.failure' }))),
     error => handleRequestFailure(error, toastId,
-      getIntl(locale).formatMessage({ id: 'MESSAGES_GENERIC_FAILURE', defaultMessage: Default.GENERIC_FAILURE })))
+      intl.formatMessage({ id: 'messages.generic.failure' })))
 }
 
 export const putDefaultContactTimes = (contactTimes: Array<IDefaultBestContactTime>) => ({

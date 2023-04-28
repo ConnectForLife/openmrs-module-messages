@@ -34,13 +34,13 @@ import {TemplateFieldType} from '../../shared/model/template-field-type';
 import {IActorType} from '../../shared/model/actor-type.model';
 import {IHealthTipCategory} from "../../shared/model/health-tip-category.model";
 import MultiselectOption from "../../shared/model/multiselect-option";
+import { PropsWithIntl } from '../../components/translation/PropsWithIntl';
 
 interface IProps {
   template: TemplateUI;
   actorType: IActorType;
   updateTemplate: (template: TemplateUI) => void;
   healthTipCategories: IHealthTipCategory[];
-  locale?: string;
 }
 
 const elements: InitInput[] = [
@@ -50,7 +50,7 @@ const elements: InitInput[] = [
 ];
 
 // WARNING this class overrides shouldComponentUpdate, pay special attention
-export class TemplateForm extends React.Component<IProps> {
+export class TemplateForm extends React.Component<PropsWithIntl<IProps>> {
 
   shouldComponentUpdate = (nextProps: IProps) => {
     const currentTemplate = this.props.template;
@@ -122,17 +122,17 @@ export class TemplateForm extends React.Component<IProps> {
 
     switch (fieldType) {
       case TemplateFieldType.SERVICE_TYPE:
-        return this.renderDynamicRadioButton(templateField, getServiceTypeValues(templateField.possibleValues, this.props.locale), fieldName, value);
+        return this.renderDynamicRadioButton(templateField, getServiceTypeValues(templateField.possibleValues, this.props.intl), fieldName, value);
       case TemplateFieldType.DAY_OF_WEEK:
-        return this.renderDynamicDayOfWeekButton(templateField, getDayOfWeekValues(this.props.locale), fieldName, value);
+        return this.renderDynamicDayOfWeekButton(templateField, getDayOfWeekValues(this.props.intl), fieldName, value);
       case TemplateFieldType.DAY_OF_WEEK_SINGLE:
-        return this.renderDynamicRadioButton(templateField, getDayOfWeekValues(this.props.locale), fieldName, value);
+        return this.renderDynamicRadioButton(templateField, getDayOfWeekValues(this.props.intl), fieldName, value);
       case TemplateFieldType.MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY:
         return this.renderDynamicRadioButton(templateField,
-          getMessagingFrequencyDailyOrWeeklyOrMonthlyValues(this.props.locale), fieldName, value);
+          getMessagingFrequencyDailyOrWeeklyOrMonthlyValues(this.props.intl), fieldName, value);
       case TemplateFieldType.MESSAGING_FREQUENCY_WEEKLY_OR_MONTHLY:
         return this.renderDynamicRadioButton(templateField,
-          getMessagingFrequencyWeeklyOrMonthlyValues(this.props.locale), fieldName, value);
+          getMessagingFrequencyWeeklyOrMonthlyValues(this.props.intl), fieldName, value);
       case TemplateFieldType.CATEGORY_OF_MESSAGE:
         return this.renderHealthTipCategoryMultiselect(
             templateField,
@@ -261,7 +261,7 @@ export class TemplateForm extends React.Component<IProps> {
       .templateFields
       .find(f => f.type === TemplateFieldType.MESSAGING_FREQUENCY_DAILY_OR_WEEKLY_OR_MONTHLY);
     if (!!dailyWeeklyMonthlyFrequency) {
-      const daily = getMessagingFrequencyDailyOrWeeklyOrMonthlyValues(this.props.locale)[0];
+      const daily = getMessagingFrequencyDailyOrWeeklyOrMonthlyValues(this.props.intl)[0];
       return this.getValueForField(dailyWeeklyMonthlyFrequency) === daily;
     }
 

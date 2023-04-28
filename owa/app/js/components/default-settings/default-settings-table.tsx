@@ -16,20 +16,19 @@ import {getActorTypes, getHealthTipCategories, updateTemplate} from '../../reduc
 import {TemplateUI} from '../../shared/model/template-ui';
 import {TemplateForm} from './template-form';
 import * as Default from '../../shared/utils/messages';
-import {getIntl} from '@openmrs/react-components/lib/components/localization/withLocalization';
 import {IColumn} from '../../shared/model/column.model';
 import {FragmentTable} from './fragment-table';
 import {IFragmentRow} from '../../shared/model/fragment-table-row.model';
 import {IActorType} from '../../shared/model/actor-type.model';
-import { LocalizedMessage } from '@openmrs/react-components';
+import { injectIntl, FormattedMessage } from 'react-intl';
+import { PropsWithIntl } from '../../components/translation/PropsWithIntl';
 
 interface IProps extends DispatchProps {
   templates: ReadonlyArray<TemplateUI>,
-  actorTypes: ReadonlyArray<IActorType>,
-  locale?: string
+  actorTypes: ReadonlyArray<IActorType>
  }
 
-class DefaultSettingsTable extends React.Component<IProps> {
+class DefaultSettingsTable extends React.Component<PropsWithIntl<IProps>> {
 
   componentDidMount = () => {
     this.props.getActorTypes();
@@ -40,7 +39,7 @@ class DefaultSettingsTable extends React.Component<IProps> {
 
   getColumns = (): ReadonlyArray<IColumn> => this.getActorTypes().map(actorType => ({
       key: actorType.display,
-      label: actorType.display + getIntl(locale).formatMessage({ id: 'MESSAGES_DEFAULT_SETTINGS_POSTFIX', defaultMessage: Default.DEFAULT_SETTINGS_POSTFIX })
+      label: actorType.display + this.props.intl.formatMessage({ id: 'messages.default.settingsPostfix' })
     }));
 
   getTemplateFragmentRows = (): ReadonlyArray<IFragmentRow> => 
@@ -63,7 +62,7 @@ class DefaultSettingsTable extends React.Component<IProps> {
 
   render = () => (
     <div>
-      <h4><LocalizedMessage id="MESSAGES_DEFAULT_SETTINGS_TABLE_TITLE" defaultMessage={Default.DEFAULT_SETTINGS_TABLE_TITLE} /></h4>
+      <h4><FormattedMessage id="messages.default.settingsTableTitle" /></h4>
       <FragmentTable 
         columns={this.getColumns()}
         fragments={this.getTemplateFragmentRows()}
@@ -85,7 +84,7 @@ const mapDispatchToProps = ({
 
 type DispatchProps = typeof mapDispatchToProps;
 
-export default connect(
+export default injectIntl(connect(
   mapStateToProps,
   mapDispatchToProps
-)(DefaultSettingsTable);
+)(DefaultSettingsTable));

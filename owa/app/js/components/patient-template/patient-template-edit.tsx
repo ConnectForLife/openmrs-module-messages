@@ -29,7 +29,8 @@ import {IActor} from '../../shared/model/actor.model';
 import {getActorTypes, getHealthTipCategories} from '../../reducers/admin-settings.reducer';
 import Timezone from '../timezone/timezone';
 import {DashboardType} from '../../shared/model/dashboard-type';
-import { LocalizedMessage } from '@openmrs/react-components';
+import {injectIntl, FormattedMessage} from 'react-intl';
+import {PropsWithIntl} from '../../components/translation/PropsWithIntl';
 
 interface IPatientTemplateEditProps extends DispatchProps, StateProps, RouteComponentProps<{
   patientId: string,
@@ -39,15 +40,14 @@ interface IPatientTemplateEditProps extends DispatchProps, StateProps, RouteComp
 }> {
   isNew: boolean
   relatedActors: Array<IActor>
-  locale?: string
 };
 
 interface IPatientTemplateEditState {
 };
 
-class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps, IPatientTemplateEditState> {
+class PatientTemplateEdit extends React.PureComponent<PropsWithIntl<IPatientTemplateEditProps>, IPatientTemplateEditState> {
 
-  constructor(props: IPatientTemplateEditProps) {
+  constructor(props: PropsWithIntl<IPatientTemplateEditProps>) {
     super(props);
   }
 
@@ -72,7 +72,7 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
       parseInt(patientId),
       patientUuid,
       dashboardType,
-      this.props.locale
+      this.props.intl
     );
   }
 
@@ -163,26 +163,26 @@ class PatientTemplateEdit extends React.PureComponent<IPatientTemplateEditProps,
       <>
         <Timezone />
         <div className="panel-body">
-          <h2><LocalizedMessage id="MESSAGES_EDIT_MESSAGES_TITLE" defaultMessage={Default.EDIT_MESSAGES_TITLE} /></h2>
+          <h2><FormattedMessage id="messages.editMessagesTitle" /></h2>
           {!this.props.loading && this.renderTemplateState()}
         </div>
         <div className="panel-body">
           <Button
             className="btn btn-danger btn-md"
             onClick={this.handleCancel}>
-            <LocalizedMessage id="MESSAGES_CANCEL_BUTTON_LABEL" defaultMessage={Default.CANCEL_BUTTON_LABEL} />
+            <FormattedMessage id="messages.cancelButtonLabel" />
           </Button>
           <div className="pull-right">
             <Button
               className="btn btn-default btn-md sec-btn"
               disabled={!this.getNextSubsection()}
               onClick={this.handleNext}>
-              <LocalizedMessage id="MESSAGES_NEXT_BUTTON_LABEL" defaultMessage={Default.NEXT_BUTTON_LABEL} />
+              <FormattedMessage id="messages.nextButtonLabel" />
             </Button>
             <Button
               className="btn btn-success btn-md confirm"
               onClick={this.handleSave}>
-              <LocalizedMessage id="MESSAGES_SAVE_BUTTON_LABEL" defaultMessage={Default.SAVE_BUTTON_LABEL} />
+              <FormattedMessage id="messages.saveButtonLabel" />
             </Button>
           </div>
         </div>
@@ -210,7 +210,7 @@ const mapDispatchToProps = ({
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = typeof mapDispatchToProps;
 
-export default connect(
+export default injectIntl(connect(
   mapStateToProps,
   mapDispatchToProps
-)(PatientTemplateEdit);
+)(PatientTemplateEdit));

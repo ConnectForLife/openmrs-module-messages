@@ -118,9 +118,9 @@
   },
   "scripts": {
     "clean": "rimraf dist && rimraf coverage*",
-    "build": " npm run clean && cross-env NODE_ENV=\"production\" webpack --progress --colors",
-    "build:dev": "npm run clean && cross-env NODE_ENV=\"development\" webpack --progress --colors",
-    "build:prod": "npm run clean && cross-env NODE_ENV=\"production\" webpack --progress",
+    "build": "npm dedupe && npm run clean && cross-env NODE_ENV=\"production\" webpack --progress --colors",
+    "build:dev": "npm dedupe && npm run clean && cross-env NODE_ENV=\"development\" webpack --progress --colors",
+    "build:prod": "npm dedupe && npm run clean && cross-env NODE_ENV=\"production\" webpack --progress",
     "build:deploy": "cross-env NODE_ENV=\"deploy\" webpack --progress --colors",
     "start": "npm run watch",
     "watch": "cross-env NODE_ENV=\"deploy\" webpack --mode=development --progress --colors --watch --cache=false",

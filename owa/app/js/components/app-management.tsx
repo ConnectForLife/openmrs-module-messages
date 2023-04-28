@@ -18,23 +18,24 @@ import BestContactTime from './default-settings/default-best-contact-time';
 import AdminSettings from './admin-settings/admin-settings';
 import { RouteComponentProps } from 'react-router-dom';
 import Timezone from './timezone/timezone';
-import { LocalizedMessage } from '@openmrs/react-components';
+import { injectIntl, FormattedMessage } from 'react-intl';
+import { PropsWithIntl } from '../components/translation/PropsWithIntl';
 
 interface IProps extends StateProps, DispatchProps, RouteComponentProps<{
     activeSection?: string
-}> { locale?: string }
+}> { }
 
-class AppManagement extends React.Component<IProps> {
+class AppManagement extends React.Component<PropsWithIntl<IProps>> {
 
     componentDidMount = () => this.props.getConfig();
 
-    handleSave = () => this.props.saveConfig(this.props.templates, this.props.defaultBestContactTimes, this.props.locale);
+    handleSave = () => this.props.saveConfig(this.props.templates, this.props.defaultBestContactTimes, this.props.intl);
 
     render = () =>
         <div className="body-wrapper">
             <div className="content">
                 <Timezone />
-                <h2><LocalizedMessage id="MESSAGES_DEFAULT_SETTINGS" defaultMessage={Default.DEFAULT_SETTINGS} /></h2>
+                <h2><FormattedMessage id="messages.default.settings" /></h2>
                 <BestContactTime
                     loading={this.props.loading}
                     bestContactTimes={this.props.defaultBestContactTimes}
@@ -61,7 +62,7 @@ const mapDispatchToProps = ({
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = typeof mapDispatchToProps;
 
-export default connect(
+export default injectIntl(connect(
     mapStateToProps,
     mapDispatchToProps
-)(AppManagement);
+)(AppManagement));
