@@ -180,7 +180,7 @@ class BreadCrumb extends React.PureComponent<PropsWithIntl<IBreadCrumbProps>, IB
   renderHomeCrumb = () => {
     return (
       <a href={OMRS_ROUTE} className="breadcrumb-link-item home-crumb">
-        <FontAwesomeIcon icon={['fas', 'home']} />
+        {this.props.intl.formatMessage({ id: "cfl.home.title" })}
       </a>);
   }
 
