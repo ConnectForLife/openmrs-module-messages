@@ -11,11 +11,9 @@
 import React, {ReactFragment} from 'react';
 import {connect} from 'react-redux';
 import {IRootState} from '../../reducers';
-
 import {getActorTypes, getHealthTipCategories, updateTemplate} from '../../reducers/admin-settings.reducer';
 import {TemplateUI} from '../../shared/model/template-ui';
 import {TemplateForm} from './template-form';
-import * as Default from '../../shared/utils/messages';
 import {IColumn} from '../../shared/model/column.model';
 import {FragmentTable} from './fragment-table';
 import {IFragmentRow} from '../../shared/model/fragment-table-row.model';

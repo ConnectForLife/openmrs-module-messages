@@ -18,7 +18,6 @@ import {
   putPersonStatus,
   getPossibleReasons
 } from '../person-status/person-status.reducer';
-import * as Default from '../../shared/utils/messages';
 import './person-status-notification.scss';
 import { getPersonStatusConfig } from '../../shared/utils/person-status'
 import { PropsWithIntl } from '../../components/translation/PropsWithIntl';

@@ -15,7 +15,6 @@ import {getPatientTemplates, getTemplates, putPatientTemplates} from '../../redu
 import {getActorList} from '../../reducers/actor.reducer';
 import {IRootState} from '../../reducers';
 import {Button, SelectCallback} from 'react-bootstrap';
-import * as Default from '../../shared/utils/messages';
 import FormSection from '../form-entry/model/form-section';
 import FormSubSection from '../form-entry/model/form-subsection';
 import FormEntry from '../form-entry/form-entry';
@@ -154,7 +153,7 @@ class PatientTemplateEdit extends React.PureComponent<PropsWithIntl<IPatientTemp
       subsections.push(new FormSubSection(name, isValid, isPersisted, fragment, onSelectCallback));
     });
 
-    sections.push(new FormSection('Messages', subsections));
+    sections.push(new FormSection(this.props.intl.formatMessage({ id: 'messages.title' }), subsections));
     return sections;
   }
 

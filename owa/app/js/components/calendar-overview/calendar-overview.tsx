@@ -75,6 +75,11 @@ class Calendar extends React.Component<PropsWithIntl<ICalendarProps>> {
           }}
           height="auto"
           eventTimeFormat="HH:mm"
+          buttonText={{
+            month: this.props.intl.formatMessage({ id: 'cfl.month' }),
+            week: this.props.intl.formatMessage({ id: 'cfl.week' }),
+            day: this.props.intl.formatMessage({ id: 'cfl.day' })
+          }}
         />
       </div>
     );

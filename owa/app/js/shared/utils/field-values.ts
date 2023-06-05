@@ -8,29 +8,38 @@
  * graphic logo is a trademark of OpenMRS Inc.
  */
 
-import * as Default from './messages';
-
 export const getServiceTypeValues = (possibleValues: Array<string>, intl: any) => {
-    return possibleValues.map(v => intl.formatMessage({ id: 'messages.serviceType.' + v.toUpperCase().replace(' ', '_') }));
+    return [
+        'Deactivate service',
+        'SMS',
+        'WhatsApp',
+        'Call'
+    ];
 };
 
 export const getDayOfWeekValues = (intl: any) => {
-    return [intl.formatMessage({ id: 'cfl.weekDay.Monday.fullName' }),
-    intl.formatMessage({ id: 'cfl.weekDay.Tuesday.fullName' }),
-    intl.formatMessage({ id: 'cfl.weekDay.Wednesday.fullName' }),
-    intl.formatMessage({ id: 'cfl.weekDay.Thursday.fullName' }),
-    intl.formatMessage({ id: 'cfl.weekDay.Friday.fullName' }),
-    intl.formatMessage({ id: 'cfl.weekDay.Saturday.fullName' }),
-    intl.formatMessage({ id: 'cfl.weekDay.Sunday.fullName' })];
+    return [
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+        'Sunday'
+    ];
 };
 
 export const getMessagingFrequencyDailyOrWeeklyOrMonthlyValues = (intl: any) => {
-    return [intl.formatMessage({ id: 'messages.daily' }),
-    intl.formatMessage({ id: 'messages.weekly' }),
-    intl.formatMessage({ id: 'messages.monthly' })];
+    return [
+        'Daily',
+        'Weekly',
+        'Monthly'
+    ];
 };
 
 export const getMessagingFrequencyWeeklyOrMonthlyValues = (intl: any) => {
-    return [intl.formatMessage({ id: 'messages.weekly' }),
-    intl.formatMessage({ id: 'messages.monthly' })];
+    return [
+        'Weekly',
+        'Monthly'
+    ];
 };

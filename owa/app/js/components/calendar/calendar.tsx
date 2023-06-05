@@ -24,7 +24,6 @@ import _ from 'lodash';
 import { RouteComponentProps } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getPersonStatus } from '../person-status/person-status.reducer';
-import * as Default from '../../shared/utils/messages';
 import { getActorList } from '../../reducers/actor.reducer';
 import Timezone from '../timezone/timezone';
 import { DashboardType } from '../../shared/model/dashboard-type';

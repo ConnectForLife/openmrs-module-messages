@@ -10,7 +10,6 @@
 
 import React from 'react';
 import { Button } from 'react-bootstrap';
-import * as Default from '../../shared/utils/messages';
 import { IRootState } from '../../reducers';
 import { connect } from 'react-redux';
 import { getBestContactTime, postBestContactTime, updateBestConstactTime } from '../../reducers/best-contact-time.reducer';
@@ -168,7 +167,9 @@ class BestContactTime extends React.PureComponent<PropsWithIntl<IBestContactTime
               <TimePicker
                 value={e.time}
                 onChange={(date, dateString) => this.onTimeChange(date, dateString, e.personId)}
-                format="HH:mm" />
+                format="HH:mm"
+                placeholder={this.props.intl.formatMessage({ id: 'messages.bestContactTimeInputPlaceholder' })}
+              />
             </div>
           )
         })}

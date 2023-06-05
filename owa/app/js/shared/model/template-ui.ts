@@ -14,7 +14,6 @@ import { ObjectUI } from './object-ui';
 import { ITemplate, getDefaultValue } from './template.model';
 import { TemplateFieldUI } from './template-field-ui';
 import * as Yup from 'yup';
-import * as Default from '../../shared/utils/messages';
 import { IActorType } from './actor-type.model';
 import { findDefaultValue } from '../utils/end-date-util';
 import { TemplateFieldType } from './template-field-type';

@@ -23,7 +23,6 @@ import {getActorList} from '../../reducers/actor.reducer'
 import {DashboardType} from "../../shared/model/dashboard-type";
 import {IActor} from "../../shared/model/actor.model";
 import { injectIntl, FormattedMessage } from 'react-intl';
-import * as Default from '../../shared/utils/messages';
 
 interface IScheduledMessagesProps extends DispatchProps, StateProps {
   patientId: number,

@@ -11,7 +11,6 @@ import React, {ReactFragment} from 'react';
 import {connect} from 'react-redux';
 import {IRootState} from '../../reducers';
 import {Button, SelectCallback} from 'react-bootstrap';
-import * as Default from '../../shared/utils/messages';
 import FormSection from '../form-entry/model/form-section';
 import FormSubSection from '../form-entry/model/form-subsection';
 import FormEntry from '../form-entry/form-entry';
@@ -121,7 +120,7 @@ class AdminSettings extends React.PureComponent<IAdminSettingsProps, IAdminSetti
       subsections.push(new FormSubSection(name, true, false, fragment, onSelectCallback));
     });
 
-    sections.push(new FormSection('Messages', subsections));
+    sections.push(new FormSection(this.props.intl.formatMessage({ id: 'messages.title' }), subsections));
     return sections;
   };
 

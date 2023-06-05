@@ -17,9 +17,9 @@ import { IActorType } from '../../shared/model/actor-type.model';
 import { TimePicker } from 'antd';
 import _ from 'lodash';
 import moment, { Moment } from 'moment';
-import * as Default from '../../shared/utils/messages';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import './best-contact-time.scss';
+import { PropsWithIntl } from '../../components/translation/PropsWithIntl';
 
 interface IProps extends DispatchProps {
   bestContactTimes: ReadonlyArray<IDefaultBestContactTime>
@@ -27,7 +27,7 @@ interface IProps extends DispatchProps {
   loading: boolean
 }
 
-class BestContactTime extends React.Component<IProps> {
+class BestContactTime extends React.Component<PropsWithIntl<IProps>> {
 
   onTimeChange = (time: Moment, contactTimeId: number, actor: string) => {
     const updated = _.clone(this.props.bestContactTimes) as Array<IDefaultBestContactTime>;

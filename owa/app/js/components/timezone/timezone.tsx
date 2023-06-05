@@ -14,7 +14,6 @@ import { IRootState } from '../../reducers';
 import {
   getTimezone,
 } from '../../reducers/timezone.reducer';
-import * as Default from '../../shared/utils/messages';
 import { injectIntl, FormattedMessage } from 'react-intl';
 
 interface ITimezoneProps extends DispatchProps, StateProps {

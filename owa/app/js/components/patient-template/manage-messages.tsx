@@ -15,7 +15,6 @@ import BestContactTime from './best-contact-time';
 import ScheduledMessages from './scheduled-messages';
 import { checkIfDefaultValuesUsed, generateDefaultPatientTemplates } from '../../reducers/patient-template.reducer';
 import { IRootState } from '../../reducers';
-import * as Default from '../../shared/utils/messages';
 import './patient-template.scss';
 import Timezone from '../timezone/timezone';
 import { DashboardType } from '../../shared/model/dashboard-type';
