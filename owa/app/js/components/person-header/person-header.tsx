@@ -81,7 +81,7 @@ class Header extends React.Component<PropsWithIntl<IHeaderProps>, IHeaderState> 
 
   private handlePatientLink() {
     if (this.props.redirectUrl) {
-      location.href = this.props.redirectUrl;
+      window.location.href = this.props.redirectUrl;
     }
   }
 
@@ -158,11 +158,14 @@ class Header extends React.Component<PropsWithIntl<IHeaderProps>, IHeaderState> 
   }
 
   renderPatientIdentifier(personDetails) {
+    const SHIP_ID_UUID = "871fd410-b8ab-11eb-988e-0242ac120002";
     const identifiers = personDetails.identifiers;
+    const shipId = identifiers.find( ({ identifierType }) => identifierType.uuid === SHIP_ID_UUID);
     const patientId = personDetails.isPerson ? this.props.intl.formatMessage({ id: 'person.header.personId' })
       : this.props.intl.formatMessage({ id: "reactcomponents.patient.id" });
     return (this.hasPreferredId(personDetails) &&
       <div className="identifiers">
+        {shipId && <span id="shipId">{shipId.identifier}</span>}
         <em onClick={this.handlePatientLink}>{patientId}</em>
         <div className="identifiers-number">
           {identifiers.map(identifier => { return (identifier.preferred && <span key={identifier.identifier}>{identifier.identifier}</span>) })}
