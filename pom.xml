@@ -9,7 +9,7 @@
 
     <groupId>org.openmrs.module</groupId>
     <artifactId>messages</artifactId>
-    <version>1.8.1-SNAPSHOT</version>
+    <version>1.8.1-1-ship-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Messages module</name>
     <description>

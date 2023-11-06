@@ -1,6 +1,6 @@
 {
   "name": "messages",
-  "version": "0.1.0",
+  "version": "1.8.1-1-ship-SNAPSHOT",
   "description": "OWA project for Messages Module",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "1.2.25",
