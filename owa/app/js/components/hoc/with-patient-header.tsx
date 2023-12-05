@@ -16,7 +16,8 @@ import {RouteComponentProps} from 'react-router-dom';
 import ManageMessages from '../patient-template/manage-messages';
 import {DashboardType} from "../../shared/model/dashboard-type";
 import PersonStatus from '../person-status/person-status';
-import Header from '../person-header/person-header';
+import PatientHeader from '../patient-header/patient-header';
+import { injectIntl } from 'react-intl';
 
 interface IWrappedComponentProps extends RouteComponentProps<{ patientUuid: string, dashboardType?: DashboardType }> {
   isNew?: boolean;
@@ -36,15 +37,12 @@ const withPatientHeader = (WrappedComponent) => {
         ...this.props,
         patientUuid: this.props.match.params.patientUuid,
         dashboardType: this.props.match.params.dashboardType,
-        redirectUrl: this.getBaseUrl() + "coreapps/clinicianfacing/patient.page?patientId="
-          + this.props.match.params.patientUuid,
-        displayTelephone: true
       };
       return (
         <div className="body-wrapper">
-          <Header {...newProps}>
+          <PatientHeader {...newProps} >
             <PersonStatus {...newProps}/>
-          </Header>
+          </PatientHeader>
           <PatientStatusNotification {...newProps}/>
           <div className="content">
             <WrappedComponent {...newProps}/>
@@ -55,6 +53,6 @@ const withPatientHeader = (WrappedComponent) => {
   }
 };
 
-export const CalendarWithHeader = withPatientHeader(CalendarView);
-export const PatientTemplateEditWithHeader = withPatientHeader(PatientTemplateEdit);
-export const ManageMessagesWithHeader = withPatientHeader(ManageMessages);
+export const CalendarWithHeader = injectIntl(withPatientHeader(CalendarView));
+export const PatientTemplateEditWithHeader = injectIntl(withPatientHeader(PatientTemplateEdit));
+export const ManageMessagesWithHeader = injectIntl(withPatientHeader(ManageMessages));

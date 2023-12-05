@@ -1,0 +1,82 @@
+/*
+ *  This Source Code Form is subject to the terms of the Mozilla Public License,
+ *  v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ *  obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ *  the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *  <p>
+ *  Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ *  graphic logo is a trademark of OpenMRS Inc.
+ */
+
+  .header-container {
+    margin-bottom: 20px;
+  }
+  
+  .title-container {
+    margin-bottom: 5px;
+  }
+  
+  .column {
+    line-height: 1.2;
+  }
+  
+  .label-field {
+    display: inline-block;
+    min-width: 175px;
+    font-family: CircularStd-Book;
+    color: #333333;
+    opacity: 0.5;
+    font-size: 14px;
+  }
+  
+  .value-field {
+    display: inline-block;
+    min-width: 175px;
+    font-size: 14px;
+    color: #2B3640;
+  }
+  
+  .title-field {
+    font-size: 28px;
+    color: #2B3640;
+  }
+  
+  .fields-row {
+    display: flex;
+  }
+  
+  .extra-title-fields span {
+    margin: 0;
+    padding: 0;
+  }
+  
+  .buttons-span {
+    float: right;
+  }
+  
+  .buttons-span button {
+    margin-right: 5px;
+    color: white;
+    padding: 0.5rem 1.85rem;
+    font-size: 11px;
+    text-transform: uppercase;
+    background: #00455c;
+    border-color: #6c757d;
+  }
+  
+  
+  .fields-container {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .item {
+    flex: 1 0 calc(25% - 10px);
+    margin: 5px;
+  }
+  
+  .start-new-column {
+    flex-basis: 100%;
+    display: flex;
+    flex-wrap: wrap;
+  }

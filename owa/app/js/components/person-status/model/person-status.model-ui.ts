@@ -8,7 +8,7 @@
  *  graphic logo is a trademark of OpenMRS Inc.
  */
 
- import { IPersonStatus } from "./person-status.model";
+import { IPersonStatus } from "./person-status.model";
 import { ObjectUI } from "../../shared/object-ui";
 
 export class PersonStatusUI extends ObjectUI<IPersonStatus> implements IPersonStatus {

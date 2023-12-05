@@ -114,7 +114,8 @@
     "url-loader": "^2.2.0",
     "webpack": "^4.46.0",
     "webpack-cli": "^3.3.10",
-    "yargs": "^15.0.2"
+    "yargs": "^15.0.2",
+    "react-phone-number-input": "^3.1.17"
   },
   "scripts": {
     "clean": "rimraf dist && rimraf coverage*",

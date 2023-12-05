@@ -107,12 +107,14 @@ export const getPersonStatus = (personId: string) => async (dispatch) => {
       });
 };
 
-export const putPersonStatus = (personStatus: PersonStatusUI) => async (dispatch) => {
+export const putPersonStatus = (personStatus: PersonStatusUI, intl: any) => async (dispatch) => {
     const body = {
         type: ACTION_TYPES.PUT_PERSON_STATUS,
         payload: axiosInstance.put(personStatusUrl + personStatus.personId, personStatus.toModel())
     };
-    await handleRequest(dispatch, body, Msg.PERSON_STATUS_CHANGE_SUCCESS, Msg.PERSON_STATUS_CHANGE_FAILURE);
+    await handleRequest(dispatch, body, 
+        intl.formatMessage({ id: "person.status.update.successful", defaultMessage: "Status updated successfully" }), 
+        intl.formatMessage({ id: "person.status.update.unsuccessful", defaultMessage: "Update status failed" }));
 };
 
 export const openModal = (id) => ({
