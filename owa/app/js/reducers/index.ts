@@ -23,6 +23,8 @@ import customizeReducer, { CustomizeState } from '../components/customize/custom
 import globalPropertyReducer, { GlobalPropertyState } from './global-property.reducer';
 import session from './session';
 import messages from './messages';
+import apps from './apps';
+import location from './location'
 
 export interface IRootState {
   readonly openmrs: any;
@@ -39,6 +41,8 @@ export interface IRootState {
   readonly globalPropertyReducer: GlobalPropertyState;
   readonly session: any;
   readonly messages: any;
+  readonly apps: any;
+  readonly location: any;
 }
 
 export default combineReducers<IRootState>({
@@ -55,5 +59,7 @@ export default combineReducers<IRootState>({
   customizeReducer,
   globalPropertyReducer,
   session,
-  messages
+  messages,
+  apps,
+  location
 });

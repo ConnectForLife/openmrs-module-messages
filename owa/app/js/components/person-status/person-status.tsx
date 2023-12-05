@@ -11,11 +11,11 @@ import React from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import {
-    getPersonStatus,
-    closeModal,
-    openModal,
-    putPersonStatus,
-    getPossibleReasons
+  getPersonStatus,
+  closeModal,
+  openModal,
+  putPersonStatus,
+  getPossibleReasons
 } from './person-status.reducer'
 import './person-status.scss';
 import ChangeStatusModal from './modal/change-status-modal';
@@ -23,7 +23,8 @@ import { PersonStatusUI } from './model/person-status.model-ui';
 import * as Msg from './constants';
 
 interface IPersonStatusProps extends DispatchProps, StateProps {
-    patientUuid: string
+  patientUuid: string;
+  intl?: any;
 }
 
 interface IPersonStatusState {
@@ -31,81 +32,85 @@ interface IPersonStatusState {
 
 class PersonStatus extends React.PureComponent<IPersonStatusProps, IPersonStatusState> {
 
-    constructor(props: IPersonStatusProps) {
-        super(props);
-    }
+  constructor(props: IPersonStatusProps) {
+    super(props);
+  }
 
-    componentDidMount() {
-        this.props.getPersonStatus(this.props.patientUuid);
-        this.props.getPossibleReasons();
-    };
+  componentDidMount() {
+    this.props.getPersonStatus(this.props.patientUuid);
+    this.props.getPossibleReasons();
+  };
 
-    getStatusLabel = (key, set) => {
-        return _.get(set, `${key}.label`, key);
-    };
+  getStatusLabel = (key, set) => {
+    return _.get(set, `${key}.label`, key);
+  };
 
-    handleClose = () => {
-        this.props.closeModal();
-    };
+  handleClose = () => {
+    this.props.closeModal();
+  };
 
-    handleConfirm = (value: string, reason?: string) => {
-        const status = _.cloneDeep(this.props.personStatus.status);
-        status.value = value;
-        status.reason = reason;
-        this.props.putPersonStatus(status);
-        this.props.closeModal();
-    };
+  reloadPage = () => {
+    window.location.reload();
+  }
 
-    handleChangeStatus = (event) => {
-        this.props.openModal(event.target.id);
-    };
+  handleConfirm = (value: string, reason?: string) => {
+    const status = _.cloneDeep(this.props.personStatus.status);
+    status.value = value;
+    status.reason = reason;
+    this.props.putPersonStatus(status, this.props.intl);
+    this.props.closeModal();
+    this.reloadPage();
+  };
 
-    renderStatus = () => {
-        const { personStatus } = this.props;
-        return (
-            <p>{Msg.PERSON_STATUS_LABEL + ' ' + this.getStatusLabel(personStatus.status.value, Msg.PERSON_STATUSES)}</p>
-        );
-    };
+  handleChangeStatus = (event) => {
+    this.props.openModal(event.target.id);
+  };
 
-    prepereStatusForModal = (status: PersonStatusUI): PersonStatusUI => {
-        const modalStatus = _.cloneDeep(status);
-        modalStatus.value = this.getInitialValue(modalStatus);
-        return modalStatus;
-    };
+  renderStatus = () => {
+    const { personStatus } = this.props;
+    return (
+        <p>{Msg.PERSON_STATUS_LABEL + ' ' + this.getStatusLabel(personStatus.status.value, Msg.PERSON_STATUSES)}</p>
+    );
+  };
 
-    getInitialValue = (status: PersonStatusUI) => (!!status.value &&
-        status.value != Msg.MISSING_VALUE_KEY && status.value != Msg.NO_CONSENT_KEY) ? status.value : Msg.ACTIVATED_KEY;
+  prepereStatusForModal = (status: PersonStatusUI): PersonStatusUI => {
+    const modalStatus = _.cloneDeep(status);
+    modalStatus.value = this.getInitialValue(modalStatus);
+    return modalStatus;
+  };
 
-    render() {
-        const { status, showModal, personStatusLoading, submitDisabled, possibleResults } = this.props.personStatus;
-        const statusStyle = status.styleObject || {};
-        return (
-            <>
-                <ChangeStatusModal
-                    cancel={this.handleClose}
-                    confirm={this.handleConfirm}
-                    show={showModal}
-                    submitDisabled={submitDisabled}
-                    status={this.prepereStatusForModal(status)}
-                    possibleResults={possibleResults} />
-                <div className="person-status" style={statusStyle} onClick={this.handleChangeStatus}>
-                    {!personStatusLoading && this.renderStatus()}
-                </div>
-            </>
-        );
-    };
+  getInitialValue = (status: PersonStatusUI) => (!!status.value &&
+    status.value != Msg.MISSING_VALUE_KEY && status.value != Msg.NO_CONSENT_KEY) ? status.value : Msg.ACTIVATED_KEY;
+
+  render() {
+      const { status, showModal, submitDisabled, possibleResults } = this.props.personStatus;
+      return (
+        <>
+          <ChangeStatusModal
+            cancel={this.handleClose}
+            confirm={this.handleConfirm}
+            show={showModal}
+            submitDisabled={submitDisabled}
+            status={this.prepereStatusForModal(status)}
+            possibleResults={possibleResults} />
+          <button className='btn-secondary' onClick={this.handleChangeStatus}>
+            {this.props.intl.formatMessage({ id: "cfl.updateStatusButton.label", defaultMessage: "Update the status" })}
+          </button>
+        </>
+      );
+  };
 }
 
 const mapStateToProps = ({ personStatus }: any) => ({
-    personStatus
+  personStatus
 });
 
 const mapDispatchToProps = ({
-    getPersonStatus,
-    closeModal,
-    openModal,
-    putPersonStatus,
-    getPossibleReasons
+  getPersonStatus,
+  closeModal,
+  openModal,
+  putPersonStatus,
+  getPossibleReasons
 });
 
 type StateProps = ReturnType<typeof mapStateToProps>;
