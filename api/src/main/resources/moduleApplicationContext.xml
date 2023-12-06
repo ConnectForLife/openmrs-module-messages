@@ -45,17 +45,23 @@
         <property name="moduleService">
             <list merge="true">
                 <value>org.openmrs.module.messages.api.service.CountryPropertyService</value>
-                <ref local="messages.countryPropertyService"/>
+                <ref bean="messages.countryPropertyService"/>
             </list>
         </property>
     </bean>
 
     <bean id="messages.actorService" class="org.openmrs.module.messages.api.service.impl.ActorServiceImpl">
-        <property name="configService">
-            <ref local="messages.configService"/>
-        </property>
+        <property name="configService" ref="messages.configService"/>
         <property name="personService" ref="personService"/>
         <property name="patientService" ref="patientService"/>
+    </bean>
+    <bean parent="serviceContext">
+        <property name="moduleService">
+            <list merge="true">
+                <value>org.openmrs.module.messages.api.service.ActorService</value>
+                <ref bean="messages.actorService"/>
+            </list>
+        </property>
     </bean>
 
     <bean id="messages.TemplateDao" class="org.openmrs.module.messages.api.dao.impl.TemplateDaoImpl">
@@ -130,7 +136,7 @@
         <property name="moduleService">
             <list merge="true">
                 <value>org.openmrs.module.messages.api.service.PatientTemplateService</value>
-                <ref local="messages.patientTemplateService"/>
+                <ref bean="messages.patientTemplateService"/>
             </list>
         </property>
     </bean>
@@ -141,9 +147,7 @@
         </property>
         <property name="target">
             <bean class="org.openmrs.module.messages.api.service.impl.TemplateServiceImpl">
-                <property name="templateMapper">
-                    <ref local="messages.templateMapper"/>
-                </property>
+                <property name="templateMapper" ref="messages.templateMapper"/>
             </bean>
         </property>
         <property name="preInterceptors">
@@ -158,7 +162,7 @@
         <property name="moduleService">
             <list merge="true">
                 <value>org.openmrs.module.messages.api.service.TemplateService</value>
-                <ref local="messages.templateService"/>
+                <ref bean="messages.templateService"/>
             </list>
         </property>
     </bean>
@@ -187,18 +191,10 @@
                 <property name="conceptService">
                     <ref bean="conceptServiceTarget"/>
                 </property>
-                <property name="actorResponseDao">
-                    <ref local="messages.ActorResponseDao"/>
-                </property>
-                <property name="patientTemplateService">
-                    <ref local="messages.patientTemplateService"/>
-                </property>
-                <property name="serviceExecutor">
-                    <ref local="messages.ServiceExecutor"/>
-                </property>
-                <property name="templateService">
-                    <ref local="messages.templateService"/>
-                </property>
+                <property name="actorResponseDao" ref="messages.ActorResponseDao"/>
+                <property name="patientTemplateService" ref="messages.patientTemplateService"/>
+                <property name="serviceExecutor" ref="messages.ServiceExecutor"/>
+                <property name="templateService" ref="messages.templateService"/>
                 <property name="personService" ref="personService"/>
                 <property name="patientService" ref="patientService"/>
             </bean>
@@ -217,7 +213,7 @@
         <property name="moduleService">
             <list merge="true">
                 <value>org.openmrs.module.messages.api.service.MessagingService</value>
-                <ref local="messages.messagingService"/>
+                <ref bean="messages.messagingService"/>
             </list>
         </property>
     </bean>
@@ -225,26 +221,16 @@
 
     <bean id="messages.defaultPatientTemplateService"
           class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-        <property name="transactionManager">
-            <ref bean="transactionManager"/>
-        </property>
+        <property name="transactionManager" ref="transactionManager"/>
         <property name="target">
             <bean class="org.openmrs.module.messages.api.service.impl.DefaultPatientTemplateServiceImpl">
-                <property name="patientTemplateService">
-                    <ref local="messages.patientTemplateService"/>
-                </property>
+                <property name="patientTemplateService" ref="messages.patientTemplateService"/>
 
-                <property name="templateService">
-                    <ref local="messages.templateService"/>
-                </property>
+                <property name="templateService" ref="messages.templateService"/>
 
-                <property name="actorService">
-                    <ref local="messages.actorService"/>
-                </property>
+                <property name="actorService" ref="messages.actorService"/>
 
-                <property name="messageDetailsMapper">
-                    <ref local="messages.MessageDetailsMapper"/>
-                </property>
+                <property name="messageDetailsMapper" ref="messages.MessageDetailsMapper"/>
             </bean>
         </property>
         <property name="preInterceptors">
@@ -259,7 +245,7 @@
         <property name="moduleService">
             <list merge="true">
                 <value>org.openmrs.module.messages.api.service.DefaultPatientTemplateService</value>
-                <ref local="messages.defaultPatientTemplateService"/>
+                <ref bean="messages.defaultPatientTemplateService"/>
             </list>
         </property>
     </bean>
@@ -277,26 +263,18 @@
     <bean id="messages.ActorScheduleMapper" class="org.openmrs.module.messages.api.mappers.ActorScheduleMapper"/>
 
     <bean id="messages.MessageDetailsMapper" class="org.openmrs.module.messages.api.mappers.MessageDetailsMapper">
-        <property name="messageMapper">
-            <ref local="messages.MessageMapper"/>
-        </property>
+        <property name="messageMapper" ref="messages.MessageMapper"/>
     </bean>
 
     <bean id="messages.MessageMapper" class="org.openmrs.module.messages.api.mappers.MessageMapper">
-        <property name="userMapper">
-            <ref local="messages.UserMapper"/>
-        </property>
-        <property name="actorScheduleMapper">
-            <ref local="messages.ActorScheduleMapper"/>
-        </property>
+        <property name="userMapper" ref="messages.UserMapper"/>
+        <property name="actorScheduleMapper" ref="messages.ActorScheduleMapper"/>
     </bean>
 
     <bean id="messages.templateFieldValueMapper" class="org.openmrs.module.messages.api.mappers.TemplateFieldValueMapper"/>
 
     <bean id="messages.patientTemplateMapper" class="org.openmrs.module.messages.api.mappers.PatientTemplateMapper">
-        <property name="valueMapper">
-            <ref local="messages.templateFieldValueMapper"/>
-        </property>
+        <property name="valueMapper" ref="messages.templateFieldValueMapper"/>
     </bean>
 
     <bean id="messages.schedulerService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
@@ -320,7 +298,7 @@
         <property name="moduleService">
             <list merge="true">
                 <value>org.openmrs.module.messages.api.service.MessagesSchedulerService</value>
-                <ref local="messages.schedulerService"/>
+                <ref bean="messages.schedulerService"/>
             </list>
         </property>
     </bean>
@@ -329,23 +307,17 @@
           class="org.openmrs.module.messages.api.mappers.TemplateFieldDefaultValueMapper"/>
 
     <bean id="messages.templateFieldMapper" class="org.openmrs.module.messages.api.mappers.TemplateFieldMapper">
-        <property name="templateFieldDefaultValueMapper">
-            <ref local="messages.templateFieldDefaultValueMapper"/>
-        </property>
+        <property name="templateFieldDefaultValueMapper" ref="messages.templateFieldDefaultValueMapper"/>
     </bean>
 
     <bean id="messages.templateMapper" class="org.openmrs.module.messages.api.mappers.TemplateMapper">
-        <property name="templateFieldMapper">
-            <ref local="messages.templateFieldMapper"/>
-        </property>
+        <property name="templateFieldMapper" ref="messages.templateFieldMapper"/>
     </bean>
 
     <bean id="messagesValidationFactory" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
 
     <bean id="messages.validationComponent" class="org.openmrs.module.messages.api.util.validate.ValidationComponent">
-        <property name="factory">
-            <ref local="messagesValidationFactory"/>
-        </property>
+        <property name="factory" ref="messagesValidationFactory"/>
     </bean>
 
     <bean id="messages.messagingGroupService"
@@ -387,7 +359,7 @@
         <property name="moduleService">
             <list merge="true">
                 <value>org.openmrs.module.messages.api.service.MessagesEventService</value>
-                <ref local="messages.messagesEventService"/>
+                <ref bean="messages.messagesEventService"/>
             </list>
         </property>
     </bean>
@@ -395,12 +367,8 @@
     <bean id="messages.abstractReschedulingStrategy"
           class="org.openmrs.module.messages.api.strategy.impl.AbstractReschedulingStrategy"
           abstract="true">
-        <property name="configService">
-            <ref local="messages.configService"/>
-        </property>
-        <property name="deliveryService">
-            <ref local="messages.deliveryService"/>
-        </property>
+        <property name="configService" ref="messages.configService"/>
+        <property name="deliveryService" ref="messages.deliveryService"/>
     </bean>
 
     <bean id="messages.failedAndPendingMessagesReschedulingStrategy"
@@ -413,24 +381,16 @@
         <property name="personService">
             <ref bean="personService"/>
         </property>
-        <property name="messagesEventService">
-            <ref local="messages.messagesEventService"/>
-        </property>
+        <property name="messagesEventService" ref="messages.messagesEventService"/>
     </bean>
 
     <bean id="messages.abstractTextMessageServiceResultHandlerService"
       class="org.openmrs.module.messages.api.service.impl.AbstractTextMessageServiceResultsHandlerService"
       abstract="true"
       parent="messages.abstractServiceResultHandlerService">
-        <property name="notificationTemplateService">
-            <ref local="messages.velocityNotificationTemplateServiceImpl"/>
-        </property>
-        <property name="messagingService">
-            <ref local="messages.messagingService"/>
-        </property>
-        <property name="messagesExecutionService">
-            <ref local="messages.messagesExecutionService"/>
-        </property>
+        <property name="notificationTemplateService" ref="messages.velocityNotificationTemplateServiceImpl"/>
+        <property name="messagingService" ref="messages.messagingService"/>
+        <property name="messagesExecutionService" ref="messages.messagesExecutionService"/>
     </bean>
 
     <bean id="messages.defaultServiceResultHandlerService"
@@ -453,15 +413,11 @@
     <bean id="messages.scheduledParamsMapper" class="org.openmrs.module.messages.api.mappers.ScheduledParamsMapper"/>
 
     <bean id="messages.scheduledServiceMapper" class="org.openmrs.module.messages.api.mappers.ScheduledServiceMapper">
-        <property name="paramsMapper">
-            <ref local="messages.scheduledParamsMapper"/>
-        </property>
+        <property name="paramsMapper" ref="messages.scheduledParamsMapper"/>
     </bean>
 
     <bean id="messages.scheduledGroupMapper" class="org.openmrs.module.messages.api.mappers.ScheduledGroupMapper">
-        <property name="serviceMapper">
-            <ref local="messages.scheduledServiceMapper"/>
-        </property>
+        <property name="serviceMapper" ref="messages.scheduledServiceMapper"/>
     </bean>
 
     <bean id="messages.ExtendedSchedulerDao" class="org.openmrs.module.messages.api.dao.impl.ExtendedSchedulerDaoImpl"/>
@@ -483,7 +439,7 @@
         <property name="moduleService">
             <list merge="true">
                 <value>org.openmrs.module.messages.api.service.MessagesDeliveryService</value>
-                <ref local="messages.deliveryService"/>
+                <ref bean="messages.deliveryService"/>
             </list>
         </property>
     </bean>
@@ -515,15 +471,9 @@
         </property>
         <property name="target">
             <bean class="org.openmrs.module.messages.api.service.impl.MessagesExecutionServiceImpl">
-                <property name="configService">
-                    <ref local="messages.configService"/>
-                </property>
-                <property name="messagingService">
-                    <ref local="messages.messagingService"/>
-                </property>
-                <property name="messagingGroupService">
-                    <ref local="messages.messagingGroupService"/>
-                </property>
+                <property name="configService" ref="messages.configService"/>
+                <property name="messagingService" ref="messages.messagingService"/>
+                <property name="messagingGroupService" ref="messages.messagingGroupService"/>
             </bean>
         </property>
         <property name="preInterceptors">
@@ -555,9 +505,7 @@
           init-method="init"
           destroy-method="close"
           parent="messages.peopleActionListener">
-        <property name="configService">
-            <ref local="messages.configService"/>
-        </property>
+        <property name="configService" ref="messages.configService"/>
     </bean>
 
     <bean id="messages.removingPeopleListener"
@@ -565,9 +513,7 @@
           init-method="init"
           destroy-method="close"
           parent="messages.peopleActionListener">
-        <property name="patientTemplateService">
-            <ref local="messages.patientTemplateService"/>
-        </property>
+        <property name="patientTemplateService" ref="messages.patientTemplateService"/>
     </bean>
 
     <bean id="messages.removingRelationshipListener"
@@ -575,17 +521,13 @@
           init-method="init"
           destroy-method="close"
           parent="messages.relationshipActionListener">
-        <property name="patientTemplateService">
-            <ref local="messages.patientTemplateService"/>
-        </property>
+        <property name="patientTemplateService" ref="messages.patientTemplateService"/>
     </bean>
 
     <bean id="messages.personStatusHelper"
           class="org.openmrs.module.messages.api.util.PersonStatusHelper">
         <property name="personService" ref="personService"/>
-        <property name="configService">
-            <ref local="messages.configService"/>
-        </property>
+        <property name="configService" ref="messages.configService"/>
     </bean>
 
     <bean id="messages.actorTypeMapper" class="org.openmrs.module.messages.api.mappers.ActorTypeMapper"/>
@@ -626,7 +568,7 @@
         <property name="moduleService">
             <list merge="true">
                 <value>org.openmrs.module.messages.api.service.HealthTipService</value>
-                <ref local="messages.healthTipService"/>
+                <ref bean="messages.healthTipService"/>
             </list>
         </property>
     </bean>
@@ -639,12 +581,8 @@
 
     <bean id="messages.templateFieldValueServiceImpl"
           class="org.openmrs.module.messages.api.service.impl.TemplateFieldValueServiceImpl">
-        <property name="patientTemplateService">
-            <ref local="messages.patientTemplateService"/>
-        </property>
-        <property name="templateFieldValueDao">
-            <ref local="messages.templateFieldValueDao"/>
-        </property>
+        <property name="patientTemplateService" ref="messages.patientTemplateService"/>
+        <property name="templateFieldValueDao" ref="messages.templateFieldValueDao"/>
     </bean>
 
     <bean id="messages.graphService" class="org.openmrs.module.messages.api.service.impl.GraphServiceImpl">
@@ -667,7 +605,7 @@
         <property name="moduleService">
             <list merge="true">
                 <value>org.openmrs.module.messages.api.service.ITRService</value>
-                <ref local="messages.ITRService"/>
+                <ref bean="messages.ITRService"/>
             </list>
         </property>
     </bean>
@@ -677,7 +615,7 @@
         <property name="moduleService">
             <list merge="true">
                 <value>org.openmrs.module.messages.api.service.ITRConverterService</value>
-                <ref local="messages.ITRConverterService"/>
+                <ref bean="messages.ITRConverterService"/>
             </list>
         </property>
     </bean>
@@ -691,7 +629,7 @@
         <property name="moduleService">
             <list merge="true">
                 <value>org.openmrs.module.messages.api.service.ITRScriptUtilsService</value>
-                <ref local="messages.ITRScriptUtilsService"/>
+                <ref bean="messages.ITRScriptUtilsService"/>
             </list>
         </property>
     </bean>
@@ -706,7 +644,7 @@
         <property name="moduleService">
             <list merge="true">
                 <value>org.openmrs.module.messages.api.service.ITRMessageSenderService</value>
-                <ref local="messages.ITRMessageSenderService"/>
+                <ref bean="messages.ITRMessageSenderService"/>
             </list>
         </property>
     </bean>
@@ -718,18 +656,14 @@
     <bean id="countryPropertyValidator" class="org.openmrs.module.messages.validator.CountryPropertyValidator" />
 
     <bean id="messages.templateFieldValueService" class="org.openmrs.module.messages.api.service.impl.TemplateFieldValueServiceImpl">
-        <property name="patientTemplateService">
-            <ref local="messages.patientTemplateService"/>
-        </property>
-        <property name="templateFieldValueDao">
-            <ref local="messages.templateFieldValueDao"/>
-        </property>
+        <property name="patientTemplateService" ref="messages.patientTemplateService"/>
+        <property name="templateFieldValueDao" ref="messages.templateFieldValueDao"/>
     </bean>
     <bean parent="serviceContext">
         <property name="moduleService">
             <list merge="true">
                 <value>org.openmrs.module.messages.api.service.TemplateFieldValueService</value>
-                <ref local="messages.templateFieldValueService"/>
+                <ref bean="messages.templateFieldValueService"/>
             </list>
         </property>
     </bean>
@@ -740,7 +674,7 @@
         <property name="moduleService">
             <list merge="true">
                 <value>org.openmrs.module.messages.api.service.AdherenceFeedbackService</value>
-                <ref local="messages.adherenceFeedbackService"/>
+                <ref bean="messages.adherenceFeedbackService"/>
             </list>
         </property>
     </bean>

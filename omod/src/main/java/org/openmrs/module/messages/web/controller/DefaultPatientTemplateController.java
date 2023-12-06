@@ -66,7 +66,6 @@ public class DefaultPatientTemplateController extends BaseRestController {
     private PatientTemplateService patientTemplateService;
 
     @Autowired
-    @Qualifier("messages.defaultPatientTemplateService")
     private DefaultPatientTemplateService defaultPatientTemplateService;
 
     @Autowired
