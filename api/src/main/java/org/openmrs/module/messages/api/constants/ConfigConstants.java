@@ -175,7 +175,7 @@ public final class ConfigConstants {
       "patientService:patientService,cflPersonService:cflPersonService,messagesService:messages.messagingService,"
           + "personService:personService,personDAO:personDAO,conceptDAO:conceptDAO,"
           + "locationService:locationService,messagingGroupService:messages.messagingGroupService,"
-          + "openmrsContext:context,patientTemplateService:messages.patientTemplateService";
+          + "openmrsContext:context,patientTemplateService:messages.patientTemplateService,healthTipService:messages.healthTipService";
   public static final String NOTIFICATION_TEMPLATE_INJECTED_SERVICES_DESCRIPTION =
       "Comma-separated values which represent the map of services which should be injected into "
           + "the messaging notification template.";
@@ -270,5 +270,6 @@ public final class ConfigConstants {
   public static final String ADHERENCE_FEEDBACK_WEEKLY_QUESTION_UUID_DEFAULT_VALUE =
       "e1b9b42d-5901-4f34-b1c7-af53e238cba2";
 
-  private ConfigConstants() {}
+  private ConfigConstants() {
+  }
 }
