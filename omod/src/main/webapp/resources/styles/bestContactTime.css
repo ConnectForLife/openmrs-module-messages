@@ -35,3 +35,29 @@
     font-size: 0.8em;
     color: orange;
 }
+
+.edit-best-contact-time {
+    width: 90px;
+}
+
+.error-message {
+    color: red;
+    display: block;
+    margin-top: 5px;
+}
+
+.save-time-button {
+    display: none;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    margin-left: 5px;
+    max-height: 22px;
+}
+
+.ui-timepicker-container {
+    position: absolute;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    max-height: 200px;
+    max-width: 90px;
+}

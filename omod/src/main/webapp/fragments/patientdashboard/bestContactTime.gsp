@@ -1,8 +1,13 @@
 <%
     ui.includeCss("messages", "bestContactTime.css")
-    ui.includeJavascript("messages", "moment-with-locales.min.js")
+    ui.includeJavascript("messages", "editBestContactTime.js")
     def editIcon = config.editIcon ?: "icon-pencil"
 %>
+
+<head>
+  <!-- Timepicker JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+</head>
 
 <style>
 .disabled-time {
@@ -73,35 +78,21 @@
                     <label for="time-label-${ it.label.replaceAll(" ", "-") }" class="time-label">
                         ${ it.label.replaceAll(" ", "-")}
                     </label>
-                    <% if(it.time == "") { %>
-                        <span class="time-entry-wrapper">
-                            <input
-                                id="time-value-${ it.label.replaceAll(" ", "-") }"
-                                class="time-value disabled-time"
-                                type="text"
-                                disabled
-                            />
-                            <span class="tooltiptext">${ui.message("messages.dashboard.bestContactTime.tooltip")}</span>
-                        </span>
-                    <% } else { %>
-                        <span>
-                            <input
-                                id="time-value-${ it.label.replaceAll(" ", "-") }"
-                                class="time-value"
-                                type="text"
-                                disabled />
-                        </span>
-                    <% } %>
-                    <script type="text/javascript">
-                        jq( document ).ready(function() {
-                            let value = "${ ui.message("messages.dashboard.noBestContactTime") }";
-                            let time = moment("${ it.time }", "HH:mm");
-                            if (time.isValid()) {
-                                value = time.format('HH:mm');
-                            }
-                            jq("#time-value-${ it.label.replaceAll(" ", "-") }").val(value);
-                        });
-                    </script>
+                    <span>
+                        <input
+                            class="edit-best-contact-time"
+                            id="time-input-${ it.label.replaceAll(" ", "-") }"
+                            type="text"
+                            value="${ it.time }"
+                            onBlur="handleBestContactTimeOnChange(this, '${ it.time }')"
+                        />
+                        <button 
+                            class="save-time-button" 
+                            id="save-button-${ it.label.replaceAll(" ", "-") }"
+                            onClick="onSaveTimeButtonClick(${personId}, 'time-input-${ it.label.replaceAll(" ", "-") }')" 
+                            data-target="time-input-${ it.label.replaceAll(" ", "-") }">Save</button>
+                    </span>
+                    <span class="error-message" id="error-message-${ it.label.replaceAll(" ", "-") }"></span>
                 </div>
             <% } %>
         </div>
