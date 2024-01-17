@@ -60,7 +60,7 @@ class BestContactTime extends React.Component<PropsWithIntl<IProps>> {
     }
     return (
       <div className="sections">
-        {this.renderTimePicker("patient-time-section", "Patient", patientContactTimeId, defaultTime, 'global')}
+        {this.renderTimePicker("patient-time-section", "Participante", patientContactTimeId, defaultTime, 'global')}
         {actorTypes.map((type, i) => {
           let contactTimeId = _.findIndex(bestContactTimes, a => a.actor === type.uuid);
           return (this.renderTimePicker(`time-section-${i}`, type.display, contactTimeId, defaultTime, type.uuid))

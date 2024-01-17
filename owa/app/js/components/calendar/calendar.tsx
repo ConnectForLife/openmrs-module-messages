@@ -136,7 +136,7 @@ class CalendarView extends React.Component<PropsWithIntl<ICalendarViewProps>, IC
     const actorsResults = [] as Array<IActorIdWithEvents>;
     actorsResults.push({
       actorId: this.state.patientId,
-      actorDisplayName: 'Patient',
+      actorDisplayName: 'Participante',
       events: []
     });
     this.props.serviceResultLists.forEach((resultList) => {

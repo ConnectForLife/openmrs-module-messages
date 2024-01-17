@@ -152,7 +152,7 @@ class ScheduledMessages extends React.PureComponent<IScheduledMessagesProps, ISc
       .map((actor: IActor) => {
         const id = actor.actorId;
         const name = actor.actorName;
-        const type = 'For patient';
+        const type = 'Para participante';
         return {
           Header: _.filter([type, name]).join(' - '),
           accessor: `schedules[${id}]`,
@@ -169,7 +169,7 @@ class ScheduledMessages extends React.PureComponent<IScheduledMessagesProps, ISc
       const name = this.getActorName(actorSchedule);
       const type = actorSchedule.actorType;
       return {
-        Header: _.filter([type, name]).join(' - '),
+        Header: 'Participante',
         accessor: `schedules[${id}]`,
         getProps: wrappedTextProps
       };
