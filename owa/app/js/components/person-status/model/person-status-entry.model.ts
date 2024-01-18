@@ -9,6 +9,7 @@
  */
 
  export interface IPersonStatusEntry {
-    label: string,
-    value: string
+  key: string,
+  label: string,
+  value: string
 }

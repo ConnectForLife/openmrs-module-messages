@@ -2,6 +2,14 @@
     ui.includeJavascript("messages", "changeStatus.js")
 %>
 
+<style>
+  .required {
+     color: #737373;
+     font-weight: normal;
+     font-family: CircularStd-Book;
+  }
+</style>
+
 <div id="person-status-update-dialog" class="dialog" style="display: none">
     <div class="dialog-header">
         <i class="icon-user"></i>
@@ -13,6 +21,7 @@
         <ul>
             <li class="info">
                 <label for="person-status-select">${ ui.message("person.status.update.label") }: </label>
+                <span class="required">(${ ui.message("messages.required") })</span>
             </li>
             <li>
                 <select id="person-status-select" class="required focused" onchange="changeStatus.handelChangedStatus(this)">
@@ -24,7 +33,7 @@
                         </option>
                     <% } %>
                 </select>
-                <h6 id="person-status-select-empty">${ ui.message("messages.required") }</h6>
+                <h6 id="person-status-select-empty">${ ui.message("common.required") }</h6>
             </li>
             <li class="info person-status-reason">
                 <label for="person-status-reason-select">
