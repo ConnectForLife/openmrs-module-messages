@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.openmrs.module</groupId>
     <artifactId>messages</artifactId>
-    <version>1.8.2-SNAPSHOT</version>
+    <version>1.8.2-leprosy-SNAPSHOT</version>
   </parent>
 
   <artifactId>messages-api</artifactId>
