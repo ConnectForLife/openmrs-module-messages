@@ -10,8 +10,6 @@
 
 package org.openmrs.module.messages.api.execution;
 
-import org.apache.commons.lang.NotImplementedException;
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.openmrs.module.messages.api.dto.DTO;
 
 import java.util.List;
@@ -27,9 +25,10 @@ public class GroupedServiceResultList implements DTO {
     }
 
     @Override
-    @JsonIgnore
     public Integer getId() {
-        throw new NotImplementedException("not implemented yet");
+        // This DTO has no ID
+        // Skipped throwing exception because of workaround for issues with JSON serialization in OMRS 2.4 and later
+        return null;
     }
 
     public GroupedServiceResultListKey getKey() {
