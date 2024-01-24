@@ -10,9 +10,7 @@
 
 package org.openmrs.module.messages.api.dto;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang3.builder.CompareToBuilder;
-import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  * Represents an actor schedule DTO
@@ -90,9 +88,10 @@ public class ActorScheduleDTO extends BaseDTO implements Comparable<ActorSchedul
     }
 
     @Override
-    @JsonIgnore
     public Integer getId() {
-        throw new NotImplementedException("not implemented yet");
+        // This DTO has no ID
+        // Skipped throwing exception because of workaround for issues with JSON serialization in OMRS 2.4 and later
+        return null;
     }
 
     @Override
