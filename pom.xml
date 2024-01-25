@@ -30,7 +30,7 @@
     </modules>
 
     <properties>
-        <openmrsPlatformVersion>2.0.1</openmrsPlatformVersion>
+        <openmrsPlatformVersion>2.2.0</openmrsPlatformVersion>
         <javaCompilerSource>1.8</javaCompilerSource>
         <javaCompilerTarget>1.8</javaCompilerTarget>
         <gsonVersion>2.8.5</gsonVersion>
@@ -49,7 +49,7 @@
         <checkStylePluginSkip>false</checkStylePluginSkip>
         <reportingVersion>1.20.0</reportingVersion>
         <calculationVersion>1.1</calculationVersion>
-        <serializationXstream>0.2.12</serializationXstream>
+        <serializationXstream>0.2.16</serializationXstream>
         <metadatasharingVersion>1.2.2</metadatasharingVersion>
         <metadatadeployVersion>1.7</metadatadeployVersion>
         <webservicesRestVersion>2.29.0</webservicesRestVersion>

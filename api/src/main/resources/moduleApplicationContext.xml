@@ -548,6 +548,14 @@
             <ref bean="transactionAttributeSource"/>
         </property>
     </bean>
+    <bean parent="serviceContext">
+        <property name="moduleService">
+            <list merge="true">
+                <value>org.openmrs.module.messages.api.service.ActorResponseService</value>
+                <ref bean="messages.actorResponseService"/>
+            </list>
+        </property>
+    </bean>
 
     <bean id="messages.GPNotificationTemplateDao"
           class="org.openmrs.module.messages.api.dao.impl.GPNotificationTemplateDaoImpl">
