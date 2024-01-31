@@ -46,16 +46,6 @@
     <div class="info-header" style="padding-bottom: 4px;">
         <i class="${config.icon}"></i>
         <h3>${ ui.message("messages.title") }</h3>
-        <% if (editIcon && config.detailsUrl) { %>
-            <i class="${editIcon} edit-action right" title="${ ui.message("coreapps.edit") }"
-               onclick="location.href='${ ui.urlBind("/" + contextPath + "/" + config.detailsUrl,
-                        [
-                            "person.uuid": personUuid,
-                            "personUuid": personUuid,
-                            "person.id": personId,
-                            "personId": personId
-                        ]) }';"></i>
-        <% } %>
     </div>
 
     <div class="info-body">
