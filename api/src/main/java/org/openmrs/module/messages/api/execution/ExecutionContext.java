@@ -93,10 +93,6 @@ public class ExecutionContext {
         putParam(EXECUTION_START_DATE_TIME, DateUtil.formatToServerSideDateTime(this.executionStartDateTime));
     }
 
-    public String getQuery() {
-        return patientTemplate.getServiceQuery();
-    }
-
     public Template getTemplate() {
         return template;
     }

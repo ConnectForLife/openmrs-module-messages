@@ -63,8 +63,6 @@
             actor_id="100"
             template_id="100"
             patient_id="100"
-            service_query=""
-            calendar_service_query=""
             creator="1"
             date_created="2022-02-28 10:00:00.0"
             voided="false"

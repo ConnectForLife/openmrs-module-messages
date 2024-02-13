@@ -10,14 +10,11 @@
 
 package org.openmrs.module.messages.api.model;
 
-import org.apache.commons.lang.StringUtils;
-import org.openmrs.Patient;
-import org.openmrs.Person;
-import org.openmrs.Relationship;
-import org.openmrs.module.messages.api.util.FieldDateUtil;
-import org.openmrs.module.messages.api.util.PatientTemplateFieldUtil;
-import validate.annotation.ValidPatientTemplate;
+import static org.openmrs.module.messages.api.constants.MessagesConstants.PATIENT_DEFAULT_ACTOR_TYPE;
 
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -29,11 +26,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.openmrs.module.messages.api.constants.MessagesConstants.PATIENT_DEFAULT_ACTOR_TYPE;
+import org.openmrs.Patient;
+import org.openmrs.Person;
+import org.openmrs.Relationship;
+import org.openmrs.module.messages.api.util.FieldDateUtil;
+import org.openmrs.module.messages.api.util.PatientTemplateFieldUtil;
+import validate.annotation.ValidPatientTemplate;
 
 @Entity(name = "messages.PatientTemplate")
 @Table(name = "messages_patient_template")
@@ -54,15 +52,6 @@ public class PatientTemplate extends AbstractBaseOpenmrsData {
     @OneToOne
     @JoinColumn(name = "actor_type")
     private Relationship actorType;
-
-    @Column(name = "service_query", columnDefinition = "text")
-    private String serviceQuery;
-
-    @Column(name = "calendar_service_query", columnDefinition = "text")
-    private String calendarServiceQuery;
-
-    @Column(name = "service_query_type")
-    private String serviceQueryType;
 
     @OneToOne
     @JoinColumn(name = "patient_id", nullable = false)
@@ -117,10 +106,6 @@ public class PatientTemplate extends AbstractBaseOpenmrsData {
         this.actorType = actorType;
     }
 
-    public String getServiceQuery() {
-        return StringUtils.isBlank(serviceQuery) ? getTemplate().getServiceQuery() : serviceQuery;
-    }
-
     public Patient getPatient() {
         return patient;
     }
@@ -143,18 +128,6 @@ public class PatientTemplate extends AbstractBaseOpenmrsData {
 
     public void setTemplateFieldValues(List<TemplateFieldValue> templateFieldValues) {
         this.templateFieldValues = templateFieldValues;
-    }
-
-    public String getServiceQueryType() {
-        return StringUtils.isBlank(serviceQueryType) ? getTemplate().getServiceQueryType() : serviceQueryType;
-    }
-
-    public String getCalendarServiceQuery() {
-        return StringUtils.isBlank(calendarServiceQuery) ? getTemplate().getCalendarServiceQuery() : calendarServiceQuery;
-    }
-
-    public void setCalendarServiceQuery(String calendarServiceQuery) {
-        this.calendarServiceQuery = calendarServiceQuery;
     }
 
     @Transient
@@ -181,6 +154,6 @@ public class PatientTemplate extends AbstractBaseOpenmrsData {
     }
 
     public String getQuery(boolean isCalendarQuery) {
-        return isCalendarQuery ? getCalendarServiceQuery() : getServiceQuery();
+        return isCalendarQuery ? getTemplate().getCalendarServiceQuery() : getTemplate().getServiceQuery();
     }
 }

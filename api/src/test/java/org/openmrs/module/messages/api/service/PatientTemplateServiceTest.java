@@ -31,6 +31,6 @@ public class PatientTemplateServiceTest extends BaseTest {
 
     @Test
     public void shouldCreatePatientTemplateProperly() {
-        Assert.assertEquals("SELECT * FROM template", patientTemplate.getServiceQuery());
+        Assert.assertEquals("SELECT * FROM template", patientTemplate.getTemplate().getServiceQuery());
     }
 }

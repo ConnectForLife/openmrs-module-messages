@@ -109,7 +109,7 @@ public class ServiceExecutorImpl extends BaseOpenmrsService implements ServiceEx
             engineKey = template.getServiceQueryType();
         }
         if (template == null) {
-            engineKey = patientTemplate.getServiceQueryType();
+            engineKey = patientTemplate.getTemplate().getServiceQueryType();
         }
 
         ExecutionEngine engine = executionEngineManager.getEngine(engineKey);

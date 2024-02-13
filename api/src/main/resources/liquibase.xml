@@ -1124,4 +1124,16 @@
                                  baseTableName="messages_country_property" baseColumnNames="country_concept_id"
                                  referencedTableName="concept" referencedColumnNames="concept_id"/>
     </changeSet>
+
+    <changeSet id="messages-96-AGRE-3185" author="Connect for Life">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="messages_patient_template" columnName="service_query"/>
+            <columnExists tableName="messages_patient_template" columnName="service_query_type"/>
+            <columnExists tableName="messages_patient_template" columnName="calendar_service_query"/>
+        </preConditions>
+        <comment>Drops service_query, service_query_type and calendar_service_query columns, all of them are stored in messages_template table </comment>
+        <dropColumn tableName="messages_patient_template" columnName="service_query"/>
+        <dropColumn tableName="messages_patient_template" columnName="service_query_type"/>
+        <dropColumn tableName="messages_patient_template" columnName="calendar_service_query"/>
+    </changeSet>
 </databaseChangeLog>
