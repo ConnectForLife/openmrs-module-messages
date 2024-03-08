@@ -14,6 +14,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.api.constants.ConfigConstants;
+import org.openmrs.module.messages.api.event.CallFlowParamConstants;
 import org.openmrs.module.messages.api.event.MessagesEvent;
 import org.openmrs.module.messages.api.model.Message;
 import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
@@ -25,14 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.openmrs.module.messages.api.constants.MessagesConstants.CALL_FLOW_INITIATE_CALL_EVENT;
-import static org.openmrs.module.messages.api.event.CallFlowParamConstants.ACTOR_ID;
-import static org.openmrs.module.messages.api.event.CallFlowParamConstants.ACTOR_TYPE;
-import static org.openmrs.module.messages.api.event.CallFlowParamConstants.ADDITIONAL_PARAMS;
-import static org.openmrs.module.messages.api.event.CallFlowParamConstants.CONFIG;
-import static org.openmrs.module.messages.api.event.CallFlowParamConstants.FLOW_NAME;
-import static org.openmrs.module.messages.api.event.CallFlowParamConstants.MESSAGES;
-import static org.openmrs.module.messages.api.event.CallFlowParamConstants.PHONE;
-import static org.openmrs.module.messages.api.event.CallFlowParamConstants.REF_KEY;
 
 /**
  * Implements methods related to the handling of call service results
@@ -45,7 +38,6 @@ public class CallFlowServiceResultsHandlerServiceImpl extends AbstractServiceRes
     /**
      * The name of Call-channel configuration property with Call config.
      */
-    public static final String CALL_CHANNEL_CONFIG_NAME = "config";
 
     private static final Log LOG = LogFactory.getLog(CallFlowServiceResultsHandlerServiceImpl.class);
 
@@ -66,20 +58,20 @@ public class CallFlowServiceResultsHandlerServiceImpl extends AbstractServiceRes
 
     private MessagesEvent buildMessage(List<ScheduledService> callServices, ScheduledExecutionContext executionContext) {
         Map<String, Object> params = new HashMap<>();
-        params.put(CONFIG, getCallConfig(executionContext));
-        params.put(FLOW_NAME, getCallFlow(executionContext));
+        params.put(CallFlowParamConstants.CONFIG_KEY, getCallConfig(executionContext));
+        params.put(CallFlowParamConstants.FLOW_NAME, getCallFlow(executionContext));
 
         String personPhone = getPersonPhone(executionContext.getActorId());
 
         Map<String, Object> additionalParams = new HashMap<>();
         List<Message> messages = getMessages(callServices);
-        additionalParams.put(MESSAGES, toPrimitivesList(messages));
-        additionalParams.put(PHONE, personPhone);
-        additionalParams.put(ACTOR_ID, Integer.toString(executionContext.getActorId()));
-        additionalParams.put(REF_KEY, Integer.toString(executionContext.getGroupId()));
-        additionalParams.put(ACTOR_TYPE, executionContext.getActorType());
+        additionalParams.put(CallFlowParamConstants.MESSAGES, toPrimitivesList(messages));
+        additionalParams.put(CallFlowParamConstants.PHONE, personPhone);
+        additionalParams.put(CallFlowParamConstants.ACTOR_ID, Integer.toString(executionContext.getActorId()));
+        additionalParams.put(CallFlowParamConstants.REF_KEY, Integer.toString(executionContext.getGroupId()));
+        additionalParams.put(CallFlowParamConstants.ACTOR_TYPE, executionContext.getActorType());
 
-        params.put(ADDITIONAL_PARAMS, additionalParams);
+        params.put(CallFlowParamConstants.ADDITIONAL_PARAMS, additionalParams);
 
         return new MessagesEvent(CALL_FLOW_INITIATE_CALL_EVENT, params);
     }
@@ -103,7 +95,7 @@ public class CallFlowServiceResultsHandlerServiceImpl extends AbstractServiceRes
 
     private Object getCallConfig(ScheduledExecutionContext executionContext) {
         return executionContext.getChannelConfiguration()
-                .getOrDefault(CALL_CHANNEL_CONFIG_NAME,
+                .getOrDefault(CallFlowParamConstants.CONFIG_KEY,
                         Context.getAdministrationService()
                         .getGlobalProperty(ConfigConstants.CALL_CONFIG, ConfigConstants.CALL_CONFIG_DEFAULT_VALUE));
     }

@@ -91,6 +91,13 @@ public final class MessagesConstants {
   /** The name of Concept Class for Health Tip Category Concepts. */
   public static final String HEALTH_TIP_CATEGORY_CLASS_NAME = "Health Tips Category";
 
+  public static final String SMS_CHANNEL_TYPE = "SMS";
+
+  public static final String CALL_CHANNEL_TYPE = "Call";
+
+  public static final String WHATSAPP_CHANNEL_TYPE = "WhatsApp";
+
+
   private MessagesConstants() {
     // private. So can't be initialized
   }

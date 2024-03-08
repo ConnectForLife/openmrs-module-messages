@@ -11,6 +11,7 @@
 package org.openmrs.module.messages.api.service;
 
 import org.openmrs.Concept;
+import org.openmrs.Person;
 import org.openmrs.module.messages.api.dto.CountryPropertyValueDTO;
 import org.openmrs.module.messages.api.model.CountryProperty;
 
@@ -41,6 +42,14 @@ public interface CountryPropertyService {
    * {@code country} then a value for 'null' country is returned
    */
   Optional<CountryProperty> getCountryProperty(Concept country, String name);
+
+  /**
+   * Gets value from given country property by person (and his country)
+   * @param person the person for whom the country property is looking for
+   * @param name the property name, not null
+   * @return the Optional with String value of country property
+   */
+  Optional<String> getCountryPropertyValueByPerson(Person person, String name);
 
   /**
    * Saves {@code property} as-is.

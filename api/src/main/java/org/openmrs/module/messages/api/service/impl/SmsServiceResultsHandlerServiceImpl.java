@@ -12,23 +12,23 @@ package org.openmrs.module.messages.api.service.impl;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.api.constants.ConfigConstants;
+import org.openmrs.module.messages.api.constants.MessagesConstants;
+import org.openmrs.module.messages.api.event.SmsEventParamConstants;
 import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
 
 /**
  * Implements methods related to the handling of sms service results
  */
 public class SmsServiceResultsHandlerServiceImpl extends AbstractTextMessageServiceResultsHandlerService {
-  
-  private static final String SMS_CHANNEL_TYPE = "SMS";
 
   public SmsServiceResultsHandlerServiceImpl() {
-    super(SMS_CHANNEL_TYPE);
+    super(MessagesConstants.SMS_CHANNEL_TYPE);
   }
 
   @Override
   protected String getConfigName(ScheduledExecutionContext executionContext) {
     return executionContext.getChannelConfiguration()
-      .getOrDefault(CONFIG_KEY,
+      .getOrDefault(SmsEventParamConstants.CONFIG_KEY,
         Context.getAdministrationService()
           .getGlobalProperty(ConfigConstants.SMS_CONFIG));
   }

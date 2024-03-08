@@ -45,7 +45,7 @@ public final class SmsEventParamConstants {
     /**
      * Config that is used for the SMS message
      */
-    public static final String CONFIG = "config";
+    public static final String CONFIG_KEY = "config";
 
     private SmsEventParamConstants() { }
 }

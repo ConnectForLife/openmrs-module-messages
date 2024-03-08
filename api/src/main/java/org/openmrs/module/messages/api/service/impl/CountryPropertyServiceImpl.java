@@ -12,12 +12,14 @@ package org.openmrs.module.messages.api.service.impl;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Concept;
+import org.openmrs.Person;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.api.dao.CountryPropertyDAO;
 import org.openmrs.module.messages.api.dto.CountryPropertyValueDTO;
 import org.openmrs.module.messages.api.model.CountryProperty;
 import org.openmrs.module.messages.api.service.CountryPropertyService;
+import org.openmrs.module.messages.api.util.PersonAddressUtil;
 import org.openmrs.validator.ValidateUtil;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,6 +54,13 @@ public class CountryPropertyServiceImpl implements CountryPropertyService {
     } else {
       return countryPropertyDAO.getCountryProperty(null, name);
     }
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public Optional<String> getCountryPropertyValueByPerson(Person person, String name) {
+    Concept personCountry = PersonAddressUtil.getPersonCountry(person).orElse(null);
+    return getCountryPropertyValue(personCountry, name);
   }
 
   @Override

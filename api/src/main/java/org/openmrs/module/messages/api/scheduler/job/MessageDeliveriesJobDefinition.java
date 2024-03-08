@@ -15,6 +15,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Person;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.messages.api.constants.CountryPropertyConstants;
 import org.openmrs.module.messages.api.constants.MessagesConstants;
 import org.openmrs.module.messages.api.execution.GroupedServiceResultList;
 import org.openmrs.module.messages.api.execution.ServiceResultGroupHelper;
@@ -23,6 +24,7 @@ import org.openmrs.module.messages.api.mappers.ScheduledGroupMapper;
 import org.openmrs.module.messages.api.model.PersonStatus;
 import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
 import org.openmrs.module.messages.api.model.ScheduledServiceGroup;
+import org.openmrs.module.messages.api.service.CountryPropertyService;
 import org.openmrs.module.messages.api.service.MessagesDeliveryService;
 import org.openmrs.module.messages.api.service.MessagingGroupService;
 import org.openmrs.module.messages.api.service.MessagingService;
@@ -41,20 +43,27 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
   private static final Log LOGGER = LogFactory.getLog(MessageDeliveriesJobDefinition.class);
   private static final String TASK_NAME = "Message Deliveries Job Task";
 
+  private static final String CONFIG_KEY = "config";
+
   @Override
   public void execute() {
     LOGGER.info(getTaskName() + " started");
     final StopwatchUtil executeStopwatch = new StopwatchUtil();
     final ZonedDateTime nextExecution =
-        ZonedDateTime.ofInstant(SchedulerUtil.getNextExecution(getTaskDefinition()).toInstant(),
+        ZonedDateTime.ofInstant(
+            SchedulerUtil.getNextExecution(getTaskDefinition()).toInstant(),
             DateUtil.getDefaultSystemTimeZone());
 
-    final List<ServiceResultList> results = getMessagingService().retrieveAllServiceExecutions(
-        nextExecution.minusSeconds(getTaskDefinition().getRepeatInterval()), nextExecution);
+    final List<ServiceResultList> results =
+        getMessagingService()
+            .retrieveAllServiceExecutions(
+                nextExecution.minusSeconds(getTaskDefinition().getRepeatInterval()), nextExecution);
     logNumberOfResults(results);
 
-    PERFORMANCE_LOGGER.info(MessageFormat.format("getMessagingService.retrieveAllServiceExecutions took {0}ms",
-        executeStopwatch.restart().toMillis()));
+    PERFORMANCE_LOGGER.info(
+        MessageFormat.format(
+            "getMessagingService.retrieveAllServiceExecutions took {0}ms",
+            executeStopwatch.restart().toMillis()));
 
     List<GroupedServiceResultList> groupedResults =
         ServiceResultGroupHelper.groupByChannelTypePatientActorExecutionDate(results, true);
@@ -65,18 +74,22 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
         scheduleTaskForActivePerson(groupedResult);
       } catch (Exception e) {
         LOGGER.error(
-            String.format("The error occurred during scheduling group for: %s. %s", groupedResult.getKey().toString(),
-                e.getMessage()));
+            String.format(
+                "The error occurred during scheduling group for: %s. %s",
+                groupedResult.getKey().toString(), e.getMessage()));
         LOGGER.debug(e.getMessage(), e);
       } finally {
         PERFORMANCE_LOGGER.info(
-            MessageFormat.format("MessageDeliveriesJobDefinition.scheduleTaskForActivePerson for patient ID:{0} took {1}ms",
+            MessageFormat.format(
+                "MessageDeliveriesJobDefinition.scheduleTaskForActivePerson for patient ID:{0} took {1}ms",
                 groupedResult.getKey().getPatientId(), executeStopwatch.lap().toMillis()));
       }
     }
 
-    PERFORMANCE_LOGGER.info(MessageFormat.format("All MessageDeliveriesJobDefinition.scheduleTaskForActivePerson took {0}ms",
-        executeStopwatch.stop().toMillis()));
+    PERFORMANCE_LOGGER.info(
+        MessageFormat.format(
+            "All MessageDeliveriesJobDefinition.scheduleTaskForActivePerson took {0}ms",
+            executeStopwatch.stop().toMillis()));
   }
 
   @Override
@@ -101,16 +114,45 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
     if (shouldGroupBeCreated(patient, person, groupedResult)) {
       final ScheduledServiceGroup group = convertAndSave(groupedResult);
 
-      getDeliveryService().scheduleDelivery(
-          new ScheduledExecutionContext(group.getScheduledServices(), group.getChannelType(),
-              groupedResult.getKey().getDate().toInstant(), group.getActor(), group.getPatient().getPatientId(),
-              groupedResult.getKey().getActorType(), group.getId()));
+      ScheduledExecutionContext executionContext =
+          new ScheduledExecutionContext(
+              group.getScheduledServices(),
+              group.getChannelType(),
+              groupedResult.getKey().getDate().toInstant(),
+              group.getActor(),
+              group.getPatient().getPatientId(),
+              groupedResult.getKey().getActorType(),
+              group.getId());
+      executionContext.getChannelConfiguration().put(CONFIG_KEY, getProviderName(group));
+
+      getDeliveryService().scheduleDelivery(executionContext);
     }
   }
 
-  private boolean shouldGroupBeCreated(Person patient, Person person, GroupedServiceResultList groupedResult) {
-    return isGroupNotExist(patient.getId(), person.getId(), groupedResult.getKey().getDate(),
-        groupedResult.getKey().getChannelType()) && isActive(person) && isActive(patient);
+  private String getProviderName(ScheduledServiceGroup group) {
+    CountryPropertyService countryPropertyService = Context.getService(CountryPropertyService.class);
+    String channelType = group.getChannelType();
+    String providerName = null;
+    if (MessagesConstants.CALL_CHANNEL_TYPE.equalsIgnoreCase(channelType)) {
+      providerName = countryPropertyService.getCountryPropertyValueByPerson(group.getActor(), CountryPropertyConstants.CALL_CONFIG_PROP_NAME).orElse(null);
+    } else if (MessagesConstants.SMS_CHANNEL_TYPE.equalsIgnoreCase(channelType)) {
+      providerName = countryPropertyService.getCountryPropertyValueByPerson(group.getActor(), CountryPropertyConstants.SMS_CONFIG_PROP_NAME).orElse(null);
+    } else if (MessagesConstants.WHATSAPP_CHANNEL_TYPE.equalsIgnoreCase(channelType)) {
+      providerName = countryPropertyService.getCountryPropertyValueByPerson(group.getActor(), CountryPropertyConstants.WHATSAPP_CONFIG_PROP_NAME).orElse(null);
+    }
+
+    return providerName;
+  }
+
+  private boolean shouldGroupBeCreated(
+      Person patient, Person person, GroupedServiceResultList groupedResult) {
+    return isGroupNotExist(
+            patient.getId(),
+            person.getId(),
+            groupedResult.getKey().getDate(),
+            groupedResult.getKey().getChannelType())
+        && isActive(person)
+        && isActive(patient);
   }
 
   private ScheduledServiceGroup convertAndSave(GroupedServiceResultList groupedResult) {
@@ -122,36 +164,44 @@ public class MessageDeliveriesJobDefinition extends JobDefinition {
     boolean isActive = PersonStatus.isActive(person);
     if (!isActive && LOGGER.isDebugEnabled()) {
       LOGGER.debug(
-          String.format("Status of a person with id=%d is not active, so no service execution events will be scheduled",
+          String.format(
+              "Status of a person with id=%d is not active, so no service execution events will be scheduled",
               person.getId()));
     }
     return isActive;
   }
 
-  private boolean isGroupNotExist(int patientId, int actorId, ZonedDateTime executionDate, String channelType) {
-    boolean exist = getGroupService().isGroupExists(patientId, actorId, executionDate.toInstant(), channelType);
+  private boolean isGroupNotExist(
+      int patientId, int actorId, ZonedDateTime executionDate, String channelType) {
+    boolean exist =
+        getGroupService().isGroupExists(patientId, actorId, executionDate.toInstant(), channelType);
     if (exist) {
       LOGGER.warn(
-          String.format("Messaging group for patient=%d, actor=%d and executionDate=%s has been already created", patientId,
-              actorId, executionDate));
+          String.format(
+              "Messaging group for patient=%d, actor=%d and executionDate=%s has been already created",
+              patientId, actorId, executionDate));
     }
     return !exist;
   }
 
   private MessagingService getMessagingService() {
-    return Context.getRegisteredComponent(MessagesConstants.MESSAGING_SERVICE, MessagingService.class);
+    return Context.getRegisteredComponent(
+        MessagesConstants.MESSAGING_SERVICE, MessagingService.class);
   }
 
   private MessagesDeliveryService getDeliveryService() {
-    return Context.getRegisteredComponent(MessagesConstants.DELIVERY_SERVICE, MessagesDeliveryService.class);
+    return Context.getRegisteredComponent(
+        MessagesConstants.DELIVERY_SERVICE, MessagesDeliveryService.class);
   }
 
   private ScheduledGroupMapper getGroupMapper() {
-    return Context.getRegisteredComponent(MessagesConstants.SCHEDULED_GROUP_MAPPER, ScheduledGroupMapper.class);
+    return Context.getRegisteredComponent(
+        MessagesConstants.SCHEDULED_GROUP_MAPPER, ScheduledGroupMapper.class);
   }
 
   private MessagingGroupService getGroupService() {
-    return Context.getRegisteredComponent(MessagesConstants.MESSAGING_GROUP_SERVICE, MessagingGroupService.class);
+    return Context.getRegisteredComponent(
+        MessagesConstants.MESSAGING_GROUP_SERVICE, MessagingGroupService.class);
   }
 
   private PersonService getPersonService() {

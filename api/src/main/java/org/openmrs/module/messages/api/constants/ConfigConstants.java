@@ -106,7 +106,8 @@ public final class ConfigConstants {
   public static final String RESCHEDULING_STRATEGY_KEY = "messages.reschedulingStrategy";
   public static final String RESCHEDULING_STRATEGY_DEFAULT_VALUE =
       "SMS:messages.failedAndPendingMessagesReschedulingStrategy,"
-          + "Call:messages.failedAndPendingMessagesReschedulingStrategy";
+          + "Call:messages.failedAndPendingMessagesReschedulingStrategy,"
+          + "WhatsApp:messages.failedAndPendingMessagesReschedulingStrategy";
   public static final String RESCHEDULING_STRATEGY_DESCRIPTION =
       "Used to determine the name of the Spring Bean which should be used to handle the reschedule logic. The "
           + "value could represent multiple strategies. Each of them is dedicated to a specific channel type. The "
@@ -193,7 +194,7 @@ public final class ConfigConstants {
           + "call configuration used to make calls.";
 
   public static final String CALL_DEFAULT_FLOW = "messages.defaultFlow";
-  public static final String CALL_DEFAULT_FLOW_DEFAULT_VALUE = "";
+  public static final String CALL_DEFAULT_FLOW_DEFAULT_VALUE = "MainFlow";
   public static final String CALL_DEFAULT_FLOW_DESCRIPTION =
       "The string value representing the default value of call flow used to make calls.";
 

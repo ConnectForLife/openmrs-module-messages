@@ -42,7 +42,6 @@ import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
 import org.openmrs.module.messages.api.model.ScheduledService;
 import org.openmrs.module.messages.api.model.ScheduledServiceParameter;
-import org.openmrs.module.messages.api.service.impl.AbstractTextMessageServiceResultsHandlerService;
 import org.openmrs.module.messages.api.service.impl.SmsServiceResultsHandlerServiceImpl;
 import org.openmrs.module.messages.builder.PatientTemplateBuilder;
 import org.openmrs.module.messages.builder.ScheduledExecutionContextBuilder;
@@ -125,7 +124,7 @@ public class SmsServiceResultsHandlerServiceImplTest {
         assertThat(messagesEvent.getSubject(), is(SMS_INITIATE_EVENT));
         assertThat(params.get(SmsEventParamConstants.RECIPIENTS), is(Collections.singletonList(PHONE_NUMBER)));
         assertThat(params.get(SmsEventParamConstants.MESSAGE), is(SMS_EXPECTED_MESSAGE));
-        assertThat(params.get(SmsEventParamConstants.CONFIG), is(SMS_CONFIG_GP_NAME));
+        assertThat(params.get(SmsEventParamConstants.CONFIG_KEY), is(SMS_CONFIG_GP_NAME));
     }
 
     @Test
@@ -145,7 +144,7 @@ public class SmsServiceResultsHandlerServiceImplTest {
 
         assertThat(messagesEvent.getSubject(), is(SMS_INITIATE_EVENT));
         assertThat(params.get(SmsEventParamConstants.RECIPIENTS), is(Collections.singletonList(PHONE_NUMBER)));
-        assertThat(params.get(SmsEventParamConstants.CONFIG), is(SMS_CONFIG_GP_NAME));
+        assertThat(params.get(SmsEventParamConstants.CONFIG_KEY), is(SMS_CONFIG_GP_NAME));
     }
 
     @Test
@@ -153,7 +152,7 @@ public class SmsServiceResultsHandlerServiceImplTest {
         prepareVisitReminderService();
 
         ScheduledExecutionContext scheduledExecutionContext = new ScheduledExecutionContextBuilder().build();
-        scheduledExecutionContext.getChannelConfiguration().put(AbstractTextMessageServiceResultsHandlerService.CONFIG_KEY, SMS_CONFIG_CONTEXT_NAME);
+        scheduledExecutionContext.getChannelConfiguration().put(SmsEventParamConstants.CONFIG_KEY, SMS_CONFIG_CONTEXT_NAME);
         when(personService.getPerson(scheduledExecutionContext.getActorId())).thenReturn(person);
         when(notificationTemplateService.parseTemplate(eq(patientTemplate), anyMap())).thenReturn(WHATSAPP_PARSED_TEMPLATE);
 
@@ -166,7 +165,7 @@ public class SmsServiceResultsHandlerServiceImplTest {
 
         assertThat(messagesEvent.getSubject(), is(SMS_INITIATE_EVENT));
         assertThat(params.get(SmsEventParamConstants.RECIPIENTS), is(Collections.singletonList(PHONE_NUMBER)));
-        assertThat(params.get(SmsEventParamConstants.CONFIG), is(SMS_CONFIG_CONTEXT_NAME));
+        assertThat(params.get(SmsEventParamConstants.CONFIG_KEY), is(SMS_CONFIG_CONTEXT_NAME));
     }
 
     private void prepareVisitReminderService() {

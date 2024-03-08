@@ -23,6 +23,7 @@ import org.openmrs.module.DaemonTokenAware;
 import org.openmrs.module.Module;
 import org.openmrs.module.ModuleFactory;
 import org.openmrs.module.messages.api.constants.ConfigConstants;
+import org.openmrs.module.messages.api.constants.CountryPropertyConstants;
 import org.openmrs.module.messages.api.constants.MessagesConstants;
 import org.openmrs.module.messages.api.event.AbstractMessagesEventListener;
 import org.openmrs.module.messages.api.event.listener.MessagesEventListenerFactory;
@@ -32,6 +33,7 @@ import org.openmrs.module.messages.api.exception.MessagesRuntimeException;
 import org.openmrs.module.messages.api.scheduler.job.JobRepeatInterval;
 import org.openmrs.module.messages.api.scheduler.job.MessageDeliveriesJobDefinition;
 import org.openmrs.module.messages.api.service.MessagesSchedulerService;
+import org.openmrs.module.messages.api.util.CountryPropertyUtils;
 import org.openmrs.module.messages.api.util.GlobalPropertyUtil;
 import org.openmrs.module.metadatadeploy.api.MetadataDeployService;
 import org.openmrs.module.metadatadeploy.bundle.MetadataBundle;
@@ -127,6 +129,7 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
     createWhatsAppConfiguration();
     createSchedulerConfiguration();
     createITRConfiguration();
+    createCountryPropertyDefaultConfiguration();
   }
 
   private void createNotificationTemplateConfig() {
@@ -291,6 +294,41 @@ public class MessagesActivator extends BaseModuleActivator implements DaemonToke
         ConfigConstants.ITR_DEFAULT_ITR_MESSAGE_CONCEPT_UUID,
         null,
         ConfigConstants.ITR_DEFAULT_ITR_MESSAGE_CONCEPT_UUID_DESC);
+  }
+
+  private void createCountryPropertyDefaultConfiguration() {
+    CountryPropertyUtils.createDefaultCountrySettingIfNotExists(
+        CountryPropertyConstants.SMS_CONFIG_PROP_NAME,
+        CountryPropertyConstants.EMPTY_CONFIG_DEFAULT_VALUE,
+        CountryPropertyConstants.SMS_CONFIG_PROP_DESC);
+    CountryPropertyUtils.createDefaultCountrySettingIfNotExists(
+        CountryPropertyConstants.SEND_SMS_ON_PATIENT_REGISTRATION_PROP_NAME,
+        Boolean.FALSE.toString(),
+        CountryPropertyConstants.SEND_SMS_ON_PATIENT_REGISTRATION_PROP_DESC);
+    CountryPropertyUtils.createDefaultCountrySettingIfNotExists(
+        CountryPropertyConstants.WHATSAPP_CONFIG_PROP_NAME,
+        CountryPropertyConstants.EMPTY_CONFIG_DEFAULT_VALUE,
+        CountryPropertyConstants.WHATSAPP_CONFIG_PROP_DESC);
+    CountryPropertyUtils.createDefaultCountrySettingIfNotExists(
+        CountryPropertyConstants.SEND_WHATSAPP_ON_PATIENT_REGISTRATION_PROP_NAME,
+        Boolean.FALSE.toString(),
+        CountryPropertyConstants.SEND_WHATSAPP_ON_PATIENT_REGISTRATION_PROP_DESC);
+    CountryPropertyUtils.createDefaultCountrySettingIfNotExists(
+        CountryPropertyConstants.CALL_CONFIG_PROP_NAME,
+        CountryPropertyConstants.EMPTY_CONFIG_DEFAULT_VALUE,
+        CountryPropertyConstants.CALL_CONFIG_PROP_DESC);
+    CountryPropertyUtils.createDefaultCountrySettingIfNotExists(
+        CountryPropertyConstants.PERFORM_CALL_ON_PATIENT_REGISTRATION_PROP_NAME,
+        Boolean.FALSE.toString(),
+        CountryPropertyConstants.PERFORM_CALL_ON_PATIENT_REGISTRATION_PROP_DESC);
+    CountryPropertyUtils.createDefaultCountrySettingIfNotExists(
+        CountryPropertyConstants.PATIENT_NOTIFICATION_TIME_WINDOW_FROM_PROP_NAME,
+        CountryPropertyConstants.PATIENT_NOTIFICATION_TIME_WINDOW_FROM_DEFAULT_VALUE,
+        CountryPropertyConstants.PATIENT_NOTIFICATION_TIME_WINDOW_FROM_PROP_DESC);
+    CountryPropertyUtils.createDefaultCountrySettingIfNotExists(
+        CountryPropertyConstants.PATIENT_NOTIFICATION_TIME_WINDOW_TO_PROP_NAME,
+        CountryPropertyConstants.PATIENT_NOTIFICATION_TIME_WINDOW_TO_DEFAULT_VALUE,
+        CountryPropertyConstants.PATIENT_NOTIFICATION_TIME_WINDOW_TO_PROP_DESC);
   }
 
   private void installMetadataBundles() {

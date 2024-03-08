@@ -24,6 +24,7 @@ import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.Daemon;
 import org.openmrs.module.messages.api.constants.ConfigConstants;
+import org.openmrs.module.messages.api.event.CallFlowParamConstants;
 import org.openmrs.module.messages.api.event.MessagesEvent;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.ScheduledExecutionContext;
@@ -48,7 +49,6 @@ import static org.openmrs.module.messages.api.constants.MessagesConstants.CALL_F
 import static org.openmrs.module.messages.api.event.CallFlowParamConstants.ACTOR_ID;
 import static org.openmrs.module.messages.api.event.CallFlowParamConstants.ACTOR_TYPE;
 import static org.openmrs.module.messages.api.event.CallFlowParamConstants.ADDITIONAL_PARAMS;
-import static org.openmrs.module.messages.api.event.CallFlowParamConstants.CONFIG;
 import static org.openmrs.module.messages.api.event.CallFlowParamConstants.FLOW_NAME;
 import static org.openmrs.module.messages.api.event.CallFlowParamConstants.PHONE;
 import static org.openmrs.module.messages.api.event.CallFlowParamConstants.REF_KEY;
@@ -116,7 +116,7 @@ public class CallFlowServiceResultsHandlerServiceImplTest {
         Map<String, Object> additionalParams = (Map<String, Object>) params.get(ADDITIONAL_PARAMS);
 
         assertThat(messagesEvent.getSubject(), is(CALL_FLOW_INITIATE_CALL_EVENT));
-        assertThat(params.get(CONFIG), is(ConfigConstants.CALL_CONFIG_DEFAULT_VALUE));
+        assertThat(params.get(CallFlowParamConstants.CONFIG_KEY), is(ConfigConstants.CALL_CONFIG_DEFAULT_VALUE));
         assertThat(params.get(FLOW_NAME), is(ConfigConstants.CALL_DEFAULT_FLOW_DEFAULT_VALUE));
         assertThat(additionalParams.get(PHONE), is(PHONE_NUMBER));
         assertThat(additionalParams.get(ACTOR_ID), is(Integer.toString(scheduledExecutionContext.getActorId())));
@@ -130,7 +130,7 @@ public class CallFlowServiceResultsHandlerServiceImplTest {
         scheduledExecutionContext.getChannelConfiguration().put(
                 CallFlowServiceResultsHandlerServiceImpl.CALL_CHANNEL_CONF_FLOW_NAME, CALL_FLOW_NAME);
         scheduledExecutionContext.getChannelConfiguration().put(
-                CallFlowServiceResultsHandlerServiceImpl.CALL_CHANNEL_CONFIG_NAME, CONFIG_NAME);
+            CallFlowParamConstants.CONFIG_KEY, CONFIG_NAME);
 
         when(personService.getPerson(scheduledExecutionContext.getActorId())).thenReturn(person);
 
@@ -141,7 +141,7 @@ public class CallFlowServiceResultsHandlerServiceImplTest {
         MessagesEvent messagesEvent = messagesEventCaptor.getValue();
         Map<String, Object> params = messagesEvent.getParameters();
 
-        assertThat(params.get(CONFIG), is(CONFIG_NAME));
+        assertThat(params.get(CallFlowParamConstants.CONFIG_KEY), is(CONFIG_NAME));
         assertThat(params.get(FLOW_NAME), is(CALL_FLOW_NAME));
     }
 }

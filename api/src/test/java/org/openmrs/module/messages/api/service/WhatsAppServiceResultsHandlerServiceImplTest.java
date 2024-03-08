@@ -128,7 +128,7 @@ public class WhatsAppServiceResultsHandlerServiceImplTest {
     assertThat(messagesEvent.getSubject(), is(SMS_INITIATE_EVENT));
     assertThat(params.get(SmsEventParamConstants.RECIPIENTS), is(Collections.singletonList(PHONE_NUMBER)));
     assertThat(params.get(SmsEventParamConstants.MESSAGE), is(WHATSAPP_EXPECTED_MESSAGE));
-    assertThat(params.get(SmsEventParamConstants.CONFIG), is(WHATSAPP_CONFIG_NAME));
+    assertThat(params.get(SmsEventParamConstants.CONFIG_KEY), is(WHATSAPP_CONFIG_NAME));
   }
 
   private void prepareVisitReminderService() {

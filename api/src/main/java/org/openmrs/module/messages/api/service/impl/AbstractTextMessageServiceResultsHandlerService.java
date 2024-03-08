@@ -35,8 +35,6 @@ import org.openmrs.module.messages.api.util.JsonUtil;
 
 public abstract class AbstractTextMessageServiceResultsHandlerService extends AbstractServiceResultsHandlerService {
 
-  public static final String CONFIG_KEY = "config";
-
   public static final String MESSAGE_CHANNEL_CONF_TEMPLATE_VALUE = "templateValue";
 
   private static final String MESSAGE_KEY = "message";
@@ -104,7 +102,7 @@ public abstract class AbstractTextMessageServiceResultsHandlerService extends Ab
     }
 
     final Map<String, Object> params = new HashMap<>();
-    params.put(SmsEventParamConstants.CONFIG, getConfigName(executionContext));
+    params.put(SmsEventParamConstants.CONFIG_KEY, getConfigName(executionContext));
     params.put(SmsEventParamConstants.MESSAGE_ID, smsService.getId());
     params.put(SmsEventParamConstants.RECIPIENTS,
       Collections.singletonList(getPersonPhone(executionContext.getActorId())));

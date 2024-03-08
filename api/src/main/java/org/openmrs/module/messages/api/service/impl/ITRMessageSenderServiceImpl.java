@@ -52,7 +52,7 @@ public class ITRMessageSenderServiceImpl implements ITRMessageSenderService {
 
   private MessagesEvent buildMessage(ITRMessage messageConcept, ITRSendContext sendContext) {
     final Map<String, Object> smsEventParams = itrConverterService.convertToSmsEvent(messageConcept, sendContext);
-    smsEventParams.put(SmsEventParamConstants.CONFIG, sendContext.getProviderConfigName());
+    smsEventParams.put(SmsEventParamConstants.CONFIG_KEY, sendContext.getProviderConfigName());
     smsEventParams.put(SmsEventParamConstants.RECIPIENTS, sendContext.getRecipientsPhoneNumbers());
     return new MessagesEvent(SMS_INITIATE_EVENT, smsEventParams);
   }

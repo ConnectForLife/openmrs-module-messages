@@ -31,11 +31,6 @@ public final class CallFlowParamConstants {
      * Reference key between messages and callflows. It is message group id.
      */
     public static final String REF_KEY = "refKey";
-    
-    /**
-     * Config that was used for this call
-     */
-    public static final String CONFIG = "config";
 
     /**
      * Flow that was used for this call
@@ -67,6 +62,11 @@ public final class CallFlowParamConstants {
      * Might be required, for now we will send both
      */
     public static final String MESSAGES_OBJECTS = "messages_objects";
+
+    /**
+     * The name of Call-channel configuration property with Call config.
+     */
+    public static final String CONFIG_KEY = "config";
 
     private CallFlowParamConstants() {
     }
