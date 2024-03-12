@@ -696,4 +696,16 @@
           class="org.openmrs.module.messages.handler.impl.WeeklyBasedFeedbackCalculationHandlerImpl">
         <constructor-arg name="actorResponseDao" ref="messages.ActorResponseDao" />
     </bean>
+
+    <bean id="messages.messagesAdministrationServiceImpl"
+          class="org.openmrs.module.messages.api.service.impl.MessagesAdministrationServiceImpl">
+    </bean>
+    <bean parent="serviceContext">
+        <property name="moduleService">
+            <list merge="true">
+                <value>org.openmrs.module.messages.api.service.MessagesAdministrationService</value>
+                <ref bean="messages.messagesAdministrationServiceImpl"/>
+            </list>
+        </property>
+    </bean>
 </beans>
