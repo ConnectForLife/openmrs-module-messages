@@ -9,7 +9,7 @@
 
     <groupId>org.openmrs.module</groupId>
     <artifactId>messages</artifactId>
-    <version>1.8.2-leprosy-brazil-1</version>
+    <version>1.8.2-leprosy-brazil-2</version>
     <packaging>pom</packaging>
     <name>Messages module</name>
     <description>
@@ -20,7 +20,7 @@
         <connection>scm:git:https://sourcecode.jnj.com/scm/itx-bpv/openmrs-module-messages.git</connection>
         <developerConnection>scm:git:https://sourcecode.jnj.com/scm/itx-bpv/openmrs-module-messages.git</developerConnection>
         <url>https://sourcecode.jnj.com/projects/ITX-BPV/repos/openmrs-module-messages</url>
-        <tag>1.8.2-leprosy-brazil-1</tag>
+        <tag>1.8.2-leprosy-brazil-2</tag>
     </scm>
 
     <modules>
