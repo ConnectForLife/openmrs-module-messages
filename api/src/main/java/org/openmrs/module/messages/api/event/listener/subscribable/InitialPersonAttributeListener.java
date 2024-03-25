@@ -50,7 +50,7 @@ public class InitialPersonAttributeListener extends PeopleActionListener {
     public void performAction(Message message) {
         Person person = extractPerson(message);
         LOGGER.debug("Creating attribute for {} person", person);
-        person.addAttribute(createStatusAttribute());
+        person.addAttribute(createStatusAttribute(person));
         getPersonService().savePerson(person);
     }
 
@@ -58,9 +58,9 @@ public class InitialPersonAttributeListener extends PeopleActionListener {
         this.configService = configService;
     }
 
-    private PersonAttribute createStatusAttribute() {
+    private PersonAttribute createStatusAttribute(Person person) {
         PersonAttributeType attributeType = getStatusType();
-        PersonStatus status = getInitialValue();
+        PersonStatus status = getInitialValue(person);
         return new PersonAttribute(attributeType, status.name());
     }
 
@@ -69,9 +69,9 @@ public class InitialPersonAttributeListener extends PeopleActionListener {
                 ConfigConstants.PERSON_STATUS_ATTRIBUTE_TYPE_UUID);
     }
 
-    private PersonStatus getInitialValue() {
+    private PersonStatus getInitialValue(Person person) {
         PersonStatus status = PersonStatus.ACTIVATED;
-        if (configService.isConsentControlEnabled()) {
+        if (configService.isConsentControlEnabled(person)) {
             status = PersonStatus.NO_CONSENT;
         }
         return status;

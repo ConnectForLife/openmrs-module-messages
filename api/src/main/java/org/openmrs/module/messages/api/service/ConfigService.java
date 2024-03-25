@@ -10,6 +10,7 @@
 
 package org.openmrs.module.messages.api.service;
 
+import org.openmrs.Person;
 import org.openmrs.module.messages.api.constants.ConfigConstants;
 import org.openmrs.module.messages.api.dto.PersonStatusConfigDTO;
 import org.openmrs.module.messages.api.model.PersonStatus;
@@ -62,9 +63,10 @@ public interface ConfigService {
      * has consent before the message will be execute. Additionally this value should has impact for
      * the default value of person status attribute.
      *
+     * @param person a person for which to check if consent is enabled
      * @return - status of consent control
      */
-    boolean isConsentControlEnabled();
+    boolean isConsentControlEnabled(Person person);
 
     /**
      * Provides the coma separated list of relationship types ({@link org.openmrs.module.messages.api.model.ActorType})

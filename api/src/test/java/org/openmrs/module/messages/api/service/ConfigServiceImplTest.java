@@ -12,6 +12,8 @@ package org.openmrs.module.messages.api.service;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
+import org.openmrs.Person;
 import org.openmrs.module.messages.ContextSensitiveTest;
 import org.openmrs.module.messages.api.constants.ConfigConstants;
 import org.openmrs.module.messages.api.dto.PersonStatusConfigDTO;
@@ -169,7 +171,8 @@ public class ConfigServiceImplTest extends ContextSensitiveTest {
 
     @Test
     public void shouldReturnIfConsentControlIsEnabledWhenSetGpToTrue() {
-        boolean actual = configService.isConsentControlEnabled();
+        Person person = Mockito.mock(Person.class);
+        boolean actual = configService.isConsentControlEnabled(person);
         assertThat(actual, is(EXPECTED_IS_CONSENT_CONTROL_ENABLED));
     }
 

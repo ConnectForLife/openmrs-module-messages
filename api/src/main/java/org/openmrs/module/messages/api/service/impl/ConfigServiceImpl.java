@@ -14,14 +14,16 @@ import com.google.gson.reflect.TypeToken;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Person;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.messages.api.constants.ConfigConstants;
 import org.openmrs.module.messages.api.dto.PersonStatusConfigDTO;
 import org.openmrs.module.messages.api.model.PersonStatus;
 import org.openmrs.module.messages.api.model.RelationshipTypeDirection;
 import org.openmrs.module.messages.api.service.ConfigService;
+import org.openmrs.module.messages.api.service.MessagesAdministrationService;
 import org.openmrs.module.messages.api.service.ServiceResultsHandlerService;
 import org.openmrs.module.messages.api.strategy.ReschedulingStrategy;
-import org.openmrs.module.messages.api.constants.ConfigConstants;
 import org.openmrs.module.messages.api.util.GlobalPropertyUtil;
 import org.openmrs.module.messages.api.util.JsonUtil;
 
@@ -94,16 +96,12 @@ public class ConfigServiceImpl implements ConfigService {
         return GlobalPropertyUtil.parseInt(gpName, getGp(gpName));
     }
 
-    /**
-     * Provides information if the consent control is enabled. If control is enabled then module should verify if person
-     * has consent before the message will be execute. Additionally this value should has impact for
-     * the default value of person status attribute.
-     * @return - status of consent control
-     */
-    @Override
-    public boolean isConsentControlEnabled() {
-        return GlobalPropertyUtil.parseBool(getGp(ConfigConstants.CONSENT_CONTROL_KEY));
-    }
+  @Override
+  public boolean isConsentControlEnabled(Person person) {
+    return GlobalPropertyUtil.parseBool(
+        Context.getService(MessagesAdministrationService.class)
+            .getGlobalProperty(ConfigConstants.CONSENT_CONTROL_KEY, person));
+  }
 
     /**
      * Provides the coma separated list of relationship types ({@link org.openmrs.module.messages.api.model.ActorType})
