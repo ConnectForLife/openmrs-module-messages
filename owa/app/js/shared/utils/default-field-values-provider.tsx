@@ -9,7 +9,7 @@
  */
 
 import { startOfDay, format, parse } from 'date-fns';
-import { ISO_DATE_FORMAT } from '../../components/date-util/constants';
+import { ISO_DATE_FORMAT } from './date-util';
 
 const defaultValues = {
   START_OF_MESSAGES: format(startOfDay(Date.now()), ISO_DATE_FORMAT)

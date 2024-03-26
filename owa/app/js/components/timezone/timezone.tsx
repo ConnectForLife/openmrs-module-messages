@@ -15,6 +15,7 @@ import {
   getTimezone,
 } from '../../reducers/timezone.reducer';
 import { injectIntl, FormattedMessage } from 'react-intl';
+import { isSameTimezoneOffset } from "../../shared/utils/date-util";
 
 interface ITimezoneProps extends DispatchProps, StateProps {
 }
@@ -33,7 +34,7 @@ class Timezone extends React.PureComponent<ITimezoneProps, ITimezoneState> {
   };
 
   private isLocalTimezoneDifferent = (): boolean => {
-    return !this.props.timezoneLoading && (this.getLocalTimezone() !== this.props.timezone);
+    return this.props.timezone ? !isSameTimezoneOffset(this.getLocalTimezone(), this.props.timezone) : false;
   };
 
   private getLocalTimezone = (): string => {

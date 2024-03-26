@@ -9,6 +9,33 @@
  */
 
 import { parse } from 'date-fns';
+import moment from 'moment-timezone';
+
+export const ISO_DATE_FORMAT = 'YYYY-MM-DD';
+export const DATE_FORMAT = 'dd MMM yyyy';
+export const WEEK_DAYS_KEYS = [
+  'cfl.weekDay.Sunday.shortName',
+  'cfl.weekDay.Monday.shortName',
+  'cfl.weekDay.Tuesday.shortName',
+  'cfl.weekDay.Wednesday.shortName',
+  'cfl.weekDay.Thursday.shortName',
+  'cfl.weekDay.Friday.shortName',
+  'cfl.weekDay.Saturday.shortName'
+];
+export const MONTH_NAMES_KEYS = [
+  'cfl.month.January.fullName',
+  'cfl.month.February.fullName',
+  'cfl.month.March.fullName',
+  'cfl.month.April.fullName',
+  'cfl.month.May.fullName',
+  'cfl.month.June.fullName',
+  'cfl.month.July.fullName',
+  'cfl.month.August.fullName',
+  'cfl.month.September.fullName',
+  'cfl.month.October.fullName',
+  'cfl.month.November.fullName',
+  'cfl.month.December.fullName'
+];
 
 export type ParsableToDate = number | string | Date;
 
@@ -23,9 +50,18 @@ export const parseDateOrDefault = (date: ParsableToDate,
 
   const parsed = parse(date);
   return isDateValid(parsed) ? parsed : defaultDate;
-}
+};
 
 export const parseOrNow = (date: ParsableToDate): Date => {
   const parsed = parse(date);
   return isDateValid(parsed) ? parsed : parse(Date.now());
-}
+};
+
+/**
+ * Checks whenever both timezones have the same offset at the time of function's call.
+ */
+export const isSameTimezoneOffset = (timezoneA: string, timezoneB: string): boolean => {
+  const timezoneAOffset = moment().tz(timezoneA).utcOffset();
+  const timezoneBOffset = moment().tz(timezoneB).utcOffset();
+  return timezoneAOffset == timezoneBOffset;
+};

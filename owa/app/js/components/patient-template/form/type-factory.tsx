@@ -10,7 +10,7 @@
 
 import React from 'react';
 import { startOfDay, format } from 'date-fns';
-import { ISO_DATE_FORMAT } from '../../date-util/constants';
+import { ISO_DATE_FORMAT } from '../../../shared/utils/date-util';
 import OpenMrsDatePicker from '../../openmrs-date-picker/openmrs-date-picker';
 
 import { ValueType, InputTypeEnum, SEPARATOR, EMPTY } from './radio-wrapper/parsable-input';

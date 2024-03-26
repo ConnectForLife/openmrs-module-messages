@@ -14,11 +14,11 @@ import { startOfDay, format, parse } from 'date-fns';
 import 'react-datepicker/dist/react-datepicker.css';
 
 import { DATE_FORMAT, ISO_DATE_FORMAT, WEEK_DAYS_KEYS, MONTH_NAMES_KEYS } 
-  from '../date-util/constants';
-import { parseDateOrDefault, ParsableToDate } from '../date-util/date-util';
+  from '../../shared/utils/date-util';
+import { parseDateOrDefault, ParsableToDate } from '../../shared/utils/date-util';
 import DateDisplay from './date-display';
 import './openmrs-date-picker.scss';
-import { PropsWithIntl } from '../../components/translation/PropsWithIntl';
+import { PropsWithIntl } from '../translation/PropsWithIntl';
 import { injectIntl } from 'react-intl';
 
 interface IProps {
