@@ -1,6 +1,8 @@
 <%
     ui.includeCss("messages", "bestContactTime.css")
     ui.includeJavascript("messages", "editBestContactTime.js")
+    ui.includeJavascript("messages", "moment-with-locales.min.js")
+    ui.includeJavascript("messages", "moment-timezone-with-data-10-year-range.min.js")
     def editIcon = config.editIcon ?: "icon-pencil"
 %>
 
@@ -67,7 +69,9 @@
             <script type="text/javascript">
                 jq(".different-timezone").hide();
                 const localZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-                if ("${timezone}" !== localZone) {
+                const localZoneOffset = moment().tz(localZone).utcOffset();
+                const serverTimezoneOffset = moment().tz("${timezone}").utcOffset();
+                if (localZoneOffset !== serverTimezoneOffset) {
                     jq(".different-timezone").show();
                 }
             </script>
