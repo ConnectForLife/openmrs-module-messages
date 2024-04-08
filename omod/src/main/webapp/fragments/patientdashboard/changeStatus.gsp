@@ -8,6 +8,34 @@
      font-weight: normal;
      font-family: CircularStd-Book;
   }
+
+  #changeStatusCancelButton {
+    background: transparent;
+    border: #000000 1px solid !important;
+    color: #00455c;
+    margin: 0;
+    font-size: 11px;
+    text-transform: uppercase;
+  }
+
+  #changeStatusConfirmButton {
+    background-image: none;
+    background-color: #00455c;
+    border-color: #00455c;
+    margin: 0;
+    font-size: 11px;
+    text-transform: uppercase;
+  }
+
+  #person-status-select {
+    color: black;
+  }
+
+  .form-label .label-required {
+    display: inline;
+    color: #737373;
+    font-weight: normal;
+  }
 </style>
 
 <div id="person-status-update-dialog" class="dialog" style="display: none">
@@ -19,10 +47,11 @@
     <div class="dialog-content">
         <p class="dialog-instructions">${ ui.message("person.status.update.instructions") }</p>
         <ul>
-            <li class="info">
-                <label for="person-status-select">${ ui.message("person.status.update.label") }: </label>
-                <span class="required">(${ ui.message("messages.required") })</span>
-            </li>
+            <span class="form-label">
+              <label for="person-status-select" class="control-label">${ ui.message("person.status.update.label") }:
+                <p class="label-required">(${ ui.message("common.required") })</p>
+              </label>
+            </span>
             <li>
                 <select id="person-status-select" class="required focused" onchange="changeStatus.handelChangedStatus(this)">
                     <% for(item in personStatusValues) { %>
@@ -55,10 +84,10 @@
             </li>
         </ul>
 
-        <button class="confirm right">
+        <button id="changeStatusConfirmButton" class="confirm right">
             ${ ui.message("messages.confirm") }
             <i class="icon-spinner icon-spin icon-2x" style="display: none; margin-left: 10px;"></i>
         </button>
-        <button class="cancel">${ ui.message("messages.cancel") }</button>
+        <button id="changeStatusCancelButton" class="cancel">${ ui.message("messages.cancel") }</button>
     </div>
 </div>

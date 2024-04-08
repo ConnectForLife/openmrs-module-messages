@@ -1,69 +1,103 @@
-  $highlight: darken(#009384, 15%);
-  
-  .person-status {
+$highlight: darken(#009384, 15%);
+
+.person-status {
+  display: inline-block;
+  vertical-align: top !important;
+  background: #666666;
+  border: 1px solid #666666;
+  color: white;
+  padding: 2px 4px;
+  margin-top: 4px;
+  font-size: 0.8em;
+  cursor: pointer;
+
+  p {
+    margin: 0px;
+  }
+}
+
+.modal-content {
+  width: 450px;
+}
+
+.modal-title {
+  font-size: 16px;
+}
+
+.modal-body {
+  padding-bottom: 30px;
+}
+
+.cfl-dialog-header {
+  background: $highlight;
+  color: white;
+  padding: 0 20px;
+  padding-top: 5px;
+  font-size: 16px;
+
+  i {
+    font-size: 1.5em;
+    color: white;
+    vertical-align: middle;
     display: inline-block;
-    vertical-align: top !important;
-    background: #666666;
-    border: 1px solid #666666;
+    margin-bottom: 4px;
+  }
+
+  h4 {
+    display: inline-block;
     color: white;
-    padding: 2px 4px;
-    margin-top: 4px;
-    font-size: 0.8em;
-    cursor: pointer;
+    vertical-align: middle;
+  }
+}
 
-    p {
-      margin: 0px;
-    }
+.cfl-dialog-content {
+  padding: 10px 30px 0 30px;
+  margin-bottom: 30px;
+
+  .cfl-dialog-instructions {
+    padding-bottom: 1em;
+    font-style: italic;
   }
 
-  .cfl-dialog-header {
-    background: $highlight;
-    color: white;
-    padding: 0 20px;
-    padding-top: 5px;
-
-    i {
-      font-size: 1.5em;
-      color: white;
-      vertical-align: middle;
-      display: inline-block;
-      margin-bottom: 4px;
-    }
-
-    h4 {
-      display: inline-block;
-      color: white;
-      margin: 5px 0;
-      vertical-align: middle;
-    }
+  .control-label {
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid #eeeeee;
   }
 
-  .cfl-dialog-content {
-    padding: 20px 30px 0 30px;
-    margin-bottom: 30px;
-
-    .cfl-dialog-instructions {
-      padding-bottom: 1em;
-      font-style: italic;
-    }
-
-    .control-label {
-      margin-bottom: 0.5rem;
-      border-bottom: 1px solid #eeeeee;
-    }
-
-    .form-control {
-      margin: 5px 0;
-      background-color: #fff;
-      border: 1px solid #dddddd;
-    }
-
-    .error-field {
-      @extend .form-control;
-      border: 1px solid #ff0e0e;
-    }
-
-    .form-group {
-      margin-bottom: 0px;
-    }
+  .form-control {
+    margin: 5px 0;
+    background-color: #fff;
+    border: 1px solid #dddddd;
+    padding: 5px 0 5px 10px;
+    font-size: 16px;
+    color: #363463;
+    font-family: "CircularStd-Book";
   }
+
+  .error-field {
+    @extend .form-control;
+    border: 1px solid #ff0e0e;
+  }
+
+  .form-group {
+    margin-bottom: 0px;
+  }
+}
+
+#updateStatusCancelButton {
+  background: transparent;
+  border: #000000 1px solid !important;
+  color: #00455c;
+  margin-left: 30px;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+#updateStatusConfirmButton {
+  background-image: none;
+  background-color: #00455c;
+  border-color: #00455c;
+  margin-right: 30px;
+  font-size: 11px;
+  text-transform: uppercase;
+}
