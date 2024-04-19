@@ -87,7 +87,7 @@
                             class="edit-best-contact-time"
                             id="time-input-${ it.label.replaceAll(" ", "-") }"
                             type="text"
-                            value="${ it.time }"
+                            value="${it.time ? it.time : '-.-'}"
                             onBlur="handleBestContactTimeOnChange(this, '${ it.time }')"
                         />
                         <button 
