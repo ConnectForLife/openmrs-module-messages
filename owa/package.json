@@ -41,6 +41,7 @@
     "react": "^16.4.2",
     "react-bootstrap": "^0.32.3",
     "react-codemirror2": "^6.0.0",
+    "react-datepicker": "4.25.0",
     "react-dom": "^16.4.2",
     "react-intl": "^2.4.0",
     "react-redux": "^5.0.1",
