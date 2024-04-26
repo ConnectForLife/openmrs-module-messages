@@ -99,7 +99,8 @@ public class ServiceResultList implements Serializable {
         }
 
         setChannelTypeFromPatientTemplate(serviceResult, patientTemplate);
-        setExecutionDateWithBestContactTimeFromPatientTemplate(serviceResult, patientBestContactTime);
+        setExecutionDateWithBestContactTimeFromPatientTemplate(
+            serviceResult, patientBestContactTime);
         serviceResult.setPatientTemplateId(patientTemplate.getId());
 
         serviceResultListBuilder.withActorType(patientTemplate.getActorTypeAsString());
@@ -112,7 +113,7 @@ public class ServiceResultList implements Serializable {
       }
 
       // Collect result only if execution date fits the dateTimeRange
-      if(dateTimeRange.contains(serviceResult.getExecutionDate(), ZonedDateTime::compareTo)) {
+      if (dateTimeRange.contains(serviceResult.getExecutionDate(), ZonedDateTime::compareTo)) {
         serviceResultListBuilder
             .withPatientId(serviceResult.getPatientId())
             .withActorId(serviceResult.getActorId())
@@ -156,10 +157,10 @@ public class ServiceResultList implements Serializable {
   }
 
   private static ZonedDateTime adjustExecutionDateToBestContactTime(
-          ServiceResult serviceResult, String patientBestContactTime) {
+      ServiceResult serviceResult, String patientBestContactTime) {
 
     return getDateWithLocalTimeAndDefaultUserTimeZone(
-            serviceResult.getExecutionDate(), patientBestContactTime);
+        serviceResult.getExecutionDate(), patientBestContactTime, serviceResult.getActorId());
   }
 
   private static PatientTemplate getRelatedPatientTemplate(
@@ -176,14 +177,17 @@ public class ServiceResultList implements Serializable {
   }
 
   private static ZonedDateTime getDateWithLocalTimeAndDefaultUserTimeZone(
-      ZonedDateTime date, String localTime) {
+      ZonedDateTime executionDate, String localTime, Integer personId) {
     final String[] splitTimeBySeparator =
         localTime.split(MessagesConstants.HOURS_MINUTES_SEPARATOR);
     final int hourOfDay = Integer.parseInt(splitTimeBySeparator[0]);
     final int minute = Integer.parseInt(splitTimeBySeparator[1]);
+    final Person actor = Context.getPersonService().getPerson(personId);
 
     return ZonedDateTime.of(
-        date.toLocalDate(), LocalTime.of(hourOfDay, minute), DateUtil.getDefaultUserTimeZone());
+        executionDate.toLocalDate(),
+        LocalTime.of(hourOfDay, minute),
+        DateUtil.getPersonTimeZone(actor));
   }
 
   private static String getChannelType(PatientTemplate patientTemplate) {
@@ -210,7 +214,7 @@ public class ServiceResultList implements Serializable {
     if (bestContactTime != null) {
       serviceResult.setExecutionDate(
           getDateWithLocalTimeAndDefaultUserTimeZone(
-              serviceResult.getExecutionDate(), bestContactTime));
+              serviceResult.getExecutionDate(), bestContactTime, serviceResult.getActorId()));
     }
   }
 
@@ -222,10 +226,10 @@ public class ServiceResultList implements Serializable {
   }
 
   private static void setExecutionDateWithBestContactTimeFromPatientTemplate(
-          ServiceResult serviceResult, String patientBestContactTime) {
+      ServiceResult serviceResult, String patientBestContactTime) {
     if (serviceResult.getBestContactTime() == null) {
       serviceResult.setExecutionDate(
-              adjustExecutionDateToBestContactTime(serviceResult, patientBestContactTime));
+          adjustExecutionDateToBestContactTime(serviceResult, patientBestContactTime));
     }
   }
 

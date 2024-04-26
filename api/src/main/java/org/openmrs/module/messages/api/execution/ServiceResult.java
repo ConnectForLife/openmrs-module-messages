@@ -11,6 +11,7 @@
 package org.openmrs.module.messages.api.execution;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openmrs.Person;
 import org.openmrs.module.messages.api.dto.DTO;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.types.ServiceStatus;
@@ -29,8 +30,6 @@ import static java.util.Objects.requireNonNull;
 
 /** Represents a single execution for a service/message. */
 public class ServiceResult implements Serializable, DTO {
-  private static final long serialVersionUID = -6530545764742463034L;
-
   public static final String EXEC_DATE_ALIAS = "EXECUTION_DATE";
   public static final String MSG_ID_ALIAS = "MESSAGE_ID";
   public static final String CHANNEL_NAME_ALIAS = "CHANNEL_ID";
@@ -39,7 +38,7 @@ public class ServiceResult implements Serializable, DTO {
   public static final String ACTOR_ID_ALIAS = "ACTOR_ID";
   public static final String BEST_CONTACT_TIME_ALIAS = "BEST_CONTACT_TIME";
   public static final int MIN_COL_NUM = 3;
-
+  private static final long serialVersionUID = -6530545764742463034L;
   private ZonedDateTime executionDate;
   private transient Object messageId;
   private String channelType;
@@ -117,7 +116,8 @@ public class ServiceResult implements Serializable, DTO {
         params.put(entry.getKey(), entry.getValue());
       }
     }
-    return new ServiceResult(date, msgId, channelType, patientId, actorId, status, params, bestContactTime);
+    return new ServiceResult(
+        date, msgId, channelType, patientId, actorId, status, params, bestContactTime);
   }
 
   public static List<ServiceResult> parseList(
@@ -131,7 +131,7 @@ public class ServiceResult implements Serializable, DTO {
 
       result.setExecutionDate(
           adjustLocalTimeIfFuturePlannedEvent(
-              result.getExecutionDate(), result.getServiceStatus()));
+              patientTemplate.getActor(), result.getExecutionDate(), result.getServiceStatus()));
 
       final String key =
           DateUtil.formatToServerSideDateTime(result.getExecutionDate()) + result.getChannelType();
@@ -154,16 +154,17 @@ public class ServiceResult implements Serializable, DTO {
    * following way: the Local Time is retained and the Time Zone is changed to the default user time
    * zone. Otherwise, the {@code date} is returned as-is.
    *
+   * @param actor the actor to adjust the local time for
    * @param date the date to adjust, not null
    * @param status the status
    * @return the adjusted date, never null
-   * @see DateUtil#getDefaultUserTimeZone()
+   * @see DateUtil#getPersonTimeZone(Person)
    */
   private static ZonedDateTime adjustLocalTimeIfFuturePlannedEvent(
-      ZonedDateTime date, ServiceStatus status) {
+      Person actor, ZonedDateTime date, ServiceStatus status) {
     requireNonNull(date);
     return status == null || status == ServiceStatus.FUTURE
-        ? date.withZoneSameLocal(DateUtil.getDefaultUserTimeZone())
+        ? date.withZoneSameLocal(DateUtil.getPersonTimeZone(actor))
         : date;
   }
 
@@ -196,7 +197,8 @@ public class ServiceResult implements Serializable, DTO {
   @Override
   public Integer getId() {
     // This DTO has no ID
-    // Skipped throwing exception because of workaround for issues with JSON serialization in OMRS 2.4 and later
+    // Skipped throwing exception because of workaround for issues with JSON serialization in OMRS
+    // 2.4 and later
     return null;
   }
 

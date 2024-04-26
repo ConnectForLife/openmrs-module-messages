@@ -19,6 +19,8 @@ import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.api.constants.ConfigConstants;
 import org.openmrs.module.messages.api.service.ActorService;
+import org.openmrs.module.messages.api.service.MessagesAdministrationService;
+import org.openmrs.module.messages.api.service.impl.MessagesAdministrationServiceImpl;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.fragment.FragmentConfiguration;
@@ -71,6 +73,7 @@ public class BestContactTimeFragmentControllerTest {
     public void setUp() {
         mockStatic(Context.class);
         PowerMockito.when(Context.getAdministrationService()).thenReturn(administrationService);
+        PowerMockito.when(Context.getService(MessagesAdministrationService.class)).thenReturn(new MessagesAdministrationServiceImpl());
     }
 
     @Test

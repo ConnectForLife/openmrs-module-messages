@@ -11,9 +11,11 @@
 package org.openmrs.module.messages.api.util;
 
 import org.apache.commons.lang.time.DateUtils;
+import org.openmrs.Person;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.api.constants.ConfigConstants;
 import org.openmrs.module.messages.api.constants.MessagesConstants;
+import org.openmrs.module.messages.api.service.MessagesAdministrationService;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -86,6 +88,20 @@ public final class DateUtil {
     }
 
     return result;
+  }
+
+  /**
+   * Get timezone of a person or system's default timezone.
+   *
+   * @param person the person to get timezone for, not null
+   * @return the ZoneId which represents person's timezone, never null
+   */
+  public static ZoneId getPersonTimeZone(Person person) {
+    return ofNullable(
+            Context.getService(MessagesAdministrationService.class)
+                .getGlobalProperty(ConfigConstants.DEFAULT_USER_TIMEZONE, person))
+        .map(ZoneId::of)
+        .orElse(getDefaultSystemTimeZone());
   }
 
   /**
