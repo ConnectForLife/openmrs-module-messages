@@ -18,6 +18,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const BrowserSyncPlugin = require("browser-sync-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const WebpackOnBuildPlugin = require("on-build-webpack");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const autoprefixer = require("autoprefixer");
 
@@ -90,7 +91,7 @@ const rules = [
 	},
 	{
 		test: /\.s?css$/,
-		use: ['style-loader', 'css-loader','sass-loader']
+		use: [MiniCssExtractPlugin.loader, 'css-loader','sass-loader']
 	},
 	{ enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
 ];
@@ -193,6 +194,13 @@ plugins.push(
 			]
 		}
 	})
+);
+
+plugins.push(
+    new MiniCssExtractPlugin({
+        filename: '[name].css',
+        chunkFilename: '[id].css',
+    })
 );
 
 var webpackConfig = {
