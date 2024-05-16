@@ -40,7 +40,7 @@ interface IProps {
   template: TemplateUI;
   actorType: IActorType;
   updateTemplate: (template: TemplateUI) => void;
-  healthTipCategories: IHealthTipCategory[];
+  healthTipCategories?: IHealthTipCategory[];
 }
 
 const elements: InitInput[] = [

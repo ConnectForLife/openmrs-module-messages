@@ -55,6 +55,7 @@ class DefaultSettingsTable extends React.Component<PropsWithIntl<IProps>> {
       template={template}
       updateTemplate={this.props.updateTemplate}
       actorType={actorType}
+      intl={this.props.intl}
     />
   );
 
