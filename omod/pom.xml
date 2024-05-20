@@ -192,37 +192,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>com.github.kongchen</groupId>
-                <artifactId>swagger-maven-plugin</artifactId>
-                <version>3.1.2</version>
-                <configuration>
-                    <apiSources>
-                        <apiSource>
-                            <springmvc>true</springmvc>
-                            <locations>org.openmrs.module.messages.web</locations>
-                            <basePath>/openmrs/ws</basePath>
-                            <info>
-                                <title>Messages Module REST API</title>
-                                <version>v1</version>
-                                <description>
-                                    REST API for Messages Module.
-                                </description>
-                            </info>
-                            <swaggerUIDocBasePath>/openmrs/ws/rest/v1</swaggerUIDocBasePath>
-                            <swaggerDirectory>${basedir}/src/main/webapp/resources/swagger/</swaggerDirectory>
-                        </apiSource>
-                    </apiSources>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 
