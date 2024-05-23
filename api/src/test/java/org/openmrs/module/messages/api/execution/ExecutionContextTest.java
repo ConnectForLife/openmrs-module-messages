@@ -13,12 +13,15 @@ package org.openmrs.module.messages.api.execution;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.messages.BaseTest;
 import org.openmrs.module.messages.api.constants.MessagesConstants;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.Range;
 import org.openmrs.module.messages.api.model.TemplateFieldType;
 import org.openmrs.module.messages.api.model.TemplateFieldValue;
+import org.openmrs.module.messages.api.service.MessagesAdministrationService;
 import org.openmrs.module.messages.api.util.DateUtil;
 import org.openmrs.module.messages.api.util.EndDateType;
 import org.openmrs.module.messages.builder.PatientTemplateBuilder;
@@ -28,7 +31,6 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.text.ParseException;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -43,135 +45,175 @@ import java.util.Map;
 
 import static org.hamcrest.Matchers.hasEntry;
 import static org.junit.Assert.assertThat;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({DateUtil.class})
+@PrepareForTest({Context.class, DateUtil.class})
 public class ExecutionContextTest extends BaseTest {
 
-    private static final ZonedDateTime TEST_NOW =
-            ZonedDateTime.ofInstant(Instant.ofEpochSecond(1625756392L), ZoneId.of("UTC"));
-    private static final String DUMMY_BEST_CONTACT_TIME = "02:34";
-    private static final String DUMMY_DATE = "2020-02-15";
-    private static final long MILLISECOND = 1;
+  private static final ZonedDateTime TEST_NOW =
+      ZonedDateTime.ofInstant(Instant.ofEpochSecond(1625756392L), ZoneId.of("UTC"));
+  private static final String DUMMY_BEST_CONTACT_TIME = "02:34";
+  private static final String DUMMY_DATE = "2020-02-15";
+  private static final long MILLISECOND = 1;
 
-    @Before
-    public void prepareTest() throws IllegalAccessException {
-        // Sets DateUtil's clock to predefined and fixed point in time
-        PowerMockito.field(DateUtil.class, "clock").set(null, Clock.fixed(TEST_NOW.toInstant(), TEST_NOW.getZone()));
-    }
+  @Mock private MessagesAdministrationService messagesAdministrationService;
 
-    @Test
-    public void shouldSetRangeStartDateAsStartDateWhenItIsLaterThenTfvStartDate() {
-        String tfvStartDateText = DUMMY_DATE;
-        ZonedDateTime tfvStartDate = parseDate(tfvStartDateText);
+  @Before
+  public void prepareTest() throws IllegalAccessException {
+    mockStatic(Context.class);
+    PowerMockito.when(Context.getService(MessagesAdministrationService.class))
+        .thenReturn(messagesAdministrationService);
+    // Sets DateUtil's clock to predefined and fixed point in time
+    PowerMockito.field(DateUtil.class, "clock")
+        .set(null, Clock.fixed(TEST_NOW.toInstant(), TEST_NOW.getZone()));
+  }
 
-        ZonedDateTime rangeStartDate = tfvStartDate.plus(MILLISECOND, ChronoUnit.MILLIS);
-        Range<ZonedDateTime> dateRange = new Range<>(rangeStartDate, DateUtil.now());
+  @Test
+  public void shouldSetRangeStartDateAsStartDateWhenItIsLaterThenTfvStartDate() {
+    String tfvStartDateText = DUMMY_DATE;
+    ZonedDateTime tfvStartDate = parseDate(tfvStartDateText);
 
-        PatientTemplate patientTemplate = new PatientTemplateBuilder()
-                .withTemplateFieldValues(buildTemplateFieldWithValue(TemplateFieldType.START_OF_MESSAGES, tfvStartDateText))
-                .build();
+    ZonedDateTime rangeStartDate = tfvStartDate.plus(MILLISECOND, ChronoUnit.MILLIS);
+    Range<ZonedDateTime> dateRange = new Range<>(rangeStartDate, DateUtil.now());
 
-        ExecutionContext executionContext = new ExecutionContext(patientTemplate, dateRange, DUMMY_BEST_CONTACT_TIME, null);
-        Map<String, Object> params = executionContext.getParams();
+    PatientTemplate patientTemplate =
+        new PatientTemplateBuilder()
+            .withTemplateFieldValues(
+                buildTemplateFieldWithValue(TemplateFieldType.START_OF_MESSAGES, tfvStartDateText))
+            .build();
 
-        assertThat(params,
-                hasEntry(ExecutionContext.START_DATE_TIME_PARAM, DateUtil.formatToServerSideDateTime(rangeStartDate)));
-    }
+    ExecutionContext executionContext =
+        new ExecutionContext(patientTemplate, dateRange, DUMMY_BEST_CONTACT_TIME, null);
+    Map<String, Object> params = executionContext.getParams();
 
-    @Test
-    public void shouldSetTfvStartDateAsStartDateWhenItIsLaterThenRangeStartDate() {
-        String tfvStartDateText = DUMMY_DATE;
-        ZonedDateTime tfvStartDate = parseDate(tfvStartDateText);
+    assertThat(
+        params,
+        hasEntry(
+            ExecutionContext.START_DATE_TIME_PARAM,
+            DateUtil.formatToServerSideDateTime(rangeStartDate)));
+  }
 
-        ZonedDateTime rangeStartDate = tfvStartDate.minus(MILLISECOND, ChronoUnit.MILLIS);
-        Range<ZonedDateTime> dateRange = new Range<>(rangeStartDate, DateUtil.now());
+  @Test
+  public void shouldSetTfvStartDateAsStartDateWhenItIsLaterThenRangeStartDate() {
+    String tfvStartDateText = DUMMY_DATE;
+    ZonedDateTime tfvStartDate = parseDate(tfvStartDateText);
 
-        PatientTemplate patientTemplate = new PatientTemplateBuilder()
-                .withTemplateFieldValues(buildTemplateFieldWithValue(TemplateFieldType.START_OF_MESSAGES, tfvStartDateText))
-                .build();
+    ZonedDateTime rangeStartDate = tfvStartDate.minus(MILLISECOND, ChronoUnit.MILLIS);
+    Range<ZonedDateTime> dateRange = new Range<>(rangeStartDate, DateUtil.now());
 
-        ExecutionContext executionContext = new ExecutionContext(patientTemplate, dateRange, DUMMY_BEST_CONTACT_TIME, null);
-        Map<String, Object> params = executionContext.getParams();
+    PatientTemplate patientTemplate =
+        new PatientTemplateBuilder()
+            .withTemplateFieldValues(
+                buildTemplateFieldWithValue(TemplateFieldType.START_OF_MESSAGES, tfvStartDateText))
+            .build();
 
-        assertThat(params,
-                hasEntry(ExecutionContext.START_DATE_TIME_PARAM, DateUtil.formatToServerSideDateTime(tfvStartDate)));
-    }
+    ExecutionContext executionContext =
+        new ExecutionContext(patientTemplate, dateRange, DUMMY_BEST_CONTACT_TIME, null);
+    Map<String, Object> params = executionContext.getParams();
 
-    @Test
-    public void shouldSetTfvEndDateAsEndDateWhenItIsEarlierThenRangeEndDate() {
-        String tfvEndDateText = DUMMY_DATE;
-        ZonedDateTime tfvEndDate = parseDate(tfvEndDateText);
+    assertThat(
+        params,
+        hasEntry(
+            ExecutionContext.START_DATE_TIME_PARAM,
+            DateUtil.formatToServerSideDateTime(tfvStartDate)));
+  }
 
-        ZonedDateTime rangeEndDate = tfvEndDate.plus(MILLISECOND, ChronoUnit.MILLIS);
-        Range<ZonedDateTime> dateRange = new Range<>(DateUtil.now(), rangeEndDate);
+  @Test
+  public void shouldSetTfvEndDateAsEndDateWhenItIsEarlierThenRangeEndDate() {
+    String tfvEndDateText = DUMMY_DATE;
+    ZonedDateTime tfvEndDate = parseDate(tfvEndDateText);
 
-        PatientTemplate patientTemplate = new PatientTemplateBuilder()
-                .withTemplateFieldValues(buildTemplateFieldWithValue(TemplateFieldType.END_OF_MESSAGES,
-                        prepareDatePickerEndDateValue(tfvEndDateText)))
-                .build();
+    ZonedDateTime rangeEndDate = tfvEndDate.plus(MILLISECOND, ChronoUnit.MILLIS);
+    Range<ZonedDateTime> dateRange = new Range<>(DateUtil.now(), rangeEndDate);
 
-        ExecutionContext executionContext = new ExecutionContext(patientTemplate, dateRange, DUMMY_BEST_CONTACT_TIME, null);
-        Map<String, Object> params = executionContext.getParams();
+    PatientTemplate patientTemplate =
+        new PatientTemplateBuilder()
+            .withTemplateFieldValues(
+                buildTemplateFieldWithValue(
+                    TemplateFieldType.END_OF_MESSAGES,
+                    prepareDatePickerEndDateValue(tfvEndDateText)))
+            .build();
 
-        assertThat(params, hasEntry(ExecutionContext.END_DATE_TIME_PARAM, DateUtil.formatToServerSideDateTime(tfvEndDate)));
-    }
+    ExecutionContext executionContext =
+        new ExecutionContext(patientTemplate, dateRange, DUMMY_BEST_CONTACT_TIME, null);
+    Map<String, Object> params = executionContext.getParams();
 
-    @Test
-    public void shouldSetRangeEndDateAsEndDateWhenItIsEarlierThenTfvEndDate() {
-        String tfvEndDateText = DUMMY_DATE;
-        ZonedDateTime tfvEndDate = parseDate(tfvEndDateText);
+    assertThat(
+        params,
+        hasEntry(
+            ExecutionContext.END_DATE_TIME_PARAM, DateUtil.formatToServerSideDateTime(tfvEndDate)));
+  }
 
-        ZonedDateTime rangeEndDate = tfvEndDate.minus(MILLISECOND, ChronoUnit.MILLIS);
-        Range<ZonedDateTime> dateRange = new Range<>(DateUtil.now(), rangeEndDate);
+  @Test
+  public void shouldSetRangeEndDateAsEndDateWhenItIsEarlierThenTfvEndDate() {
+    String tfvEndDateText = DUMMY_DATE;
+    ZonedDateTime tfvEndDate = parseDate(tfvEndDateText);
 
-        PatientTemplate patientTemplate = new PatientTemplateBuilder()
-                .withTemplateFieldValues(buildTemplateFieldWithValue(TemplateFieldType.END_OF_MESSAGES,
-                        prepareDatePickerEndDateValue(tfvEndDateText)))
-                .build();
+    ZonedDateTime rangeEndDate = tfvEndDate.minus(MILLISECOND, ChronoUnit.MILLIS);
+    Range<ZonedDateTime> dateRange = new Range<>(DateUtil.now(), rangeEndDate);
 
-        ExecutionContext executionContext = new ExecutionContext(patientTemplate, dateRange, DUMMY_BEST_CONTACT_TIME, null);
-        Map<String, Object> params = executionContext.getParams();
+    PatientTemplate patientTemplate =
+        new PatientTemplateBuilder()
+            .withTemplateFieldValues(
+                buildTemplateFieldWithValue(
+                    TemplateFieldType.END_OF_MESSAGES,
+                    prepareDatePickerEndDateValue(tfvEndDateText)))
+            .build();
 
-        assertThat(params,
-                hasEntry(ExecutionContext.END_DATE_TIME_PARAM, DateUtil.formatToServerSideDateTime(rangeEndDate)));
-    }
+    ExecutionContext executionContext =
+        new ExecutionContext(patientTemplate, dateRange, DUMMY_BEST_CONTACT_TIME, null);
+    Map<String, Object> params = executionContext.getParams();
 
-    @Test
-    public void shouldReturnExpectedExecutionStartDateParamIfThisValueWasSet() {
-        ZonedDateTime expectedExecutionStartDate = DateUtil.now();
+    assertThat(
+        params,
+        hasEntry(
+            ExecutionContext.END_DATE_TIME_PARAM,
+            DateUtil.formatToServerSideDateTime(rangeEndDate)));
+  }
 
-        Range<ZonedDateTime> dateRange = new Range<>(DateUtil.now(), DateUtil.now());
-        PatientTemplate patientTemplate = new PatientTemplateBuilder().build();
-        ExecutionContext executionContext =
-                new ExecutionContext(patientTemplate, dateRange, DUMMY_BEST_CONTACT_TIME, expectedExecutionStartDate);
-        Map<String, Object> params = executionContext.getParams();
+  @Test
+  public void shouldReturnExpectedExecutionStartDateParamIfThisValueWasSet() {
+    ZonedDateTime expectedExecutionStartDate = DateUtil.now();
 
-        assertThat(params, hasEntry(ExecutionContext.EXECUTION_START_DATE_TIME,
-                DateUtil.formatToServerSideDateTime(expectedExecutionStartDate)));
-    }
+    Range<ZonedDateTime> dateRange = new Range<>(DateUtil.now(), DateUtil.now());
+    PatientTemplate patientTemplate = new PatientTemplateBuilder().build();
+    ExecutionContext executionContext =
+        new ExecutionContext(
+            patientTemplate, dateRange, DUMMY_BEST_CONTACT_TIME, expectedExecutionStartDate);
+    Map<String, Object> params = executionContext.getParams();
 
-    private ZonedDateTime parseDate(String date) {
-        final LocalDate localDate =
-                LocalDate.parse(date, DateTimeFormatter.ofPattern(MessagesConstants.DEFAULT_SERVER_SIDE_DATE_FORMAT));
+    assertThat(
+        params,
+        hasEntry(
+            ExecutionContext.EXECUTION_START_DATE_TIME,
+            DateUtil.formatToServerSideDateTime(expectedExecutionStartDate)));
+  }
 
-        return ZonedDateTime.of(localDate, LocalTime.MIDNIGHT, TEST_NOW.getZone());
-    }
+  private ZonedDateTime parseDate(String date) {
+    final LocalDate localDate =
+        LocalDate.parse(
+            date, DateTimeFormatter.ofPattern(MessagesConstants.DEFAULT_SERVER_SIDE_DATE_FORMAT));
 
-    private String prepareDatePickerEndDateValue(String tfvEndDateText) {
-        return EndDateType.DATE_PICKER.getName() + "|" + tfvEndDateText;
-    }
+    return ZonedDateTime.of(localDate, LocalTime.MIDNIGHT, TEST_NOW.getZone());
+  }
 
-    private List<TemplateFieldValue> buildTemplateFieldWithValue(TemplateFieldType type, String value) {
-        return wrap(new TemplateFieldValueBuilder()
-                .withTemplateField(new TemplateFieldBuilder().withTemplateFieldType(type).build())
-                .withValue(value)
-                .build());
-    }
+  private String prepareDatePickerEndDateValue(String tfvEndDateText) {
+    return EndDateType.DATE_PICKER.getName() + "|" + tfvEndDateText;
+  }
 
-    private <T> List<T> wrap(T toWrap) {
-        ArrayList<T> list = new ArrayList<>();
-        list.add(toWrap);
-        return list;
-    }
+  private List<TemplateFieldValue> buildTemplateFieldWithValue(
+      TemplateFieldType type, String value) {
+    return wrap(
+        new TemplateFieldValueBuilder()
+            .withTemplateField(new TemplateFieldBuilder().withTemplateFieldType(type).build())
+            .withValue(value)
+            .build());
+  }
+
+  private <T> List<T> wrap(T toWrap) {
+    ArrayList<T> list = new ArrayList<>();
+    list.add(toWrap);
+    return list;
+  }
 }

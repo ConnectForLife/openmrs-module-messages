@@ -12,7 +12,6 @@ package org.openmrs.module.messages.api.execution;
 
 import org.openmrs.Person;
 import org.openmrs.module.messages.api.constants.MessagesConstants;
-import org.openmrs.module.messages.api.model.Actor;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.Range;
 import org.openmrs.module.messages.api.model.Template;
