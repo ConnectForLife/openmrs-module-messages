@@ -10,6 +10,9 @@
 
 package org.openmrs.module.messages.api.execution;
 
+import org.openmrs.Person;
+import org.openmrs.module.messages.api.constants.MessagesConstants;
+import org.openmrs.module.messages.api.model.Actor;
 import org.openmrs.module.messages.api.model.PatientTemplate;
 import org.openmrs.module.messages.api.model.Range;
 import org.openmrs.module.messages.api.model.Template;
@@ -17,6 +20,7 @@ import org.openmrs.module.messages.api.model.TemplateFieldValue;
 import org.openmrs.module.messages.api.util.DateUtil;
 
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,7 +48,7 @@ public class ExecutionContext {
                             ZonedDateTime executionStartDateTime) {
         this.patientTemplate = patientTemplate;
         this.bestContactTime = bestContactTime;
-        setExecutionStartDateTime(executionStartDateTime);
+        setExecutionStartDateTime(executionStartDateTime, patientTemplate.getActor());
         setRange(dateTimeRange);
 
         putParam(PATIENT_ID_PARAM, patientTemplate.getPatient().getPatientId());
@@ -84,13 +88,19 @@ public class ExecutionContext {
         return executionStartDateTime;
     }
 
-    private void setExecutionStartDateTime(ZonedDateTime executionStartDateTime) {
+    private void setExecutionStartDateTime(ZonedDateTime executionStartDateTime, Person actor) {
         if (executionStartDateTime == null) {
             this.executionStartDateTime = DateUtil.now();
         } else {
             this.executionStartDateTime = executionStartDateTime;
         }
-        putParam(EXECUTION_START_DATE_TIME, DateUtil.formatToServerSideDateTime(this.executionStartDateTime));
+    putParam(
+        EXECUTION_START_DATE_TIME,
+        this.executionStartDateTime
+            .withZoneSameInstant(DateUtil.getPersonTimeZone(actor))
+            .format(
+                DateTimeFormatter.ofPattern(
+                    MessagesConstants.DEFAULT_SERVER_SIDE_DATETIME_FORMAT)));
     }
 
     public Template getTemplate() {
