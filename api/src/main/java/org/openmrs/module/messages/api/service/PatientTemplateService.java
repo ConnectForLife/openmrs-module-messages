@@ -65,18 +65,19 @@ public interface PatientTemplateService extends BaseOpenmrsCriteriaDataService<P
 
     PatientTemplate createVisitReminder(String channel, String patientUuid);
 
-    /**
-     * Get {@link PatientTemplate} related to the {@code patient} for template with name {@code templateName}.
-     * If there is no such PatientTemplate then this method creates one.
-     * <p>
-     * The {@code templateName} Template must exist.
-     * </p>
-     *
-     * @param patient      the Patient to get PatientTemplate for, not null
-     * @param templateName the Template name, not null
-     * @return the {@link PatientTemplate} for {@code patient} and {@code templateName} Template, never null
-     * @throws APIException if the PatientTemplate could not be read, or created, or Template with {@code templateName}
-     *                      doesn't exist
-     */
-    PatientTemplate getOrCreatePatientTemplate(final Patient patient, final String templateName) throws APIException;
+  /**
+   * Get {@link PatientTemplate} related to the {@code patient} for template with name {@code templateName}.
+   * If there is no such PatientTemplate then this method creates one.
+   * <p>
+   * The {@code templateName} Template must exist.
+   * </p>
+   *
+   * @param patient      the Patient to get PatientTemplate for, not null
+   * @param templateName the Template name, not null
+   * @return the {@link PatientTemplate} for {@code patient} and {@code templateName} Template, never null
+   * @throws APIException if the PatientTemplate could not be read, or created, or Template with {@code templateName}
+   *                      doesn't exist
+   */
+  PatientTemplate getOrBuildPatientTemplate(final Patient patient, final String templateName)
+      throws APIException;
 }

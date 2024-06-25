@@ -135,7 +135,8 @@ public class TriggerMessageController extends BaseRestController {
       }
 
       final PatientTemplate patientTemplate =
-          patientTemplateService.getOrCreatePatientTemplate(patient, templateName);
+          patientTemplateService.getOrBuildPatientTemplate(patient, templateName);
+      patientTemplateService.saveOrUpdate(patientTemplate);
 
       final ScheduledService scheduledService = new ScheduledService();
       scheduledService.setStatus(ServiceStatus.PENDING);

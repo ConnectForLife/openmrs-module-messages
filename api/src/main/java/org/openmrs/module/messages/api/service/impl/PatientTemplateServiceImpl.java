@@ -133,7 +133,8 @@ public class PatientTemplateServiceImpl extends BaseOpenmrsDataService<PatientTe
 
   @Override
   @Transactional
-  public PatientTemplate getOrCreatePatientTemplate(Patient patient, String templateName) throws APIException {
+  public PatientTemplate getOrBuildPatientTemplate(Patient patient, String templateName)
+      throws APIException {
     final Template template = getTemplateByName(templateName);
 
     final PatientTemplate existingTemplate = findOneByCriteria(
@@ -142,8 +143,7 @@ public class PatientTemplateServiceImpl extends BaseOpenmrsDataService<PatientTe
     final PatientTemplate patientTemplate;
 
     if (existingTemplate == null) {
-      final PatientTemplate newPatientTemplate = new PatientTemplateBuilder(template, patient).build();
-      patientTemplate = saveOrUpdate(newPatientTemplate);
+      patientTemplate = new PatientTemplateBuilder(template, patient).build();
     } else {
       patientTemplate = existingTemplate;
     }

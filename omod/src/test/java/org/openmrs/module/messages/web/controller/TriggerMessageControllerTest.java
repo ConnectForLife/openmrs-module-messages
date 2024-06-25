@@ -84,13 +84,14 @@ public class TriggerMessageControllerTest {
         when(locationService.getAllLocations(false)).thenReturn(createTestLocations());
         when(visitService.getAllVisitAttributeTypes()).thenReturn(createTestVisitAttributeTypes());
         when(administrationService.getGlobalProperty("visits.visit-statuses")).thenReturn("SCHEDULED");
-        when(patientTemplateService.getOrCreatePatientTemplate(any(Patient.class), anyString())).thenReturn(createTestPatientTemplate());
+    when(patientTemplateService.getOrBuildPatientTemplate(any(Patient.class), anyString()))
+        .thenReturn(createTestPatientTemplate());
         when(messagingGroupService.saveGroup(any(ScheduledServiceGroup.class))).thenReturn(createTestScheduledServiceGroup());
 
         controller.triggerSendMessage(PATIENT_UUID, "Visit reminder(Clinical visit-Morning-CFL Clinic),Health tip", "Call");
 
         verify(patientService).getPatientByUuid(PATIENT_UUID);
-        verify(patientTemplateService).getOrCreatePatientTemplate(patient, "Visit reminder");
+    verify(patientTemplateService).getOrBuildPatientTemplate(patient, "Visit reminder");
         verify(messagingGroupService).saveGroup(any(ScheduledServiceGroup.class));
         verify(messagesDeliveryService).scheduleDelivery(any(ScheduledExecutionContext.class));
     }
