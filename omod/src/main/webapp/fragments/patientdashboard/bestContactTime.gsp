@@ -80,7 +80,7 @@
             <% bestContactTimes.each { %>
                 <div id="time-entry-${ it.label.replaceAll(" ", "-") }" class="time-entry">
                     <label for="time-label-${ it.label.replaceAll(" ", "-") }" class="time-label">
-                        ${ it.label.replaceAll(" ", "-")}
+                        ${ ui.message("messages.dashboard.patient.label")}
                     </label>
                     <span>
                         <input
@@ -94,7 +94,7 @@
                             class="save-time-button" 
                             id="save-button-${ it.label.replaceAll(" ", "-") }"
                             onClick="onSaveTimeButtonClick(${personId}, 'time-input-${ it.label.replaceAll(" ", "-") }')" 
-                            data-target="time-input-${ it.label.replaceAll(" ", "-") }">Save</button>
+                            data-target="time-input-${ it.label.replaceAll(" ", "-") }">${ ui.message("messages.dashboard.patient.saveButtonLabel")}</button>
                     </span>
                     <span class="error-message" id="error-message-${ it.label.replaceAll(" ", "-") }"></span>
                 </div>
